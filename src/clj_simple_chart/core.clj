@@ -1,7 +1,8 @@
 (ns clj-simple-chart.core
   (:gen-class
     :extends javafx.application.Application)
-  (:require [hiccup.core :as hiccup])
+  (:require [hiccup.core :as hiccup]
+            [digest :as digest])
   (:import (javafx.application Application Platform)
            (java.util.concurrent CountDownLatch)
            (javafx.scene.web WebView)
@@ -80,7 +81,7 @@
           (let [image (.snapshot @webview snap nil)
                 bufimage (SwingFXUtils/fromFXImage image nil)]
             (ImageIO/write bufimage "png" (File. filename))
-            (println "\nwrote " filename)))))
+            (println "\nwrote " filename "md5=" (digest/md5 (File. filename)))))))
     (Platform/runLater (fn [] (.countDown ll)))
     (.await ll)))
 
@@ -103,3 +104,8 @@
     [:line {:x1 0 :y1 0 :x2 width :y2 height :stroke "blue"}]
     [:line {:x1 width :y1 0 :x2 0 :y2 height :stroke "blue"}]
     ]])
+
+(defn -main
+  "This should be pretty simple."
+  []
+  (println "file written as a side effect..!"))
