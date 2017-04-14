@@ -48,6 +48,9 @@
       (.await latch)
       (recur s))))
 
+(defn translate [x y]
+  (str "translate(" x "," y ")"))
+
 (defn render-tag [t]
   (let [body [:body (style
                       :margin "0 !important"
