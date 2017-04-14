@@ -90,22 +90,21 @@
 (def height 500)
 (def margin {:top 10 :bottom 10 :left 10 :right 10})
 
-(render-to-file
-  "hello.png"
-  [:svg {:width  (+ (:left margin) (:right margin) width)
-         :height (+ (:top margin) (:bottom margin) height)}
-   [:circle {:cx 0 :cy 0 :r 50 :fill "yellow" :stroke "black"}]
-   [:g {:transform (translate (:left margin) (:top margin))}
-    [:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "red"}]
-    [:circle {:cx 50 :cy 100 :r 10 :fill "yellow" :stroke "black"}]
-    [:circle {:cx 50 :cy 100 :r 1 :fill "yellow" :stroke "black"}]
-    [:line {:x1 50 :y1 100 :x2 width :y2 100 :stroke "red"}]
-    [:text {:x 50 :y 100 :dy ".32em" :font-size "200px"} "1,23456789"]
-    [:line {:x1 0 :y1 0 :x2 width :y2 height :stroke "blue"}]
-    [:line {:x1 width :y1 0 :x2 0 :y2 height :stroke "blue"}]
-    ]])
+(defonce tmr (CountDownLatch. 1))
 
-(defn -main
-  "This should be pretty simple."
-  []
-  (println "file written as a side effect..!"))
+(do (render-to-file
+      "hello.png"
+      [:svg {:width  (+ (:left margin) (:right margin) width)
+             :height (+ (:top margin) (:bottom margin) height)}
+       [:circle {:cx 0 :cy 0 :r 50 :fill "yellow" :stroke "black"}]
+       [:g {:transform (translate (:left margin) (:top margin))}
+        [:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "red"}]
+        [:circle {:cx 50 :cy 100 :r 10 :fill "yellow" :stroke "black"}]
+        [:circle {:cx 50 :cy 100 :r 1 :fill "yellow" :stroke "black"}]
+        [:line {:x1 50 :y1 100 :x2 width :y2 100 :stroke "red"}]
+        [:text {:x 50 :y 100 :dy ".32em" :font-size "200px"} "1,23456789"]
+        [:line {:x1 0 :y1 0 :x2 width :y2 height :stroke "blue"}]
+        [:line {:x1 width :y1 0 :x2 0 :y2 height :stroke "blue"}]
+        ]])
+    (.countDown tmr))
+

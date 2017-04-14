@@ -8,5 +8,5 @@
                  [org.testfx/openjfx-monocle "1.8.0_20"]
                  [digest "1.4.5"]]
   :aot [clj-simple-chart.core]
-  :main clj-simple-chart.core
+  :main clj-simple-chart.exp
   :profiles {:uberjar {:aot :all}})
