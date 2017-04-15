@@ -141,10 +141,10 @@
         range (:range (meta scale))
         tiks (apply ticks/ticks domain)]
     [:g
-     [:path {:stroke color
+     [:path {:stroke       color
              :stroke-width "1"
-             :fill "none"
-             :d (str "M-6," (apply max range) ".5 H0.5 V0.5 H-6")}]
+             :fill         "none"
+             :d            (str "M-6," (apply max range) ".5 H0.5 V0.5 H-6")}]
      (map (fn [d] [:g {:transform (translate 0 (scale d))}
                    [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
                    [:text {:x           -9
@@ -160,10 +160,10 @@
         range (:range (meta scale))
         tiks (apply ticks/ticks domain)]
     [:g
-     [:path {:stroke color
+     [:path {:stroke       color
              :stroke-width "1"
-             :fill "none"
-             :d (str "M6," (apply max range) ".5 H0.5 V0.5 H6")}]
+             :fill         "none"
+             :d            (str "M6," (apply max range) ".5 H0.5 V0.5 H6")}]
      (map (fn [d] [:g {:transform (translate 0 (scale d))}
                    [:line {:stroke color :x2 6 :y1 0.5 :y2 0.5}]
                    [:text {:x           9
@@ -173,13 +173,51 @@
                            :y           0.5}
                     d]]) tiks)]))
 
+(defn bottom-x-axis [scale]
+  (let [domain (:domain (meta scale))
+        color (get (meta scale) :color "#000")
+        range (:range (meta scale))
+        tiks (apply ticks/ticks domain)]
+    [:g
+     [:path {:stroke       color
+             :stroke-width "1"
+             :fill         "none"
+             :d            (str "M0.5,6 V0.5 H" (apply max range) ".5 V6")}]
+     (map (fn [d] [:g {:transform (translate (scale d) 0)}
+                   [:line {:stroke color :x1 0.5 :x2 0.5 :y2 6}]
+                   [:text {:x           0.5
+                           :text-anchor "middle"
+                           :fill        color
+                           :dy          ".71em"
+                           :y           9}
+                    d]]) tiks)]))
+
+(defn top-x-axis [scale]
+  (let [domain (:domain (meta scale))
+        color (get (meta scale) :color "#000")
+        range (:range (meta scale))
+        tiks (apply ticks/ticks domain)]
+    [:g
+     [:path {:stroke       color
+             :stroke-width "1"
+             :fill         "none"
+             :d            (str "M0.5,-6 V0.5 H" (apply max range) ".5 V-6")}]
+     (map (fn [d] [:g {:transform (translate (scale d) 0)}
+                   [:line {:stroke color :x1 0.5 :x2 0.5 :y2 -6}]
+                   [:text {:x           0.5
+                           :text-anchor "middle"
+                           :fill        color
+                           :dy          "0em"
+                           :y           -9}
+                    d]]) tiks)]))
+
 (def width 500)
 (def height 500)
 (def margin {:top 50 :bottom 50 :left 60 :right 60})
 
-(def y (scale-linear {:color "red" :domain [0 100] :range [height 0]}))
+(def y (scale-linear {:color "red" :domain [0 0.7] :range [height 0]}))
 (def y2 (scale-linear {:color "blue" :domain [0 1.69] :range [height 0]}))
-(def x (scale-linear {:domain [0 100] :range [0 width]}))
+(def x (scale-linear {:color "green" :domain [0 100] :range [0 width]}))
 
 (defn diagram
   []
@@ -193,6 +231,11 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (left-y-axis y)
     [:g {:transform (translate width 0)} (right-y-axis y2)]
+    [:g {:transform (translate 0 height)} (bottom-x-axis x)]
+    [:g (top-x-axis x)]
+    #_[:g {:transform (translate (/ width 2) 0)}
+       (right-y-axis (scale-linear {:color "green" :domain [0 10] :range [height 0]}))]
+
     ;[:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "black"}]
     ;[:circle {:cx 50 :cy 100 :r 10 :fill "yellow" :stroke "black"}]
     ;[:circle {:cx (x 25) :cy (y 25) :r 25 :fill "yellow" :stroke-width 5 :stroke "black"}]
