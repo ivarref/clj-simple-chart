@@ -11,7 +11,8 @@
            (javafx.geometry Rectangle2D)
            (javafx.embed.swing SwingFXUtils)
            (javax.imageio ImageIO)
-           (java.io File)))
+           (java.io File)
+           (javafx.concurrent Worker$State)))
 
 (defonce latch (CountDownLatch. 1))
 (defonce webview (atom nil))
@@ -20,10 +21,6 @@
 
 (defn -start [this internal-stage]
   (.setTitle internal-stage "hello world")
-  #_(.setOnCloseRequest internal-stage
-                      (fn [e]
-                        (Platform/exit)
-                        (System/exit 0)))
   (let [internal-webview (WebView.)
         internal-engine (.getEngine internal-webview)
         layout (VBox. 0.0)
@@ -45,13 +42,29 @@
                                     (str (name kwd) ":" val "; "))
                                  (apply hash-map info))))})
 
+(defn get-worker-state []
+  (let [res (atom nil)
+        ll (CountDownLatch. 1)]
+    (Platform/runLater
+      (fn []
+        (swap! res (fn [x] (.getState (.getLoadWorker @engine))))
+        (.countDown ll)))
+    (.await ll)
+    @res))
+
+(defn wait-for-worker []
+  (let [state (get-worker-state)]
+    (cond (= Worker$State/SUCCEEDED state) state
+          (= Worker$State/FAILED state) state
+          (= Worker$State/CANCELLED state) state
+          :else (do (println "waiting for worker ... state was" state)
+                    (Thread/sleep 10) (recur)))))
+
 (defn render-string [s]
   (if @engine
     (do
-      (let [ll (CountDownLatch. 1)]
-        (Platform/runLater (fn [] (.loadContent @engine s "text/html")))
-        (Platform/runLater (fn [] (.countDown ll)))
-        (.await ll)))
+      (Platform/runLater (fn [] (.loadContent @engine s "text/html")))
+      (wait-for-worker))
     (do
       (launch)
       (.await latch)
@@ -80,6 +93,7 @@
     (Platform/runLater (fn [] (.setPrefWidth @webview width)))
     (Platform/runLater (fn [] (.sizeToScene @stage)))
     (Platform/runLater (fn [] (.show @stage)))
+    (wait-for-worker)
     (Platform/runLater
       (fn []
         (let [snap (SnapshotParameters.)]
