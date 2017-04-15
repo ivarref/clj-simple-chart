@@ -6,6 +6,10 @@
     (.set field cls value)
     (.setAccessible field false)))
 
+(defn init-sw []
+  (System/setProperty "prism.order" "sw")
+  (System/setProperty "prism.verbose" "true"))
+
 (defn init-headless []
   (System/setProperty "javafx.macosx.embedded" "true")
   (System/setProperty "glass.platform" "Monocle")

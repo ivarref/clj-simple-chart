@@ -83,6 +83,10 @@
     (render-string s)
     s))
 
+(defn export-to-file [filename t]
+  (let [s (hiccup.core/html t)]
+    (spit filename s)))
+
 (defn render-to-file [filename t]
   (let [ll (CountDownLatch. 1)
         attrs (second t)
@@ -116,7 +120,8 @@
 
 (def diagram
   [:svg {:width  (+ (:left margin) (:right margin) width)
-         :height (+ (:top margin) (:bottom margin) height)}
+         :height (+ (:top margin) (:bottom margin) height)
+         :xmlns "http://www.w3.org/2000/svg"}
    [:circle {:cx 0 :cy 0 :r 50 :fill "yellow" :stroke "black"}]
    [:g {:transform (translate (:left margin) (:top margin))}
     [:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "red"}]
