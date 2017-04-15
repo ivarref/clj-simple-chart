@@ -136,10 +136,21 @@
         range-output))
     (with-meta all)))
 
+(defn number-of-decimals [scale]
+  (let [domain (:domain (meta scale))
+        domain-diff (Math/abs (apply - domain))]
+    (cond (>= domain-diff 10) 0
+          (>= domain-diff 1) 1
+          :else 2)))
+
+(defn scale-format [scale v]
+  (format (str "%." (number-of-decimals scale) "f") v))
+
 (defn left-y-axis [scale]
   (let [domain (:domain (meta scale))
         color (get (meta scale) :color "#000")
         range (:range (meta scale))
+        fmt (partial scale-format scale)
         tiks (apply ticks/ticks domain)]
     [:g
      [:path {:stroke       color
@@ -153,12 +164,13 @@
                            :fill        color
                            :dy          ".32em"
                            :y           0.5}
-                    d]]) tiks)]))
+                    (fmt d)]]) tiks)]))
 
 (defn right-y-axis [scale]
   (let [domain (:domain (meta scale))
         color (get (meta scale) :color "#000")
         range (:range (meta scale))
+        fmt (partial scale-format scale)
         tiks (apply ticks/ticks domain)]
     [:g
      [:path {:stroke       color
@@ -172,12 +184,13 @@
                            :fill        color
                            :dy          ".32em"
                            :y           0.5}
-                    d]]) tiks)]))
+                    (fmt d)]]) tiks)]))
 
 (defn bottom-x-axis [scale]
   (let [domain (:domain (meta scale))
         color (get (meta scale) :color "#000")
         range (:range (meta scale))
+        fmt (partial scale-format scale)
         tiks (apply ticks/ticks domain)]
     [:g
      [:path {:stroke       color
@@ -191,12 +204,13 @@
                            :fill        color
                            :dy          ".71em"
                            :y           9}
-                    d]]) tiks)]))
+                    (fmt d)]]) tiks)]))
 
 (defn top-x-axis [scale]
   (let [domain (:domain (meta scale))
         color (get (meta scale) :color "#000")
         range (:range (meta scale))
+        fmt (partial scale-format scale)
         tiks (apply ticks/ticks domain)]
     [:g
      [:path {:stroke       color
@@ -210,7 +224,8 @@
                            :fill        color
                            :dy          "0em"
                            :y           -9}
-                    d]]) tiks)]))
+                    (fmt d)]]) tiks)]))
+
 
 (def width 500)
 (def height 500)
