@@ -31,9 +31,9 @@
             (let [sstart (Math/ceil (/ start step))
                   sstop (Math/floor (/ stop step))
                   n (Math/ceil (inc (- sstop sstart)))]
-              (mapv #(* (+ start %) step) (range 0 n)))
+              (mapv #(* (+ sstart %) step) (range 0 n)))
             :else
             (let [sstart (Math/floor (* start step))
                   sstop (Math/ceil (* stop step))
                   n (Math/ceil (inc (- sstart sstop)))]
-              (mapv #(/ (- start %) step) (range 0 n)))))))
+              (mapv #(/ (- sstart %) step) (range 0 n)))))))
