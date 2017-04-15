@@ -22,7 +22,7 @@
 (defonce engine (atom nil))
 
 (defn -start [this internal-stage]
-  (.setTitle internal-stage "hello world")
+  (.setTitle internal-stage "SVG Output")
   (let [internal-webview (WebView.)
         internal-engine (.getEngine internal-webview)
         layout (VBox. 0.0)
@@ -61,16 +61,16 @@
           (= Worker$State/CANCELLED state) state
           :else (do (Thread/sleep 10) (recur)))))
 
-(defn render-string [s]
+(defn bootstrap []
   (if @engine
-    (do
-      (Platform/runLater (fn [] (.loadContent @engine s "text/html")))
-      (wait-for-worker)
-      )
+    nil
     (do
       (launch)
-      (.await latch)
-      (recur s))))
+      (.await latch))))
+
+(defn render-string [s]
+  (Platform/runLater (fn [] (.loadContent @engine s "text/html")))
+  (wait-for-worker))
 
 (defn translate [x y]
   (str "translate(" x "," y ")"))
@@ -82,7 +82,8 @@
 (defn render
   ([filename t]
    (export-to-file filename t)
-   (render t))
+   (render t)
+   (Platform/runLater (fn [] (.setTitle @stage filename))))
   ([t]
    (let [body [:body (style
                        :margin "0 !important"
@@ -93,10 +94,10 @@
          width (:width attrs)
          height (:height attrs)
          s (hiccup.core/html (conj body t))]
+     (bootstrap)
      (Platform/runLater (fn [] (.setPrefHeight @webview height)))
      (Platform/runLater (fn [] (.setPrefWidth @webview width)))
      (render-string s)
-     (wait-for-worker)
      (Platform/runLater (fn [] (.sizeToScene @stage)))
      (Platform/runLater (fn [] (.show @stage)))
      s)))
