@@ -2,7 +2,9 @@
   (:gen-class
     :extends javafx.application.Application)
   (:require [hiccup.core :as hiccup]
-            [digest :as digest])
+            [digest :as digest]
+            [clj-simple-chart.ticks :as ticks]
+            )
   (:import (javafx.application Application Platform)
            (java.util.concurrent CountDownLatch)
            (javafx.scene.web WebView)
@@ -63,7 +65,8 @@
   (if @engine
     (do
       (Platform/runLater (fn [] (.loadContent @engine s "text/html")))
-      (wait-for-worker))
+      (wait-for-worker)
+      )
     (do
       (launch)
       (.await latch)
@@ -125,12 +128,21 @@
         range-output))
     (with-meta all)))
 
-(def width 960)
+(def width 500)
 (def height 500)
-(def margin {:top 10 :bottom 10 :left 10 :right 10})
+(def margin {:top 40 :bottom 50 :left 60 :right 40})
 
 (def y (scale-linear {:domain [0 100] :range [height 0]}))
 (def x (scale-linear {:domain [0 100] :range [0 width]}))
+
+(defn left-y-axis [scale]
+  (let [tiks (apply ticks/ticks (:domain (meta scale)))]
+    (map (fn [d] [:text {:x 0 :text-anchor "end" :dx "-.2em" :dy ".32em" :y (scale d)} (str d)]) tiks)))
+
+(defn right-y-axis [scale]
+  (let [tiks (apply ticks/ticks (:domain (meta scale)))]
+    (map (fn [d] [:text {:x 0 :text-anchor "start" :dx ".2em" :dy ".32em" :y (scale d)} (str d)]) tiks)))
+
 
 (def diagram
   [:svg {:width  (+ (:left margin) (:right margin) width)
@@ -138,7 +150,10 @@
          :xmlns  "http://www.w3.org/2000/svg"}
    [:circle {:cx 0 :cy 0 :r 50 :fill "yellow" :stroke "black"}]
    [:g {:transform (translate (:left margin) (:top margin))}
-    [:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "red"}]
+    (left-y-axis y)
+    [:g {:transform (translate width 0)}
+     (right-y-axis y)]
+    [:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "black"}]
     [:circle {:cx 50 :cy 100 :r 10 :fill "yellow" :stroke "black"}]
     [:circle {:cx (x 25) :cy (y 25) :r 25 :fill "yellow" :stroke-width 5 :stroke "black"}]
     [:circle {:cx (x 50) :cy (y 50) :r 25 :fill "cyan" :stroke-width 5 :stroke "black"}]

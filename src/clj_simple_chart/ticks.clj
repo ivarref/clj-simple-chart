@@ -22,7 +22,9 @@
                                            (>= error e2) 2
                                            :else 1)))))
 
-(defn ticks [start stop count]
+(defn ticks
+  ([start stop] (ticks start stop 10))
+  ([start stop count]
   (if (< stop start)
     (reverse (ticks stop start count))
     (let [step (tick-increment start stop count)]
@@ -36,4 +38,4 @@
             (let [sstart (Math/floor (* start step))
                   sstop (Math/ceil (* stop step))
                   n (Math/ceil (inc (- sstart sstop)))]
-              (mapv #(/ (- sstart %) step) (range 0 n)))))))
+              (mapv #(/ (- sstart %) step) (range 0 n))))))))
