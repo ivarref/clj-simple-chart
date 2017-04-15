@@ -81,8 +81,16 @@
                       :padding "0 !important"
                       :overflow-x "hidden"
                       :overflow-y "hidden")]
+        attrs (second t)
+        width (:width attrs)
+        height (:height attrs)
         s (hiccup.core/html (conj body t))]
+    (Platform/runLater (fn [] (.setPrefHeight @webview height)))
+    (Platform/runLater (fn [] (.setPrefWidth @webview width)))
     (render-string s)
+    (wait-for-worker)
+    (Platform/runLater (fn [] (.sizeToScene @stage)))
+    (Platform/runLater (fn [] (.show @stage)))
     s))
 
 (defn export-to-file [filename t]
@@ -95,11 +103,6 @@
         width (:width attrs)
         height (:height attrs)]
     (render t)
-    (Platform/runLater (fn [] (.setPrefHeight @webview height)))
-    (Platform/runLater (fn [] (.setPrefWidth @webview width)))
-    (Platform/runLater (fn [] (.sizeToScene @stage)))
-    (Platform/runLater (fn [] (.show @stage)))
-    (wait-for-worker)
     (Platform/runLater
       (fn []
         (let [snap (SnapshotParameters.)]
@@ -128,13 +131,6 @@
         range-output))
     (with-meta all)))
 
-(def width 500)
-(def height 500)
-(def margin {:top 50 :bottom 50 :left 60 :right 40})
-
-(def y (scale-linear {:domain [0 100] :range [height 0]}))
-(def x (scale-linear {:domain [0 100] :range [0 width]}))
-
 (defn left-y-axis [scale]
   (let [tiks (apply ticks/ticks (:domain (meta scale)))]
     (map (fn [d] [:text {:x 0 :text-anchor "end" :dx "-.2em" :dy ".32em" :y (scale d)} (str d)]) tiks)))
@@ -143,6 +139,12 @@
   (let [tiks (apply ticks/ticks (:domain (meta scale)))]
     (map (fn [d] [:text {:x 0 :text-anchor "start" :dx ".2em" :dy ".32em" :y (scale d)} (str d)]) tiks)))
 
+(def width 500)
+(def height 500)
+(def margin {:top 50 :bottom 50 :left 60 :right 60})
+
+(def y (scale-linear {:domain [0 100] :range [height 0]}))
+(def x (scale-linear {:domain [0 100] :range [0 width]}))
 
 (def diagram
   [:svg {:width  (+ (:left margin) (:right margin) width)
