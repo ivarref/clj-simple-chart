@@ -11,3 +11,6 @@ pom.xml.asc
 .hg/
 *.iml
 .idea/
+node_modules
+yarn.lock
+package.json

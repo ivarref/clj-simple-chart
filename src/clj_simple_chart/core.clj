@@ -72,7 +72,7 @@
 (defn translate [x y]
   (str "translate(" x "," y ")"))
 
-(defn render-tag [t]
+(defn render [t]
   (let [body [:body (style
                       :margin "0 !important"
                       :padding "0 !important"
@@ -91,7 +91,7 @@
         attrs (second t)
         width (:width attrs)
         height (:height attrs)]
-    (render-tag t)
+    (render t)
     (Platform/runLater (fn [] (.setPrefHeight @webview height)))
     (Platform/runLater (fn [] (.setPrefWidth @webview width)))
     (Platform/runLater (fn [] (.sizeToScene @stage)))
@@ -114,14 +114,16 @@
   (Platform/exit))
 
 (defn scale-linear
-  [{domain :domain range :range}]
-  (fn [x]
-    (let [domain-size (- (last domain) (first domain))
-          domain-offset (- x (first domain))
-          domain-relative (/ domain-offset domain-size)
-          range-size (- (last range) (first range))
-          range-output (+ (first range) (* domain-relative range-size))]
-      range-output)))
+  [{domain :domain range :range :as all}]
+  (->
+    (fn [x]
+      (let [domain-size (- (last domain) (first domain))
+            domain-offset (- x (first domain))
+            domain-relative (/ domain-offset domain-size)
+            range-size (- (last range) (first range))
+            range-output (+ (first range) (* domain-relative range-size))]
+        range-output))
+    (with-meta all)))
 
 (def width 960)
 (def height 500)
@@ -133,7 +135,7 @@
 (def diagram
   [:svg {:width  (+ (:left margin) (:right margin) width)
          :height (+ (:top margin) (:bottom margin) height)
-         :xmlns "http://www.w3.org/2000/svg"}
+         :xmlns  "http://www.w3.org/2000/svg"}
    [:circle {:cx 0 :cy 0 :r 50 :fill "yellow" :stroke "black"}]
    [:g {:transform (translate (:left margin) (:top margin))}
     [:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "red"}]
