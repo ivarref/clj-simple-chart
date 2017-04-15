@@ -76,8 +76,10 @@
         width (:width attrs)
         height (:height attrs)]
     (render-tag t)
+    (Platform/runLater (fn [] (.setPrefHeight @webview height)))
+    (Platform/runLater (fn [] (.setPrefWidth @webview width)))
     (Platform/runLater (fn [] (.sizeToScene @stage)))
-    (render-tag t)                                          ; TODO: Can this be simplified?
+    (Platform/runLater (fn [] (.show @stage)))
     (Platform/runLater
       (fn []
         (let [snap (SnapshotParameters.)]
