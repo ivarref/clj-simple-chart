@@ -241,12 +241,15 @@
   (str "M"
        (string/join " L" points)))
 
+(defn line
+  ([points]
+   (line {:fill "none" :stroke "#000" :stroke-width 1} points))
+  ([props points]
+   [:path (assoc props :d (path (map (fn [[x y]] (str x "," y)) points)))]))
+
 (defn dotted-line [{fill :fill stroke :stroke} points]
   [:g
-   [:path {:d (path (map (fn [[x y]] (str x "," y)) points))
-           :fill "none"
-           :stroke stroke
-           :stroke-width 2}]
+   (line {:fill "none" :stroke stroke :stroke-width 2} points)
    (map (fn [[x y]]
           [:circle
            {:fill fill
