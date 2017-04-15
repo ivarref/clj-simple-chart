@@ -57,8 +57,7 @@
     (cond (= Worker$State/SUCCEEDED state) state
           (= Worker$State/FAILED state) state
           (= Worker$State/CANCELLED state) state
-          :else (do (println "waiting for worker ... state was" state)
-                    (Thread/sleep 10) (recur)))))
+          :else (do (Thread/sleep 10) (recur)))))
 
 (defn render-string [s]
   (if @engine
@@ -114,9 +113,22 @@
   (Platform/runLater (fn [] (.close @stage)))
   (Platform/exit))
 
+(defn scale-linear
+  [{domain :domain range :range}]
+  (fn [x]
+    (let [domain-size (- (last domain) (first domain))
+          domain-offset (- x (first domain))
+          domain-relative (/ domain-offset domain-size)
+          range-size (- (last range) (first range))
+          range-output (+ (first range) (* domain-relative range-size))]
+      range-output)))
+
 (def width 960)
 (def height 500)
 (def margin {:top 10 :bottom 10 :left 10 :right 10})
+
+(def y (scale-linear {:domain [0 100] :range [height 0]}))
+(def x (scale-linear {:domain [0 100] :range [0 width]}))
 
 (def diagram
   [:svg {:width  (+ (:left margin) (:right margin) width)
@@ -126,6 +138,9 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     [:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "red"}]
     [:circle {:cx 50 :cy 100 :r 10 :fill "yellow" :stroke "black"}]
+    [:circle {:cx (x 25) :cy (y 25) :r 25 :fill "yellow" :stroke-width 5 :stroke "black"}]
+    [:circle {:cx (x 50) :cy (y 50) :r 25 :fill "cyan" :stroke-width 5 :stroke "black"}]
+    [:circle {:cx (x 75) :cy (y 25) :r 25 :fill "red" :stroke-width 5 :stroke "black"}]
     [:circle {:cx 50 :cy 100 :r 1 :fill "yellow" :stroke "black"}]
     [:line {:x1 50 :y1 100 :x2 width :y2 100 :stroke "red"}]
     [:text {:x 50 :y 100 :dy ".32em" :font-size "200px"} "1,23456789"]
