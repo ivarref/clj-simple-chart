@@ -75,27 +75,31 @@
 (defn translate [x y]
   (str "translate(" x "," y ")"))
 
-(defn render [t]
-  (let [body [:body (style
-                      :margin "0 !important"
-                      :padding "0 !important"
-                      :overflow-x "hidden"
-                      :overflow-y "hidden")]
-        attrs (second t)
-        width (:width attrs)
-        height (:height attrs)
-        s (hiccup.core/html (conj body t))]
-    (Platform/runLater (fn [] (.setPrefHeight @webview height)))
-    (Platform/runLater (fn [] (.setPrefWidth @webview width)))
-    (render-string s)
-    (wait-for-worker)
-    (Platform/runLater (fn [] (.sizeToScene @stage)))
-    (Platform/runLater (fn [] (.show @stage)))
-    s))
-
 (defn export-to-file [filename t]
   (let [s (hiccup.core/html t)]
     (spit filename s)))
+
+(defn render
+  ([filename t]
+   (export-to-file filename t)
+   (render t))
+  ([t]
+   (let [body [:body (style
+                       :margin "0 !important"
+                       :padding "0 !important"
+                       :overflow-x "hidden"
+                       :overflow-y "hidden")]
+         attrs (second t)
+         width (:width attrs)
+         height (:height attrs)
+         s (hiccup.core/html (conj body t))]
+     (Platform/runLater (fn [] (.setPrefHeight @webview height)))
+     (Platform/runLater (fn [] (.setPrefWidth @webview width)))
+     (render-string s)
+     (wait-for-worker)
+     (Platform/runLater (fn [] (.sizeToScene @stage)))
+     (Platform/runLater (fn [] (.show @stage)))
+     s)))
 
 (defn render-to-file [filename t]
   (let [ll (CountDownLatch. 1)
@@ -137,11 +141,10 @@
         range (:range (meta scale))
         tiks (apply ticks/ticks domain)]
     [:g
-     [:line {:x1    0 :x2 0 :y1 (scale (first domain)) :y2 (scale (second domain))
-             :style (str "stroke:" color "; stroke-width:1;")}]
-     [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
-     [:g {:transform (translate 0 (scale (second domain)))}
-      [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]]
+     [:path {:stroke color
+             :stroke-width "1"
+             :fill "none"
+             :d (str "M-6," (apply max range) ".5 H0.5 V0.5 H-6")}]
      (map (fn [d] [:g {:transform (translate 0 (scale d))}
                    [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
                    [:text {:x           -9
@@ -151,11 +154,31 @@
                            :y           0.5}
                     d]]) tiks)]))
 
+(defn right-y-axis [scale]
+  (let [domain (:domain (meta scale))
+        color (get (meta scale) :color "#000")
+        range (:range (meta scale))
+        tiks (apply ticks/ticks domain)]
+    [:g
+     [:path {:stroke color
+             :stroke-width "1"
+             :fill "none"
+             :d (str "M6," (apply max range) ".5 H0.5 V0.5 H6")}]
+     (map (fn [d] [:g {:transform (translate 0 (scale d))}
+                   [:line {:stroke color :x2 6 :y1 0.5 :y2 0.5}]
+                   [:text {:x           9
+                           :text-anchor "start"
+                           :fill        color
+                           :dy          ".32em"
+                           :y           0.5}
+                    d]]) tiks)]))
+
 (def width 500)
 (def height 500)
 (def margin {:top 50 :bottom 50 :left 60 :right 60})
 
-(def y (scale-linear {:color "black" :domain [0 1.69] :range [height 0]}))
+(def y (scale-linear {:color "red" :domain [0 100] :range [height 0]}))
+(def y2 (scale-linear {:color "blue" :domain [0 1.69] :range [height 0]}))
 (def x (scale-linear {:domain [0 100] :range [0 width]}))
 
 (defn diagram
@@ -169,7 +192,7 @@
    ;[:circle {:cx 0 :cy (+ (:top margin) (:bottom margin) height) :r 50 :fill "yellow" :stroke "black"}]
    [:g {:transform (translate (:left margin) (:top margin))}
     (left-y-axis y)
-    #_[:g {:transform (translate width 0)} (right-y-axis y)]
+    [:g {:transform (translate width 0)} (right-y-axis y2)]
     ;[:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "black"}]
     ;[:circle {:cx 50 :cy 100 :r 10 :fill "yellow" :stroke "black"}]
     ;[:circle {:cx (x 25) :cy (y 25) :r 25 :fill "yellow" :stroke-width 5 :stroke "black"}]
@@ -180,5 +203,4 @@
     ;[:text {:x 50 :y 100 :dy ".32em" :font-size "200px"} "1,234"]
     ;[:line {:x1 0 :y1 0 :x2 width :y2 height :stroke "blue"}]
     ;[:line {:x1 width :y1 0 :x2 0 :y2 height :stroke "blue"}]
-    ]]
-  )
+    ]])
