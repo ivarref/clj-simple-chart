@@ -3,6 +3,7 @@
     :extends javafx.application.Application)
   (:require [hiccup.core :as hiccup]
             [digest :as digest]
+            [clojure.string :as string]
             [clj-simple-chart.ticks :as ticks]
             )
   (:import (javafx.application Application Platform)
@@ -231,10 +232,30 @@
 (def height 470)
 (def margin {:top 50 :bottom 50 :left 60 :right 60})
 
-(def y (scale-linear {:color "red" :domain [0 0.7] :range [height 0]}))
+(def y (scale-linear {:color "red" :domain [0 100] :range [height 0]}))
 (def y2 (scale-linear {:color "blue" :domain [0 1.69] :range [height 0]}))
 (def x (scale-linear {:color "green" :domain [0 100] :range [0 width]}))
 (def x-top (scale-linear {:color "fuchsia" :domain [0 8] :range [0 width]}))
+
+(defn path [points]
+  (str "M"
+       (string/join " L" points)))
+
+(defn dotted-line [{fill :fill stroke :stroke} points]
+  [:g
+   [:path {:d (path (map (fn [[x y]] (str x "," y)) points))
+           :fill "none"
+           :stroke stroke
+           :stroke-width 2}]
+   (map (fn [[x y]]
+          [:circle
+           {:fill fill
+            :stroke stroke
+            :stroke-width 2
+            :r 5
+            :cx x
+            :cy y}])
+        points)])
 
 (defn diagram
   []
@@ -246,4 +267,7 @@
     [:g {:transform (translate width 0)} (right-y-axis y2)]
     [:g {:transform (translate 0 height)} (bottom-x-axis x)]
     [:g (top-x-axis x-top)]
+    (dotted-line {:fill "yellow"
+                  :stroke "black"}
+                 (map (fn [d] [(x d) (y d)]) (range 0 100 10)))
     ]])
