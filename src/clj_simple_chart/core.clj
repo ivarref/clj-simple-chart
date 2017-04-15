@@ -4,8 +4,7 @@
   (:require [hiccup.core :as hiccup]
             [digest :as digest]
             [clojure.string :as string]
-            [clj-simple-chart.ticks :as ticks]
-            )
+            [clj-simple-chart.ticks :as ticks])
   (:import (javafx.application Application Platform)
            (java.util.concurrent CountDownLatch)
            (javafx.scene.web WebView)
@@ -235,7 +234,7 @@
   ([points]
    (line {:fill "none" :stroke "#000" :stroke-width 1} points))
   ([props points]
-   [:path (assoc props :d (path (map (fn [[x y]] (str x "," y)) points)))]))
+   [:path (assoc props :d (path (map (fn [[x y]] (str (.doubleValue x) "," (.doubleValue y))) points)))]))
 
 (defn dotted-line [{fill :fill stroke :stroke} points]
   [:g
