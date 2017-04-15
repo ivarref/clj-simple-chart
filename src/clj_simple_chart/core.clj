@@ -272,5 +272,5 @@
     [:g (top-x-axis x-top)]
     (dotted-line {:fill "yellow"
                   :stroke "black"}
-                 (map (fn [d] [(x d) (y d)]) (range 0 100 10)))
+                 (map (fn [d] [(x d) (y d)]) (range 0 (+ 10 100) 10)))
     ]])
