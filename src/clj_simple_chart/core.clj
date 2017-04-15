@@ -139,7 +139,7 @@
 (defn number-of-decimals [scale]
   (let [domain (:domain (meta scale))
         domain-diff (Math/abs (apply - domain))]
-    (cond (>= domain-diff 10) 0
+    (cond (>= domain-diff 8) 0
           (>= domain-diff 1) 1
           :else 2)))
 
@@ -227,39 +227,23 @@
                     (fmt d)]]) tiks)]))
 
 
-(def width 500)
-(def height 500)
+(def width 470)
+(def height 470)
 (def margin {:top 50 :bottom 50 :left 60 :right 60})
 
 (def y (scale-linear {:color "red" :domain [0 0.7] :range [height 0]}))
 (def y2 (scale-linear {:color "blue" :domain [0 1.69] :range [height 0]}))
 (def x (scale-linear {:color "green" :domain [0 100] :range [0 width]}))
+(def x-top (scale-linear {:color "fuchsia" :domain [0 8] :range [0 width]}))
 
 (defn diagram
   []
   [:svg {:width  (+ (:left margin) (:right margin) width)
          :height (+ (:top margin) (:bottom margin) height)
          :xmlns  "http://www.w3.org/2000/svg"}
-   ;[:circle {:cx 0 :cy 0 :r 50 :fill "yellow" :stroke "black"}]
-   ;[:circle {:cx (+ (:left margin) (:right margin) width) :cy 0 :r 50 :fill "yellow" :stroke "black"}]
-   ;[:circle {:cx (+ (:left margin) (:right margin) width) :cy (+ (:top margin) (:bottom margin) height) :r 50 :fill "yellow" :stroke "black"}]
-   ;[:circle {:cx 0 :cy (+ (:top margin) (:bottom margin) height) :r 50 :fill "yellow" :stroke "black"}]
    [:g {:transform (translate (:left margin) (:top margin))}
-    (left-y-axis y)
+    [:g (left-y-axis y)]
     [:g {:transform (translate width 0)} (right-y-axis y2)]
     [:g {:transform (translate 0 height)} (bottom-x-axis x)]
-    [:g (top-x-axis x)]
-    #_[:g {:transform (translate (/ width 2) 0)}
-       (right-y-axis (scale-linear {:color "green" :domain [0 10] :range [height 0]}))]
-
-    ;[:rect {:x 0 :y 0 :width width :height height :fill "none" :stroke "black"}]
-    ;[:circle {:cx 50 :cy 100 :r 10 :fill "yellow" :stroke "black"}]
-    ;[:circle {:cx (x 25) :cy (y 25) :r 25 :fill "yellow" :stroke-width 5 :stroke "black"}]
-    ;[:circle {:cx (x 50) :cy (y 50) :r 25 :fill "cyan" :stroke-width 5 :stroke "black"}]
-    ;[:circle {:cx (x 75) :cy (y 25) :r 25 :fill "red" :stroke-width 5 :stroke "black"}]
-    ;[:circle {:cx 50 :cy 100 :r 1 :fill "yellow" :stroke "black"}]
-    ;[:line {:x1 50 :y1 100 :x2 width :y2 100 :stroke "red"}]
-    ;[:text {:x 50 :y 100 :dy ".32em" :font-size "200px"} "1,234"]
-    ;[:line {:x1 0 :y1 0 :x2 width :y2 height :stroke "blue"}]
-    ;[:line {:x1 width :y1 0 :x2 0 :y2 height :stroke "blue"}]
+    [:g (top-x-axis x-top)]
     ]])
