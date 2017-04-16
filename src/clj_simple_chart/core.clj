@@ -100,6 +100,7 @@
      (render-string s)
      (Platform/runLater (fn [] (.sizeToScene @stage)))
      (Platform/runLater (fn [] (.show @stage)))
+     (Platform/runLater (fn [] (.toFront @stage)))
      s)))
 
 (defn render-to-file [filename t]
@@ -274,29 +275,3 @@
               :font-size          "14px"
               :font-weight        "normal"}
        text]])
-
-(def margin {:top 80 :bottom 40 :left 40 :right 40})
-(def width (- (/ 1024 2) (:left margin) (:right margin)))
-(def height (- (/ 512 2) (:top margin) (:bottom margin)))
-
-(def y (scale-linear {:color "red" :domain [0 100] :range [height 0]}))
-(def y2 (scale-linear {:color "blue" :domain [0 1.69] :range [height 0]}))
-(def x (scale-linear {:color "green" :domain [0 100] :range [0 width]}))
-(def x-top (scale-linear {:color "fuchsia" :domain [0 8] :range [0 width]}))
-
-(defn diagram
-  []
-  [:svg {:width  (+ (:left margin) (:right margin) width)
-         :height (+ (:top margin) (:bottom margin) height)
-         :xmlns  "http://www.w3.org/2000/svg"}
-   (title "Make Diagrams Great Again")
-   (sub-title "Slogan for Easter holiday")
-   [:g {:transform (translate (:left margin) (:top margin))}
-    [:g (left-y-axis y)]
-    [:g {:transform (translate width 0)} (right-y-axis y2)]
-    [:g {:transform (translate 0 height)} (bottom-x-axis x)]
-    [:g (top-x-axis x-top)]
-    (dotted-line {:fill   "yellow"
-                  :stroke "black"}
-                 (map (fn [d] [(x d) (y d)]) (range 0 (+ 10 100) 10)))
-    ]])
