@@ -1,12 +1,9 @@
 (ns clj-simple-chart.folketal
-  (:require [clj-simple-chart.core :refer :all])
-  (:import (com.vdurmont.emoji EmojiManager)))
+  (:require [clj-simple-chart.core :refer :all]))
 
 (def margin {:top 60 :bottom 40 :left 40 :right 40})
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
 (def height (- (/ 512 2) (:top margin) (:bottom margin)))
-
-(def norway-flag (EmojiManager/getForAlias "no"))
 
 (def dimensions
   {:width  width
@@ -15,11 +12,10 @@
 
 (def y (scale-linear {:color "red" :domain [0 100] :range [height 0]}))
 (def y2 (scale-linear {:color "blue" :domain [0 1.69] :range [height 0]}))
-(def x (scale-linear {:color  "green"
+(def x (scale-linear {:color  "black"
                       :ticks  5
                       :domain [1990 2016]
                       :range  [0 width]}))
-#_(def x-top (scale-linear {:color "fuchsia" :domain [0 8] :range [0 width]}))
 
 (defn diagram
   []
