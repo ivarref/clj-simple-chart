@@ -147,12 +147,16 @@
 (defn scale-format [scale v]
   (format (str "%." (number-of-decimals scale) "f") v))
 
-(defn left-y-axis [scale]
+(defn ticks-for-scale [scale]
   (let [domain (:domain (meta scale))
-        color (get (meta scale) :color "#000")
+        num-ticks (get (meta scale) :ticks 10)
+        tiks (ticks/ticks (first domain) (second domain) num-ticks)]
+    tiks))
+
+(defn left-y-axis [scale]
+  (let [color (get (meta scale) :color "#000")
         range (:range (meta scale))
-        fmt (partial scale-format scale)
-        tiks (apply ticks/ticks domain)]
+        fmt (partial scale-format scale)]
     [:g
      [:path {:stroke       color
              :stroke-width "1"
@@ -165,14 +169,12 @@
                            :fill        color
                            :dy          ".32em"
                            :y           0.5}
-                    (fmt d)]]) tiks)]))
+                    (fmt d)]]) (ticks-for-scale scale))]))
 
 (defn right-y-axis [scale]
-  (let [domain (:domain (meta scale))
-        color (get (meta scale) :color "#000")
+  (let [color (get (meta scale) :color "#000")
         range (:range (meta scale))
-        fmt (partial scale-format scale)
-        tiks (apply ticks/ticks domain)]
+        fmt (partial scale-format scale)]
     [:g
      [:path {:stroke       color
              :stroke-width "1"
@@ -185,14 +187,12 @@
                            :fill        color
                            :dy          ".32em"
                            :y           0.5}
-                    (fmt d)]]) tiks)]))
+                    (fmt d)]]) (ticks-for-scale scale))]))
 
 (defn bottom-x-axis [scale]
-  (let [domain (:domain (meta scale))
-        color (get (meta scale) :color "#000")
+  (let [color (get (meta scale) :color "#000")
         range (:range (meta scale))
-        fmt (partial scale-format scale)
-        tiks (apply ticks/ticks domain)]
+        fmt (partial scale-format scale)]
     [:g
      [:path {:stroke       color
              :stroke-width "1"
@@ -205,14 +205,12 @@
                            :fill        color
                            :dy          ".71em"
                            :y           9}
-                    (fmt d)]]) tiks)]))
+                    (fmt d)]]) (ticks-for-scale scale))]))
 
 (defn top-x-axis [scale]
-  (let [domain (:domain (meta scale))
-        color (get (meta scale) :color "#000")
+  (let [color (get (meta scale) :color "#000")
         range (:range (meta scale))
-        fmt (partial scale-format scale)
-        tiks (apply ticks/ticks domain)]
+        fmt (partial scale-format scale)]
     [:g
      [:path {:stroke       color
              :stroke-width "1"
@@ -225,7 +223,7 @@
                            :fill        color
                            :dy          "0em"
                            :y           -9}
-                    (fmt d)]]) tiks)]))
+                    (fmt d)]]) (ticks-for-scale scale))]))
 
 (defn path [points]
   (str "M"
