@@ -13,6 +13,10 @@
     padding-inner :padding-inner
     padding-outer :padding-outer
     align         :align
+    :or {rng [0 1]
+         padding-inner 0
+         padding-outer 0
+         align 0.5}
     :as           all}]
   (let [start (first rng)
         stop (second rng)
