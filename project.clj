@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [hiccup "1.0.5"]
                  [org.testfx/openjfx-monocle "1.8.0_20"]
-                 [digest "1.4.5"]]
+                 [digest "1.4.5"]
+                 [com.vdurmont/emoji-java "3.2.0"]]
   :aot [clj-simple-chart.core]
   :main clj-simple-chart.exp
   :profiles {:uberjar {:aot :all}})

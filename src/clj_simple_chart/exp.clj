@@ -3,7 +3,7 @@
             [clj-simple-chart.headless :as headless])
   (:import (javafx.application Platform)))
 
-(defn -main
+#_(defn -main
   []
   (println "hello from c.exp.-main")
   (headless/init-headless)
