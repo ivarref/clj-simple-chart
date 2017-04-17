@@ -1,7 +1,8 @@
 (ns clj-simple-chart.folketal
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.rect :as rect]
-            [clj-simple-chart.band :refer :all]))
+            [clj-simple-chart.band :refer :all]
+            [clj-simple-chart.axis :refer :all]))
 
 (def margin {:top 60 :bottom 40 :left 40 :right 40})
 (def width (- (/ 1024 2) (:left margin) (:right margin)))

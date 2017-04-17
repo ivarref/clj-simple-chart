@@ -145,101 +145,6 @@
   [scale]
   (get (meta scale) :range))
 
-(defn number-of-decimals [scale]
-  (let [domain (:domain (meta scale))
-        domain-diff (Math/abs (apply - domain))]
-    (cond (>= domain-diff 8) 0
-          (>= domain-diff 1) 1
-          :else 2)))
-
-(defn scale-format [scale v]
-  (format (str "%." (number-of-decimals scale) "f") v))
-
-(defn ticks-for-scale [scale]
-  (let [domain (:domain (meta scale))
-        num-ticks (get (meta scale) :ticks 10)
-        tiks (ticks/ticks (first domain) (last domain) num-ticks)]
-    tiks))
-
-(defn tick-pos-scale [scale d]
-  (let [scale-type (get (meta scale) :scale-type :default)
-        bandwidth (get (meta scale) :bandwidth 0)]
-    (cond (= scale-type :band) (+ (/ bandwidth 2)
-                                  (scale d))
-          :else (scale d))))
-
-(defn left-y-axis [scale]
-  (let [color (get (meta scale) :color "#000")
-        range (:range (meta scale))
-        fmt (partial scale-format scale)]
-    [:g
-     [:path {:stroke       color
-             :stroke-width "1"
-             :fill         "none"
-             :d            (str "M-6," (apply max range) ".5 H0.5 V0.5 H-6")}]
-     (map (fn [d] [:g {:transform (translate 0 (tick-pos-scale scale d))}
-                   [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
-                   [:text {:x           -9
-                           :text-anchor "end"
-                           :fill        color
-                           :dy          ".32em"
-                           :y           0.5}
-                    (fmt d)]]) (ticks-for-scale scale))]))
-
-(defn right-y-axis [scale]
-  (let [color (get (meta scale) :color "#000")
-        range (:range (meta scale))
-        fmt (partial scale-format scale)]
-    [:g
-     [:path {:stroke       color
-             :stroke-width "1"
-             :fill         "none"
-             :d            (str "M6," (apply max range) ".5 H0.5 V0.5 H6")}]
-     (map (fn [d] [:g {:transform (translate 0 (tick-pos-scale scale d))}
-                   [:line {:stroke color :x2 6 :y1 0.5 :y2 0.5}]
-                   [:text {:x           9
-                           :text-anchor "start"
-                           :fill        color
-                           :dy          ".32em"
-                           :y           0.5}
-                    (fmt d)]]) (ticks-for-scale scale))]))
-
-(defn bottom-x-axis [scale]
-  (let [color (get (meta scale) :color "#000")
-        range (:range (meta scale))
-        fmt (partial scale-format scale)]
-    [:g
-     [:path {:stroke       color
-             :stroke-width "1"
-             :fill         "none"
-             :d            (str "M0.5,6 V0.5 H" (apply max range) ".5 V6")}]
-     (map (fn [d] [:g {:transform (translate (tick-pos-scale scale d) 0)}
-                   [:line {:stroke color :x1 0.5 :x2 0.5 :y2 6}]
-                   [:text {:x           0.5
-                           :text-anchor "middle"
-                           :fill        color
-                           :dy          ".71em"
-                           :y           9}
-                    (fmt d)]]) (ticks-for-scale scale))]))
-
-(defn top-x-axis [scale]
-  (let [color (get (meta scale) :color "#000")
-        range (:range (meta scale))
-        fmt (partial scale-format scale)]
-    [:g
-     [:path {:stroke       color
-             :stroke-width "1"
-             :fill         "none"
-             :d            (str "M0.5,-6 V0.5 H" (apply max range) ".5 V-6")}]
-     (map (fn [d] [:g {:transform (translate (tick-pos-scale scale d) 0)}
-                   [:line {:stroke color :x1 0.5 :x2 0.5 :y2 -6}]
-                   [:text {:x           0.5
-                           :text-anchor "middle"
-                           :fill        color
-                           :dy          "0em"
-                           :y           -9}
-                    (fmt d)]]) (ticks-for-scale scale))]))
-
 (defn path [points]
   (str "M"
        (string/join " L" points)))
@@ -249,25 +154,6 @@
    (line {:fill "none" :stroke "#000" :stroke-width 1} points))
   ([props points]
    [:path (assoc props :d (path (map (fn [[x y]] (str (.doubleValue x) "," (.doubleValue y))) points)))]))
-
-(defn dotted-line [{fill :fill stroke :stroke} points]
-  [:g
-   (line {:fill "none" :stroke stroke :stroke-width 2} points)
-   (map (fn [[x y]]
-          [:circle
-           {:fill         fill
-            :stroke       stroke
-            :stroke-width 2
-            :r            5
-            :cx           x
-            :cy           y}])
-        points)])
-
-(defn circle [x y]
-  [:circle {:cx           x :cy y :r 10
-            :fill         "yellow"
-            :stroke       "black"
-            :stroke-width 2}])
 
 (defn title
   [text]
