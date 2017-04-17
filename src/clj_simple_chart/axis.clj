@@ -31,15 +31,21 @@
 
 (defn left-y-axis [scale]
   (let [color (get (meta scale) :color "#000")
-        range (:range (meta scale))
+        rng (:range (meta scale))
+        grid (get (meta scale) :grid false)
+        width (get (meta scale) :width ::none)
         fmt (partial scale-format scale)]
     [:g
      [:path {:stroke       color
              :stroke-width "1"
              :fill         "none"
-             :d            (str "M-6," (apply max range) ".5 H0.5 V0.5 H-6")}]
+             :d            (str "M-6," (apply max rng) ".5 H0.5 V0.5 H-6")}]
      (map (fn [d] [:g {:transform (core/translate 0 (tick-pos-scale scale d))}
                    [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
+                   (when grid
+                     [:line {:stroke color
+                             :stroke-opacity 0.2
+                             :x2 width :y1 0.5 :y2 0.5}])
                    [:text (merge text-axis-properties
                                  {:x           -9
                                   :text-anchor "end"

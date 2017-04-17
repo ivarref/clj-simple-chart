@@ -14,7 +14,11 @@
                     :padding-outer 0.1
                     :range         [0 width]}))
 
-(def y (scale-linear {:domain [0 100] :ticks 5 :range [height 0]}))
+(def y (scale-linear {:domain [0 100]
+                      :ticks 5
+                      :grid true
+                      :width width
+                      :range [height 0]}))
 
 (def rect (partial rect/vertical-rect x y))
 
@@ -23,11 +27,12 @@
    (title "Some values")
    (sub-title "1990 - 1995")
    [:g {:transform (translate (:left margin) (:top margin))}
+    [:g (left-y-axis y)]
+    [:g {:transform (translate width 0)} (right-y-axis y)]
     (rect {:x 1990 :h 5})
     (rect {:x 1991 :h 25})
     (rect {:x 1992 :h 35})
     (rect {:x 1993 :h 50})
     (rect {:x 1994 :h 60})
     (rect {:x 1995 :h 95})
-    [:g (left-y-axis y)]
     [:g {:transform (translate 0 height)} (bottom-x-axis x)]]])
