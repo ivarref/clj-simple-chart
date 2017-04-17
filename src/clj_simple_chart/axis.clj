@@ -39,7 +39,7 @@
      [:path {:stroke       color
              :stroke-width "1"
              :fill         "none"
-             :d            (str "M-6," (apply max rng) ".5 H0.5 V0.5 H-6")}]
+             :d            (str "M-6," (apply max rng) ".5 H0.5 V" (apply min rng) ".5 H-6")}]
      (map (fn [d] [:g {:transform (core/translate 0 (tick-pos-scale scale d))}
                    [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
                    (when grid
@@ -56,13 +56,13 @@
 
 (defn right-y-axis [scale]
   (let [color (get (meta scale) :color "#000")
-        range (:range (meta scale))
+        rng (:range (meta scale))
         fmt (partial scale-format scale)]
     [:g
      [:path {:stroke       color
              :stroke-width "1"
              :fill         "none"
-             :d            (str "M6," (apply max range) ".5 H0.5 V0.5 H6")}]
+             :d            (str "M6," (apply max rng) ".5 H0.5 V" (apply min rng) ".5 H6")}]
      (map (fn [d] [:g {:transform (core/translate 0 (tick-pos-scale scale d))}
                    [:line {:stroke color :x2 6 :y1 0.5 :y2 0.5}]
                    [:text (merge text-axis-properties

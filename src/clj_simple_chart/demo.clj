@@ -1,4 +1,4 @@
-(ns clj-simple-chart.folketal
+(ns clj-simple-chart.demo
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.band :refer :all]
