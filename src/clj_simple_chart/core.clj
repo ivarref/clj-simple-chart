@@ -137,6 +137,14 @@
         range-output))
     (with-meta all)))
 
+(defn domain
+  [scale]
+  (get (meta scale) :domain))
+
+(defn scale-range
+  [scale]
+  (get (meta scale) :range))
+
 (defn number-of-decimals [scale]
   (let [domain (:domain (meta scale))
         domain-diff (Math/abs (apply - domain))]
@@ -150,8 +158,15 @@
 (defn ticks-for-scale [scale]
   (let [domain (:domain (meta scale))
         num-ticks (get (meta scale) :ticks 10)
-        tiks (ticks/ticks (first domain) (second domain) num-ticks)]
+        tiks (ticks/ticks (first domain) (last domain) num-ticks)]
     tiks))
+
+(defn tick-pos-scale [scale d]
+  (let [scale-type (get (meta scale) :scale-type :default)
+        bandwidth (get (meta scale) :bandwidth 0)]
+    (cond (= scale-type :band) (+ (/ bandwidth 2)
+                                  (scale d))
+          :else (scale d))))
 
 (defn left-y-axis [scale]
   (let [color (get (meta scale) :color "#000")
@@ -162,7 +177,7 @@
              :stroke-width "1"
              :fill         "none"
              :d            (str "M-6," (apply max range) ".5 H0.5 V0.5 H-6")}]
-     (map (fn [d] [:g {:transform (translate 0 (scale d))}
+     (map (fn [d] [:g {:transform (translate 0 (tick-pos-scale scale d))}
                    [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
                    [:text {:x           -9
                            :text-anchor "end"
@@ -180,7 +195,7 @@
              :stroke-width "1"
              :fill         "none"
              :d            (str "M6," (apply max range) ".5 H0.5 V0.5 H6")}]
-     (map (fn [d] [:g {:transform (translate 0 (scale d))}
+     (map (fn [d] [:g {:transform (translate 0 (tick-pos-scale scale d))}
                    [:line {:stroke color :x2 6 :y1 0.5 :y2 0.5}]
                    [:text {:x           9
                            :text-anchor "start"
@@ -198,7 +213,7 @@
              :stroke-width "1"
              :fill         "none"
              :d            (str "M0.5,6 V0.5 H" (apply max range) ".5 V6")}]
-     (map (fn [d] [:g {:transform (translate (scale d) 0)}
+     (map (fn [d] [:g {:transform (translate (tick-pos-scale scale d) 0)}
                    [:line {:stroke color :x1 0.5 :x2 0.5 :y2 6}]
                    [:text {:x           0.5
                            :text-anchor "middle"
@@ -216,7 +231,7 @@
              :stroke-width "1"
              :fill         "none"
              :d            (str "M0.5,-6 V0.5 H" (apply max range) ".5 V-6")}]
-     (map (fn [d] [:g {:transform (translate (scale d) 0)}
+     (map (fn [d] [:g {:transform (translate (tick-pos-scale scale d) 0)}
                    [:line {:stroke color :x1 0.5 :x2 0.5 :y2 -6}]
                    [:text {:x           0.5
                            :text-anchor "middle"
@@ -273,3 +288,9 @@
               :font-size          "14px"
               :font-weight        "normal"}
        text]])
+
+(defn svg-attrs
+  [width height margin]
+  {:width  (+ (:left margin) (:right margin) width)
+   :height (+ (:top margin) (:bottom margin) height)
+   :xmlns  "http://www.w3.org/2000/svg"})

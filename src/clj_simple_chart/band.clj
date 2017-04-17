@@ -13,10 +13,10 @@
     padding-inner :padding-inner
     padding-outer :padding-outer
     align         :align
-    :or {rng [0 1]
-         padding-inner 0
-         padding-outer 0
-         align 0.5}
+    :or           {rng           [0 1]
+                   padding-inner 0
+                   padding-outer 0
+                   align         0.5}
     :as           all}]
   (let [start (first rng)
         stop (second rng)
@@ -29,8 +29,8 @@
                     (- stop start (* step (- n padding-inner)))))
         bandwidth (Math/abs (.doubleValue (* step (- 1 padding-inner))))
         values (mapv (fn [i] (+ start (* i step))) (range 0 n))
-        mapp (zipmap domain values)]
-    (with-meta (fn [x] (get mapp x))
+        mapp (zipmap (map #(.doubleValue %) domain) values)]
+    (with-meta (fn [x] (get mapp (.doubleValue x)))
                (-> all
                    (assoc :bandwidth bandwidth)
                    (assoc :scale-type :band)))))
