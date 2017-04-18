@@ -20,3 +20,12 @@
       (is (= (shrinking-range 3) 25.0))
       (is (= (shrinking-range 4) 0.0)))))
 
+(deftest band-round-test
+  (testing "Band round test"
+    (let [s (scale-band {:domain [1 2 3]
+                         :round  true
+                         :range  [0 100]
+                         })]
+      (is (= (s 1) 1.0))
+      (is (= (s 2) 34.0))
+      (is (= (s 3) 67.0)))))
