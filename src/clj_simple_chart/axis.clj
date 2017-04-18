@@ -16,10 +16,12 @@
           (format (str "%." (number-of-decimals scale) "f") v))))
 
 (defn ticks-for-scale [scale]
-  (let [domain (:domain (meta scale))
+  (let [scale-type (:scale-type (meta scale))
+        domain (:domain (meta scale))
         num-ticks (get (meta scale) :ticks 10)
         tiks (ticks/ticks (first domain) (last domain) num-ticks)]
-    tiks))
+    (cond (= :band scale-type) domain
+          :else tiks)))
 
 (defn tick-pos-scale [scale d]
   (let [scale-type (get (meta scale) :scale-type :default)
