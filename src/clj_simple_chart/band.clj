@@ -30,7 +30,12 @@
         bandwidth (Math/abs (.doubleValue (* step (- 1 padding-inner))))
         values (mapv (fn [i] (+ start (* i step))) (range 0 n))
         mapp (zipmap (map #(.doubleValue %) domain) values)]
-    (with-meta (fn [x] (get mapp (.doubleValue x)))
+    (with-meta (fn [x]
+                 (let [v (get mapp (.doubleValue x) ::none)]
+                   (if (not= v ::none)
+                     v
+                     (throw (ex-info "Input value for scale band is not in scale's domain"
+                                     {:value (.doubleValue x)})))))
                (-> all
                    (assoc :bandwidth bandwidth)
                    (assoc :scale-type :band)))))
