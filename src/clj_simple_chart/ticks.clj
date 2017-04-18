@@ -2,6 +2,7 @@
 
 ; The following code is ported from d3-array:
 ; Original source: https://github.com/d3/d3-array/blob/master/src/ticks.js
+; 04cf783
 
 (def e10 (Math/sqrt 50))
 (def e5 (Math/sqrt 10))
