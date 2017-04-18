@@ -10,7 +10,10 @@
           :else 2)))
 
 (defn scale-format [scale v]
-  (format (str "%." (number-of-decimals scale) "f") v))
+  (let [scale-type (:scale-type (meta scale))]
+    (cond (= :band scale-type) v
+          (= :linear scale-type)
+          (format (str "%." (number-of-decimals scale) "f") v))))
 
 (defn ticks-for-scale [scale]
   (let [domain (:domain (meta scale))
@@ -43,9 +46,9 @@
      (map (fn [d] [:g {:transform (core/translate 0 (tick-pos-scale scale d))}
                    [:line {:stroke color :x2 -6 :y1 0.5 :y2 0.5}]
                    (when grid
-                     [:line {:stroke color
+                     [:line {:stroke         color
                              :stroke-opacity 0.2
-                             :x2 width :y1 0.5 :y2 0.5}])
+                             :x2             width :y1 0.5 :y2 0.5}])
                    [:text (merge text-axis-properties
                                  {:x           -9
                                   :text-anchor "end"

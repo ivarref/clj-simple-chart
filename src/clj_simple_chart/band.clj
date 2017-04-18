@@ -41,7 +41,7 @@
                  (let [v (get mapp (.doubleValue x) ::none)]
                    (if (not= v ::none)
                      v
-                     (throw (ex-info "Input value for scale band is not in scale's domain"
+                     (throw (ex-info (str "Input value >" x "< for scale band is not in scale's domain")
                                      {:value (.doubleValue x)})))))
                (-> all
                    (assoc :bandwidth bandwidth)
