@@ -18,8 +18,9 @@
                    padding-outer 0
                    align         0.5}
     :as           all}]
-  (let [start (first rng)
-        stop (second rng)
+  (let [start (apply min rng)
+        reverse-values (apply > rng)
+        stop (apply max rng)
         n (count domain)
         step (/ (- stop start)
                 (max 1 (+ (* 2 padding-outer)
@@ -27,8 +28,9 @@
         start (+ start
                  (* align
                     (- stop start (* step (- n padding-inner)))))
-        bandwidth (Math/abs (.doubleValue (* step (- 1 padding-inner))))
+        bandwidth (.doubleValue (* step (- 1 padding-inner)))
         values (mapv (fn [i] (+ start (* i step))) (range 0 n))
+        values (if reverse-values (reverse values) values)
         mapp (zipmap (map #(.doubleValue %) domain) values)]
     (with-meta (fn [x]
                  (let [v (get mapp (.doubleValue x) ::none)]
