@@ -8,6 +8,6 @@
                  [org.testfx/openjfx-monocle "1.8.0_20"]
                  [digest "1.4.5"]
                  [com.vdurmont/emoji-java "3.2.0"]]
-  :aot [clj-simple-chart.core]
+  :aot [clj-simple-chart.jfx]
   :main clj-simple-chart.exp
   :profiles {:uberjar {:aot :all}})
