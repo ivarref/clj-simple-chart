@@ -1,4 +1,4 @@
-(ns clj-simple-chart.band)
+(ns clj-simple-chart.ordinal)
 
 ; based on
 ; https://github.com/d3/d3-scale/blob/master/src/band.js

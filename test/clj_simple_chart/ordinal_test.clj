@@ -1,6 +1,6 @@
 (ns clj-simple-chart.ordinal-test
   (:require [clojure.test :refer :all]
-            [clj-simple-chart.band :refer :all]))
+            [clj-simple-chart.ordinal :refer :all]))
 
 (deftest ordinal-test
   (testing "Ordinal scales 1"
