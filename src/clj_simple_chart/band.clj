@@ -7,7 +7,7 @@
 ; var s = require('d3-scale');
 ; var x = s.scaleBand().domain([1, 2, 3]).range([0, 100]);
 
-(defn scale-band
+(defn scale-ordinal
   [{domain        :domain
     rng           :range
     padding-inner :padding-inner
