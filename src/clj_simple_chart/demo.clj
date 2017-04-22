@@ -1,9 +1,7 @@
 (ns clj-simple-chart.demo
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.rect :as rect]
-            [clj-simple-chart.ordinal :refer :all]
-            [clj-simple-chart.axis :refer :all]
-            [clj-simple-chart.linear :refer :all]))
+            [clj-simple-chart.axis :refer :all]))
 
 (def margin {:top 60 :bottom 40 :left 40 :right 40})
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
@@ -15,14 +13,13 @@
                :height        height
                :domain        (range 1990 (inc 1993) 1)
                :padding-inner 0.1
-               :padding-outer 0.1
-               :range         [0 width]}))
+               :padding-outer 0.1}))
 
-(def y (scale-linear {:domain [0 100]
-                      :ticks  5
-                      :grid   true
-                      :width  width
-                      :range  [height 0]}))
+(def y (scale {:type   :linear
+               :axis   :y
+               :width  width
+               :height height
+               :domain [0 100]}))
 
 (def rect (partial rect/vertical-rect x y))
 

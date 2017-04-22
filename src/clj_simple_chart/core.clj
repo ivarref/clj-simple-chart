@@ -1,10 +1,7 @@
 (ns clj-simple-chart.core
-  (:gen-class
-    :extends javafx.application.Application)
-  (:require [hiccup.core :as hiccup]
-            [digest :as digest]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [clj-simple-chart.jfx :refer (render)]
+            [clj-simple-chart.scale.core :refer [scale]]
             [clj-simple-chart.ticks :as ticks]))
 
 (defn svg-attrs
@@ -15,14 +12,6 @@
 
 (defn translate [x y]
   (str "translate(" x "," y ")"))
-
-(defn domain
-  [scale]
-  (get (meta scale) :domain))
-
-(defn scale-range
-  [scale]
-  (get (meta scale) :range))
 
 (defn path [points]
   (str "M"
@@ -53,4 +42,3 @@
               :font-size          "14px"
               :font-weight        "normal"}
        text]])
-
