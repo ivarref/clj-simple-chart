@@ -7,7 +7,7 @@
 
 (def x (scale {:type          :ordinal
                :axis          :x
-               :orientation   :both
+               :orientation   :bottom
                :width         width
                :height        height
                :domain        (range 1990 (inc 1995) 1)
@@ -17,7 +17,7 @@
 (def y (scale {:type        :linear
                :axis        :y
                :grid        true
-               :orientation :both
+               :orientation :left
                :ticks       5
                :width       width
                :height      height

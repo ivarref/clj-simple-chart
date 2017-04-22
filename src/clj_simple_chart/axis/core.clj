@@ -8,7 +8,9 @@
   {:font-family "sans-serif"
    :font-size   "12px"})
 
-(defmulti center-pos (fn [scale v] (:type scale)))
+(def scale-and-argument (fn [scale v] (:type scale)))
+
+(defmulti center-pos scale-and-argument)
 
 (defmethod center-pos :ordinal
   [scale v]
@@ -18,6 +20,24 @@
 (defmethod center-pos :linear
   [scale v]
   (double ((:point-fn scale) v)))
+
+(defmulti frmt scale-and-argument)
+
+(defmethod frmt :ordinal
+  [scale v]
+  v)
+
+;;;; TODO: How does d3 do this?
+(defn number-of-decimals [scale]
+  (let [domain (:domain scale)
+        domain-diff (Math/abs (apply - domain))]
+    (cond (>= domain-diff 8) 0
+          (>= domain-diff 1) 1
+          :else 2)))
+
+(defmethod frmt :linear
+  [scale v]
+  (format (str "%." (number-of-decimals scale) "f") v))
 
 (defn render-x-axis [scale sign dy]
   (let [color (get scale :color "#000")
@@ -42,7 +62,7 @@
                                   :fill        color
                                   :dy          dy
                                   :y           (* sign 9)})
-                    (str d)]]) (ticks scale))]))
+                    (frmt scale d)]]) (ticks scale))]))
 
 (defn render-y-axis [scale sign text-anchor]
   (let [color (get scale :color "#000")
@@ -67,7 +87,7 @@
                                   :fill        color
                                   :dy          ".32em"
                                   :y           0.5})
-                    (str d)]]) (ticks scale))]))
+                    (frmt scale d)]]) (ticks scale))]))
 
 (defmulti render-axis (juxt :axis :orientation))
 
