@@ -24,7 +24,7 @@
                :height      height
                :domain      [0 100]}))
 
-(def rect (partial rect/vertical-rect x y))
+(def rect (rect/scaled-rect x y))
 
 (defn diagram []
   [:svg (svg-attrs width height margin)
@@ -33,8 +33,10 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (render-axis y)
     (render-axis x)
-    (rect {:x 1990 :h 20})
-    (rect {:x 1991 :h 35})
+    (rect [{:x 1990 :h 30 :fill "red"}
+           {:x 1990 :h 20 :fill "green"}
+           {:x 1990 :h 10 :fill "blue"}])
+    #_(rect {:x 1991 :h 35})
     ;[:g (left-y-axis y)]
     ;[:g {:transform (translate width 0)} (right-y-axis y)]
     ;(rect {:x 1990 :h 5})

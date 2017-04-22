@@ -1,6 +1,11 @@
 (ns clj-simple-chart.rect
   (:require [clj-simple-chart.point :refer [point]]))
 
+(defn stack-coll [coll]
+  (reductions
+    (fn [{h :h y :y} new]
+      (update new :y #(+ h (or y 0.0) (or % 0.0)))) coll))
+
 (defn vertical-rect
   [xscale yscale {px     :x
                   py     :y
@@ -29,3 +34,14 @@
                 :fill   fill
                 :style  "shape-rendering:crispEdges;"
                 :width  (:bandwidth xscale)}]))))
+
+(defn rect-or-stacked [xscale yscale inp]
+  (if (or (list? inp) (vector? inp))
+    [:g (map (partial vertical-rect xscale yscale) (stack-coll inp))]
+    (vertical-rect xscale yscale inp)))
+
+(defmulti scaled-rect (fn [x y] [(:type x) (:type y)]))
+
+(defmethod scaled-rect [:ordinal :linear]
+  [x y]
+  (partial rect-or-stacked x y))
