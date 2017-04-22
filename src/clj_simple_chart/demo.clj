@@ -10,7 +10,7 @@
                :orientation   :bottom
                :width         width
                :height        height
-               :domain        (range 1990 (inc 1995) 1)
+               :domain        ["cats" "dogs"]
                :padding-inner 0.1
                :padding-outer 0.1}))
 

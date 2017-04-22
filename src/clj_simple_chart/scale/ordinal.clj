@@ -8,6 +8,9 @@
 ; var s = require('d3-scale');
 ; var x = s.scaleBand().domain([1, 2, 3]).range([0, 100]);
 
+(defn double-if-number [x]
+  (if (number? x) (double x) x))
+
 (defn scale-ordinal
   [{domain        :domain
     rng           :range
@@ -27,18 +30,18 @@
         start (+ start
                  (* align
                     (- stop start (* step (- n padding-inner)))))
-        bandwidth (.doubleValue (* step (- 1 padding-inner)))
+        bandwidth (double (* step (- 1 padding-inner)))
         start (if round (Math/round start) start)
         bandwidth (if round (Math/round bandwidth) bandwidth)
         values (mapv (fn [i] (+ start (* i step))) (range 0 n))
         values (if reverse-values (reverse values) values)
-        mapp (zipmap (map #(.doubleValue %) domain) values) ;;; TODO: Support domain of string
+        mapp (zipmap (map #(double-if-number %) domain) values) ;;; TODO: Support domain of string
         point-fn (fn [x]
-                   (let [v (get mapp (.doubleValue x) ::none)]
+                   (let [v (get mapp (double-if-number x) ::none)]
                      (if (not= v ::none)
                        v
                        (throw (ex-info (str "Input value >" x "< for scale band is not in scale's domain")
-                                       {:value (.doubleValue x)})))))]
+                                       {:value (double-if-number x)})))))]
     (merge config
            {:bandwidth bandwidth
             :point-fn  point-fn})))
