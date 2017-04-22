@@ -19,7 +19,7 @@
   (let [scale-type (:scale-type (meta scale))
         domain (:domain (meta scale))
         num-ticks (get (meta scale) :ticks 10)
-        tiks (ticks/ticks (first domain) (last domain) num-ticks)]
+        tiks (ticks/linear-ticks (first domain) (last domain) num-ticks)]
     (cond (= :band scale-type) domain
           :else tiks)))
 

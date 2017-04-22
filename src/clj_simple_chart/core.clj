@@ -2,8 +2,7 @@
   (:require [clojure.string :as string]
             [clj-simple-chart.jfx :as jfx]
             [clj-simple-chart.scale.core :as scale-core]
-            [clj-simple-chart.axis.core :as axis-core]
-            [clj-simple-chart.ticks :as ticks]))
+            [clj-simple-chart.axis.core :as axis-core]))
 
 (def scale scale-core/scale)
 

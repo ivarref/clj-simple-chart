@@ -1,5 +1,5 @@
 (ns clj-simple-chart.axis.core
-  (:require [clj-simple-chart.ticks :as tiks]))
+  (:require [clj-simple-chart.axis.ticks :refer [ticks]]))
 
 (defn translate [x y]
   (str "translate(" x "," y ")"))
@@ -7,18 +7,6 @@
 (def text-axis-properties
   {:font-family "sans-serif"
    :font-size   "12px"})
-
-(defmulti ticks :type)
-
-(defmethod ticks :ordinal
-  [scale]
-  (:domain scale))
-
-(defmethod ticks :linear
-  [scale]
-  (tiks/ticks (first (:domain scale))
-              (last (:domain scale))
-              (get scale :ticks 10)))
 
 (defmulti center-pos (fn [scale v] (:type scale)))
 
