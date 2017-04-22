@@ -47,7 +47,7 @@
                      [:line {:stroke         color
                              :stroke-opacity 0.2
                              :y2             (* neg-sign (:height scale))
-                             :x1 0.5 :x2 0.5}])
+                             :x1             0.5 :x2 0.5}])
                    [:text (merge text-axis-properties
                                  {:x           0.5
                                   :text-anchor "middle"
@@ -72,7 +72,7 @@
                      [:line {:stroke         color
                              :stroke-opacity 0.2
                              :x2             (* neg-sign (:width scale))
-                             :y1 0.5 :y2 0.5}])
+                             :y1             0.5 :y2 0.5}])
                    [:text (merge text-axis-properties
                                  {:x           (* sign 9)
                                   :text-anchor text-anchor
@@ -100,7 +100,7 @@
 
 (defmethod render-axis [:x :bottom] [scale]
   [:g {:transform (translate 0 (:height scale))}
-       (render-x-axis scale 1 ".71em")])
+   (render-x-axis scale 1 ".71em")])
 
 (defmethod render-axis [:x :top] [scale]
   [:g {:transform (translate 0 0)}
