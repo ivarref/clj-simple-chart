@@ -29,6 +29,8 @@
   [scale v]
   (format (str "%." (number-of-decimals scale) "f") v))
 
+(def grid-stroke-opacity 0.25)
+
 (defn render-x-axis [scale sign dy]
   (let [color (get scale :color "#000")
         rng (:range scale)
@@ -43,7 +45,7 @@
                    [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
                    (when (:grid scale)
                      [:line {:stroke         color
-                             :stroke-opacity 0.2
+                             :stroke-opacity grid-stroke-opacity
                              :y2             (* neg-sign (:height scale))
                              :x1             0.5 :x2 0.5}])
                    [:text (merge text-axis-properties
@@ -68,7 +70,7 @@
                    [:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
                    (when (:grid scale)
                      [:line {:stroke         color
-                             :stroke-opacity 0.2
+                             :stroke-opacity grid-stroke-opacity
                              :x2             (* neg-sign (:width scale))
                              :y1             0.5 :y2 0.5}])
                    [:text (merge text-axis-properties

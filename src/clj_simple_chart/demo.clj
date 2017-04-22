@@ -36,6 +36,15 @@
     (rect [{:x 1990 :h 30 :fill "red"}
            {:x 1990 :h 20 :fill "green"}
            {:x 1990 :h 10 :fill "blue"}])
+    (rect [{:x 1991 :h 10 :fill "red"}
+           {:x 1991 :h 10 :fill "green"}
+           {:x 1991 :h 10 :fill "blue"}])
+    (rect [{:x 1992 :h 15 :fill "red"}
+           {:x 1992 :h 17 :fill "green"}
+           {:x 1992 :h 15 :fill "blue"}])
+    (rect [{:x 1993 :h 25 :fill "red"}
+           {:x 1993 :h 19 :fill "green"}
+           {:x 1993 :h 19 :fill "blue"}])
     #_(rect {:x 1991 :h 35})
     ;[:g (left-y-axis y)]
     ;[:g {:transform (translate width 0)} (right-y-axis y)]
