@@ -12,3 +12,6 @@
 (defmethod center-point :linear
   [scale v]
   (double ((:point-fn scale) v)))
+
+(defn point [scale v]
+  (double ((:point-fn scale) v)))

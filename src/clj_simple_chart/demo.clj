@@ -1,5 +1,6 @@
 (ns clj-simple-chart.demo
-  (:require [clj-simple-chart.core :refer :all]))
+  (:require [clj-simple-chart.core :refer :all]
+            [clj-simple-chart.rect :as rect]))
 
 (def margin {:top 75 :bottom 40 :left 40 :right 40})
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
@@ -10,7 +11,7 @@
                :orientation   :bottom
                :width         width
                :height        height
-               :domain        ["cats" "dogs"]
+               :domain        [1990 1991 1992 1993]
                :padding-inner 0.1
                :padding-outer 0.1}))
 
@@ -23,7 +24,7 @@
                :height      height
                :domain      [0 100]}))
 
-#_(def rect (partial rect/vertical-rect x y))
+(def rect (partial rect/vertical-rect x y))
 
 (defn diagram []
   [:svg (svg-attrs width height margin)
@@ -32,6 +33,8 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (render-axis y)
     (render-axis x)
+    (rect {:x 1990 :h 20})
+    (rect {:x 1991 :h 35})
     ;[:g (left-y-axis y)]
     ;[:g {:transform (translate width 0)} (right-y-axis y)]
     ;(rect {:x 1990 :h 5})

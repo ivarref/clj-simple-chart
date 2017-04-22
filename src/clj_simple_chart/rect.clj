@@ -1,5 +1,5 @@
 (ns clj-simple-chart.rect
-  (:require [clj-simple-chart.core :refer :all]))
+  (:require [clj-simple-chart.point :refer [point]]))
 
 (defn vertical-rect
   [xscale yscale {px     :x
@@ -7,25 +7,25 @@
                   height :h
                   fill   :fill
                   :as    all
-                  :or    {py   (first (domain yscale))
+                  :or    {py   (first (:domain yscale))
                           fill "red"}}]
-  (let [svg-natural-order (apply < (scale-range yscale))]
+  (let [svg-natural-order (apply < (:range yscale))]
     (if svg-natural-order
-      (let [bottom (first (scale-range yscale))
-            h (- (yscale height) bottom)
-            yy (yscale py)]
-        [:rect {:x      (.doubleValue (xscale px))
-                :y      (.doubleValue yy)
-                :height (.doubleValue h)
+      (let [bottom (first (:range yscale))
+            h (- (point yscale height) bottom)
+            yy (point yscale py)]
+        [:rect {:x      (point xscale px)
+                :y      (double yy)
+                :height (double h)
                 :fill   fill
                 :style  "shape-rendering:crispEdges;"
-                :width  (get (meta xscale) :bandwidth)}])
-      (let [top (first (scale-range yscale))
-            h (- top (yscale height))
-            yy (- (yscale py) h)]
-        [:rect {:x      (.doubleValue (xscale px))
-                :y      (.doubleValue yy)
-                :height (.doubleValue h)
+                :width  (:bandwidth xscale)}])
+      (let [top (first (:range yscale))
+            h (- top (point yscale height))
+            yy (- (point yscale py) h)]
+        [:rect {:x      (point xscale px)
+                :y      (double yy)
+                :height (double h)
                 :fill   fill
                 :style  "shape-rendering:crispEdges;"
-                :width  (get (meta xscale) :bandwidth)}]))))
+                :width  (:bandwidth xscale)}]))))
