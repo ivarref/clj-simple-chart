@@ -1,8 +1,11 @@
 (ns clj-simple-chart.core
   (:require [clojure.string :as string]
-            [clj-simple-chart.jfx :refer (render)]
-            [clj-simple-chart.scale.core :refer [scale]]
+            [clj-simple-chart.jfx :as jfx]
+            [clj-simple-chart.scale.core :as scale-core]
             [clj-simple-chart.ticks :as ticks]))
+
+(def scale scale-core/scale)
+(def render jfx/render)
 
 (defn svg-attrs
   [width height margin]
