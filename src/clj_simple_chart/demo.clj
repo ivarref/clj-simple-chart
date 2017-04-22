@@ -10,7 +10,6 @@
                :orientation   :both
                :width         width
                :height        height
-               :grid          true
                :domain        (range 1990 (inc 1995) 1)
                :padding-inner 0.1
                :padding-outer 0.1}))
@@ -19,6 +18,7 @@
                :axis        :y
                :grid        true
                :orientation :both
+               :ticks       5
                :width       width
                :height      height
                :domain      [0 100]}))

@@ -24,31 +24,30 @@
                                            :else 1)))))
 
 (defn linear-ticks
-  ([start stop] (linear-ticks start stop 10))
-  ([start stop count]
-   (if (< stop start)
-     (reverse (linear-ticks stop start count))
-     (let [step (tick-increment start stop count)]
-       (cond (or (Double/isInfinite step) (= 0 step)) []
-             (> step 0)
-             (let [sstart (Math/ceil (/ start step))
-                   sstop (Math/floor (/ stop step))
-                   n (Math/ceil (inc (- sstop sstart)))]
-               (mapv #(* (+ sstart %) step) (range 0 n)))
-             :else
-             (let [sstart (Math/floor (* start step))
-                   sstop (Math/ceil (* stop step))
-                   n (Math/ceil (inc (- sstart sstop)))]
-               (mapv #(/ (- sstart %) step) (range 0 n))))))))
+  [start stop count]
+  (if (< stop start)
+    (reverse (linear-ticks stop start count))
+    (let [step (tick-increment start stop count)]
+      (cond (or (Double/isInfinite step) (= 0 step)) []
+            (> step 0)
+            (let [sstart (Math/ceil (/ start step))
+                  sstop (Math/floor (/ stop step))
+                  n (Math/ceil (inc (- sstop sstart)))]
+              (mapv #(* (+ sstart %) step) (range 0 n)))
+            :else
+            (let [sstart (Math/floor (* start step))
+                  sstop (Math/ceil (* stop step))
+                  n (Math/ceil (inc (- sstart sstop)))]
+              (mapv #(/ (- sstart %) step) (range 0 n)))))))
 
 (defmulti ticks :type)
-
-(defmethod ticks :ordinal
-  [scale]
-  (:domain scale))
 
 (defmethod ticks :linear
   [scale]
   (linear-ticks (first (:domain scale))
                 (last (:domain scale))
                 (get scale :ticks 10)))
+
+(defmethod ticks :ordinal
+  [scale]
+  (:domain scale))
