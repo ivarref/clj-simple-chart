@@ -2,10 +2,16 @@
   (:require [clojure.string :as string]
             [clj-simple-chart.jfx :as jfx]
             [clj-simple-chart.scale.core :as scale-core]
+            [clj-simple-chart.axis.core :as axis-core]
             [clj-simple-chart.ticks :as ticks]))
 
 (def scale scale-core/scale)
-(def render jfx/render)
+
+(defn render [& args]
+  (apply jfx/render args))
+
+(defn render-axis [& args]
+  (apply axis-core/render-axis args))
 
 (defn svg-attrs
   [width height margin]
