@@ -1,5 +1,6 @@
 (ns clj-simple-chart.axis.core
-  (:require [clj-simple-chart.axis.ticks :refer [ticks]]))
+  (:require [clj-simple-chart.point :refer [center-point]]
+            [clj-simple-chart.axis.ticks :refer [ticks]]))
 
 (defn translate [x y]
   (str "translate(" x "," y ")"))
@@ -9,17 +10,6 @@
    :font-size   "12px"})
 
 (def scale-and-argument (fn [scale v] (:type scale)))
-
-(defmulti center-pos scale-and-argument)
-
-(defmethod center-pos :ordinal
-  [scale v]
-  (double (+ (/ (:bandwidth scale) 2)
-             ((:point-fn scale) v))))
-
-(defmethod center-pos :linear
-  [scale v]
-  (double ((:point-fn scale) v)))
 
 (defmulti frmt scale-and-argument)
 
@@ -49,7 +39,7 @@
              :stroke-width "1"
              :fill         "none"
              :d            (str "M0.5," sign-char "6 V0.5 H" (int (apply max rng)) ".5 V" sign-char "6")}]
-     (map (fn [d] [:g {:transform (translate (center-pos scale d) 0)}
+     (map (fn [d] [:g {:transform (translate (center-point scale d) 0)}
                    [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
                    (when (:grid scale)
                      [:line {:stroke         color
@@ -74,7 +64,7 @@
              :stroke-width "1"
              :fill         "none"
              :d            (str "M" sign-char "6," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "6")}]
-     (map (fn [d] [:g {:transform (translate 0 (center-pos scale d))}
+     (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
                    [:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
                    (when (:grid scale)
                      [:line {:stroke         color
