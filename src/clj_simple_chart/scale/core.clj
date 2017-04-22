@@ -36,7 +36,7 @@
 
 (def ordinal-defaults {:padding-inner 0.0
                        :padding-outer 0.0
-                       :align         0.0
+                       :align         0.5
                        :round         false
                        :reverse       false})
 
