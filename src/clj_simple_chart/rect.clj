@@ -48,11 +48,15 @@
                            :axis          :x
                            :orientation   (:orientation xscale)
                            :padding-inner 0.0}
-                          (get xscale :stack-opts {})))]
+                          (get xscale :stack-opts {})))
+          sd-to-fill (zipmap (:sub-domain xscale) (:fill xscale))]
       [:g
        (map (fn [item]
               [:g {:transform (str "translate(" (point xscale (:x item)) ",0)")}
-               (rect-or-stacked x yscale (assoc item :x (:c item)))]) inp)])
+               (rect-or-stacked x yscale
+                                (-> item
+                                    (assoc :x (:c item))
+                                    (update :fill #(or % (get sd-to-fill (:c item))))))]) inp)])
     :else [:g (map (partial vertical-rect xscale yscale) (stack-coll inp))]))
 
 (defmulti scaled-rect (fn [x y] [(:type x) (:type y)]))
