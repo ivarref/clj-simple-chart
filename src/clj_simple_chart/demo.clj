@@ -13,8 +13,7 @@
                :height        height
                :domain        [1990 1991 1992 1993]
                :sub-domain    ["cats" "dogs" "birds"]
-               :fill          ["green" "blue" "red"]
-               :stack         :sideways
+               :fill          ["red" "green" "blue"]
                :stack-opts    {:padding-inner 0.1}
                :padding-inner 0.2
                :padding-outer 0.1}))
@@ -37,9 +36,9 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (render-axis y)
     (render-axis x)
-    (rect [{:x 1990 :c "birds" :h 55}
-           {:x 1990 :c "dogs" :h 35}
-           {:x 1990 :c "cats" :h 25}])]])
+    (rect [{:x 1990 :c "dogs" :h 35}
+           {:x 1990 :c "cats" :h 25}
+           {:x 1990 :c "birds" :h 25}])]])
 
 (defn render-self []
   (render "hello.svg" (diagram)))

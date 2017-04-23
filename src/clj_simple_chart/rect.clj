@@ -36,6 +36,19 @@
                 :style  "shape-rendering:crispEdges;"
                 :width  (:bandwidth xscale)}]))))
 
+(defn update-fill-color [xscale item]
+  (cond
+    (and (:sub-domain xscale) (:fill xscale))
+    (update item :fill #(or % (get (zipmap (:sub-domain xscale) (:fill xscale)) (:c item))))
+    :else item))
+
+(defn sort-by-sub-domain [xscale inp]
+  (if-let [sub-domain (:sub-domain xscale)]
+    (let [rank (zipmap sub-domain (range 0 (count sub-domain)))
+          cmp-fn (fn [a b] (< (get rank (:c a)) (get rank (:c b))))]
+      (sort cmp-fn inp))
+    inp))
+
 (defn rect-or-stacked [xscale yscale inp]
   (cond
     (not (or (list? inp) (vector? inp)))
@@ -48,16 +61,14 @@
                            :axis          :x
                            :orientation   (:orientation xscale)
                            :padding-inner 0.0}
-                          (get xscale :stack-opts {})))
-          sd-to-fill (zipmap (:sub-domain xscale) (:fill xscale))]
+                          (get xscale :stack-opts {})))]
       [:g
        (map (fn [item]
               [:g {:transform (str "translate(" (point xscale (:x item)) ",0)")}
-               (rect-or-stacked x yscale
-                                (-> item
-                                    (assoc :x (:c item))
-                                    (update :fill #(or % (get sd-to-fill (:c item))))))]) inp)])
-    :else [:g (map (partial vertical-rect xscale yscale) (stack-coll inp))]))
+               (rect-or-stacked x yscale (update-fill-color xscale (assoc item :x (:c item))))]) inp)])
+    :else [:g (map (partial vertical-rect xscale yscale)
+                   (map (partial update-fill-color xscale)
+                        (stack-coll (sort-by-sub-domain xscale inp))))]))
 
 (defmulti scaled-rect (fn [x y] [(:type x) (:type y)]))
 
