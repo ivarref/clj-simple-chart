@@ -6,6 +6,11 @@
     (fn [{h :h y :y} new]
       (update new :y #(+ h (or y 0.0) (or % 0.0)))) coll))
 
+(defn stack-sideways [coll]
+  (reductions
+    (fn [{h :h y :y} new]
+      (update new :y #(+ h (or y 0.0) (or % 0.0)))) coll))
+
 (defn vertical-rect
   [xscale yscale {px     :x
                   py     :y

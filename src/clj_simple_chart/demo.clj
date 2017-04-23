@@ -15,6 +15,14 @@
                :padding-inner 0.1
                :padding-outer 0.1}))
 
+(def x2 (scale {:type          :ordinal
+                :axis          :x
+                :orientation   :bottom
+                :width         (:bandwidth x)
+                :height        height
+                :domain        ["cats" "dogs" "birds"]
+                :padding-inner 0}))
+
 (def y (scale {:type        :linear
                :axis        :y
                :grid        true
@@ -26,6 +34,8 @@
 
 (def rect (rect/scaled-rect x y))
 
+(def minirect (rect/scaled-rect x2 y))
+
 (defn diagram []
   [:svg (svg-attrs width height margin)
    (title "Some values")
@@ -33,18 +43,34 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (render-axis y)
     (render-axis x)
-    (rect [{:x 1990 :h 30 :fill "red"}
+    [:g {:transform (translate (point x 1990) 0)}
+     (minirect {:x "cats" :h 25 :fill "red"})
+     (minirect {:x "dogs" :h 35 :fill "green"})
+     (minirect {:x "birds" :h 25 :fill "blue"})]
+    [:g {:transform (translate (point x 1991) 0)}
+     (minirect {:x "cats" :h 55 :fill "red"})
+     (minirect {:x "dogs" :h 65 :fill "green"})
+     (minirect {:x "birds" :h 45 :fill "blue"})]
+    [:g {:transform (translate (point x 1992) 0)}
+     (minirect {:x "cats" :h 55 :fill "red"})
+     (minirect {:x "dogs" :h 65 :fill "green"})
+     (minirect {:x "birds" :h 75 :fill "blue"})]
+    [:g {:transform (translate (point x 1993) 0)}
+     (minirect {:x "cats" :h 55 :fill "red"})
+     (minirect {:x "dogs" :h 65 :fill "green"})
+     (minirect {:x "birds" :h 75 :fill "blue"})]
+    #_(rect [{:x 1990 :h 30 :fill "red"}
            {:x 1990 :h 20 :fill "green"}
            {:x 1990 :h 10 :fill "blue"}])
-    (rect [{:x 1991 :h 10 :fill "red"}
-           {:x 1991 :h 10 :fill "green"}
-           {:x 1991 :h 10 :fill "blue"}])
-    (rect [{:x 1992 :h 15 :fill "red"}
-           {:x 1992 :h 17 :fill "green"}
-           {:x 1992 :h 15 :fill "blue"}])
-    (rect [{:x 1993 :h 25 :fill "red"}
-           {:x 1993 :h 19 :fill "green"}
-           {:x 1993 :h 19 :fill "blue"}])
+    ;(rect [{:x 1991 :h 10 :fill "red"}
+    ;       {:x 1991 :h 10 :fill "green"}
+    ;       {:x 1991 :h 10 :fill "blue"}])
+    ;(rect [{:x 1992 :h 15 :fill "red"}
+    ;       {:x 1992 :h 17 :fill "green"}
+    ;       {:x 1992 :h 15 :fill "blue"}])
+    ;(rect [{:x 1993 :h 25 :fill "red"}
+    ;       {:x 1993 :h 19 :fill "green"}
+    ;       {:x 1993 :h 19 :fill "blue"}])
     #_(rect {:x 1991 :h 35})
     ;[:g (left-y-axis y)]
     ;[:g {:transform (translate width 0)} (right-y-axis y)]

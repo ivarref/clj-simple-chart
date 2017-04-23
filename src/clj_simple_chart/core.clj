@@ -1,6 +1,7 @@
 (ns clj-simple-chart.core
   (:require [clojure.string :as string]
             [clj-simple-chart.jfx :as jfx]
+            [clj-simple-chart.point :as ppoint]
             [clj-simple-chart.scale.core :as scale-core]
             [clj-simple-chart.axis.core :as axis-core]))
 
@@ -11,6 +12,9 @@
 
 (defn render-axis [& args]
   (apply axis-core/render-axis args))
+
+(defn point [& args]
+  (apply ppoint/point args))
 
 (defn svg-attrs
   [width height margin]
