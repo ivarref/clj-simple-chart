@@ -54,8 +54,7 @@
     (not (or (list? inp) (vector? inp)))
     (recur xscale yscale [inp])
     (> (count (keys (group-by :p inp))) 1)
-    [:g
-     (map (partial rect-or-stacked xscale yscale) (vals (group-by :p inp)))]
+    [:g (map (partial rect-or-stacked xscale yscale) (vals (group-by :p inp)))]
     (and (:sub-domain xscale) (= :sideways (:stack xscale)))
     (let [x (scale (merge {:type          :ordinal
                            :width         (:bandwidth xscale)
