@@ -8,7 +8,7 @@
       (update new :y #(+ h (or y 0.0) (or % 0.0)))) coll))
 
 (defn vertical-rect
-  [xscale yscale {px     :x
+  [xscale yscale {px     :p
                   py     :y
                   height :h
                   fill   :fill
@@ -53,6 +53,9 @@
   (cond
     (not (or (list? inp) (vector? inp)))
     (recur xscale yscale [inp])
+    (> (count (keys (group-by :p inp))) 1)
+    [:g
+     (map (partial rect-or-stacked xscale yscale) (vals (group-by :p inp)))]
     (and (:sub-domain xscale) (= :sideways (:stack xscale)))
     (let [x (scale (merge {:type          :ordinal
                            :width         (:bandwidth xscale)
@@ -64,8 +67,8 @@
                           (get xscale :stack-opts {})))]
       [:g
        (map (fn [item]
-              [:g {:transform (str "translate(" (point xscale (:x item)) ",0)")}
-               (rect-or-stacked x yscale (update-fill-color xscale (assoc item :x (:c item))))]) inp)])
+              [:g {:transform (str "translate(" (point xscale (:p item)) ",0)")}
+               (rect-or-stacked x yscale (update-fill-color xscale (assoc item :p (:c item))))]) inp)])
     :else [:g (map (partial vertical-rect xscale yscale)
                    (map (partial update-fill-color xscale)
                         (stack-coll (sort-by-sub-domain xscale inp))))]))

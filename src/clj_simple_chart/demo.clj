@@ -14,6 +14,7 @@
                :domain        [1990 1991 1992 1993]
                :sub-domain    ["cats" "dogs" "birds"]
                :fill          ["red" "green" "blue"]
+               :stack         :sideways
                :stack-opts    {:padding-inner 0.1}
                :padding-inner 0.2
                :padding-outer 0.1}))
@@ -29,6 +30,21 @@
 
 (def rect (rect/scaled-rect x y))
 
+(def rects
+  [{:p 1990 :c "dogs" :h 35}
+   {:p 1990 :c "cats" :h 25}
+   {:p 1990 :c "birds" :h 25}
+
+   {:p 1991 :c "cats" :h 25}
+   {:p 1991 :c "dogs" :h 25}
+   {:p 1991 :c "birds" :h 25}
+
+   {:p 1992 :c "birds" :h 55}
+
+   {:p 1993 :c "birds" :h 25}
+   {:p 1993 :c "dogs" :h 25}
+   {:p 1993 :c "cats" :h 25}])
+
 (defn diagram []
   [:svg (svg-attrs width height margin)
    (title "Some values")
@@ -36,9 +52,7 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (render-axis y)
     (render-axis x)
-    (rect [{:x 1990 :c "dogs" :h 35}
-           {:x 1990 :c "cats" :h 25}
-           {:x 1990 :c "birds" :h 25}])]])
+    (rect rects)]])
 
 (defn render-self []
   (render "hello.svg" (diagram)))
