@@ -1,12 +1,8 @@
 (ns clj-simple-chart.rect
-  (:require [clj-simple-chart.point :refer [point]]))
+  (:require [clj-simple-chart.scale.core :refer [scale]]
+            [clj-simple-chart.point :refer [point]]))
 
 (defn stack-coll [coll]
-  (reductions
-    (fn [{h :h y :y} new]
-      (update new :y #(+ h (or y 0.0) (or % 0.0)))) coll))
-
-(defn stack-sideways [coll]
   (reductions
     (fn [{h :h y :y} new]
       (update new :y #(+ h (or y 0.0) (or % 0.0)))) coll))
@@ -41,9 +37,23 @@
                 :width  (:bandwidth xscale)}]))))
 
 (defn rect-or-stacked [xscale yscale inp]
-  (if (or (list? inp) (vector? inp))
-    [:g (map (partial vertical-rect xscale yscale) (stack-coll inp))]
-    (vertical-rect xscale yscale inp)))
+  (cond
+    (not (or (list? inp) (vector? inp)))
+    (recur xscale yscale [inp])
+    (and (:sub-domain xscale) (= :sideways (:stack xscale)))
+    (let [x (scale (merge {:type          :ordinal
+                           :width         (:bandwidth xscale)
+                           :height        (:height xscale)
+                           :domain        (:sub-domain xscale)
+                           :axis          :x
+                           :orientation   (:orientation xscale)
+                           :padding-inner 0.0}
+                          (get xscale :stack-opts {})))]
+      [:g
+       (map (fn [item]
+              [:g {:transform (str "translate(" (point xscale (:x item)) ",0)")}
+               (rect-or-stacked x yscale (assoc item :x (:c item)))]) inp)])
+    :else [:g (map (partial vertical-rect xscale yscale) (stack-coll inp))]))
 
 (defmulti scaled-rect (fn [x y] [(:type x) (:type y)]))
 
