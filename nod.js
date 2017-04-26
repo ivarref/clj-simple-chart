@@ -7,5 +7,5 @@ var base64str = fs.readFileSync('./hello.txt').toString();
 var ab = b64.decode(base64str);
 var font = opentype.parse(ab);
 var path = font.getPath('hello world');
-console.log(Object.keys(font))
-console.log(font.names)
+console.log(path.toPathData)
+// console.log(font.names)
