@@ -9,6 +9,7 @@
                  [commons-io/commons-io "2.5"]
                  [digest "1.4.5"]
                  [base64-clj "0.1.1"]
+                 [org.mozilla/rhino "1.7.7.1"]
                  [com.vdurmont/emoji-java "3.2.0"]]
   :aot [clj-simple-chart.jfx]
   :main clj-simple-chart.exp
