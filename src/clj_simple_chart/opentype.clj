@@ -1,4 +1,4 @@
-(ns clj-simple-chart.rhinoexp
+(ns clj-simple-chart.opentype
   (:require [base64-clj.core :as base64]
             [clojure.core.async :as async])
   (:import (org.mozilla.javascript Context NativeObject)
