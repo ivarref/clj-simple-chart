@@ -7,7 +7,9 @@
            (java.nio.charset StandardCharsets)))
 
 (defonce input (async/chan))
+(defonce exit (async/chan))
 (defonce output (async/chan))
+(defonce exception (async/chan))
 
 (defn js-handle [fn]
   (println "executing stuff in " (Thread/currentThread))
@@ -16,13 +18,20 @@
 (defn js-loop []
   (async/thread (while true
                   (let [fn (async/<!! input)]
-                    (async/>!! output (js-handle fn))))))
+                    (try
+                      (async/>!! output (js-handle fn))
+                      (catch Exception e
+                        (println "error in js-loop ..." (.getMessage e))
+                        (async/>!! exception e)))))))
 
 (defonce js-loop-thread (js-loop))
 
 (defn run-js-thread [f]
   (async/>!! input f)
-  (async/<!! output))
+  (let [[result ch] (async/alts!! [output exception])]
+    (if (= ch exception)
+      (throw result)
+      result)))
 
 ;;; ;;; ;;; STATE
 (defonce cx (atom nil))
@@ -56,46 +65,46 @@
   (when-not @cx (run-js-thread bootstrap-rhino)))
 
 (defn load-font [filename]
-  (when-not (get @fonts filename)
+  (if-not (get @fonts filename)
     (let [font-bytes (FileUtils/readFileToByteArray (File. filename))
           font-b64 (String. (base64/encode-bytes font-bytes))]
       (run-js-thread (fn []
                        (swap! fonts (fn [old-fonts]
                                       (println "loading font" filename)
                                       (assoc old-fonts filename (.call @parsefont @cx @scope @scope (object-array [font-b64])))))))
-      :done)))
+      :done)
+    :already-loaded))
 
-  (defn load-fonts []
-    (bootstrap-rhino-if-needed)
-    (doall (map load-font ["./resources/fonts/Roboto-Black.ttf"
-                           "./resources/fonts/Roboto-Regular.ttf"])))
+(defn load-fonts []
+  (bootstrap-rhino-if-needed)
+  (doall (map load-font ["./resources/fonts/Roboto-Black.ttf"
+                         "./resources/fonts/Roboto-Regular.ttf"])))
 
+;
+;(defn js-to-clj [x]
+;  (zipmap (map keyword (keys x)) (vals x)))
+;
+;
 
-  ;
-  ;(defn js-to-clj [x]
-  ;  (zipmap (map keyword (keys x)) (vals x)))
-  ;
-  ;
-
-  #_(defn get-path
-      [text size]
-      (let [font-bytes (FileUtils/readFileToByteArray (File. "./resources/fonts/Roboto-Black.ttf"))
-            cx (set-lang-version (Context/enter))
-            scope (.initStandardObjects cx)]
-        (load-jvm-npm cx scope)
-        (eval-str cx scope "var opentype = require('./resources/opentype.js');")
-        (eval-str cx scope "var b64 = require('./resources/base64-arraybuffer.js');")
-        (eval-str cx scope (str "var base64 = '" (String. (base64/encode-bytes font-bytes)) "';"))
-        (eval-str cx scope "var ab = b64.decode(base64);")
-        (eval-str cx scope "var font = opentype.parse(ab);")
-        (time (let [font (.get scope "font")
-                    getPath (NativeObject/getProperty font "getPath")
-                    path (.call getPath cx scope font (object-array [text 0 0 size]))
-                    bb-fn (NativeObject/getProperty path "getBoundingBox")
-                    to-path-data-fn (NativeObject/getProperty path "toPathData")
-                    bb (.call bb-fn cx scope path (object-array []))
-                    path (.call to-path-data-fn cx scope path (object-array []))
-                    result {:bounding-box (js-to-clj bb) :path path}]
-                (do result)
-                (Context/exit)
-                result))))
+#_(defn get-path
+    [text size]
+    (let [font-bytes (FileUtils/readFileToByteArray (File. "./resources/fonts/Roboto-Black.ttf"))
+          cx (set-lang-version (Context/enter))
+          scope (.initStandardObjects cx)]
+      (load-jvm-npm cx scope)
+      (eval-str cx scope "var opentype = require('./resources/opentype.js');")
+      (eval-str cx scope "var b64 = require('./resources/base64-arraybuffer.js');")
+      (eval-str cx scope (str "var base64 = '" (String. (base64/encode-bytes font-bytes)) "';"))
+      (eval-str cx scope "var ab = b64.decode(base64);")
+      (eval-str cx scope "var font = opentype.parse(ab);")
+      (time (let [font (.get scope "font")
+                  getPath (NativeObject/getProperty font "getPath")
+                  path (.call getPath cx scope font (object-array [text 0 0 size]))
+                  bb-fn (NativeObject/getProperty path "getBoundingBox")
+                  to-path-data-fn (NativeObject/getProperty path "toPathData")
+                  bb (.call bb-fn cx scope path (object-array []))
+                  path (.call to-path-data-fn cx scope path (object-array []))
+                  result {:bounding-box (js-to-clj bb) :path path}]
+              (do result)
+              (Context/exit)
+              result))))
