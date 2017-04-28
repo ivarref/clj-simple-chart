@@ -112,25 +112,12 @@
                          path-data (.call to-path-data-fn @cx @scope path (object-array []))]
                      path-data))))
 
-#_(defn get-path
-    [text size]
-    (let [font-bytes (FileUtils/readFileToByteArray (File. "./resources/fonts/Roboto-Black.ttf"))
-          cx (set-lang-version (Context/enter))
-          scope (.initStandardObjects cx)]
-      (load-jvm-npm cx scope)
-      (eval-str cx scope "var opentype = require('./resources/opentype.js');")
-      (eval-str cx scope "var b64 = require('./resources/base64-arraybuffer.js');")
-      (eval-str cx scope (str "var base64 = '" (String. (base64/encode-bytes font-bytes)) "';"))
-      (eval-str cx scope "var ab = b64.decode(base64);")
-      (eval-str cx scope "var font = opentype.parse(ab);")
-      (time (let [font (.get scope "font")
-                  getPath (NativeObject/getProperty font "getPath")
-                  path (.call getPath cx scope font (object-array [text 0 0 size]))
-                  bb-fn (NativeObject/getProperty path "getBoundingBox")
-                  to-path-data-fn (NativeObject/getProperty path "toPathData")
-                  bb (.call bb-fn cx scope path (object-array []))
-                  path (.call to-path-data-fn cx scope path (object-array []))
-                  result {:bounding-box (js-to-clj bb) :path path}]
-              (do result)
-              (Context/exit)
-              result))))
+(defn get-bounding-box [fontname text x y size]
+  {:pre [(some #{fontname} (keys font-name-to-font))]}
+  (run-js-thread (fn []
+                   (let [font (get font-name-to-font fontname)
+                         get-path (NativeObject/getProperty font "getPath")
+                         path (.call get-path @cx @scope font (object-array [text x y size]))
+                         bb-fn (NativeObject/getProperty path "getBoundingBox")
+                         bounding-box (.call bb-fn @cx @scope path (object-array []))]
+                     (zipmap (map keyword (keys bounding-box)) (vals bounding-box))))))
