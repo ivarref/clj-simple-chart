@@ -10,6 +10,7 @@
                  [digest "1.4.5"]
                  [base64-clj "0.1.1"]
                  [org.mozilla/rhino "1.7.7.1"]
+                 [org.clojure/core.async "0.3.442"]
                  [com.vdurmont/emoji-java "3.2.0"]]
   :aot [clj-simple-chart.jfx]
   :main clj-simple-chart.exp
