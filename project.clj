@@ -11,6 +11,8 @@
                  [base64-clj "0.1.1"]
                  [org.mozilla/rhino "1.7.7.1"]
                  [org.clojure/core.async "0.3.442"]
+                 [clj-http "2.3.0"]
+                 [org.clojure/data.csv "0.1.3"]
                  [com.vdurmont/emoji-java "3.2.0"]]
   :aot [clj-simple-chart.jfx]
   :main clj-simple-chart.exp
