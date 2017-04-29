@@ -16,6 +16,9 @@
 (defn point [& args]
   (apply ppoint/point args))
 
+(defn center-point [& args]
+  (apply ppoint/center-point args))
+
 (defn svg-attrs
   [width height margin]
   {:width  (+ (:left margin) (:right margin) width)
