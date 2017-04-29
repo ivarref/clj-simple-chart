@@ -3,7 +3,7 @@
             [clj-simple-chart.ncs.goliat :as goliat]
             [clj-simple-chart.rect :as rect]))
 
-(def margin {:top 100 :bottom 40 :left 110 :right 50})
+(def margin {:top 100 :bottom 40 :left 110 :right 40})
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
 (def height (- 400 (:top margin) (:bottom margin)))
 
