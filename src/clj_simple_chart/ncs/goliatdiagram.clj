@@ -12,7 +12,6 @@
 (def x (scale {:type        :linear
                :axis        :x
                :orientation :top
-               :grid        true
                :width       width
                :height      height
                :domain      [0 (apply max (map :fldRecoverableOil data))]}))
@@ -31,7 +30,17 @@
 
 (defn make-rect [{fldName :fldName
                   oil     :fldRecoverableOil}]
-  {:p fldName :h oil})
+  {:p fldName :h oil :fill "steelblue"})
+
+(defn make-text [{fldName :fldName
+                  oil     :fldRecoverableOil}]
+  [:text {:x           (point x oil)
+          :dx          ".20em"
+          :y           (center-point y fldName)
+          :dy          ".32em"
+          :font-family "sans-serif"
+          :font-size   "12px"}
+   oil])
 
 (defn diagram []
   [:svg (svg-attrs width height margin)
@@ -39,15 +48,10 @@
    (sub-title "Dei ti største oljefelta på norsk sokkel, pluss Goliat")
    (sub-sub-title "Opprinneleg utvinnbart, millionar fat")
    [:g {:transform (translate (:left margin) (:top margin))}
-    (render-axis y)
     (render-axis x)
     (rect (mapv make-rect data))
-    #_[:text {:x  (point x (-> data first :fldRecoverableOil))
-            :dx ".15em"
-            :y  (center-point y "Statfjord")
-            :dy ".32em"
-            } "Hello"]
-    ]])
+    (render-axis y)
+    (map make-text data)]])
 
 (defn render-self []
   (render "goliat.svg" (diagram)))
