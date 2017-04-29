@@ -44,7 +44,7 @@
 
 (defn diagram []
   [:svg (svg-attrs width height margin)
-   (title "Goliat - Ein ekte kjempe?")
+   (title "Goliat — Ein ekte kjempe?")
    (sub-title "Dei ti største oljefelta på norsk sokkel, pluss Goliat")
    (sub-sub-title "Opprinneleg utvinnbart, millionar fat")
    [:g {:transform (translate (:left margin) (:top margin))}
