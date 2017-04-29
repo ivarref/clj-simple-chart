@@ -9,8 +9,12 @@
               o
               (dissoc o k))) row (keys row)))
 
+(defn to-mboe [row]
+  (update row :fldRecoverableOil #(Math/round (* 6.29 %))))
+
 (def oil-reserve-data (->> reserve/data-parsed
-                           (map keep-fields-fn)))
+                           (map keep-fields-fn)
+                           (map to-mboe)))
 
 (def goliat (first (filter #(= "GOLIAT" (:fldName %)) oil-reserve-data)))
 
@@ -18,5 +22,6 @@
                               (sort-by :fldRecoverableOil)
                               (take-last 10)
                               (cons goliat)
+                              (sort-by :fldRecoverableOil)
                               (reverse)
                               (vec)))
