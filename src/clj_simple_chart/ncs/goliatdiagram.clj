@@ -3,7 +3,7 @@
             [clj-simple-chart.ncs.goliat :as goliat]
             [clj-simple-chart.rect :as rect]))
 
-(def margin {:top 100 :bottom 40 :left 90 :right 80})
+(def margin {:top 100 :bottom 40 :left 90 :right 20})
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
 (def height (- 400 (:top margin) (:bottom margin)))
 
@@ -40,9 +40,7 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (rect (mapv make-rect data))
     (render-axis y)
-    (render-axis x)
-
-    ]])
+    (render-axis x)]])
 
 (defn render-self []
   (render "goliat.svg" (diagram)))
