@@ -102,6 +102,8 @@
 
 (defonce font-name-to-font (make-font-names-map))
 
+(def roboto-regular (get font-name-to-font "Roboto Regular"))
+
 (defn get-path-data [fontname text x y size]
   {:pre [(some #{fontname} (keys font-name-to-font))]}
   (run-js-thread (fn []

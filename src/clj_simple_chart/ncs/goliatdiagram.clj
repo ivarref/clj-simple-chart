@@ -3,7 +3,7 @@
             [clj-simple-chart.ncs.goliat :as goliat]
             [clj-simple-chart.rect :as rect]))
 
-(def margin {:top 100 :bottom 40 :left 110 :right 40})
+(def margin {:top 100 :bottom 40 :left 110 :right 35})
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
 (def height (- 400 (:top margin) (:bottom margin)))
 
@@ -14,7 +14,7 @@
                :orientation :top
                :width       width
                :height      height
-               :domain      [0 (apply max (map :fldRecoverableOil data))]}))
+               :domain      [0 4000 #_(apply max (map :fldRecoverableOil data))]}))
 
 (def y (scale {:type          :ordinal
                :axis          :y
