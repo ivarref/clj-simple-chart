@@ -1,4 +1,4 @@
-(ns clj-simple-chart.demo
+(ns clj-simple-chart.demo.demo
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.rect :as rect]))
 
@@ -55,4 +55,4 @@
     (rect rects)]])
 
 (defn render-self []
-  (render "hello.svg" (diagram)))
+  (render "demo.svg" (diagram)))
