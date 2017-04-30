@@ -1,6 +1,7 @@
 (ns clj-simple-chart.axis.core
   (:require [clj-simple-chart.point :refer [center-point]]
-            [clj-simple-chart.axis.ticks :refer [ticks]]))
+            [clj-simple-chart.axis.ticks :refer [ticks]]
+            [clj-simple-chart.opentype :as opentype]))
 
 (defn translate [x y]
   (str "translate(" x "," y ")"))
@@ -73,7 +74,13 @@
                              :stroke-opacity grid-stroke-opacity
                              :x2             (* neg-sign (:width scale))
                              :y1             0.5 :y2 0.5}])
-                   [:text (merge text-axis-properties
+                   (opentype/text {:x (* sign 9)
+                                   :dy ".32em"
+                                   :y 0.5
+                                   :text-anchor text-anchor
+                                   :font-size 12
+                                   } (frmt scale d))
+                   #_[:text (merge text-axis-properties
                                  {:x           (* sign 9)
                                   :text-anchor text-anchor
                                   :fill        color
