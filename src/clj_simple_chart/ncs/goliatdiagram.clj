@@ -61,9 +61,13 @@
     (rect (mapv make-rect data))
     (render-axis y)
     (map make-text data)
-    [:g {:transform (translate (- marg (:left margin)) height)} (opentype/text {:dy "2em"} "Kjelde: OD")]
+    [:g {:transform (translate (- (:left margin)) height)}
+     (opentype/text {:dx marg :dy "2em"} "Kjelde: OD")]
     #_[:g {:transform (translate width height)} (opentype/text {:dy "2em" :text-anchor "end"} "@ivarref")]
-    [:g {:transform (translate width height)} (opentype/text {:dy "2em" :text-anchor "end"} "Diagram: Refsdal.Ivar@gmail.com")]]])
+    [:g {:transform (translate (+ (:right margin) width) height)}
+     (opentype/text {:dx (- marg)
+                     :dy "2em" :text-anchor "end"
+                     } "Diagram: Refsdal.Ivar@gmail.com")]]])
 
 (defn render-self []
   (render "goliat.png" "goliat.svg" (diagram)))
