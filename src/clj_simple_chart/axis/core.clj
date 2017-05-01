@@ -6,10 +6,6 @@
 (defn translate [x y]
   (str "translate(" x "," y ")"))
 
-(def text-axis-properties
-  {:font-family "sans-serif"
-   :font-size   "12px"})
-
 (def scale-and-argument (fn [scale v] (:type scale)))
 
 (defmulti frmt scale-and-argument)
@@ -53,15 +49,8 @@
                                    :dy          dy
                                    :y           (* sign 9)
                                    :text-anchor "middle"
-                                   :font-size   12
-                                   } (frmt scale d))
-                   #_[:text (merge text-axis-properties
-                                 {:x           0.5
-                                  :text-anchor "middle"
-                                  :fill        color
-                                  :dy          dy
-                                  :y           (* sign 9)})
-                    (frmt scale d)]]) (ticks scale))]))
+                                   :font-size   12}
+                                  (frmt scale d))]) (ticks scale))]))
 
 (defn render-y-axis [scale sign text-anchor]
   (let [color (get scale :color "#000")
@@ -84,8 +73,8 @@
                                    :dy          ".32em"
                                    :y           0.5
                                    :text-anchor text-anchor
-                                   :font-size   12
-                                   } (frmt scale d))]) (ticks scale))]))
+                                   :font-size   12}
+                                  (frmt scale d))]) (ticks scale))]))
 
 (defmulti render-axis (juxt :axis :orientation))
 
