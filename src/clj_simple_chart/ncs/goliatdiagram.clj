@@ -1,13 +1,23 @@
 (ns clj-simple-chart.ncs.goliatdiagram
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.ncs.goliat :as goliat]
-            [clj-simple-chart.rect :as rect]))
-
-(def margin {:top 100 :bottom 40 :left 110 :right 35})
-(def width (- (/ 1024 2) (:left margin) (:right margin)))
-(def height (- 400 (:top margin) (:bottom margin)))
+            [clj-simple-chart.rect :as rect]
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.axis.core :as axis]))
 
 (def data goliat/top-ten-plus-goliat)
+
+(def domain (map :fldName data))
+
+(def marg 15)
+
+(def margin {:top    100
+             :bottom marg
+             :left   (Math/round (+ marg 6 (axis/domain-max-width domain)))
+             :right  (Math/round (+ marg (/ (axis/domain-max-width ["4000"]) 2)))})
+
+(def width (Math/round (double (- (/ 1024 2) (:left margin) (:right margin)))))
+(def height (Math/round (double (- 400 (:top margin) (:bottom margin)))))
 
 (def x (scale {:type        :linear
                :axis        :x
@@ -18,7 +28,7 @@
 
 (def y (scale {:type          :ordinal
                :axis          :y
-               :domain        (map :fldName data)
+               :domain        domain
                :orientation   :left
                :reverse       true
                :width         width
@@ -34,13 +44,12 @@
 
 (defn make-text [{fldName :fldName
                   oil     :fldRecoverableOil}]
-  [:text {:x           (point x oil)
-          :dx          ".20em"
-          :y           (center-point y fldName)
-          :dy          ".32em"
-          :font-family "sans-serif"
-          :font-size   "12px"}
-   oil])
+  (opentype/text {:x         (point x oil)
+                  :dx        ".20em"
+                  :y         (center-point y fldName)
+                  :dy        ".32em"
+                  :font-size 12}
+                 oil))
 
 (defn diagram []
   [:svg (svg-attrs width height margin)

@@ -24,8 +24,10 @@
   (update row :fldName
           (fn [fldName]
             (string/replace
-              (snake/->Camel_Snake_Case fldName)
-              "_" " "))))
+              (string/replace
+                (snake/->Camel_Snake_Case fldName)
+                "_" " ")
+              "Johan " "J. "))))
 
 (def top-ten-plus-goliat (->> oil-reserve-data
                               (sort-by :fldRecoverableOil)
