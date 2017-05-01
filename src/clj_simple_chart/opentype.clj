@@ -151,7 +151,7 @@
                           dx          0.0
                           dy          0.0
                           text-anchor "start"
-                          font-size   16
+                          font-size   12
                           font-name   "Roboto Regular"}
              } text]
   {:pre [(some #{font-name} (keys font-name-to-font))

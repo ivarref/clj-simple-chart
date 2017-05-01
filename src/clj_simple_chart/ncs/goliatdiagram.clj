@@ -12,7 +12,7 @@
 (def marg 15)
 
 (def margin {:top    100
-             :bottom marg
+             :bottom (+ marg (* 2 12))
              :left   (Math/round (+ marg 6 (axis/domain-max-width domain)))
              :right  (Math/round (+ marg (/ (axis/domain-max-width ["4000"]) 2)))})
 
@@ -60,7 +60,10 @@
     (render-axis x)
     (rect (mapv make-rect data))
     (render-axis y)
-    (map make-text data)]])
+    (map make-text data)
+    [:g {:transform (translate (- marg (:left margin)) height)} (opentype/text {:dy "2em"} "Kjelde: OD")]
+    #_[:g {:transform (translate width height)} (opentype/text {:dy "2em" :text-anchor "end"} "@ivarref")]
+    [:g {:transform (translate width height)} (opentype/text {:dy "2em" :text-anchor "end"} "Diagram: Refsdal.Ivar@gmail.com")]]])
 
 (defn render-self []
   (render "goliat.png" "goliat.svg" (diagram)))
