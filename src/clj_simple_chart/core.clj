@@ -7,6 +7,9 @@
 
 (def scale scale-core/scale)
 
+(defn round [x]
+  (Math/round (double x)))
+
 (defn render [& args]
   (apply jfx/render args))
 

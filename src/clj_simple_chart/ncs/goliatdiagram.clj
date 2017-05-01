@@ -13,11 +13,11 @@
 
 (def margin {:top    100
              :bottom (+ marg (* 2 12))
-             :left   (Math/round (+ marg 6 (axis/domain-max-width domain)))
-             :right  (Math/round (+ marg (/ (axis/domain-max-width ["4000"]) 2)))})
+             :left   (round (+ marg 6 (axis/domain-max-width domain)))
+             :right  (round (+ marg (/ (axis/domain-max-width ["4000"]) 2)))})
 
-(def width (Math/round (double (- 512 (:left margin) (:right margin)))))
-(def height (Math/round (double (- 400 (:top margin) (:bottom margin)))))
+(def width (round (- 512 (:left margin) (:right margin))))
+(def height (round (- 400 (:top margin) (:bottom margin))))
 
 (def x (scale {:type        :linear
                :axis        :x
