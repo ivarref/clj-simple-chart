@@ -1,6 +1,5 @@
 (ns clj-simple-chart.ncs.goliat
   (:require [clj-simple-chart.ncs.reserve :as reserve]
-            [camel-snake-kebab.core :as snake]
             [clojure.string :as string]))
 
 (def keep-fields [:fldName :fldRecoverableOil])
@@ -20,13 +19,19 @@
 
 (def goliat (first (filter #(= "GOLIAT" (:fldName %)) oil-reserve-data)))
 
+(defn decapitalize-s [[f & rest]]
+  (str (.toUpperCase (str f))
+       (.toLowerCase (string/join "" rest))))
+
+(defn decapitalize-str [s]
+  (let [parts (string/split s #" ")]
+    (string/join " " (mapv decapitalize-s parts))))
+
 (defn decapitalize-fieldname [row]
   (update row :fldName
           (fn [fldName]
             (string/replace
-              (string/replace
-                (snake/->Camel_Snake_Case fldName)
-                "_" " ")
+              (decapitalize-str fldName)
               "Johan " "J. "))))
 
 (def top-ten-plus-goliat (->> oil-reserve-data
