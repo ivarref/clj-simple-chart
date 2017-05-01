@@ -14,6 +14,28 @@
   [scale v]
   v)
 
+(def axis-font-properties
+  {:font-size 12
+   :font-name "Roboto Regular"})
+
+(def domain ["Peru" "Iraq" "United States"])
+
+(defn bounding-box-domain [domain]
+  (->> domain
+       (map (fn [txt] (opentype/get-bounding-box (:font-name axis-font-properties)
+                                            txt
+                                            0
+                                            0
+                                            (:font-size axis-font-properties))))
+       (reduce (fn [{ax1 :x1 ax2 :x2 ay1 :y1 ay2 :y2} {bx1 :x1 bx2 :x2 by1 :y1 by2 :y2}]
+                 {:x1 (min ax1 bx1)
+                  :x2 (max ax2 bx2)
+                  :y1 (min ay1 by1)
+                  :y2 (max ay2 by2)}))))
+
+(defn domain-max-width [domain]
+  (:x2 (bounding-box-domain domain)))
+
 ;;;; TODO: How does d3 do this?
 (defn number-of-decimals [scale]
   (let [domain (:domain scale)
