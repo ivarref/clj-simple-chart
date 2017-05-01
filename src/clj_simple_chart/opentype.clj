@@ -162,6 +162,15 @@
         (recur (update config :dx (partial em-to-number font-size)) text)
         (and (string? dy) (.endsWith dy "em"))
         (recur (update config :dy (partial em-to-number font-size)) text)
+        (not (string? text))
+        (recur config (str text))
+        (= text-anchor "middle")
+        (let [bb (get-bounding-box font-name text 0 0 font-size)
+              w (- (:x2 bb) (:x1 bb))]
+          ;;; TODO: I'm not 100% sure about this, but looks quite good
+          (recur (-> config
+                     (assoc :dx (double (- dx (/ w 2) (:x1 bb))))
+                     (dissoc :text-anchor)) text))
         (= text-anchor "end")
         (let [bb (get-bounding-box font-name text 0 0 font-size)]
           (recur (-> config

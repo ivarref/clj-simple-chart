@@ -49,7 +49,13 @@
                              :stroke-opacity grid-stroke-opacity
                              :y2             (* neg-sign (:height scale))
                              :x1             0.5 :x2 0.5}])
-                   [:text (merge text-axis-properties
+                   (opentype/text {:x           0.5
+                                   :dy          dy
+                                   :y           (* sign 9)
+                                   :text-anchor "middle"
+                                   :font-size   12
+                                   } (frmt scale d))
+                   #_[:text (merge text-axis-properties
                                  {:x           0.5
                                   :text-anchor "middle"
                                   :fill        color
@@ -74,19 +80,12 @@
                              :stroke-opacity grid-stroke-opacity
                              :x2             (* neg-sign (:width scale))
                              :y1             0.5 :y2 0.5}])
-                   (opentype/text {:x (* sign 9)
-                                   :dy ".32em"
-                                   :y 0.5
+                   (opentype/text {:x           (* sign 9)
+                                   :dy          ".32em"
+                                   :y           0.5
                                    :text-anchor text-anchor
-                                   :font-size 12
-                                   } (frmt scale d))
-                   #_[:text (merge text-axis-properties
-                                 {:x           (* sign 9)
-                                  :text-anchor text-anchor
-                                  :fill        color
-                                  :dy          ".32em"
-                                  :y           0.5})
-                    (frmt scale d)]]) (ticks scale))]))
+                                   :font-size   12
+                                   } (frmt scale d))]) (ticks scale))]))
 
 (defmulti render-axis (juxt :axis :orientation))
 
