@@ -5,8 +5,8 @@
 
 (def domain ["Peru"
              "Iraq"
-             "Sweden"
              "Norway"
+             "Sweden"
              "Australia"
              "Uzbekistan"
              "United States"
@@ -14,8 +14,9 @@
 
 (def margin {:top    75
              :bottom 40
-             :left   (+ 15 9 (axis/domain-max-width domain))
+             :left   (+ 15 6 (axis/domain-max-width domain))
              :right  40})
+
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
 (def height (- (/ 512 2) (:top margin) (:bottom margin)))
 
@@ -56,8 +57,7 @@
    [:g {:transform (translate (:left margin) (:top margin))}
     (rect rects)
     (render-axis y)
-    (render-axis x)
-    ]])
+    (render-axis x)]])
 
 (defn render-self []
   (render "automargins.svg" (diagram)))

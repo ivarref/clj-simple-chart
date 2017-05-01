@@ -23,10 +23,10 @@
 (defn bounding-box-domain [domain]
   (->> domain
        (map (fn [txt] (opentype/get-bounding-box (:font-name axis-font-properties)
-                                            txt
-                                            0
-                                            0
-                                            (:font-size axis-font-properties))))
+                                                 txt
+                                                 0
+                                                 0
+                                                 (:font-size axis-font-properties))))
        (reduce (fn [{ax1 :x1 ax2 :x2 ay1 :y1 ay2 :y2} {bx1 :x1 bx2 :x2 by1 :y1 by2 :y2}]
                  {:x1 (min ax1 bx1)
                   :x2 (max ax2 bx2)
@@ -98,11 +98,34 @@
                                    :font-size   12}
                                   (frmt scale d))]) (ticks scale))]))
 
+(defn render-y-axis-string-ordinal [scale sign text-anchor]
+  (let [color (get scale :color "#000")
+        sign-char (if (= -1 sign) "-" "")
+        neg-sign (* -1 sign)
+        rng (:range scale)]
+    [:g
+     [:path {:stroke       color
+             :stroke-width "1"
+             :fill         "none"
+             :d            (str "M" sign-char "3," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "3")}]
+     (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
+                   #_[:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
+                   (opentype/text {:x         (- (* sign 6)
+                                                 (domain-max-width (:domain scale)))
+                                   :dy        ".32em"
+                                   :y         0.5
+                                   :font-size 12}
+                                  (frmt scale d))]) (ticks scale))]))
+
 (defmulti render-axis (juxt :axis :orientation))
 
 (defmethod render-axis [:y :left] [scale]
   [:g {:transform (translate 0 0)}
-   (render-y-axis scale -1 "end")])
+   (cond (and (every? string? (:domain scale))
+              (= :ordinal (:type scale)))
+         (render-y-axis-string-ordinal scale -1 "end")
+         :else
+         (render-y-axis scale -1 "end"))])
 
 (defmethod render-axis [:y :right] [scale]
   [:g {:transform (translate (:width scale) 0)}
