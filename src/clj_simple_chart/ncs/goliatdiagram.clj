@@ -70,4 +70,4 @@
                      } "Diagram: Refsdal.Ivar@gmail.com")]]])
 
 (defn render-self []
-  (render "goliat.png" "goliat.svg" (diagram)))
+  (render "./img/goliat.png" "./img/goliat.svg" (diagram)))
