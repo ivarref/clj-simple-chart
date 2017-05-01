@@ -63,4 +63,4 @@
     (map make-text data)]])
 
 (defn render-self []
-  (render "goliat.svg" (diagram)))
+  (render "goliat.png" "goliat.svg" (diagram)))

@@ -71,29 +71,24 @@
                                     (str (name kwd) ":" val "; "))
                                  (apply hash-map info))))})
 
-(defn render
-  ([svg]
-   (let [body [:body (style
-                       :margin "0 !important"
-                       :padding "0 !important"
-                       :overflow-x "hidden"
-                       :overflow-y "hidden")]
-         attrs (second svg)
-         width (:width attrs)
-         height (:height attrs)
-         s (hiccup.core/html (conj body svg))]
-     (bootstrap)
-     (Platform/runLater (fn [] (.setPrefHeight @webview height)))
-     (Platform/runLater (fn [] (.setPrefWidth @webview width)))
-     (render-string s)
-     (Platform/runLater (fn [] (.sizeToScene @stage)))
-     (Platform/runLater (fn [] (.show @stage)))
-     (Platform/runLater (fn [] (.toFront @stage)))
-     s))
-  ([filename svg]
-   (export-to-file filename svg)
-   (render svg)
-   (Platform/runLater (fn [] (.setTitle @stage filename)))))
+(defn render-svg [svg]
+  (let [body [:body (style
+                      :margin "0 !important"
+                      :padding "0 !important"
+                      :overflow-x "hidden"
+                      :overflow-y "hidden")]
+        attrs (second svg)
+        width (:width attrs)
+        height (:height attrs)
+        s (hiccup.core/html (conj body svg))]
+    (bootstrap)
+    (Platform/runLater (fn [] (.setPrefHeight @webview height)))
+    (Platform/runLater (fn [] (.setPrefWidth @webview width)))
+    (render-string s)
+    (Platform/runLater (fn [] (.sizeToScene @stage)))
+    (Platform/runLater (fn [] (.show @stage)))
+    (Platform/runLater (fn [] (.toFront @stage)))
+    s))
 
 (defn render-to-png [filename t]
   (let [ll (CountDownLatch. 1)
@@ -108,9 +103,21 @@
           (let [image (.snapshot @webview snap nil)
                 bufimage (SwingFXUtils/fromFXImage image nil)]
             (ImageIO/write bufimage "png" (File. filename))
-            (println "\nwrote " filename #_"md5=" #_(digest/md5 (File. filename)))))))
+            #_(println "\nwrote " filename #_"md5=" #_(digest/md5 (File. filename)))))))
     (Platform/runLater (fn [] (.countDown ll)))
     (.await ll)))
+
+(defn render
+  ([svg] (render-svg svg))
+  ([f1 f2 svg]
+   (render f1 svg)
+   (render f2 svg))
+  ([filename svg]
+   (cond (.endsWith filename ".svg") (export-to-file filename svg)
+         (.endsWith filename ".png") (render-to-png filename svg)
+         :else (throw (Exception. (str "Unknown file type " filename))))
+   (render svg)
+   (Platform/runLater (fn [] (.setTitle @stage filename)))))
 
 (defn exit []
   (println "exiting ...")
