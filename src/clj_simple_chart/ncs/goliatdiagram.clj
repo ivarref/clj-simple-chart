@@ -7,7 +7,7 @@
 
 (def data goliat/top-ten-plus-goliat)
 
-(def domain (map :fldName data))
+(def domain (mapv :fldName data))
 
 (def marg 15)
 
@@ -16,7 +16,7 @@
              :left   (Math/round (+ marg 6 (axis/domain-max-width domain)))
              :right  (Math/round (+ marg (/ (axis/domain-max-width ["4000"]) 2)))})
 
-(def width (Math/round (double (- (/ 1024 2) (:left margin) (:right margin)))))
+(def width (Math/round (double (- 512 (:left margin) (:right margin)))))
 (def height (Math/round (double (- 400 (:top margin) (:bottom margin)))))
 
 (def x (scale {:type        :linear
