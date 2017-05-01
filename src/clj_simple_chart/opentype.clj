@@ -127,6 +127,7 @@
 
 (defn em-to-number [font-size em-str]
   (cond
+    (.startsWith em-str "-") (- (em-to-number font-size (subs em-str 1)))
     (.startsWith em-str ".") (recur font-size (str "0" em-str))
     :else (* font-size (read-string (string/replace em-str "em" "")))))
 
