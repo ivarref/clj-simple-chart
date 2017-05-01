@@ -24,7 +24,7 @@
                :orientation :top
                :width       width
                :height      height
-               :domain      [0 4000 #_(apply max (map :fldRecoverableOil data))]}))
+               :domain      [0 4000]}))
 
 (def y (scale {:type          :ordinal
                :axis          :y
