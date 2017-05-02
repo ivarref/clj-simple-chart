@@ -95,7 +95,7 @@
         attrs (second t)
         width (:width attrs)
         height (:height attrs)]
-    (render t)
+    (render-svg t)
     (Platform/runLater
       (fn []
         (let [snap (SnapshotParameters.)]
