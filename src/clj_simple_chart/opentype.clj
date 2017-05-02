@@ -138,46 +138,50 @@
                   text]
   [:path {:d (get-path-data font-name text x y font-size)}])
 
-(defn text [{font-name   :font
-             font-size   :font-size
-             x           :x
-             y           :y
-             dx          :dx
-             dy          :dy
-             text-anchor :text-anchor
-             :as         config
-             :or         {x           0.0
-                          y           0.0
-                          dx          0.0
-                          dy          0.0
-                          text-anchor "start"
-                          font-size   12
-                          font-name   "Roboto Regular"}
-             } text]
-  {:pre [(some #{font-name} (keys font-name-to-font))
-         (number? font-size)
-         (number? x)
-         (number? y)]}
-  (cond (and (string? dx) (.endsWith dx "em"))
-        (recur (update config :dx (partial em-to-number font-size)) text)
-        (and (string? dy) (.endsWith dy "em"))
-        (recur (update config :dy (partial em-to-number font-size)) text)
-        (not (string? text))
-        (recur config (str text))
-        (= text-anchor "middle")
-        (let [bb (get-bounding-box font-name text 0 0 font-size)
-              w (- (:x2 bb) (:x1 bb))]
-          ;;; TODO: I'm not 100% sure about this, but looks quite good
-          (recur (-> config
-                     (assoc :dx (double (- dx (/ w 2) (:x1 bb))))
-                     (dissoc :text-anchor)) text))
-        (= text-anchor "end")
-        (let [bb (get-bounding-box font-name text 0 0 font-size)]
-          (recur (-> config
-                     (assoc :dx (- dx (:x2 bb)))
-                     (dissoc :text-anchor)) text))
-        :else (text-inner {:x         (+ x dx)
-                           :y         (+ y dy)
-                           :font-name font-name
-                           :font-size font-size}
-                          text)))
+(defn text
+  ([{font        :font
+     font-size   :font-size
+     x           :x
+     y           :y
+     dx          :dx
+     dy          :dy
+     text-anchor :text-anchor
+     :as         config
+     :or         {x           0.0
+                  y           0.0
+                  dx          0.0
+                  dy          0.0
+                  text-anchor "start"
+                  font-size   14
+                  font        "Roboto Regular"}
+     } text]
+   {:pre [(some #{font} (keys font-name-to-font))
+          (number? font-size)
+          (number? x)
+          (number? y)]}
+   (cond (and (string? dx) (.endsWith dx "em"))
+         (recur (update config :dx (partial em-to-number font-size)) text)
+         (and (string? dy) (.endsWith dy "em"))
+         (recur (update config :dy (partial em-to-number font-size)) text)
+         (not (string? text))
+         (recur config (str text))
+         (= text-anchor "middle")
+         (let [bb (get-bounding-box font text 0 0 font-size)
+               w (- (:x2 bb) (:x1 bb))]
+           ;;; TODO: I'm not 100% sure about this, but looks quite good
+           (recur (-> config
+                      (assoc :dx (double (- dx (/ w 2) (:x1 bb))))
+                      (dissoc :text-anchor)) text))
+         (= text-anchor "end")
+         (let [bb (get-bounding-box font text 0 0 font-size)]
+           (recur (-> config
+                      (assoc :dx (- dx (:x2 bb)))
+                      (dissoc :text-anchor)) text))
+         :else (text-inner {:x         (+ x dx)
+                            :y         (+ y dy)
+                            :font-name font
+                            :font-size font-size}
+                           text)))
+  ([{txt :text
+     :as config}]
+   (text (dissoc config :text) txt)))
