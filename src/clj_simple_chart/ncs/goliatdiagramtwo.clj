@@ -55,8 +55,8 @@
                   oil     :fldRecoverableOil}]
   {:p fldName :h oil :fill "steelblue"})
 
-(defn make-text [{fldName :fldName
-                  oil     :fldRecoverableOil}]
+(defn recoverable-oil-text [{fldName :fldName
+                  oil                :fldRecoverableOil}]
   (opentype/text {:x         (point x oil)
                   :dx        ".20em"
                   :y         (center-point y fldName)
@@ -71,7 +71,7 @@
     (render-axis x)
     (rect (mapv make-rect data))
     (render-axis y)
-    (map make-text data)]
+    (map recoverable-oil-text data)]
    [:g {:transform (translate marg (- svg-height marg))}
     (opentype/text {:text "Kjelde: OD"})]
    [:g {:transform (translate (- svg-width marg) (- svg-height marg))}
@@ -79,4 +79,4 @@
    ])
 
 (defn render-self []
-  (render "./img/goliat-two.svg" (diagram)))
+  (render "./img/goliat-two.png" "./img/goliat-two.svg" (diagram)))
