@@ -243,7 +243,13 @@
 (defn- stack-downwards-text [y-offset {path :path idx :idx}]
   [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path])
 
-(defn stack-downwards-texts [txts]
+(defn stack-downwards-texts [{margin-top    :margin-top
+                              margin-left   :margin-left
+                              margin-bottom :margin-bottom
+                              :or           {margin-left   0
+                                             margin-top    0
+                                             margin-bottom 0}}
+                             txts]
   (let [with-baseline (map #(assoc % :alignment-baseline "hanging") txts)
         with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
         with-path (map (fn [x] (assoc x :path (text x))) with-idx)
@@ -253,5 +259,6 @@
                          (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
         height (reduce + y-offset)]
     (with-meta
-      [:g (map (partial stack-downwards-text y-offset) with-path)]
-      {:height height})))
+      [:g {:transform (translate margin-left margin-top)}
+       [:g (map (partial stack-downwards-text y-offset) with-path)]]
+      {:height (+ margin-top height margin-bottom)})))
