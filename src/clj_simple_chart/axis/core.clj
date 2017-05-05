@@ -20,6 +20,11 @@
 
 (def domain ["Peru" "Iraq" "United States"])
 
+(defn apply-axis-text-style-fn [opts scale d]
+  (let [default-fn (fn [x] {})
+        f (get scale :axis-text-style-fn default-fn)]
+    (merge opts (f d))))
+
 (defn bounding-box-domain [domain]
   (->> domain
        (map (fn [txt] (opentype/get-bounding-box (:font-name axis-font-properties)
@@ -111,12 +116,13 @@
              :d            (str "M" sign-char "3," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "3")}]
      (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
                    #_[:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
-                   (opentype/text {:x         (- (* sign 6)
-                                                 (domain-max-width (:domain scale)))
-                                   :dy        ".32em"
-                                   :y         0.5
-                                   :font-size 14}
-                                  (frmt scale d))]) (ticks scale))]))
+                   (opentype/text
+                     (apply-axis-text-style-fn {:x         (- (* sign 6)
+                                                              (domain-max-width (:domain scale)))
+                                                :dy        ".32em"
+                                                :y         0.5
+                                                :font-size 14} scale d)
+                     (frmt scale d))]) (ticks scale))]))
 
 (defmulti render-axis (juxt :axis :orientation))
 

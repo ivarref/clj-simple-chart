@@ -136,14 +136,16 @@
                    x            :x
                    y            :y
                    fill         :fill
+                   stroke       :stroke
                    border-tight :border-tight}
                   text]
   (let [bb (get-bounding-box font-name text x y font-size)
         metadata {:font-size (double font-size)
                   :height    (Math/abs (- (:y1 bb) (:y2 bb)))}
         metadata (merge metadata bb)
-        font-path [:path {:d    (get-path-data font-name text x y font-size)
-                          :fill fill}]
+        font-path [:path {:d      (get-path-data font-name text x y font-size)
+                          :fill   fill
+                          :stroke stroke}]
         txt (with-meta {} metadata)
         border (when border-tight
                  [:g [:line {:x1     (:x1 (meta txt))
@@ -183,6 +185,7 @@
      border-tight       :border-tight
      alignment-baseline :alignment-baseline
      fill               :fill
+     stroke             :stroke
      :as                config
      :or                {x                  0.0
                          y                  0.0
@@ -191,6 +194,7 @@
                          fill               "#000"
                          text-anchor        "start"
                          font-size          14
+                         stroke             "none"
                          alignment-baseline "auto"
                          font               "Roboto Regular"
                          border-tight       false}
@@ -227,6 +231,7 @@
                             :font-name    font
                             :font-size    font-size
                             :fill         fill
+                            :stroke       stroke
                             :border-tight border-tight}
                            text)))
   ([{txt :text

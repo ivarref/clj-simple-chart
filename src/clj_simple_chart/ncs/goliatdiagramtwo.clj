@@ -39,15 +39,20 @@
                :height      chart-height
                :domain      [0 4000]}))
 
-(def y (scale {:type          :ordinal
-               :axis          :y
-               :domain        domain
-               :orientation   :left
-               :reverse       true
-               :width         chart-width
-               :padding-inner 0.5
-               :padding-outer 0.3
-               :height        chart-height}))
+(def y (scale {:type               :ordinal
+               :axis               :y
+               :domain             domain
+               :orientation        :left
+               :reverse            true
+               :width              chart-width
+               :axis-text-style-fn (fn [x]
+                                     (if (= "Goliat" x)
+                                       {:font      "Roboto Black"
+                                        :font-size 16}
+                                       {}))
+               :padding-inner      0.5
+               :padding-outer      0.3
+               :height             chart-height}))
 
 (def rect (rect/scaled-rect x y))
 
@@ -56,12 +61,17 @@
   {:p fldName :h oil :fill "steelblue"})
 
 (defn recoverable-oil-text [{fldName :fldName
-                  oil                :fldRecoverableOil}]
+                             oil     :fldRecoverableOil}]
   (opentype/text {:x         (point x oil)
                   :dx        ".20em"
                   :y         (center-point y fldName)
                   :dy        ".32em"
-                  :font-size 14}
+                  :font      (if (= "Goliat" fldName)
+                               "Roboto Black"
+                               "Roboto Regular")
+                  :font-size (if (= "Goliat" fldName)
+                               16
+                               14)}
                  oil))
 
 (defn diagram []
