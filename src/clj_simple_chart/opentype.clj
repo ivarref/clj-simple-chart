@@ -135,13 +135,15 @@
                    font-size    :font-size
                    x            :x
                    y            :y
+                   fill         :fill
                    border-tight :border-tight}
                   text]
   (let [bb (get-bounding-box font-name text x y font-size)
         metadata {:font-size (double font-size)
                   :height    (Math/abs (- (:y1 bb) (:y2 bb)))}
         metadata (merge metadata bb)
-        font-path [:path {:d (get-path-data font-name text x y font-size)}]
+        font-path [:path {:d    (get-path-data font-name text x y font-size)
+                          :fill fill}]
         txt (with-meta {} metadata)
         border (when border-tight
                  [:g [:line {:x1     (:x1 (meta txt))
@@ -180,11 +182,13 @@
      text-anchor        :text-anchor
      border-tight       :border-tight
      alignment-baseline :alignment-baseline
+     fill               :fill
      :as                config
      :or                {x                  0.0
                          y                  0.0
                          dx                 0.0
                          dy                 0.0
+                         fill               "#000"
                          text-anchor        "start"
                          font-size          14
                          alignment-baseline "auto"
@@ -222,6 +226,7 @@
                             :y            (+ y dy)
                             :font-name    font
                             :font-size    font-size
+                            :fill         fill
                             :border-tight border-tight}
                            text)))
   ([{txt :text
@@ -234,13 +239,13 @@
 (defn- stack-downwards-text [y-offset {path :path idx :idx}]
   [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path])
 
-(defn text-stack-downwards [{margin-top     :margin-top
-                              margin-left   :margin-left
-                              margin-bottom :margin-bottom
-                              :or           {margin-left   0
-                                             margin-top    0
-                                             margin-bottom 0}}
-                             txts]
+(defn text-stack-downwards [{margin-top    :margin-top
+                             margin-left   :margin-left
+                             margin-bottom :margin-bottom
+                             :or           {margin-left   0
+                                            margin-top    0
+                                            margin-bottom 0}}
+                            txts]
   (let [with-baseline (map #(assoc % :alignment-baseline "hanging") txts)
         with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
         with-path (map (fn [x] (assoc x :path (text x))) with-idx)

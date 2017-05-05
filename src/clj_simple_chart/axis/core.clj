@@ -70,6 +70,7 @@
                    (opentype/text {:x           0.5
                                    :dy          dy
                                    :y           (* sign 9)
+                                   :fill        color
                                    :text-anchor "middle"
                                    :font-size   14}
                                   (frmt scale d))]) (ticks scale))]))
