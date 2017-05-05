@@ -170,15 +170,6 @@
         path [:g font-path border]]
     (with-meta path metadata)))
 
-;(defn render-s []
-;  ([:svg {:xmlns "http://www.w3.org/2000/svg" :width 250 :height 500}
-; #_[:g [:line {:x1     15.5 :x2 15.5 :y1 0 :y2 500
-;               :stroke "red" :fill "none" :stroke-width "1px"}]
-;    [:line {:x1     0 :x2 500 :y1 15.5 :y2 15.5
-;            :stroke "red" :fill "none" :stroke-width "1px"}]
-;    ]
-; [:g {:transform (translate 0.5 0.5)}
-
 (defn text
   ([{font               :font
      font-size          :font-size

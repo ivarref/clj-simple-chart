@@ -15,7 +15,7 @@
   v)
 
 (def axis-font-properties
-  {:font-size 12
+  {:font-size 14
    :font-name "Roboto Regular"})
 
 (def domain ["Peru" "Iraq" "United States"])
@@ -71,7 +71,7 @@
                                    :dy          dy
                                    :y           (* sign 9)
                                    :text-anchor "middle"
-                                   :font-size   12}
+                                   :font-size   14}
                                   (frmt scale d))]) (ticks scale))]))
 
 (defn render-y-axis [scale sign text-anchor]
@@ -95,7 +95,7 @@
                                    :dy          ".32em"
                                    :y           0.5
                                    :text-anchor text-anchor
-                                   :font-size   12}
+                                   :font-size   14}
                                   (frmt scale d))]) (ticks scale))]))
 
 (defn render-y-axis-string-ordinal [scale sign text-anchor]
@@ -114,7 +114,7 @@
                                                  (domain-max-width (:domain scale)))
                                    :dy        ".32em"
                                    :y         0.5
-                                   :font-size 12}
+                                   :font-size 14}
                                   (frmt scale d))]) (ticks scale))]))
 
 (defmulti render-axis (juxt :axis :orientation))
