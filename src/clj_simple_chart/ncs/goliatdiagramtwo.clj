@@ -7,11 +7,11 @@
 
 (def marg 9.5)
 
-(def header (opentype/stack-downwards-texts
+(def header (opentype/text-stack-downwards
               {:margin-top    marg
                :margin-left   marg
                :margin-bottom 35.0}
-              [{:text "Goliat — Ein ekte kjempe?" :font "Roboto Black" :font-size 24}
+              [{:text "Goliat — ein ekte kjempe?" :font "Roboto Black" :font-size 24}
                {:text "Dei ti største oljefelta, pluss Goliat" :font "Roboto Bold" :font-size 14}
                {:text "Opprinneleg utvinnbart, millionar fat olje" :font-size 14}]))
 

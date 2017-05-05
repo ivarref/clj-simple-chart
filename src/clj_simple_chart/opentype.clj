@@ -234,7 +234,7 @@
 (defn- stack-downwards-text [y-offset {path :path idx :idx}]
   [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path])
 
-(defn stack-downwards-texts [{margin-top    :margin-top
+(defn text-stack-downwards [{margin-top     :margin-top
                               margin-left   :margin-left
                               margin-bottom :margin-bottom
                               :or           {margin-left   0

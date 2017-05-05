@@ -2,7 +2,7 @@
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]))
 
-(def header (opentype/stack-downwards-texts
+(def header (opentype/text-stack-downwards
               {:margin-top  15.5
                :margin-left 15.5
                :margin-bottom 3.0}
