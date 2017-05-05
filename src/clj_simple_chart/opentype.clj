@@ -131,29 +131,74 @@
     (.startsWith em-str ".") (recur font-size (str "0" em-str))
     :else (* font-size (read-string (string/replace em-str "em" "")))))
 
-(defn text-inner [{font-name :font-name
-                   font-size :font-size
-                   x         :x
-                   y         :y}
+(defn text-inner [{font-name    :font-name
+                   font-size    :font-size
+                   x            :x
+                   y            :y
+                   border-tight :border-tight}
                   text]
-  [:path {:d (get-path-data font-name text x y font-size)}])
+  (let [bb (get-bounding-box font-name text x y font-size)
+        metadata {:font-size (double font-size)
+                  :height    (Math/abs (- (:y1 bb) (:y2 bb)))}
+        metadata (merge metadata bb)
+        font-path [:path {:d (get-path-data font-name text x y font-size)}]
+        txt (with-meta {} metadata)
+        border (when border-tight
+                 [:g [:line {:x1     (:x1 (meta txt))
+                             :x2     (:x1 (meta txt))
+                             :y1     (:y1 (meta txt))
+                             :y2     (:y2 (meta txt))
+                             :stroke border-tight
+                             }]
+                  [:line {:x1     (:x2 (meta txt))
+                          :x2     (:x2 (meta txt))
+                          :y1     (:y1 (meta txt))
+                          :y2     (:y2 (meta txt))
+                          :stroke border-tight
+                          }]
+                  [:line {:x1     (:x1 (meta txt))
+                          :x2     (:x2 (meta txt))
+                          :y1     (:y1 (meta txt))
+                          :y2     (:y1 (meta txt))
+                          :stroke border-tight
+                          }]
+                  [:line {:x1     (:x1 (meta txt))
+                          :x2     (:x2 (meta txt))
+                          :y1     (:y2 (meta txt))
+                          :y2     (:y2 (meta txt))
+                          :stroke border-tight}]])
+        path [:g font-path border]]
+    (with-meta path metadata)))
+
+;(defn render-s []
+;  ([:svg {:xmlns "http://www.w3.org/2000/svg" :width 250 :height 500}
+; #_[:g [:line {:x1     15.5 :x2 15.5 :y1 0 :y2 500
+;               :stroke "red" :fill "none" :stroke-width "1px"}]
+;    [:line {:x1     0 :x2 500 :y1 15.5 :y2 15.5
+;            :stroke "red" :fill "none" :stroke-width "1px"}]
+;    ]
+; [:g {:transform (translate 0.5 0.5)}
 
 (defn text
-  ([{font        :font
-     font-size   :font-size
-     x           :x
-     y           :y
-     dx          :dx
-     dy          :dy
-     text-anchor :text-anchor
-     :as         config
-     :or         {x           0.0
-                  y           0.0
-                  dx          0.0
-                  dy          0.0
-                  text-anchor "start"
-                  font-size   14
-                  font        "Roboto Regular"}
+  ([{font               :font
+     font-size          :font-size
+     x                  :x
+     y                  :y
+     dx                 :dx
+     dy                 :dy
+     text-anchor        :text-anchor
+     border-tight       :border-tight
+     alignment-baseline :alignment-baseline
+     :as                config
+     :or                {x                  0.0
+                         y                  0.0
+                         dx                 0.0
+                         dy                 0.0
+                         text-anchor        "start"
+                         font-size          14
+                         alignment-baseline "auto"
+                         font               "Roboto Regular"
+                         border-tight       false}
      } text]
    {:pre [(some #{font} (keys font-name-to-font))
           (number? font-size)
@@ -177,10 +222,16 @@
            (recur (-> config
                       (assoc :dx (- dx (:x2 bb)))
                       (dissoc :text-anchor)) text))
-         :else (text-inner {:x         (+ x dx)
-                            :y         (+ y dy)
-                            :font-name font
-                            :font-size font-size}
+         (= alignment-baseline "hanging")
+         (let [bb (get-bounding-box font text 0 0 font-size)]
+           (recur (-> config
+                      (assoc :dy (double (+ dy (Math/abs (:y1 bb)))))
+                      (dissoc :alignment-baseline)) text))
+         :else (text-inner {:x            (+ x dx)
+                            :y            (+ y dy)
+                            :font-name    font
+                            :font-size    font-size
+                            :border-tight border-tight}
                            text)))
   ([{txt :text
      :as config}]
