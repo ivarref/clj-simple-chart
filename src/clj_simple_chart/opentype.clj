@@ -236,3 +236,22 @@
   ([{txt :text
      :as config}]
    (text (dissoc config :text) txt)))
+
+(defn translate [x y]
+  (str "translate(" (double x) "," (double y) ")"))
+
+(defn- stack-downwards-text [y-offset {path :path idx :idx}]
+  [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path])
+
+(defn stack-downwards-texts [txts]
+  (let [with-baseline (map #(assoc % :alignment-baseline "hanging") txts)
+        with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
+        with-path (map (fn [x] (assoc x :path (text x))) with-idx)
+        paths (map :path with-path)
+        metas (map meta paths)
+        y-offset (map #(let [h-with-margin (+ 4 (:height %))]
+                         (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
+        height (reduce + y-offset)]
+    (with-meta
+      [:g (map (partial stack-downwards-text y-offset) with-path)]
+      {:height height})))
