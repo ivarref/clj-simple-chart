@@ -11,7 +11,7 @@
               {:margin-top    marg
                :margin-left   marg
                :margin-bottom 35.0}
-              [{:text "Goliat — ein ekte kjempe?" :font "Roboto Black" :font-size 24}
+              [{:text "Goliat — ein ekte kjempe?" :font "Roboto Black" :font-size 20}
                {:text "Dei ti største oljefelta, pluss Goliat" :font "Roboto Bold" :font-size 14}
                {:text "Opprinneleg utvinnbart, millionar fat olje" :font-size 14}]))
 
