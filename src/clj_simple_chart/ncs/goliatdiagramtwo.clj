@@ -24,7 +24,7 @@
 (def svg-height 480)
 
 (def margin {:top    (:height (meta header))
-             :bottom (+ marg (* 2 14))
+             :bottom (+ marg (+ 7 14))
              :left   (round (+ marg 6 (axis/domain-max-width domain)))
              :right  (round (+ marg (/ (axis/domain-max-width ["4000"]) 2)))})
 
