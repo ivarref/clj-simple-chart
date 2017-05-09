@@ -120,7 +120,7 @@
        (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
                      (opentype/text
                        (apply-axis-text-style-fn {:x         (- (* sign 6)
-                                                                (if (= :right direction)
+                                                                (if (= 1 sign)
                                                                   0
                                                                   axis-label-max-width))
                                                   :dy        ".32em"
