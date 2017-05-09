@@ -15,14 +15,14 @@
 (def margin {:top    75
              :bottom 40
              :left   (+ 15 6 (axis/domain-max-width domain))
-             :right  40})
+             :right  (+ 15 6 (axis/domain-max-width domain))})
 
-(def width (- (/ 1024 2) (:left margin) (:right margin)))
+(def width (- 350 (:left margin) (:right margin)))
 (def height (- (/ 512 2) (:top margin) (:bottom margin)))
 
 (def y (scale {:type          :ordinal
                :axis          :y
-               :orientation   :left
+               :orientation   :both
                :width         width
                :height        height
                :domain        domain
@@ -50,14 +50,11 @@
 (defn diagram []
   [:svg (svg-attrs width height margin)
    (title "Automatic margins")
-   #_[:line {:x1 15 :x2 15
-           :y1 0
-           :y2 (:height (svg-attrs width height margin))
-           :stroke "black"}]
    [:g {:transform (translate (:left margin) (:top margin))}
     (rect rects)
     (render-axis y)
-    (render-axis x)]])
+    #_(render-axis x)
+    ]])
 
 (defn render-self []
   (render "automargins.svg" (diagram)))

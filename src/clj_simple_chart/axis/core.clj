@@ -104,7 +104,7 @@
                                    :font-size   14}
                                   (frmt scale d))]) (ticks scale))]))
 
-(defn render-y-axis-string-ordinal [scale sign text-anchor]
+(defn render-y-axis-ordinal [scale sign direction]
   (let [color (get scale :color "#000")
         sign-char (if (= -1 sign) "-" "")
         neg-sign (* -1 sign)
@@ -120,45 +120,60 @@
        (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
                      (opentype/text
                        (apply-axis-text-style-fn {:x         (- (* sign 6)
-                                                                axis-label-max-width)
+                                                                (if (= :right direction)
+                                                                  0
+                                                                  axis-label-max-width))
                                                   :dy        ".32em"
                                                   :y         0.5
                                                   :font-size 14} scale d)
                        (frmt scale d))]) (ticks scale))]
-      {:margin-left width})))
+      {direction width})))
 
-(defmulti render-axis (juxt :axis :orientation))
+(defmulti render-axis (juxt :axis :type :orientation))
 
-(defmethod render-axis [:y :left] [scale]
-  (cond (and (every? string? (:domain scale)) (= :ordinal (:type scale)))
-        (render-y-axis-string-ordinal scale -1 "end")
-        :else
-        (render-y-axis scale -1 "end")))
+(defmethod render-axis [:y :ordinal :left] [scale]
+  (render-y-axis-ordinal scale -1 :margin-left))
 
-(defmethod render-axis [:y :right] [scale]
-  (let [rendered-axis (render-y-axis scale 1 "start")]
-    (with-meta
-      [:g {:transform (translate (:width scale) 0)} rendered-axis]
-      (meta rendered-axis))))
+(defmethod render-axis [:y :ordinal :right] [scale]
+  (let [rendered (render-y-axis-ordinal scale 1 :margin-right)]
+    (with-meta [:g {:transform (translate (:width scale) 0)} rendered]
+               (meta rendered))))
 
-(defmethod render-axis [:y :both] [scale]
-  [:g
-   (render-axis (-> scale
-                    (assoc :orientation :left)
-                    (dissoc :grid)))
-   (render-axis (assoc scale :orientation :right))])
+(defmethod render-axis [:y :ordinal :both] [scale]
+  (let [ax-left (render-axis (assoc scale :orientation :left))
+        ax-right (render-axis (assoc scale :orientation :right))]
+    (with-meta [:g ax-left ax-right]
+               (merge (meta ax-left) (meta ax-right)))))
 
-(defmethod render-axis [:x :bottom] [scale]
-  [:g {:transform (translate 0 (:height scale))}
-   (render-x-axis scale 1 ".71em")])
+;(cond (and (every? string? (:domain scale)) (= :ordinal (:type scale)))
+;
+;      :else
+;      (render-y-axis scale -1 "end")))
 
-(defmethod render-axis [:x :top] [scale]
-  [:g {:transform (translate 0 0)}
-   (render-x-axis scale -1 "0em")])
-
-(defmethod render-axis [:x :both] [scale]
-  [:g
-   (render-axis (-> scale
-                    (assoc :orientation :top)
-                    (dissoc :grid)))
-   (render-axis (assoc scale :orientation :bottom))])
+;(defmethod render-axis [:y :right] [scale]
+;  (let [rendered-axis (render-y-axis scale 1 "start")]
+;    (with-meta
+;      [:g {:transform (translate (:width scale) 0)} rendered-axis]
+;      (meta rendered-axis))))
+;
+;(defmethod render-axis [:y :both] [scale]
+;  [:g
+;   (render-axis (-> scale
+;                    (assoc :orientation :left)
+;                    (dissoc :grid)))
+;   (render-axis (assoc scale :orientation :right))])
+;
+;(defmethod render-axis [:x :bottom] [scale]
+;  [:g {:transform (translate 0 (:height scale))}
+;   (render-x-axis scale 1 ".71em")])
+;
+;(defmethod render-axis [:x :top] [scale]
+;  [:g {:transform (translate 0 0)}
+;   (render-x-axis scale -1 "0em")])
+;
+;(defmethod render-axis [:x :both] [scale]
+;  [:g
+;   (render-axis (-> scale
+;                    (assoc :orientation :top)
+;                    (dissoc :grid)))
+;   (render-axis (assoc scale :orientation :bottom))])
