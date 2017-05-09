@@ -108,35 +108,38 @@
   (let [color (get scale :color "#000")
         sign-char (if (= -1 sign) "-" "")
         neg-sign (* -1 sign)
-        rng (:range scale)]
-    [:g
-     [:path {:stroke       color
-             :stroke-width "1"
-             :fill         "none"
-             :d            (str "M" sign-char "3," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "3")}]
-     (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
-                   #_[:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
-                   (opentype/text
-                     (apply-axis-text-style-fn {:x         (- (* sign 6)
-                                                              (domain-max-width (:domain scale)))
-                                                :dy        ".32em"
-                                                :y         0.5
-                                                :font-size 14} scale d)
-                     (frmt scale d))]) (ticks scale))]))
+        rng (:range scale)
+        axis-label-max-width (domain-max-width (:domain scale))
+        width (+ 6 axis-label-max-width)]
+    (with-meta
+      [:g
+       [:path {:stroke       color
+               :stroke-width "1"
+               :fill         "none"
+               :d            (str "M" sign-char "3," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "3")}]
+       (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
+                     (opentype/text
+                       (apply-axis-text-style-fn {:x         (- (* sign 6)
+                                                                axis-label-max-width)
+                                                  :dy        ".32em"
+                                                  :y         0.5
+                                                  :font-size 14} scale d)
+                       (frmt scale d))]) (ticks scale))]
+      {:margin-left width})))
 
 (defmulti render-axis (juxt :axis :orientation))
 
 (defmethod render-axis [:y :left] [scale]
-  [:g {:transform (translate 0 0)}
-   (cond (and (every? string? (:domain scale))
-              (= :ordinal (:type scale)))
-         (render-y-axis-string-ordinal scale -1 "end")
-         :else
-         (render-y-axis scale -1 "end"))])
+  (cond (and (every? string? (:domain scale)) (= :ordinal (:type scale)))
+        (render-y-axis-string-ordinal scale -1 "end")
+        :else
+        (render-y-axis scale -1 "end")))
 
 (defmethod render-axis [:y :right] [scale]
-  [:g {:transform (translate (:width scale) 0)}
-   (render-y-axis scale 1 "start")])
+  (let [rendered-axis (render-y-axis scale 1 "start")]
+    (with-meta
+      [:g {:transform (translate (:width scale) 0)} rendered-axis]
+      (meta rendered-axis))))
 
 (defmethod render-axis [:y :both] [scale]
   [:g
