@@ -31,16 +31,15 @@
         y-margins (margins (meta y-scale-rendered))
         x-margins (margins (meta x-scale-rendered))
 
-        max-right (max (:margin-right x-margins) (:margin-right y-margins))
-        max-left (max (:margin-left x-margins) (:margin-left y-margins))
-        max-top (max (:margin-top x-margins) (:margin-top y-margins))
-        max-bottom (max (:margin-bottom x-margins) (:margin-bottom y-margins))
+        max-right (Math/ceil (max (:margin-right x-margins) (:margin-right y-margins)))
+        max-left (Math/ceil (max (:margin-left x-margins) (:margin-left y-margins)))
+        max-top (Math/ceil (max (:margin-top x-margins) (:margin-top y-margins)))
+        max-bottom (Math/ceil (max (:margin-bottom x-margins) (:margin-bottom y-margins)))
 
         chart-width (- width (+ max-left max-right))
         chart-height (- height (+ max-top max-bottom))
 
-        new-opts {:width  chart-width
-                  :height chart-height}
+        new-opts {:width  chart-width :height chart-height}
 
         x-scale (scale/scale (merge x new-opts))
         y-scale (scale/scale (merge y new-opts))]
