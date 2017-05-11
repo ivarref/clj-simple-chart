@@ -39,7 +39,7 @@
         chart-width (- width (+ max-left max-right))
         chart-height (- height (+ max-top max-bottom))
 
-        new-opts {:width  chart-width :height chart-height}
+        new-opts {:width chart-width :height chart-height}
 
         x-scale (scale/scale (merge x new-opts))
         y-scale (scale/scale (merge y new-opts))]
@@ -69,7 +69,7 @@
          :domain      [77 88]})
 
 (def yy {:type        :ordinal
-         :orientation :left
+         :orientation :both
          :reverse     true
          :domain      ["Peru"
                        "Iraq"
@@ -84,15 +84,18 @@
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
-   [:line {:x1 margin :x2 margin :y1 0 :y2 svg-height :stroke "black" :stroke-width "1"}]
    [:g {:transform (core/translate margin margin)}
 
     [:g {:transform (core/translate (:margin-left c) (:margin-top c))}
 
      [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]
+     [:circle {:transform (core/translate 0 (:plot-height c))
+               :r         7 :fill "yellow" :stroke "black" :stroke-width 3}]
 
      [:g {:transform (core/translate (:plot-width c) 0)}
       [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]
+      [:circle {:transform (core/translate 0 (:plot-height c))
+                :r         7 :fill "yellow" :stroke "black" :stroke-width 3}]
       ]
 
      (axis/render-axis (:y c))
