@@ -65,9 +65,9 @@
 (def svg-height 240)
 
 (def xx {:type        :linear
-         :orientation :bottom
+         :orientation :both
          :ticks       5
-         :domain      [0 10]})
+         :domain      [77 88]})
 
 (def yy {:type        :ordinal
          :orientation :left
@@ -87,7 +87,6 @@
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:line {:x1 margin :x2 margin :y1 0 :y2 svg-height :stroke "black" :stroke-width "1"}]
    [:g {:transform (core/translate margin margin)}
-    [:circle {:r 7 :fill "red" :stroke "black" :stroke-width 3}]
 
     [:g {:transform (core/translate (:margin-left c) (:margin-top c))}
 

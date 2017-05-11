@@ -71,8 +71,7 @@
         txt-meta (mapv meta txts)
         max-height-font (apply max (mapv :height txt-meta))
         spacing-left (double (/ (:width (first txt-meta)) 2))
-        spacing-right (double (/ (:width (last txt-meta)) 2))
-        ]
+        spacing-right (double (/ (:width (last txt-meta)) 2))]
     (with-meta
       [:g
        [:path {:stroke       color
@@ -95,7 +94,7 @@
                                     (frmt scale d))]) (ticks scale))]
       {margin-direction (+ 9 max-height-font)
        :margin-left spacing-left
-       :margin-right spacing-right})))
+       :margin-right (+ 0.5 spacing-right)})))
 
 (defn render-y-axis [scale sign text-anchor]
   (let [color (get scale :color "#000")
