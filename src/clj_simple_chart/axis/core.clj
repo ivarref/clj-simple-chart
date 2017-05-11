@@ -55,30 +55,43 @@
 
 (def grid-stroke-opacity 0.25)
 
-(defn render-x-axis [scale sign dy]
+(defn render-x-axis [scale sign dy margin-direction]
   (let [color (get scale :color "#000")
         rng (:range scale)
         neg-sign (* -1 sign)
-        sign-char (if (= -1 sign) "-" "")]
-    [:g
-     [:path {:stroke       color
-             :stroke-width "1"
-             :fill         "none"
-             :d            (str "M0.5," sign-char "6 V0.5 H" (int (apply max rng)) ".5 V" sign-char "6")}]
-     (map (fn [d] [:g {:transform (translate (center-point scale d) 0)}
-                   [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
-                   (when (:grid scale)
-                     [:line {:stroke         color
-                             :stroke-opacity grid-stroke-opacity
-                             :y2             (* neg-sign (:height scale))
-                             :x1             0.5 :x2 0.5}])
-                   (opentype/text {:x           0.5
-                                   :dy          dy
-                                   :y           (* sign 9)
-                                   :fill        color
-                                   :text-anchor "middle"
-                                   :font-size   14}
-                                  (frmt scale d))]) (ticks scale))]))
+        sign-char (if (= -1 sign) "-" "")
+        tiks (ticks scale)
+        tiks-str (mapv (partial frmt scale) tiks)
+        txts (mapv #(opentype/text {:x           0.5
+                                    :dy          dy
+                                    :y           (* sign 9)
+                                    :fill        color
+                                    :text-anchor "middle"
+                                    :font-size   14} %) tiks-str)
+        txt-meta (mapv meta txts)
+        max-height-font (apply max (mapv :height txt-meta))
+        ]
+    (with-meta
+      [:g
+       [:path {:stroke       color
+               :stroke-width "1"
+               :fill         "none"
+               :d            (str "M0.5," sign-char "6 V0.5 H" (int (apply max rng)) ".5 V" sign-char "6")}]
+       (map (fn [d] [:g {:transform (translate (center-point scale d) 0)}
+                     [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
+                     (when (:grid scale)
+                       [:line {:stroke         color
+                               :stroke-opacity grid-stroke-opacity
+                               :y2             (* neg-sign (:height scale))
+                               :x1             0.5 :x2 0.5}])
+                     (opentype/text {:x           0.5
+                                     :dy          dy
+                                     :y           (* sign 9)
+                                     :fill        color
+                                     :text-anchor "middle"
+                                     :font-size   14}
+                                    (frmt scale d))]) (ticks scale))]
+      {margin-direction (+ 9 max-height-font)})))
 
 (defn render-y-axis [scale sign text-anchor]
   (let [color (get scale :color "#000")
@@ -129,21 +142,38 @@
                        (frmt scale d))]) (ticks scale))]
       {direction width})))
 
+(defn transform-with-meta [x y k]
+  (with-meta
+    [:g {:transform (translate x y)} k]
+    (meta k)))
+
 (defmulti render-axis (juxt :axis :type :orientation))
 
 (defmethod render-axis [:y :ordinal :left] [scale]
   (render-y-axis-ordinal scale -1 :margin-left))
 
 (defmethod render-axis [:y :ordinal :right] [scale]
-  (let [rendered (render-y-axis-ordinal scale 1 :margin-right)]
-    (with-meta [:g {:transform (translate (:width scale) 0)} rendered]
-               (meta rendered))))
+  (transform-with-meta (:width scale) 0
+                       (render-y-axis-ordinal scale 1 :margin-right)))
 
 (defmethod render-axis [:y :ordinal :both] [scale]
   (let [ax-left (render-axis (assoc scale :orientation :left))
         ax-right (render-axis (assoc scale :orientation :right))]
     (with-meta [:g ax-left ax-right]
                (merge (meta ax-left) (meta ax-right)))))
+
+(defmethod render-axis [:x :linear :top] [scale]
+  (render-x-axis scale -1 "0em" :margin-top))
+
+(defmethod render-axis [:x :linear :bottom] [scale]
+  (transform-with-meta 0 (:height scale)
+                       (render-x-axis scale 1 ".71em" :margin-bottom)))
+
+(defmethod render-axis [:x :linear :both] [scale]
+  (let [ax-top (render-axis (assoc scale :orientation :top))
+        ax-bottom (render-axis (assoc scale :orientation :bottom))]
+    (with-meta [:g ax-top ax-bottom]
+               (merge (meta ax-top) (meta ax-bottom)))))
 
 ;(cond (and (every? string? (:domain scale)) (= :ordinal (:type scale)))
 ;

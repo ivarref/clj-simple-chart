@@ -4,8 +4,6 @@
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.axis.ticks :refer [ticks]]))
 
-
-
 (defn make-tmp-scale [opts]
   (let [new-opts (merge {:width 100 :height 100} opts)]
     (scale/scale new-opts)))
@@ -27,16 +25,20 @@
                     height :height
                     x      :x
                     y      :y}]
-  (let [y-scale-tmp (make-tmp-scale y)
-        y-scale-rendered (axis/render-axis y-scale-tmp)
+  (let [y-scale-rendered (axis/render-axis (make-tmp-scale y))
+        x-scale-rendered (axis/render-axis (make-tmp-scale x))
+
         y-margins (margins (meta y-scale-rendered))
-        ;x-scale-tmp (make-tmp-scale x)
-        ;x-scale-rendered (axis/render-axis x-scale-tmp)
+        x-margins (margins (meta x-scale-rendered))
 
         margin-left (:margin-left y-margins)
+        margin-top (:margin-top x-margins)
+        margin-bottom (:margin-bottom x-margins)
+
         x-axis-space-used (+ (:margin-left y-margins)
                              (:margin-right y-margins))
-        y-axis-space-used 0
+        y-axis-space-used (+ (:margin-top x-margins)
+                             (:margin-bottom x-margins))
 
         chart-width (- width x-axis-space-used)
         chart-height (- height y-axis-space-used)
@@ -47,7 +49,9 @@
         x-scale (scale/scale (merge x new-opts))
         y-scale (scale/scale (merge y new-opts))]
     {:margin-left margin-left
+     :margin-top  margin-top
      :plot-width  chart-width
+     :plot-height chart-height
      :x           x-scale
      :y           y-scale}))
 
@@ -65,13 +69,11 @@
 (def svg-height 240)
 
 (def xx {:type        :linear
-         :axis        :x
-         :orientation :top
+         :orientation :both
          :ticks       5
          :domain      [0 10]})
 
 (def yy {:type        :ordinal
-         :axis        :y
          :orientation :both
          :reverse     true
          :domain      ["Peru"
@@ -89,8 +91,10 @@
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:line {:x1 margin :x2 margin :y1 0 :y2 svg-height :stroke "black" :stroke-width "1"}]
    [:g {:transform (core/translate margin margin)}
-    [:circle {:r 5 :fill "red" :stroke "black" :stroke-width 3}]
-    [:g {:transform (core/translate (:margin-left c) 0)}
+    [:circle {:r 7 :fill "red" :stroke "black" :stroke-width 3}]
+
+    [:g {:transform (core/translate (:margin-left c) (:margin-top c))}
+
      [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]
 
      [:g {:transform (core/translate (:plot-width c) 0)}
@@ -98,6 +102,7 @@
       ]
 
      (axis/render-axis (:y c))
+     (axis/render-axis (:x c))
 
      ]]
    ])
