@@ -31,25 +31,21 @@
         y-margins (margins (meta y-scale-rendered))
         x-margins (margins (meta x-scale-rendered))
 
-        margin-left (:margin-left y-margins)
-        margin-top (:margin-top x-margins)
-        margin-bottom (:margin-bottom x-margins)
+        max-right (max (:margin-right x-margins) (:margin-right y-margins))
+        max-left (max (:margin-left x-margins) (:margin-left y-margins))
+        max-top (max (:margin-top x-margins) (:margin-top y-margins))
+        max-bottom (max (:margin-bottom x-margins) (:margin-bottom y-margins))
 
-        x-axis-space-used (+ (:margin-left y-margins)
-                             (:margin-right y-margins))
-        y-axis-space-used (+ (:margin-top x-margins)
-                             (:margin-bottom x-margins))
-
-        chart-width (- width x-axis-space-used)
-        chart-height (- height y-axis-space-used)
+        chart-width (- width (+ max-left max-right))
+        chart-height (- height (+ max-top max-bottom))
 
         new-opts {:width  chart-width
                   :height chart-height}
 
         x-scale (scale/scale (merge x new-opts))
         y-scale (scale/scale (merge y new-opts))]
-    {:margin-left margin-left
-     :margin-top  margin-top
+    {:margin-left max-left
+     :margin-top  max-top
      :plot-width  chart-width
      :plot-height chart-height
      :x           x-scale
@@ -69,12 +65,12 @@
 (def svg-height 240)
 
 (def xx {:type        :linear
-         :orientation :both
+         :orientation :bottom
          :ticks       5
          :domain      [0 10]})
 
 (def yy {:type        :ordinal
-         :orientation :both
+         :orientation :left
          :reverse     true
          :domain      ["Peru"
                        "Iraq"

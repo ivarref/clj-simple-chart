@@ -141,7 +141,8 @@
                   text]
   (let [bb (get-bounding-box font-name text x y font-size)
         metadata {:font-size (double font-size)
-                  :height    (Math/abs (- (:y1 bb) (:y2 bb)))}
+                  :height    (Math/abs (- (:y1 bb) (:y2 bb)))
+                  :width     (Math/abs (- (:x1 bb) (:x2 bb)))}
         metadata (merge metadata bb)
         font-path [:path {:d      (get-path-data font-name text x y font-size)
                           :fill   fill
