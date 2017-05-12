@@ -194,7 +194,7 @@
                          dx                 0.0
                          dy                 0.0
                          fill               "#000"
-                         text-anchor        "start"
+                         text-anchor        :none
                          font-size          14
                          stroke             "none"
                          alignment-baseline "auto"
@@ -211,6 +211,12 @@
          (recur (update config :dy (partial em-to-number font-size)) text)
          (not (string? text))
          (recur config (str text))
+         (= text-anchor "start")
+         (let [bb (get-bounding-box font text 0 0 font-size)
+               w (- (:x2 bb) (:x1 bb))]
+           (recur (-> config
+                      (assoc :dx (double (- dx (:x1 bb))))
+                      (dissoc :text-anchor)) text))
          (= text-anchor "middle")
          (let [bb (get-bounding-box font text 0 0 font-size)
                w (- (:x2 bb) (:x1 bb))]

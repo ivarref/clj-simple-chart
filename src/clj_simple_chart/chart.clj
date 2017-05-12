@@ -70,7 +70,7 @@
 (def yy {:type        :linear
          :orientation :both
          :ticks 5
-         :domain      [0 100]})
+         :domain      [77 88]})
 
 (def cfg {:width  svg-width
           :height svg-height

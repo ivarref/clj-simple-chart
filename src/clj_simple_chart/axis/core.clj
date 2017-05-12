@@ -87,10 +87,7 @@
         neg-sign (* -1 sign)
         rng (:range scale)
         meta-txts (meta-texts-for-scale scale)
-        axis-label-max-width (inc (apply max (map :width meta-txts)))
-        ;;; TODO I think this looks better but why is it needed?
-        ;axis-label-max-width (if (= margin-direction :margin-right) (inc axis-label-max-width) axis-label-max-width)
-
+        axis-label-max-width (apply max (map :width meta-txts))
         offset-height-top (* 0.32 (:font-size (last meta-txts)))
         margin-top (inc (- (:height (last meta-txts)) offset-height-top))
 
@@ -100,27 +97,27 @@
         width (+ 9 axis-label-max-width)]
     (with-meta
       [:g
-     [:path {:stroke       color
-             :stroke-width "1"
-             :fill         "none"
-             :d            (str "M" sign-char "6," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "6")}]
-     (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
-                   [:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
-                   (when (:grid scale)
-                     [:line {:stroke         color
-                             :stroke-opacity grid-stroke-opacity
-                             :x2             (* neg-sign (:width scale))
-                             :y1             0.5 :y2 0.5}])
-                   (opentype/text
-                     (apply-axis-text-style-fn
-                       {:x           (* sign 9)
-                        :dy          ".32em"
-                        :y           0.5
-                        :text-anchor text-anchor} scale d)
-                     (frmt scale d))]) (ticks scale))]
+       [:path {:stroke       color
+               :stroke-width "1"
+               :fill         "none"
+               :d            (str "M" sign-char "6," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "6")}]
+       (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
+                     [:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
+                     (when (:grid scale)
+                       [:line {:stroke         color
+                               :stroke-opacity grid-stroke-opacity
+                               :x2             (* neg-sign (:width scale))
+                               :y1             0.5 :y2 0.5}])
+                     (opentype/text
+                       (apply-axis-text-style-fn
+                         {:x           (* sign 9)
+                          :dy          ".32em"
+                          :y           0.5
+                          :text-anchor text-anchor} scale d)
+                       (frmt scale d))]) (ticks scale))]
       {margin-direction width
-       :margin-top margin-top
-       :margin-bottom (+ 0.5 margin-bottom)})))
+       :margin-top      margin-top
+       :margin-bottom   (+ 0.5 margin-bottom)})))
 
 (defn render-y-axis-ordinal [scale sign margin]
   (let [color (get scale :color "#000")
