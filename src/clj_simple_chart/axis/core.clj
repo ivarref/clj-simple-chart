@@ -117,7 +117,8 @@
         sign-char (if (= -1 sign) "-" "")
         neg-sign (* -1 sign)
         rng (:range scale)
-        axis-label-max-width (apply max (map :width (meta-texts-for-scale scale)))
+        meta-txts (meta-texts-for-scale scale)
+        axis-label-max-width (apply max (map :x2 meta-txts))
         width (+ 6 axis-label-max-width)]
     (with-meta
       [:g
