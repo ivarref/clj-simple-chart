@@ -14,33 +14,6 @@
   [scale v]
   v)
 
-(def axis-font-properties
-  {:font-size 14
-   :font-name "Roboto Regular"})
-
-(def domain ["Peru" "Iraq" "United States"])
-
-(defn apply-axis-text-style-fn [opts scale d]
-  (let [default-fn (fn [x] {})
-        f (get scale :axis-text-style-fn default-fn)]
-    (merge opts (f d))))
-
-(defn bounding-box-domain [domain]
-  (->> domain
-       (map (fn [txt] (opentype/get-bounding-box (:font-name axis-font-properties)
-                                                 txt
-                                                 0
-                                                 0
-                                                 (:font-size axis-font-properties))))
-       (reduce (fn [{ax1 :x1 ax2 :x2 ay1 :y1 ay2 :y2} {bx1 :x1 bx2 :x2 by1 :y1 by2 :y2}]
-                 {:x1 (min ax1 bx1)
-                  :x2 (max ax2 bx2)
-                  :y1 (min ay1 by1)
-                  :y2 (max ay2 by2)}))))
-
-(defn domain-max-width [domain]
-  (:x2 (bounding-box-domain domain)))
-
 ;;;; TODO: How does d3 do this?
 (defn number-of-decimals [scale]
   (let [domain (:domain scale)
@@ -52,6 +25,18 @@
 (defmethod frmt :linear
   [scale v]
   (format (str "%." (number-of-decimals scale) "f") v))
+
+(def axis-font-properties
+  {:font-size 14
+   :font-name "Roboto Regular"})
+
+(def domain ["Peru" "Iraq" "United States"])
+
+(defn apply-axis-text-style-fn [opts scale d]
+  (let [default-fn (fn [x] {})
+        f (get scale :axis-text-style-fn default-fn)]
+    (merge opts (f d))))
+
 
 (def grid-stroke-opacity 0.25)
 
@@ -93,8 +78,8 @@
                                      :font-size   14}
                                     (frmt scale d))]) (ticks scale))]
       {margin-direction (+ 9 max-height-font)
-       :margin-left spacing-left
-       :margin-right (+ 0.5 spacing-right)})))
+       :margin-left     spacing-left
+       :margin-right    (+ 0.5 spacing-right)})))
 
 (defn render-y-axis [scale sign text-anchor]
   (let [color (get scale :color "#000")
@@ -120,12 +105,19 @@
                                    :font-size   14}
                                   (frmt scale d))]) (ticks scale))]))
 
-(defn render-y-axis-ordinal [scale sign direction]
+(defn meta-texts-for-scale [scale]
+  (let [txts (map #(opentype/text
+                     (apply-axis-text-style-fn {:font-size 14} scale %)
+                     (frmt scale %))
+                  (ticks scale))]
+    (map meta txts)))
+
+(defn render-y-axis-ordinal [scale sign margin]
   (let [color (get scale :color "#000")
         sign-char (if (= -1 sign) "-" "")
         neg-sign (* -1 sign)
         rng (:range scale)
-        axis-label-max-width (domain-max-width (:domain scale))
+        axis-label-max-width (apply max (map :width (meta-texts-for-scale scale)))
         width (+ 6 axis-label-max-width)]
     (with-meta
       [:g
@@ -135,15 +127,14 @@
                :d            (str "M" sign-char "3," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "3")}]
        (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
                      (opentype/text
-                       (apply-axis-text-style-fn {:x         (- (* sign 6)
-                                                                (if (= 1 sign)
-                                                                  0
-                                                                  axis-label-max-width))
-                                                  :dy        ".32em"
-                                                  :y         0.5
-                                                  :font-size 14} scale d)
+                       (apply-axis-text-style-fn {:x  (- (* sign 6)
+                                                         (if (= 1 sign)
+                                                           0
+                                                           axis-label-max-width))
+                                                  :dy ".32em"
+                                                  :y  0.5} scale d)
                        (frmt scale d))]) (ticks scale))]
-      {direction width})))
+      {margin width})))
 
 (defn transform-with-meta [x y k]
   (with-meta
