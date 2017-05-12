@@ -119,6 +119,8 @@
         rng (:range scale)
         meta-txts (meta-texts-for-scale scale)
         axis-label-max-width (apply max (map :x2 meta-txts))
+        axis-label-max-width (if (= 1 sign) axis-label-max-width
+                                            (apply max (map :width meta-txts)))
         width (+ 6 axis-label-max-width)]
     (with-meta
       [:g
