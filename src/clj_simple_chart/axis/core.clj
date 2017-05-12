@@ -35,8 +35,15 @@
 (defn apply-axis-text-style-fn [opts scale d]
   (let [default-fn (fn [x] {})
         f (get scale :axis-text-style-fn default-fn)]
-    (merge opts (f d))))
+    (merge axis-font-properties
+           (merge opts (f d)))))
 
+(defn meta-texts-for-scale [scale]
+  (let [txts (map #(opentype/text
+                     (apply-axis-text-style-fn {} scale %)
+                     (frmt scale %))
+                  (ticks scale))]
+    (map meta txts)))
 
 (def grid-stroke-opacity 0.25)
 
@@ -45,15 +52,7 @@
         rng (:range scale)
         neg-sign (* -1 sign)
         sign-char (if (= -1 sign) "-" "")
-        tiks (ticks scale)
-        tiks-str (mapv (partial frmt scale) tiks)
-        txts (mapv #(opentype/text {:x           0.5
-                                    :dy          dy
-                                    :y           (* sign 9)
-                                    :fill        color
-                                    :text-anchor "middle"
-                                    :font-size   14} %) tiks-str)
-        txt-meta (mapv meta txts)
+        txt-meta (meta-texts-for-scale scale)
         max-height-font (apply max (mapv :height txt-meta))
         spacing-left (double (/ (:width (first txt-meta)) 2))
         spacing-right (double (/ (:width (last txt-meta)) 2))]
@@ -70,13 +69,14 @@
                                :stroke-opacity grid-stroke-opacity
                                :y2             (* neg-sign (:height scale))
                                :x1             0.5 :x2 0.5}])
-                     (opentype/text {:x           0.5
-                                     :dy          dy
-                                     :y           (* sign 9)
-                                     :fill        color
-                                     :text-anchor "middle"
-                                     :font-size   14}
-                                    (frmt scale d))]) (ticks scale))]
+                     (opentype/text
+                       (apply-axis-text-style-fn
+                         {:x           0.5
+                          :dy          dy
+                          :y           (* sign 9)
+                          :fill        color
+                          :text-anchor "middle"} scale d)
+                       (frmt scale d))]) (ticks scale))]
       {margin-direction (+ 9 max-height-font)
        :margin-left     spacing-left
        :margin-right    (+ 0.5 spacing-right)})))
@@ -98,19 +98,13 @@
                              :stroke-opacity grid-stroke-opacity
                              :x2             (* neg-sign (:width scale))
                              :y1             0.5 :y2 0.5}])
-                   (opentype/text {:x           (* sign 9)
-                                   :dy          ".32em"
-                                   :y           0.5
-                                   :text-anchor text-anchor
-                                   :font-size   14}
-                                  (frmt scale d))]) (ticks scale))]))
-
-(defn meta-texts-for-scale [scale]
-  (let [txts (map #(opentype/text
-                     (apply-axis-text-style-fn {:font-size 14} scale %)
-                     (frmt scale %))
-                  (ticks scale))]
-    (map meta txts)))
+                   (opentype/text
+                     (apply-axis-text-style-fn
+                       {:x           (* sign 9)
+                        :dy          ".32em"
+                        :y           0.5
+                        :text-anchor text-anchor} scale d)
+                     (frmt scale d))]) (ticks scale))]))
 
 (defn render-y-axis-ordinal [scale sign margin]
   (let [color (get scale :color "#000")
@@ -118,9 +112,7 @@
         neg-sign (* -1 sign)
         rng (:range scale)
         meta-txts (meta-texts-for-scale scale)
-        axis-label-max-width (apply max (map :x2 meta-txts))
-        axis-label-max-width (if (= 1 sign) axis-label-max-width
-                                            (apply max (map :width meta-txts)))
+        axis-label-max-width (inc (apply max (map :x2 meta-txts)))
         width (+ 6 axis-label-max-width)]
     (with-meta
       [:g
