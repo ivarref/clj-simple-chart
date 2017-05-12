@@ -65,15 +65,12 @@
 (def xx {:type        :linear
          :orientation :both
          :ticks       5
-         :domain      [77 88]})
+         :domain      [0 1000]})
 
-(def yy {:type        :ordinal
+(def yy {:type        :linear
          :orientation :both
-         :reverse     true
-         :domain      ["Peru"
-                       "Iraq"
-                       "Norway"
-                       "United States"]})
+         :ticks 5
+         :domain      [0 100]})
 
 (def cfg {:width  svg-width
           :height svg-height
@@ -83,7 +80,7 @@
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
-
+    [:rect {:width "100%" :height "100%" :fill-opacity "0.2" :fill "steelblue"}]
     [:g {:transform (core/translate (:margin-left c) (:margin-top c))}
 
      [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]

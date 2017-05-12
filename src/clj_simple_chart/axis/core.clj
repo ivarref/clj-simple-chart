@@ -43,7 +43,7 @@
                      (apply-axis-text-style-fn {} scale %)
                      (frmt scale %))
                   (ticks scale))]
-    (map meta txts)))
+    (map meta (if (:reverse scale) (reverse txts) txts))))
 
 (def grid-stroke-opacity 0.25)
 
@@ -53,9 +53,9 @@
         neg-sign (* -1 sign)
         sign-char (if (= -1 sign) "-" "")
         txt-meta (meta-texts-for-scale scale)
-        max-height-font (apply max (mapv :height txt-meta))
-        spacing-left (double (/ (:width (first txt-meta)) 2))
-        spacing-right (double (/ (:width (last txt-meta)) 2))]
+        max-height-font (inc (apply max (mapv :height txt-meta)))
+        spacing-left (inc (double (/ (:width (first txt-meta)) 2)))
+        spacing-right (inc (double (/ (:width (last txt-meta)) 2)))]
     (with-meta
       [:g
        [:path {:stroke       color
@@ -81,12 +81,25 @@
        :margin-left     spacing-left
        :margin-right    (+ 0.5 spacing-right)})))
 
-(defn render-y-axis [scale sign text-anchor]
+(defn render-y-axis [scale sign text-anchor margin-direction]
   (let [color (get scale :color "#000")
         sign-char (if (= -1 sign) "-" "")
         neg-sign (* -1 sign)
-        rng (:range scale)]
-    [:g
+        rng (:range scale)
+        meta-txts (meta-texts-for-scale scale)
+        axis-label-max-width (inc (apply max (map :width meta-txts)))
+        ;;; TODO I think this looks better but why is it needed?
+        ;axis-label-max-width (if (= margin-direction :margin-right) (inc axis-label-max-width) axis-label-max-width)
+
+        offset-height-top (* 0.32 (:font-size (last meta-txts)))
+        margin-top (inc (- (:height (last meta-txts)) offset-height-top))
+
+        offset-height-bottom (* 0.32 (:font-size (first meta-txts)))
+        margin-bottom (inc (- (:height (first meta-txts)) offset-height-top))
+
+        width (+ 9 axis-label-max-width)]
+    (with-meta
+      [:g
      [:path {:stroke       color
              :stroke-width "1"
              :fill         "none"
@@ -104,7 +117,10 @@
                         :dy          ".32em"
                         :y           0.5
                         :text-anchor text-anchor} scale d)
-                     (frmt scale d))]) (ticks scale))]))
+                     (frmt scale d))]) (ticks scale))]
+      {margin-direction width
+       :margin-top margin-top
+       :margin-bottom (+ 0.5 margin-bottom)})))
 
 (defn render-y-axis-ordinal [scale sign margin]
   (let [color (get scale :color "#000")
@@ -146,6 +162,19 @@
                        (render-y-axis-ordinal scale 1 :margin-right)))
 
 (defmethod render-axis [:y :ordinal :both] [scale]
+  (let [ax-left (render-axis (assoc scale :orientation :left))
+        ax-right (render-axis (assoc scale :orientation :right))]
+    (with-meta [:g ax-left ax-right]
+               (merge (meta ax-left) (meta ax-right)))))
+
+(defmethod render-axis [:y :linear :left] [scale]
+  (render-y-axis scale -1 "end" :margin-left))
+
+(defmethod render-axis [:y :linear :right] [scale]
+  (transform-with-meta (:width scale) 0
+                       (render-y-axis scale 1 "start" :margin-right)))
+
+(defmethod render-axis [:y :linear :both] [scale]
   (let [ax-left (render-axis (assoc scale :orientation :left))
         ax-right (render-axis (assoc scale :orientation :right))]
     (with-meta [:g ax-left ax-right]
