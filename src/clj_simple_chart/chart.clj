@@ -59,7 +59,6 @@
         (= ::none (get y :axis ::none)) (recur (assoc-in config [:y :axis] :y))
         :else (chart-inner config)))
 
-(def margin 0)
 (def svg-width 320)
 (def svg-height 240)
 
@@ -76,15 +75,14 @@
                        "Norway"
                        "United States"]})
 
-(def cfg {:width  (- svg-width (* 2 margin))
-          :height (- svg-height (* 2 margin))
+(def cfg {:width  svg-width
+          :height svg-height
           :x      xx :y yy})
 
 (def c (chart cfg))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
-   [:g {:transform (core/translate margin margin)}
 
     [:g {:transform (core/translate (:margin-left c) (:margin-top c))}
 
@@ -101,8 +99,7 @@
      (axis/render-axis (:y c))
      (axis/render-axis (:x c))
 
-     ]]
-   ])
+     ]])
 
 (defn render-self []
   (core/render "./img/chart.svg" (diagram)))
