@@ -14,6 +14,8 @@
                  [clj-http "2.3.0"]
                  [camel-snake-kebab "0.4.0"]
                  [org.clojure/data.csv "0.1.3"]
+                 [org.clojure/data.json "0.2.6"]
+                 [cheshire "5.7.1"]
                  [com.vdurmont/emoji-java "3.2.0"]]
   :aot [clj-simple-chart.jfx]
   :main clj-simple-chart.exp
