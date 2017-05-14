@@ -127,7 +127,7 @@
                      (filter #(= 12 (count (:prev-rows %))))
                      (mapv (partial twelve-mma-contract-row (mapv keyword skattart)))))
 
-(csv/write-csv "7022-deagg-summed-12-mma.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
+(csv/write-csv "7022-deagg-summed-12-mma.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
                                                :data    (rows-round-str twelve-mma)})
 
 ;;; Start grouped by region
