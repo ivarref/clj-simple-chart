@@ -40,7 +40,8 @@
       (get reverse-lookup readable ::none))))
 
 (def skattart ["Ordinær skatt på utvinning av petroleum"
-               "Særskatt på utvinning av petroleum"])
+               "Særskatt på utvinning av petroleum"
+               "Skatteinngang i alt"])
 
 (def qq [{:code "Region" :selection {:filter "all" :values ["*"]}}
          {:code "Skatteart" :selection {:filter "item" :values (mapv (partial get-code-for-variable :skatteart) skattart)}}
@@ -78,8 +79,8 @@
         ks (keys g)]
     (reduce (fn [o k]
               (assoc o (keyword k)
-                       (reduce + 0 (filter number?
-                                           (map read-string (map :value (filter #(= k (:skatteart %)) x))))))) {} ks)))
+                       (format "%.1f" (reduce + 0 (filter number?
+                                                          (map read-string (map :value (filter #(= k (:skatteart %)) x)))))))) {} ks)))
 
 (defn contract-row [x]
   (merge {:dato (:dato (first x))}
