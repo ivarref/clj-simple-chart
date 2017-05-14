@@ -1,5 +1,5 @@
-;;; To be honest I find this spectacularly difficult to pull this data ...
-;;; That's how it goes ... for now.
+;;; To be honest I find this spectacularly difficult to fetch this data ...
+;;; But that's how it goes ... for now.
 ;;; I'm open to improvements! ==> refsdal.ivar@gmail.com
 
 (ns clj-simple-chart.ssb.petroskatt
@@ -42,7 +42,7 @@
 (def skattart ["Ordinær skatt på utvinning av petroleum"
                "Særskatt på utvinning av petroleum"])
 
-(def qq [{:code "Region" :selection {:filter "item" :values [(get-code-for-variable :region "Kontinentalsokkelen")]}}
+(def qq [{:code "Region" :selection {:filter "all" :values ["*"]}}
          {:code "Skatteart" :selection {:filter "item" :values (mapv (partial get-code-for-variable :skatteart) skattart)}}
          {:code "ContentsCode" :selection {:filter "item" :values [(get-code-for-variable :statistikkvariabel "Skatt")]}}
          {:code "Tid" :selection {:filter "all" :values ["*"]}}])
@@ -67,16 +67,40 @@
                      :skatteart skatteart
                      :dato      (string/replace (subs (name v) 6) "M" "-")
                      :value     (get row v)})) [] data-columns))
+(def all-data (flatten (mapv process-row data)))
 
-(def flat-data (flatten (mapv process-row data)))
-(def grouped (vals (group-by (fn [x] (str (:region x) (:dato x))) flat-data)))
+(def flat-data (filter #(re-matches #"^\d{2} .*?$" (:region %)) all-data))
+
+(def grouped (vals (group-by :dato flat-data)))
+
+(defn sum-over-region [x]
+  (let [g (group-by :skatteart x)
+        ks (keys g)]
+    (reduce (fn [o k]
+              (assoc o (keyword k)
+                       (reduce + 0 (filter number?
+                                           (map read-string (map :value (filter #(= k (:skatteart %)) x))))))) {} ks)))
 
 (defn contract-row [x]
+  (merge {:dato (:dato (first x))}
+         (sum-over-region x)))
+
+(def output-rows (->> (mapv contract-row grouped)
+                      (sort-by :dato)))
+(csv/write-csv "7022-summed.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+                                  :data    output-rows})
+
+
+(def grouped-by-region (vals (group-by (fn [x] (str (:region x) (:dato x))) flat-data)))
+
+(defn contract-row-region [x]
   (merge {:dato   (:dato (first x))
           :region (:region (first x))}
          (zipmap (map keyword (map :skatteart x)) (map :value x))))
 
-(def output-rows (->> (mapv contract-row grouped)
-                      (sort-by :dato)))
-(csv/write-csv "7022.csv" {:columns (vec (flatten [:dato :region (mapv keyword skattart)]))
-                           :data    output-rows})
+(def output-rows-by-region (->> (mapv contract-row-region grouped-by-region)
+                                (sort-by :region)
+                                (sort-by :dato)))
+
+(csv/write-csv "7022-by-region.csv" {:columns (vec (flatten [:dato :region (mapv keyword skattart)]))
+                                     :data    output-rows-by-region})
