@@ -72,6 +72,7 @@
 
 (def flat-data (filter #(re-matches #"^\d{2} .*?$" (:region %)) all-data))
 
+;;; Start summed data
 (def grouped (vals (group-by :dato flat-data)))
 
 (defn sum-over-region [x]
@@ -79,19 +80,43 @@
         ks (keys g)]
     (reduce (fn [o k]
               (assoc o (keyword k)
-                       (format "%.1f" (reduce + 0 (filter number?
-                                                          (map read-string (map :value (filter #(= k (:skatteart %)) x)))))))) {} ks)))
+                       (reduce + 0 (filter number?
+                                           (map read-string (map :value (filter #(= k (:skatteart %)) x))))))) {} ks)))
 
 (defn contract-row [x]
   (merge {:dato (:dato (first x))}
          (sum-over-region x)))
 
-(def output-rows (->> (mapv contract-row grouped)
-                      (sort-by :dato)))
+(def output-rows-numeric (->> (mapv contract-row grouped)
+                              (sort-by :dato)))
+
+(defn rows-round-str [rows]
+  (mapv (fn [row]
+          (reduce (fn [o k] (update o k #(format "%.1f" %))) row
+                  (mapv keyword skattart))) rows))
+
 (csv/write-csv "7022-summed.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
-                                  :data    output-rows})
+                                  :data    (rows-round-str output-rows-numeric)})
+
+;;; Start de-aggregated summed data
+(defn deagg-row [all-data idx x]
+  (cond (= idx 0) nil
+        (.endsWith (:dato x) "-01") x
+        :else (merge x
+                     (reduce (fn [o p]
+                               (assoc o p (- (get x p)
+                                             (get (nth all-data (dec idx)) p))))
+                             {} (mapv keyword skattart)))))
+
+(def deagg-rows (->> output-rows-numeric
+                     (map-indexed (fn [idx x] (deagg-row output-rows-numeric idx x)))
+                     (remove nil?)))
+
+(csv/write-csv "7022-deagg-summed.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
+                                        :data    (rows-round-str deagg-rows)})
 
 
+;;; Start grouped by region
 (def grouped-by-region (vals (group-by (fn [x] (str (:region x) (:dato x))) flat-data)))
 
 (defn contract-row-region [x]
