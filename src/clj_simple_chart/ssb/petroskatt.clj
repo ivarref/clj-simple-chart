@@ -115,6 +115,20 @@
 (csv/write-csv "7022-deagg-summed.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
                                         :data    (rows-round-str deagg-rows)})
 
+;;; Start 12-mma de-agg summed data
+(defn twelve-mma-row [all-data idx row]
+  (assoc row :prev-rows (take-last 12 (take (inc idx) all-data))))
+
+(defn twelve-mma-contract-row [attrs row]
+  (reduce (fn [o k] (assoc o k (reduce + 0 (map k (:prev-rows row))))) row attrs))
+
+(def twelve-mma (->> deagg-rows
+                     (map-indexed (partial twelve-mma-row deagg-rows))
+                     (filter #(= 12 (count (:prev-rows %))))
+                     (mapv (partial twelve-mma-contract-row (mapv keyword skattart)))))
+
+(csv/write-csv "7022-deagg-summed-12-mma.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
+                                               :data    (rows-round-str twelve-mma)})
 
 ;;; Start grouped by region
 (def grouped-by-region (vals (group-by (fn [x] (str (:region x) (:dato x))) flat-data)))
