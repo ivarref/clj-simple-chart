@@ -153,6 +153,12 @@
 (csv/write-csv "7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
                                                    :data    (rows-round-str twelve-mma-mrd)})
 
+(def twelve-mma-mrd-yearly-ytd (filter #(or (= (:dato %) (:dato (last twelve-mma-mrd))) (.endsWith (:dato %) "-12")) twelve-mma-mrd))
+
+(csv/write-csv "7022-deagg-summed-mrd-yearly-ytd.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+                                                       :data    (rows-round-str twelve-mma-mrd-yearly-ytd)})
+
+
 ;;; Start grouped by region
 (def grouped-by-region (vals (group-by (fn [x] (str (:region x) (:dato x))) flat-data)))
 
