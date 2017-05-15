@@ -57,7 +57,7 @@
               {:margin-left 8}
               [{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                {:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
-               {:text "(Årstall): Sum ved årsslutt"}]))
+               {:text "(Årstall): Sum ved årsslutt" :font "Roboto Black" :font-size 16}]))
 
 (def footer (opentype/text-stack-downwards
               {:margin-left marg
