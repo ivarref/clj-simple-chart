@@ -29,11 +29,13 @@
 
 (def header (opentype/text-stack-downwards
               {:margin-top  marg
-               :margin-left marg
-               :margin-bottom 3}
+               :margin-left marg}
               [{:text "Skatteinngang frå kontinentalsokkelen" :font "Roboto Bold" :font-size 36}
-               {:text "Milliardar kroner (løpande), 12 månadar rullande sum" :font "Roboto Black" :font-size 16}
-               {:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
+               {:text "Milliardar kroner (løpande), 12 månadar rullande sum" :font "Roboto Black" :font-size 16}]))
+
+(def detail (opentype/text-stack-downwards
+              {:margin-left 8}
+              [{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                {:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}]))
 
 (def footer (opentype/text-stack-downwards
@@ -54,7 +56,7 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   x-ticks
-         :tick-format   (fn [x] (subs x 0 4))
+         :tick-format   (fn [x] (str "Jan " (subs x 0 4)))
          :domain        x-domain
          :sub-domain    [ordinaer saerskatt]
          :padding-inner 0.1
@@ -79,11 +81,15 @@
   [{:p (:dato opts) :c ordinaer :h (get opts ordinaer) :fill ordinaer-fill}
    {:p (:dato opts) :c saerskatt :h (get opts saerskatt) :fill saerskatt-fill}])
 
+#_(defn make-txt [opts]
+  )
+
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    header
    [:g {:transform (core/translate (+ marg (:margin-left c)) (+ (:height (meta header)) (:margin-top c)))}
     [:g (bars (mapv make-rect data))]
+    detail
     (axis/render-axis (:y c))
     (axis/render-axis (:x c))]
    [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer]
