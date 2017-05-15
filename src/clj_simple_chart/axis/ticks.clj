@@ -50,4 +50,6 @@
 
 (defmethod ticks :ordinal
   [scale]
-  (:domain scale))
+  (if (:tick-values scale)
+    (:tick-values scale)
+    (:domain scale)))

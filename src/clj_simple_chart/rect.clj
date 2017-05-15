@@ -87,6 +87,8 @@
   (cond
     (not (or (list? inp) (vector? inp)))
     (recur xscale yscale [inp])
+    (not-every? map? inp)
+    (recur xscale yscale (vec (flatten inp)))
     (> (count (keys (group-by :p inp))) 1)
     [:g (map (partial rect-or-stacked-vertical xscale yscale) (vals (group-by :p inp)))]
     (and (:sub-domain xscale) (= :sideways (:stack xscale)))
