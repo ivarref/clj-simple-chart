@@ -113,6 +113,7 @@
         yfn (partial point/center-point y)
         summ (+ (get opts ordinaer) (get opts saerskatt))]
     [:g {:transform (core/translate (xfn dato) (yfn summ))}
+     [:circle {:r 2}]
      [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
      (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
      (opentype/text {:dy "-1.71em" :font "Roboto Bold" :text-anchor "middle"
