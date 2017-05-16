@@ -7,17 +7,21 @@
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
             [clj-simple-chart.opentype :as opentype]
+            [clojure.test :as test]
             [clojure.string :as string]))
 
 (def ordinaer (keyword "Ordinær skatt på utvinning av petroleum"))
 (def saerskatt (keyword "Særskatt på utvinning av petroleum"))
 
+(def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-usd)
+
 (def data (->> petroskatt/twelve-mma-mrd
                (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
                (mapv #(assoc % :sum (+ (get % ordinaer) (get % saerskatt))))
+               (mapv #(assoc % :oilprice (get oil-date-to-usd (:dato %) ::none)))
                #_(filter #(>= (:year %) 2010))))
 
-(def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-usd)
+(test/is (= 0 (count (filter #(= ::none (:oilprice %)) data))))
 
 (def x-domain (map :dato data))
 
@@ -92,11 +96,11 @@
 (def yy {:type        :linear
          :orientation :left
          ;:ticks       5
-         :domain      [0 260]})
+         :domain      [0 270]})
 
 (def yy2 {:type        :linear
           :orientation :right
-          :domain      [0 120]})
+          :domain      [0 (apply max (map :oilprice data))]})
 
 (def available-height (- svg-height (:height (meta header)) (:height (meta footer))))
 
@@ -115,7 +119,7 @@
 
 (def x (:x c))
 (def y (:y c))
-(def y2 (:y c))
+(def y2 (:y2 c))
 
 (def xfn (partial point/center-point x))
 (def yfn (partial point/center-point y))
@@ -138,7 +142,10 @@
                    :text        (string/replace (format "%.1f" summ) "." ",")})])
 
 (defn add-oil-price-line []
-  )
+  [:g (map (fn [{dato :dato oilprice :oilprice}]
+             [:g {:transform (core/translate (xfn dato) (y2fn oilprice))}
+              [:circle {:r 5 :fill-opacity "0.5"}]
+              ]) data)])
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -148,10 +155,9 @@
     (axis/render-axis (:y c))
     (axis/render-axis (:y2 c))
     [:g (bars (mapv make-rect data))]
-    [:g (map make-txt end-of-year-data)]
     [:g (add-oil-price-line)]
+    [:g (map make-txt end-of-year-data)]
     detail
-
     (axis/render-axis (:x c))]
    [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer]
    [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer2]
