@@ -41,4 +41,15 @@
 (def columns [:dato :usd])
 
 (csv/write-csv "./data/brent_monthly_usd.csv" {:columns columns
-                                               :data raw-data})
+                                               :data    raw-data})
+
+(def brent-numeric (->> raw-data
+                        (mapv #(update % :usd read-string))))
+(test/is (every? number? (map :usd brent-numeric)))
+
+(def brent-12-mma
+  (->> brent-numeric
+       (map-indexed (fn [idx x] (assoc x :prev-rows (take-last 12 (take (inc idx) brent-numeric)))))
+       (filter #(= 12 (count (:prev-rows %))))
+       (mapv #(assoc % :usd (/ (reduce + 0 (mapv :usd (:prev-rows %))) 12)))
+       (mapv #(dissoc % :prev-rows))))
