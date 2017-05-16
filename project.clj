@@ -16,6 +16,8 @@
                  [org.clojure/data.csv "0.1.3"]
                  [org.clojure/data.json "0.2.6"]
                  [cheshire "5.7.1"]
+                 [org.eclipse.jetty/jetty-util "9.4.5.v20170502"]
+                 [clj-time "0.13.0"]
                  [com.vdurmont/emoji-java "3.2.0"]]
   :aot [clj-simple-chart.jfx]
   :main clj-simple-chart.exp
