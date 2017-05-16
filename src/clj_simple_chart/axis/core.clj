@@ -114,6 +114,7 @@
                        (apply-axis-text-style-fn
                          {:x           (* sign 9)
                           :dy          ".32em"
+                          :fill        color
                           :y           0.5
                           :text-anchor text-anchor} scale d)
                        (frmt scale d))]) (ticks scale))]

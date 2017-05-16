@@ -33,9 +33,13 @@
 (def blue "rgb(31, 119, 180)")
 (def orange "rgb(255, 127, 14)")
 (def green "rgb(44, 160, 44)")
+(def brown "rgb(140, 86, 75)")
+(def red "rgb(214, 39, 40)")
 
 (def saerskatt-fill green)
 (def ordinaer-fill blue)
+
+(def oil-fill red)
 
 (def months ["ignore"
              "januar" "februar" "mars" "april" "mai"
@@ -58,14 +62,35 @@
               {:margin-top  5
                :margin-left marg}
               [{:text "Skatteinngang frå kontinentalsokkelen" :font "Roboto Bold" :font-size 36}
-               {:text (str "Milliardar kroner (løpande), 12 månadar rullande sum. " siste-verdi-str)
-                :font "Roboto Black" :font-size 16}]))
+               {:text (str "Milliardar kroner (løpande), 12 månadar glidande sum. " siste-verdi-str)
+                :font "Roboto Black" :font-size 16}
+               {:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
+               {:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
+
+               #_{:text "(Årstall): Sum ved årsslutt" :font "Roboto Black" :font-size 16}]))
+
+(def oljepris-info
+  [:g {:transform (core/translate (- svg-width marg) (:height (meta header)))}
+   (opentype/text
+     {:text        "Oljepris, USD/fat"
+      :text-anchor "end"
+      :fill        oil-fill
+      :font        "Roboto Black"
+      :dy          "-1em"
+      :font-size   16})
+   (opentype/text
+     {:text        "12 mnd. glidande gjennomsnitt"
+      :text-anchor "end"
+      :dy          "0em"
+      :fill        oil-fill
+      :font        "Roboto Black"
+      :font-size   14})])
 
 (def detail (opentype/text-stack-downwards
               {:margin-left 8}
               [{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                {:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
-               {:text "(Årstall): Sum ved årsslutt" :font "Roboto Black" :font-size 16}]))
+               #_{:text "(Årstall): Sum ved årsslutt" :font "Roboto Black" :font-size 16}]))
 
 (def footer (opentype/text-stack-downwards
               {:margin-left   marg
@@ -96,10 +121,13 @@
 (def yy {:type        :linear
          :orientation :left
          ;:ticks       5
-         :domain      [0 270]})
+         :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
+         :domain      [0 (apply max (map :sum data))]})
 
 (def yy2 {:type        :linear
           :orientation :right
+          :color       oil-fill
+          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
           :domain      [0 (apply max (map :oilprice data))]})
 
 (def available-height (- svg-height (:height (meta header)) (:height (meta footer))))
@@ -142,22 +170,45 @@
                    :text        (string/replace (format "%.1f" summ) "." ",")})])
 
 (defn add-oil-price-line []
-  [:g (map (fn [{dato :dato oilprice :oilprice}]
-             [:g {:transform (core/translate (xfn dato) (y2fn oilprice))}
-              [:circle {:r 5 :fill-opacity "0.5"}]
-              ]) data)])
+  (let [dat data
+        first-point (first dat)
+        last-point (last dat)
+        rest-of-data (drop 1 dat)
+        oil-price-stroke-width 2
+        line-to (reduce (fn [o v] (str o " "
+                                       "L"
+                                       (xfn (:dato v))
+                                       " "
+                                       (y2fn (:oilprice v)))) "" rest-of-data)
+        dots (map (fn [{dato :dato oilprice :oilprice}]
+                    [:circle {:cx           (xfn dato)
+                              :cy           (y2fn oilprice)
+                              :stroke       "black"
+                              :stroke-width oil-price-stroke-width
+                              :fill         oil-fill
+                              :r            4}]) end-of-year-data)]
+    [:g
+     [:path {:stroke-width oil-price-stroke-width
+             :stroke       oil-fill
+             :fill         "none"
+             :d
+                           (str "M" (xfn (:dato first-point)) " " (y2fn (:oilprice first-point))
+                                " " line-to)}]
+     #_dots]))
+
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    header
-   #_[:g {:transform (core/translate 0 (+ (:height (meta header)) (:margin-top c)))} info-right]
+   oljepris-info
+   ;[:g {:transform (core/translate 0 (+ (:height (meta header)) (:margin-top c)))} info-right]
    [:g {:transform (core/translate (+ marg (:margin-left c)) (+ (:height (meta header)) (:margin-top c)))}
     (axis/render-axis (:y c))
     (axis/render-axis (:y2 c))
     [:g (bars (mapv make-rect data))]
     [:g (add-oil-price-line)]
     [:g (map make-txt end-of-year-data)]
-    detail
+    #_detail
     (axis/render-axis (:x c))]
    [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer]
    [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer2]
