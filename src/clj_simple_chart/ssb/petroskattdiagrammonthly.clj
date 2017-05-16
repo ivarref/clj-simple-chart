@@ -1,5 +1,6 @@
 (ns clj-simple-chart.ssb.petroskattdiagrammonthly
   (:require [clj-simple-chart.ssb.petroskatt :as petroskatt]
+            [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.axis.core :as axis]
@@ -12,12 +13,14 @@
                (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
                #_(filter #(>= (:year %) 2010))))
 
+(def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-usd)
+
 (def x-domain (map :dato data))
 
-(def svg-width 960)
+(def svg-width 900)
 (def svg-height 500)
 
-(def marg 15)
+(def marg 10)
 
 (def ordinaer (keyword "Ordinær skatt på utvinning av petroleum"))
 (def saerskatt (keyword "Særskatt på utvinning av petroleum"))
@@ -42,12 +45,12 @@
 (def last-data (last data))
 
 (def siste-verdi-str
-  (str "Siste verdi (" (date-readable (:dato last-data)) "): "
+  (str "Per " (date-readable (:dato last-data)) ": "
        (string/replace (format "%.1f" (+ (get last-data ordinaer) (get last-data saerskatt))) "." ",")
        " mrd kr."))
 
 (def header (opentype/text-stack-downwards
-              {:margin-top  marg
+              {:margin-top  5
                :margin-left marg}
               [{:text "Skatteinngang frå kontinentalsokkelen" :font "Roboto Bold" :font-size 36}
                {:text (str "Milliardar kroner (løpande), 12 månadar rullande sum. " siste-verdi-str)
@@ -96,14 +99,22 @@
 
 (def available-height (- svg-height (:height (meta header)) (:height (meta footer))))
 
-(def c (chart/chart {:width  (- svg-width marg)
+(def c (chart/chart {:width  (- svg-width (* 2 marg))
                      :height available-height
                      :x      xx
                      :y      yy
                      :y2     yy2}))
 
+(def info-right (opentype/text
+                  {:text               "Oljepris brent, USD/fat"
+                   :alignment-baseline "hanging"
+                   :dy                 ".5em"
+                   :dx                 (- svg-width marg (:margin-right c))
+                   :text-anchor        "end" :font-size 16}))
+
 (def x (:x c))
 (def y (:y c))
+(def y2 (:y c))
 
 (def bars (rect/scaled-rect (:x c) (:y c)))
 
@@ -128,11 +139,14 @@
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    header
+   #_[:g {:transform (core/translate 0 (+ (:height (meta header)) (:margin-top c)))} info-right]
    [:g {:transform (core/translate (+ marg (:margin-left c)) (+ (:height (meta header)) (:margin-top c)))}
+    (axis/render-axis (:y c))
+    (axis/render-axis (:y2 c))
     [:g (bars (mapv make-rect data))]
     [:g (map make-txt end-of-year-data)]
     detail
-    (axis/render-axis (:y c))
+
     (axis/render-axis (:x c))]
    [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer]
    [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer2]
