@@ -61,7 +61,7 @@
 (def header (opentype/text-stack-downwards
               {:margin-top  5
                :margin-left marg}
-              [{:text "Skatteinngang frå kontinentalsokkelen" :font "Roboto Bold" :font-size 36}
+              [{:text "Skatteinngang frå utvinning av petroleum" :font "Roboto Bold" :font-size 36}
                {:text (str "Milliardar kroner (løpande), 12 månadar glidande sum. " siste-verdi-str)
                 :font "Roboto Black" :font-size 16}
                {:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
