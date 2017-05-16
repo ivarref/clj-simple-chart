@@ -15,7 +15,7 @@
 (def x-domain (map :dato data))
 
 (def svg-width 960)
-(def svg-height 480)
+(def svg-height 500)
 
 (def marg 15)
 
@@ -60,17 +60,17 @@
                {:text "(Årstall): Sum ved årsslutt" :font "Roboto Black" :font-size 16}]))
 
 (def footer (opentype/text-stack-downwards
-              {:margin-left marg
-               :margin-top 8
+              {:margin-left   marg
+               :margin-top    8
                :margin-bottom 3}
               [{:text "Kjelde: SSB" :font-size 16}]))
 
 (def footer2 (opentype/text
-              {:text "Diagram: Refsdal.Ivar@gmail.com"
-               :alignment-baseline "hanging"
-               :dy ".5em"
-               :dx (- svg-width marg)
-               :text-anchor "end" :font-size 16}))
+               {:text               "Diagram © Refsdal.Ivar@gmail.com"
+                :alignment-baseline "hanging"
+                :dy                 ".5em"
+                :dx                 (- svg-width marg)
+                :text-anchor        "end" :font-size 16}))
 
 (def x-ticks (filter #(.endsWith % "-01") (map :dato data)))
 (def end-of-year-data (filter #(.endsWith (:dato %) "-12") data))
@@ -87,15 +87,20 @@
 
 (def yy {:type        :linear
          :orientation :left
-         :ticks       5
-         :domain      [0 275]})
+         ;:ticks       5
+         :domain      [0 260]})
+
+(def yy2 {:type        :linear
+          :orientation :right
+          :domain      [0 120]})
 
 (def available-height (- svg-height (:height (meta header)) (:height (meta footer))))
 
 (def c (chart/chart {:width  (- svg-width marg)
                      :height available-height
                      :x      xx
-                     :y      yy}))
+                     :y      yy
+                     :y2     yy2}))
 
 (def x (:x c))
 (def y (:y c))
@@ -116,7 +121,7 @@
      [:circle {:r 2}]
      [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
      (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
-     (opentype/text {:dy "-1.71em" :font "Roboto Bold" :text-anchor "middle"
+     (opentype/text {:dy   "-1.71em" :font "Roboto Bold" :text-anchor "middle"
                      :text (string/replace (format "%.1f" summ) "." ",")})
      ]))
 
