@@ -2,6 +2,9 @@
 ;;; But that's how it goes ... for now.
 ;;; I'm open to improvements! ==> refsdal.ivar@gmail.com
 
+;;; Human friendly source for table 07022:
+;;; https://www.ssb.no/statistikkbanken/SelectVarVal/Define.asp?MainTable=InnbetSkatt2&KortNavnWeb=skatteregn&PLanguage=0&checked=true
+
 (ns clj-simple-chart.ssb.petroskatt
   (:require [clojure.data.json :as json]
             [clojure.test :as test]
