@@ -53,3 +53,5 @@
        (filter #(= 12 (count (:prev-rows %))))
        (mapv #(assoc % :usd (/ (reduce + 0 (mapv :usd (:prev-rows %))) 12)))
        (mapv #(dissoc % :prev-rows))))
+
+(def brent-12-mma-dato-to-usd (reduce (fn [o v] (assoc o (:dato v) (:usd v))) {} brent-12-mma))
