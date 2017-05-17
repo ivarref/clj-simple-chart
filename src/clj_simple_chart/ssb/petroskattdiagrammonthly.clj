@@ -13,7 +13,7 @@
 (def ordinaer (keyword "Ordinær skatt på utvinning av petroleum"))
 (def saerskatt (keyword "Særskatt på utvinning av petroleum"))
 
-(def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-usd)
+(def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-nok)
 
 (def data (->> petroskatt/twelve-mma-mrd
                (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
@@ -72,7 +72,7 @@
 (def oljepris-info
   [:g {:transform (core/translate (- svg-width marg) (:height (meta header)))}
    (opentype/text
-     {:text        "Oljepris, USD/fat"
+     {:text        "Oljepris, NOK/fat"
       :text-anchor "end"
       :fill        oil-fill
       :font        "Roboto Black"
@@ -96,7 +96,7 @@
               {:margin-left   marg
                :margin-top    8
                :margin-bottom 3}
-              [{:text "Kjelde: SSB" :font-size 16}]))
+              [{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font-size 16}]))
 
 (def footer2 (opentype/text
                {:text               "Diagram © Refsdal.Ivar@gmail.com"

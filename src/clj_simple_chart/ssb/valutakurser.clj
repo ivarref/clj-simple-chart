@@ -37,4 +37,18 @@
 
 (def parsed (mapv (fn [x] (assoc x :Date (get-date (:Date x)))) data))
 
+(def one-usd-numeric (->> parsed
+                          (mapv (fn [x] {:dato (:Date x)
+                                    :usd  (read-string (get x (keyword "1 USD")))}))
+                          (sort-by :dato)))
+
+(def one-usd-numeric-12-mma
+  (->> one-usd-numeric
+       (map-indexed (fn [idx x] (assoc x :prev-rows (take-last 12 (take (inc idx) one-usd-numeric)))))
+       (filter #(= 12 (count (:prev-rows %))))
+       (mapv #(assoc % :usd (/ (reduce + 0 (mapv :usd (:prev-rows %))) 12)))
+       (mapv #(dissoc % :prev-rows))))
+
+(def one-usd-date-to-nok (reduce (fn [o v] (assoc o (:dato v) (:usd v))) {} one-usd-numeric-12-mma))
+
 (csv/write-csv "./data/valuta_monthly.csv" {:columns columns :data parsed})

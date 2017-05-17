@@ -2,6 +2,7 @@
   (:require [clj-http.client :as client]
             [clj-time.core :as time]
             [clj-simple-chart.csv.csvmap :as csv]
+            [clj-simple-chart.ssb.valutakurser :as valutakurser]
             [clojure.set :as set]
             [clojure.test :as test])
   (:import (org.eclipse.jetty.util UrlEncoded MultiMap)))
@@ -55,3 +56,8 @@
        (mapv #(dissoc % :prev-rows))))
 
 (def brent-12-mma-dato-to-usd (reduce (fn [o v] (assoc o (:dato v) (:usd v))) {} brent-12-mma))
+
+(def one-usd-date-to-nok valutakurser/one-usd-date-to-nok)
+
+(def brent-12-mma-dato-to-nok (reduce (fn [o v] (assoc o (:dato v) (* (get one-usd-date-to-nok (:dato v))
+                                                                      (:usd v)))) {} brent-12-mma))
