@@ -62,7 +62,7 @@
               {:margin-top  5
                :margin-left marg}
               [{:text "Skatteinngang frå utvinning av petroleum" :font "Roboto Bold" :font-size 36}
-               {:text (str "Milliardar NOK (løpande), 12 månadar glidande sum. " siste-verdi-str)
+               {:text (str "Milliardar NOK, 12 månadar glidande sum. " siste-verdi-str)
                 :margin-bottom 20
                 :font "Roboto Black" :font-size 16}
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
