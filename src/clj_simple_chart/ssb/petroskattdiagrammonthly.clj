@@ -61,10 +61,9 @@
 (def header (opentype/text-stack-downwards
               {:margin-top  5
                :margin-left marg}
-              [{:text "Skatteinngang frå utvinning av petroleum" :font "Roboto Bold" :font-size 36}
-               {:text (str "Milliardar NOK, 12 månadar glidande sum. " siste-verdi-str)
-                :margin-bottom 20
-                :font "Roboto Black" :font-size 16}
+              [{:text "Innbetalt petroleumsskatt" :font "Roboto Bold" :font-size 36}
+               {:text (str "Milliardar NOK, 12 månadar glidande sum." #_siste-verdi-str) :font "Roboto Black" :font-size 16}
+               {:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 20}
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
                {:text "Oljepris, NOK/fat" :fill oil-fill :font "Roboto Black" :font-size 16}
