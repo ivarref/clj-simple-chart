@@ -56,41 +56,44 @@
 (def siste-verdi-str
   (str "Per " (date-readable (:dato last-data)) ": "
        (string/replace (format "%.1f" (:sum last-data)) "." ",")
-       " mrd kr."))
+       " mrd NOK"))
 
 (def header (opentype/text-stack-downwards
               {:margin-top  5
                :margin-left marg}
               [{:text "Skatteinngang frå utvinning av petroleum" :font "Roboto Bold" :font-size 36}
-               {:text (str "Milliardar kroner (løpande), 12 månadar glidande sum. " siste-verdi-str)
+               {:text (str "Milliardar NOK (løpande), 12 månadar glidande sum. " siste-verdi-str)
+                :margin-bottom 20
                 :font "Roboto Black" :font-size 16}
-               {:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
-               {:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
+               #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
+               #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
+               {:text "Oljepris, NOK/fat" :fill oil-fill :font "Roboto Black" :font-size 16}
+               {:text "12 mnd. glidande gjennomsnitt" :fill oil-fill :font "Roboto Black" :font-size 14}
+               ]))
 
-               #_{:text "(Årstall): Sum ved årsslutt" :font "Roboto Black" :font-size 16}]))
-
-(def oljepris-info
+(def info-right
   [:g {:transform (core/translate (- svg-width marg) (:height (meta header)))}
    (opentype/text
-     {:text        "Oljepris, NOK/fat"
+     {:text        "Særskatt på utvinning av petroleum"
       :text-anchor "end"
-      :fill        oil-fill
+      :fill        saerskatt-fill
       :font        "Roboto Black"
       :dy          "-1em"
       :font-size   16})
    (opentype/text
-     {:text        "12 mnd. glidande gjennomsnitt"
+     {:text        "Ordinær skatt på utvinning av petroleum"
       :text-anchor "end"
-      :dy          "0em"
-      :fill        oil-fill
+      :dy          "-0em"
+      :fill        ordinaer-fill
       :font        "Roboto Black"
-      :font-size   14})])
-
-(def detail (opentype/text-stack-downwards
-              {:margin-left 8}
-              [{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
-               {:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
-               #_{:text "(Årstall): Sum ved årsslutt" :font "Roboto Black" :font-size 16}]))
+      :font-size   16})
+   (opentype/text
+     {:text        "Mrd NOK"
+      :text-anchor "end"
+      :dy          "-2em"
+      :fill        "black"
+      :font        "Roboto Black"
+      :font-size   16})])
 
 (def footer (opentype/text-stack-downwards
               {:margin-left   marg
@@ -119,13 +122,13 @@
          })
 
 (def yy {:type        :linear
-         :orientation :left
+         :orientation :right
          ;:ticks       5
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          :domain      [0 (apply max (map :sum data))]})
 
 (def yy2 {:type        :linear
-          :orientation :right
+          :orientation :left
           :color       oil-fill
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
           :domain      [0 (apply max (map :oilprice data))]})
@@ -137,13 +140,6 @@
                      :x      xx
                      :y      yy
                      :y2     yy2}))
-
-(def info-right (opentype/text
-                  {:text               "Oljepris brent, USD/fat"
-                   :alignment-baseline "hanging"
-                   :dy                 ".5em"
-                   :dx                 (- svg-width marg (:margin-right c))
-                   :text-anchor        "end" :font-size 16}))
 
 (def x (:x c))
 (def y (:y c))
@@ -200,7 +196,7 @@
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    header
-   oljepris-info
+   info-right
    ;[:g {:transform (core/translate 0 (+ (:height (meta header)) (:margin-top c)))} info-right]
    [:g {:transform (core/translate (+ marg (:margin-left c)) (+ (:height (meta header)) (:margin-top c)))}
     (axis/render-axis (:y c))

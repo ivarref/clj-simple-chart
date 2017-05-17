@@ -266,6 +266,7 @@
         metas (map meta paths)
         y-offset (map #(let [h-with-margin (+ 4 (:height %))]
                          (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
+        y-offset (map-indexed (fn [idx yoff] (+ yoff (get (nth txts idx) :margin-bottom 0))) y-offset)
         height (reduce + y-offset)]
     (with-meta
       [:g {:transform (translate margin-left margin-top)}
