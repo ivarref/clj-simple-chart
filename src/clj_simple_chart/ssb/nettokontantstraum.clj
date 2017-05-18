@@ -38,7 +38,7 @@
 (defn process-grouped [values]
   (reduce (fn [o v]
             (assoc o (:prop v)
-                     (:value v)))
+                     (read-string (:value v))))
           {:dato (:dato (first values))}
           values))
 
@@ -52,5 +52,34 @@
 
 (def actual-columns (flatten [:dato (mapv keyword (distinct (filter string? (map prop columns))))]))
 
-(csv/write-csv "./data/11013/11013.csv" {:data parsed
+(csv/write-csv "./data/11013/11013.csv" {:data    parsed
                                          :columns actual-columns})
+
+(defn produce-4-qms [x]
+  (reduce (fn [o [k v]]
+            (cond (= k :prev-rows) o
+                  (= k :dato) (assoc o k v)
+                  :else (assoc o k (reduce + 0 (mapv k (:prev-rows x))))))
+          {}
+          x))
+
+(def four-quarters-moving-sum (->> parsed
+                                   (map-indexed (fn [idx x]
+                                                  (assoc x :prev-rows (take-last 4 (take (inc idx) parsed)))))
+                                   (filter #(= 4 (count (:prev-rows %))))
+                                   (mapv produce-4-qms)
+                                   (mapv #(dissoc % :prev-rows))
+                                   ))
+
+(csv/write-csv "./data/11013/11013-4qms.csv" {:data    four-quarters-moving-sum
+                                              :columns actual-columns})
+
+(defn produce-mrd [x]
+  (reduce (fn [o [k v]]
+            (cond (= k :dato) (assoc o k v)
+                  :else (assoc o k (format "%.1f" (double (/ v 1000))))))
+          {}
+          x))
+
+(csv/write-csv "./data/11013/11013-mrd-4qms.csv" {:data    (mapv produce-mrd four-quarters-moving-sum)
+                                                  :columns actual-columns})
