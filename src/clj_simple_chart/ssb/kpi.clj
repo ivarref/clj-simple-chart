@@ -29,10 +29,31 @@
               ["Januar" "Februar" "Mars" "April" "Mai" "Juni" "Juli" "August" "September" "Oktober" "November" "Desember"]
               (mapv #(format "%02d" %) (range 1 13))))
 
+(def month-to-quarter
+  {"01" "1"
+   "02" "1"
+   "03" "1"
+
+   "04" "2"
+   "05" "2"
+   "06" "2"
+
+   "07" "3"
+   "08" "3"
+   "09" "3"
+
+   "10" "4"
+   "11" "4"
+   "12" "4"})
+
 (defn process-entry [x]
   (reduce (fn [o [k v]]
-            (cond (year k) (conj o {:dato  (str (year k) "-" (get months (:måned x)))
-                                    :kpi v})
+            (cond (year k) (conj o {:dato         (str (year k) "-" (get months (:måned x)))
+                                    :year         (str (year k))
+                                    :year-quarter (str (year k) "Q"
+                                                       (get month-to-quarter
+                                                            (get months (:måned x))))
+                                    :kpi          v})
                   :else o))
           []
           x))
@@ -44,5 +65,20 @@
                  (remove #(= "." (:kpi %)))
                  (vec)))
 
-(csv/write-csv "./data/08981/08981-kpi.csv"  {:data    parsed
-                                              :columns [:dato :kpi]})
+
+(csv/write-csv "./data/08981/08981-kpi.csv" {:data    parsed
+                                             :columns [:dato :kpi]})
+
+(def quarterly (->> parsed
+                    (group-by :year-quarter)
+                    (vals)
+                    (mapv (fn [x] {:dato (:year-quarter (first x))
+                                   :kpi  (/ (reduce + 0 (mapv (comp read-string :kpi) x))
+                                            (count x))
+                                   }))
+                    (sort-by :dato)
+                    (vec)))
+
+(csv/write-csv "./data/08981/08981-kpi-quarterly.csv"
+               {:data    (mapv #(assoc % :kpi (format "%.1f" (:kpi %))) quarterly)
+                :columns [:dato :kpi]})
