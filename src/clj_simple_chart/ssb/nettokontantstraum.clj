@@ -10,7 +10,7 @@
 (def qq [{:code "ContentsCode" :selection {:filter "all" :values ["*"]}}
          {:code "Tid" :selection {:filter "all" :values ["*"]}}])
 (def q {:query qq :response {:format "csv"}})
-(def response (client/post url {:form-params q :content-type :json :as :byte-array}))
+(defonce response (client/post url {:form-params q :content-type :json :as :byte-array}))
 (test/is (= "text/csv; charset=Windows-1252" (get (:headers response) "Content-Type")))
 
 (def resp (String. (:body response) "Windows-1252"))
