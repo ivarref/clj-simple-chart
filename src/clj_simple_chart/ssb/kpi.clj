@@ -79,6 +79,19 @@
                     (sort-by :dato)
                     (vec)))
 
+(def quarter-to-kpi (zipmap (mapv :dato quarterly)
+                            (mapv :kpi quarterly)))
+
+(def baseline-sum (->> parsed
+                       (filter #(= "2016" (:year %)))
+                       (mapv (comp read-string :kpi))
+                       (reduce + 0)))
+
+(def baseline (/ baseline-sum 12))
+
+(defn to-2016-nok [dato-with-quarter v]
+  (* v (/ baseline (get quarter-to-kpi dato-with-quarter))))
+
 (csv/write-csv "./data/08981/08981-kpi-quarterly.csv"
                {:data    (mapv #(assoc % :kpi (format "%.1f" (:kpi %))) quarterly)
                 :columns [:dato :kpi]})
