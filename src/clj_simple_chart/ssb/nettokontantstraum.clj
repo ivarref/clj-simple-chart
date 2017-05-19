@@ -4,6 +4,7 @@
             [clj-http.client :as client]
             [clojure.pprint :refer [pprint]]
             [clj-simple-chart.csv.csvmap :as csv]
+            [clj-simple-chart.ssb.kpi :as kpi]
             [clojure.string :as string]))
 
 (def url "http://data.ssb.no/api/v0/no/table/11013")
@@ -50,6 +51,15 @@
                  (mapv process-grouped)
                  (sort-by :dato)))
 
+(defn entry-to-2016-nok [x]
+  (reduce (fn [o [k v]]
+            (cond (= k :dato) (assoc o k v)
+                  :else (assoc o k (kpi/to-2016-nok (:dato x) v))))
+          {}
+          x))
+
+(def inflation-adjusted (mapv entry-to-2016-nok parsed))
+
 (def actual-columns (flatten [:dato (mapv keyword (distinct (filter string? (map prop columns))))]))
 
 (csv/write-csv "./data/11013/11013.csv" {:data    parsed
@@ -68,8 +78,14 @@
                                                   (assoc x :prev-rows (take-last 4 (take (inc idx) parsed)))))
                                    (filter #(= 4 (count (:prev-rows %))))
                                    (mapv produce-4-qms)
-                                   (mapv #(dissoc % :prev-rows))
-                                   ))
+                                   (mapv #(dissoc % :prev-rows))))
+
+
+(def four-quarters-moving-sum-adjusted (->> inflation-adjusted
+                                            (map-indexed (fn [idx x] (assoc x :prev-rows (take-last 4 (take (inc idx) inflation-adjusted)))))
+                                            (filter #(= 4 (count (:prev-rows %))))
+                                            (mapv produce-4-qms)
+                                            (mapv #(dissoc % :prev-rows))))
 
 (csv/write-csv "./data/11013/11013-4qms.csv" {:data    four-quarters-moving-sum
                                               :columns actual-columns})
@@ -81,5 +97,10 @@
           {}
           x))
 
-(csv/write-csv "./data/11013/11013-mrd-4qms.csv" {:data    (mapv produce-mrd four-quarters-moving-sum)
-                                                  :columns actual-columns})
+(csv/write-csv "./data/11013/11013-mrd-4qms.csv"
+               {:data    (mapv produce-mrd four-quarters-moving-sum)
+                :columns actual-columns})
+
+(csv/write-csv "./data/11013/11013-mrd-4qms-2016-NOK.csv"
+               {:data    (mapv produce-mrd four-quarters-moving-sum-adjusted)
+                :columns actual-columns})

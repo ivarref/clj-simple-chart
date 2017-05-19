@@ -50,7 +50,7 @@
   (reduce (fn [o [k v]]
             (cond (year k) (conj o {:dato         (str (year k) "-" (get months (:måned x)))
                                     :year         (str (year k))
-                                    :year-quarter (str (year k) "Q"
+                                    :year-quarter (str (year k) "K"
                                                        (get month-to-quarter
                                                             (get months (:måned x))))
                                     :kpi          v})
