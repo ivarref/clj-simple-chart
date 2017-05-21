@@ -188,6 +188,7 @@
      alignment-baseline :alignment-baseline
      fill               :fill
      stroke             :stroke
+     spacing            :spacing
      :as                config
      :or                {x                  0.0
                          y                  0.0
@@ -199,6 +200,7 @@
                          stroke             "none"
                          alignment-baseline "auto"
                          font               "Roboto Regular"
+                         spacing            ::none
                          border-tight       false}
      } text]
    {:pre [(some #{font} (keys font-name-to-font))
@@ -207,6 +209,10 @@
           (number? y)]}
    (cond (and (string? dx) (.endsWith dx "em"))
          (recur (update config :dx (partial em-to-number font-size)) text)
+         (not= ::none spacing) (with-meta [:g] {:font-size spacing
+                                                :x1 0.0
+                                                :x2 0.0
+                                                :height spacing :width 0})
          (and (string? dy) (.endsWith dy "em"))
          (recur (update config :dy (partial em-to-number font-size)) text)
          (not (string? text))
@@ -272,3 +278,42 @@
       [:g {:transform (translate margin-left margin-top)}
        [:g (map (partial stack-downwards-text y-offset) with-path)]]
       {:height (+ margin-top height margin-bottom)})))
+
+(defn- stack-text [alignment max-width y-offset {path :path idx :idx}]
+  (cond
+    (= alignment :left) [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path]
+    (= alignment :right) [:g {:transform (translate (- (:x2 (meta path))) (reduce + (take idx y-offset)))} path]
+    :else (throw (Exception. (str "Unknown alignment >" alignment "<")))))
+
+(defn- text-stack
+  [alignment txts]
+  (let [with-baseline (map #(assoc % :alignment-baseline "hanging") txts)
+        with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
+        with-path (map (fn [x] (assoc x :path (text x))) with-idx)
+        paths (map :path with-path)
+        metas (map meta paths)
+        max-width (apply max (map :width metas))
+        y-offset (map #(let [h-with-margin (+ 4 (:height %))]
+                         (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
+        y-offset (map-indexed (fn [idx yoff] (+ yoff (get (nth txts idx) :margin-bottom 0))) y-offset)
+        height (reduce + y-offset)]
+    (with-meta
+      [:g (map (partial stack-text alignment max-width y-offset) with-path)]
+      {:height height :width max-width})))
+
+(defn- add-translation [width height [alignment group]]
+  (cond (= [:top :left] alignment) group
+        (= [:top :right] alignment) [:g {:transform (translate width 0)} group]
+        (= [:bottom :right] alignment) [:g {:transform (translate width (- height (:height (meta group))))} group]
+        (= [:bottom :left] alignment) [:g {:transform (translate 0 (- height (:height (meta group))))} group]))
+
+(defn stack [{width :width} txts]
+  (let [with-alignment (mapv #(assoc % :align (or (:align %) :left)) txts)
+        with-alignment (mapv #(assoc % :valign (or (:valign %) :top)) with-alignment)
+        grouped (group-by (fn [x] [(:valign x) (:align x)]) with-alignment)
+        groups (map (fn [[k v]] [k (text-stack (second k) v)]) grouped)
+        group-map (zipmap (mapv first groups) (mapv second groups))
+        max-height (apply max (mapv (comp :height meta) (vals group-map)))
+        with-translation (map (partial add-translation width max-height) groups)]
+    (with-meta [:g with-translation]
+               {:height max-height :width width})))
