@@ -210,9 +210,9 @@
    (cond (and (string? dx) (.endsWith dx "em"))
          (recur (update config :dx (partial em-to-number font-size)) text)
          (not= ::none spacing) (with-meta [:g] {:font-size spacing
-                                                :x1 0.0
-                                                :x2 0.0
-                                                :height spacing :width 0})
+                                                :x1        0.0
+                                                :x2        0.0
+                                                :height    spacing :width 0})
          (and (string? dy) (.endsWith dy "em"))
          (recur (update config :dy (partial em-to-number font-size)) text)
          (not (string? text))
@@ -287,7 +287,13 @@
 
 (defn- text-stack
   [alignment txts]
-  (let [with-baseline (map #(assoc % :alignment-baseline "hanging") txts)
+  (let [texts-with-spacing (vec (flatten (mapv
+                                           (fn [v]
+                                             (cond
+                                               (number? (:margin-top v)) [{:spacing (:margin-top v)} (dissoc v :margin-top)]
+                                               (number? (:margin-bottom v)) [(dissoc v :margin-bottom) {:spacing (:margin-bottom v)}]
+                                               :else [v])) txts)))
+        with-baseline (map #(assoc % :alignment-baseline "hanging") texts-with-spacing)
         with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
         with-path (map (fn [x] (assoc x :path (text x))) with-idx)
         paths (map :path with-path)
@@ -295,7 +301,7 @@
         max-width (apply max (map :width metas))
         y-offset (map #(let [h-with-margin (+ 4 (:height %))]
                          (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
-        y-offset (map-indexed (fn [idx yoff] (+ yoff (get (nth txts idx) :margin-bottom 0))) y-offset)
+        y-offset (map-indexed (fn [idx yoff] (+ yoff (get (nth texts-with-spacing idx) :margin-bottom 0))) y-offset)
         height (reduce + y-offset)]
     (with-meta
       [:g (map (partial stack-text alignment max-width y-offset) with-path)]

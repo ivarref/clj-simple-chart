@@ -13,8 +13,7 @@
    (opentype/stack {:width svg-width}
                    [{:text "Hello world"}
                     {:text "Hei Verden"}
-                    {:spacing 20}
-                    {:text "Swoosh"}
+                    {:text "Swoosh" :margin-top 20}
 
                     {:text "Hello world" :valign :bottom :align :right}
                     {:text "Yolo!" :valign :bottom :align :right}])])
