@@ -68,7 +68,9 @@
 (defn produce-4-qms [x]
   (reduce (fn [o [k v]]
             (cond (= k :prev-rows) o
-                  (= k :dato) (assoc o k v)
+                  (= k :dato) (-> o
+                                  (assoc :dato v)
+                                  (assoc :year (read-string (subs v 0 4))))
                   :else (assoc o k (reduce + 0 (mapv k (:prev-rows x))))))
           {}
           x))
@@ -93,9 +95,20 @@
 (defn produce-mrd [x]
   (reduce (fn [o [k v]]
             (cond (= k :dato) (assoc o k v)
+                  (= k :year) (assoc o k v)
                   :else (assoc o k (format "%.1f" (double (/ v 1000))))))
           {}
           x))
+
+(defn produce-mrd-numeric [x]
+  (reduce (fn [o [k v]]
+            (cond (= k :dato) (assoc o k v)
+                  (= k :year) (assoc o k v)
+                  :else (assoc o k (double (/ v 1000)))))
+          {}
+          x))
+
+(def four-quarters-moving-sum-adjusted-mrd (mapv produce-mrd-numeric four-quarters-moving-sum-adjusted))
 
 (csv/write-csv "./data/11013/11013-mrd-4qms.csv"
                {:data    (mapv produce-mrd four-quarters-moving-sum)
