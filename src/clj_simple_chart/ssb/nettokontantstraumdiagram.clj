@@ -52,7 +52,7 @@
                            (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
                            " mrd kr") :font "Roboto Bold" :font-size 16}
 
-               {:text "Milliardar NOK" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
+               {:text "Milliardar 2016-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                ]))
 
 (def footer (opentype/stack
