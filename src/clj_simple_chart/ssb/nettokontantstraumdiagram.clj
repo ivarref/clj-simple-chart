@@ -57,7 +57,8 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelde: SSB" :font "Roboto Regular" :font-size 16}
+              [{:margin-top 4 :text "*Statens direkte økonomiske engasjement" :font "Roboto Regular" :font-size 16}
+               {:text "Kjelde: SSB" :font "Roboto Regular" :font-size 16}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 16 :valign :bottom :align :right}
                ]))
 
@@ -91,10 +92,12 @@
                      :x      xx
                      :y      yy}))
 
+(def translate-info {sdoe (str "Netto kontantstraum frå SDØE*")})
+
 (def info
   (opentype/stack
     {:width (:plot-width c)}
-    (mapv (fn [x] {:text      (name x)
+    (mapv (fn [x] {:text      (get translate-info x (name x))
                    :fill      (get fills x)
                    :font      "Roboto Bold"
                    :font-size 16})
@@ -124,8 +127,8 @@
   [:g {:transform (core/translate (xfn dato) (yfn (get opts netto-sum)))}
    [:circle {:r 2}]
    [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
-   #_(opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
-   (opentype/text {:dy          "-.71em"
+   (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
+   (opentype/text {:dy          "-1.71em"
                    :font        "Roboto Bold"
                    :text-anchor "middle"
                    :text        (string/replace (format "%.1f" (get opts netto-sum)) "." ",")})])
