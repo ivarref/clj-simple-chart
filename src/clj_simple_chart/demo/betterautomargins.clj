@@ -36,4 +36,4 @@
    ])
 
 (defn render-self []
-  (render "./img/bettermargins.svg" (diagram)))
+  (render "./img/dev/bettermargins.svg" (diagram)))
