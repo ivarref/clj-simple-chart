@@ -23,13 +23,14 @@
   (apply ppoint/center-point args))
 
 (defn svg-attrs
-  [width height margin]
+  ([width height]
+   {:width  (round width)
+    :height (round height)
+    :xmlns  "http://www.w3.org/2000/svg"})
+  ([width height margin]
   {:width  (+ (:left margin) (:right margin) width)
    :height (+ (:top margin) (:bottom margin) height)
-   :xmlns  "http://www.w3.org/2000/svg"})
-
-(defn translate [x y]
-  (str "translate(" x "," y ")"))
+   :xmlns  "http://www.w3.org/2000/svg"}))
 
 (defn path [points]
   (str "M"

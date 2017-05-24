@@ -1,5 +1,6 @@
 (ns clj-simple-chart.chart
   (:require [clj-simple-chart.core :as core]
+            [clj-simple-chart.translate :refer [translate]]
             [clj-simple-chart.scale.core :as scale]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.axis.ticks :refer [ticks]]))
@@ -102,15 +103,15 @@
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:rect {:width "100%" :height "100%" :fill-opacity "0.2" :fill "steelblue"}]
-   [:g {:transform (core/translate (:margin-left c) (:margin-top c))}
+   [:g {:transform (translate (:margin-left c) (:margin-top c))}
 
     [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]
-    [:circle {:transform (core/translate 0 (:plot-height c))
+    [:circle {:transform (translate 0 (:plot-height c))
               :r         7 :fill "yellow" :stroke "black" :stroke-width 3}]
 
-    [:g {:transform (core/translate (:plot-width c) 0)}
+    [:g {:transform (translate (:plot-width c) 0)}
      [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]
-     [:circle {:transform (core/translate 0 (:plot-height c))
+     [:circle {:transform (translate 0 (:plot-height c))
                :r         7 :fill "yellow" :stroke "black" :stroke-width 3}]
      ]
 
