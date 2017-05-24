@@ -40,33 +40,3 @@
    (line {:fill "none" :stroke "#000" :stroke-width 1} points))
   ([props points]
    [:path (assoc props :d (path (map (fn [[x y]] (str (.doubleValue x) "," (.doubleValue y))) points)))]))
-
-(defn title
-  [text]
-  [:g [:text {:x                  15
-              :y                  15
-              :alignment-baseline "hanging"
-              :font-family        "Arial"
-              :font-size          "20px"
-              :font-weight        "bold"}
-       text]])
-
-(defn sub-title
-  [text]
-  [:g [:text {:x                  15
-              :y                  (+ 22 15)
-              :alignment-baseline "hanging"
-              :font-family        "Arial"
-              :font-size          "14px"
-              :font-weight        "normal"}
-       text]])
-
-(defn sub-sub-title
-  [text]
-  [:g [:text {:x                  15
-              :y                  (+ 15 22 15)
-              :alignment-baseline "hanging"
-              :font-family        "Arial"
-              :font-size          "14px"
-              :font-weight        "normal"}
-       text]])

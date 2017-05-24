@@ -1,7 +1,8 @@
 (ns clj-simple-chart.opentype
   (:require [base64-clj.core :as base64]
             [clojure.core.async :as async]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [clj-simple-chart.translate :refer [translate]])
   (:import (org.mozilla.javascript Context NativeObject)
            (org.apache.commons.io FileUtils)
            (java.io File FileReader BufferedInputStream FileInputStream InputStreamReader)
@@ -251,9 +252,6 @@
   ([{txt :text
      :as config}]
    (text (dissoc config :text) txt)))
-
-(defn translate [x y]
-  (str "translate(" (double x) "," (double y) ")"))
 
 (defn- stack-downwards-text [y-offset {path :path idx :idx}]
   [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path])
