@@ -1,7 +1,6 @@
 (ns clj-simple-chart.demo.boxdemo
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.rect :as rect]
-            [clj-simple-chart.box :as box]
             [clj-simple-chart.opentype :as opentype]))
 
 (def svg-width 320)

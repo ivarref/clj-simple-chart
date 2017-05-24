@@ -47,8 +47,6 @@
 
 (defn diagram []
   [:svg (svg-attrs width height margin)
-   (title "Some values")
-   (sub-title "1990 - 1995")
    [:g {:transform (translate (:left margin) (:top margin))}
     (render-axis y)
     (render-axis x)
