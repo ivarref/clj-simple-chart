@@ -7,10 +7,10 @@
   (let [svg-width 250
         svg-height 240
         x-domain ["ASDFASDF1" "ASDFASDF2" "ASDFASDF3" "ASDFASDF4ASDFASDF4"]
-        xx {:type          :ordinal
-            :orientation   :bottom
-            :domain        x-domain
-            :tick-values  [(first x-domain) (last x-domain)]}
+        xx {:type        :ordinal
+            :orientation :bottom
+            :domain      x-domain
+            :tick-values [(first x-domain) #_(last x-domain)]}
         yy {:type        :linear
             :orientation :right
             :ticks       5
@@ -19,11 +19,13 @@
                         :height svg-height
                         :x      xx
                         :y      yy})]
-    [:svg (svg-attrs svg-width svg-height)
-     [:rect {:width "100%" :height "100%" :fill "#ffaa00"}]
-     [:g {:transform (translate (:margin-left c) (:margin-top c))}
-      (render-axis (:x c))
-      (render-axis (:y c))]]))
+    [:svg (svg-attrs (+ 20 svg-width) (+ 20 svg-height))
+     [:rect {:width "100%" :height "100%" :fill-opacity 0.5 :fill "steelblue"}]
+     [:g {:transform (translate 10 10)}
+      [:rect {:width svg-width :height svg-height :fill "#ffaa00"}]
+      [:g {:transform (translate (:margin-left c) (:margin-top c))}
+       (render-axis (:x c))
+       (render-axis (:y c))]]]))
 
 (defn render-self []
   (render "./img/dev/bettermargins.svg" (diagram)))

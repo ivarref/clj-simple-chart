@@ -62,6 +62,7 @@
         spacing-right (double (/ (:width (last txt-meta)) 2))
         overflow-right (Math/max 0.0 (- (+ (last x-pos) spacing-right)
                                         (:width scale)))]
+    ;(println "overflow-left is" overflow-left)
     (with-meta
       [:g
        [:path {:stroke       color
@@ -84,7 +85,7 @@
                           :text-anchor "middle"} scale d)
                        (frmt scale d))]) (ticks scale))]
       {margin-direction (+ 9 max-height-font)
-       :margin-left     (- overflow-left 0.5)
+       :margin-left     overflow-left
        :margin-right    (+ 0.5 overflow-right)})))
 
 (defn render-y-axis [scale sign text-anchor margin-direction]

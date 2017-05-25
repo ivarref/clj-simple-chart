@@ -9,10 +9,6 @@
   (let [new-opts (merge opts {:width w :height h})]
     (scale/scale new-opts)))
 
-(defn make-tmp-scale [opts]
-  (let [new-opts (merge {:width 100 :height 100} opts)]
-    (scale/scale new-opts)))
-
 (defn margins [{margin-left   :margin-left
                 margin-right  :margin-right
                 margin-top    :margin-top
@@ -27,12 +23,31 @@
    :margin-bottom margin-bottom})
 
 (defn sum-left-right [x] (+ (:margin-right x) (:margin-left x)))
+(defn sum-top-bottom [x] (+ (:margin-top x) (:margin-bottom x)))
 
-(defn solve-margins-x [w h prev-margins x recursion-limit]
-  (let [margs (meta (axis/render-axis (make-tmp-scale-w-h (- w (sum-left-right prev-margins)) h x)))
-        diff (Math/abs (- (sum-left-right margs) (sum-left-right prev-margins)))]
-    (cond (< diff 0.1) (margins margs)
-          (> recursion-limit 0) (solve-margins-x w h margs x (dec recursion-limit))
+(defn max-margins [margs]
+  {:margin-top    (apply max (mapv :margin-top margs))
+   :margin-bottom (apply max (mapv :margin-bottom margs))
+   :margin-left   (apply max (mapv :margin-left margs))
+   :margin-right  (apply max (mapv :margin-right margs))})
+
+(defn margins-diff [a b]
+  (+ (Math/abs (- (sum-left-right a) (sum-left-right b)))
+     (Math/abs (- (sum-top-bottom a) (sum-top-bottom b)))))
+
+(defn solve-margins [w h prev-margins axes recursion-limit]
+  (let [axes (remove nil? axes)
+        ww (- w (sum-left-right prev-margins))
+        hh (- h (sum-top-bottom prev-margins))
+        scale-fn (partial make-tmp-scale-w-h ww hh)
+        margs (->> axes
+                   (mapv #(axis/render-axis (scale-fn %)))
+                   (mapv meta)
+                   (mapv margins)
+                   (max-margins))
+        diff (margins-diff margs prev-margins)]
+    (cond (< diff 0.1) margs
+          (pos? recursion-limit) (solve-margins w h margs axes (dec recursion-limit))
           :else (throw (Exception. "Sorry! Diff is still >0.1, but search is exhausted!")))))
 
 (defn chart-inner [{width  :width
@@ -41,16 +56,12 @@
                     y      :y
                     y2     :y2
                     or     {y2 nil}}]
-  (let [y-margins (margins (meta (axis/render-axis (make-tmp-scale y))))
-        y2-margins (if y2 (margins (meta (axis/render-axis (make-tmp-scale y2)))) (margins {}))
-        x-margins (solve-margins-x width height (margins {}) x 10)
+  (let [max-margins (solve-margins width height (margins {}) [x y y2] 10)
 
-        all-margins [y-margins y2-margins x-margins]
-
-        max-right (Math/ceil (apply max (map :margin-right all-margins)))
-        max-left (Math/ceil (apply max (map :margin-left all-margins)))
-        max-top (Math/ceil (apply max (map :margin-top all-margins)))
-        max-bottom (Math/ceil (apply max (map :margin-bottom all-margins)))
+        max-right (Math/ceil (:margin-right max-margins))
+        max-left (Math/ceil (:margin-left max-margins))
+        max-top (Math/ceil (:margin-top max-margins))
+        max-bottom (Math/ceil (:margin-bottom max-margins))
 
         chart-width (- width (+ max-left max-right))
         chart-height (- height (+ max-top max-bottom))
@@ -68,8 +79,7 @@
                         :plot-height   chart-height
                         :x             x-scale
                         :y             y-scale}
-                       y2 (assoc :y2 (scale/scale (merge y2 new-opts))))
-        ]
+                       y2 (assoc :y2 (scale/scale (merge y2 new-opts))))]
     result))
 
 (defn chart [{width  :width
