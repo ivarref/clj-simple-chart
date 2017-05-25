@@ -4,7 +4,7 @@
             [clj-simple-chart.ssb.nettokontantstraum :as nettokontantstraum]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.chart :as chart]
-            [clj-simple-chart.translate :refer [translate]]
+            [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
             [clojure.string :as string]))
@@ -22,6 +22,7 @@
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
 (def utbytte (keyword "Utbytte fra Statoil"))
 (def sdoe (keyword "Netto kontantstrøm fra SDØE"))
+(def netto-sum (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet"))
 
 (def sub-domain [skatter avgift sdoe utbytte])
 
@@ -36,15 +37,13 @@
             utbytte orange
             sdoe    red})
 
-(def netto-sum (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet"))
-
 (def x-domain (map :dato data))
 
 (def available-width (- svg-width (* 2 marg)))
 
 (def x-ticks (filter #(.endsWith % "K4") (map :dato data)))
 
-(def last-data (first (filter #(= (last x-ticks) (:dato %)) data)))
+(def last-data (last data))
 
 (def header (opentype/stack
               {:width available-width}
@@ -95,7 +94,7 @@
                      :x      xx
                      :y      yy}))
 
-(def translate-info {sdoe    (str "Netto kontantstraum frå SDØE*")
+(def translate-info {sdoe    "Netto kontantstraum frå SDØE*"
                      utbytte "Utbytte frå Statoil"
                      skatter "Skattar på utvinning av petroleum"})
 
@@ -151,9 +150,9 @@
      [:g (bars (mapv make-rect data))]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
-     [:g {:transform (translate 0 (+ 7 (yfn 500)))} info]]
+     [:g {:transform (translate-y (+ 7 (yfn 500)))} info]]
 
-    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]]])
+    [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
   (core/render "./img/nettokontantstraum.svg" "./img/nettokontantstraum.png" (diagram)))
