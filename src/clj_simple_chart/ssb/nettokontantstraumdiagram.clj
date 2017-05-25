@@ -9,7 +9,9 @@
             [clj-simple-chart.point :as point]
             [clojure.string :as string]))
 
-(def marg 5)
+(def marg 10)
+(def two-marg (* 2 marg))
+
 (def svg-width 900)
 (def svg-height 500)
 
@@ -83,16 +85,17 @@
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          :domain             [0 (apply max (map netto-sum data))]})
 
-(def available-height (- svg-height (+ marg
+(def available-height (- svg-height (+ two-marg
                                        (:height (meta header))
                                        (:height (meta footer)))))
 
-(def c (chart/chart {:width  svg-width
+(def c (chart/chart {:width  available-width
                      :height available-height
                      :x      xx
                      :y      yy}))
 
-(def translate-info {sdoe (str "Netto kontantstraum frå SDØE*")})
+(def translate-info {sdoe    (str "Netto kontantstraum frå SDØE*")
+                     utbytte "Utbytte frå Statoil"})
 
 (def info
   (opentype/stack
@@ -124,7 +127,7 @@
                            (remove #(odd? (:year %)))))
 
 (defn make-txt [{dato :dato year :year :as opts}]
-  [:g {:transform (core/translate (xfn dato) (yfn (get opts netto-sum)))}
+  [:g {:transform (translate (xfn dato) (yfn (get opts netto-sum)))}
    [:circle {:r 2}]
    [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
    (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
@@ -135,16 +138,22 @@
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
-   [:g {:transform (translate marg marg)} header]
-   [:g {:transform (translate marg (+ (:height (meta header)) available-height))} footer]
-   [:g {:transform (translate marg (+ (:height (meta header)) (:margin-top c)))}
-    (axis/render-axis (:y c))
-    [:g (bars (mapv make-rect data))]
-    [:g (map make-txt end-of-year-data)]
-    (axis/render-axis (:x c))
-    [:g {:transform (translate 0 (+ 7 (yfn 500)))} info]
-    ]
-   ])
+   [:g {:transform (translate marg marg)}
+
+    #_[:rect {:width        (- svg-width two-marg) :height (- svg-height two-marg)
+            :fill-opacity "0.2"
+            :fill         "steelblue"}]
+    header
+
+    [:g {:transform (translate 0 (+ (:height (meta header)) (:margin-top c)))}
+     (axis/render-axis (:y c))
+     [:g (bars (mapv make-rect data))]
+     [:g (map make-txt end-of-year-data)]
+     (axis/render-axis (:x c))
+     [:g {:transform (translate 0 (+ 7 (yfn 500)))} info]]
+
+    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]
+    ]])
 
 (defn render-self []
   (core/render "./img/nettokontantstraum.svg" "./img/nettokontantstraum.png" (diagram)))
