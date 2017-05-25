@@ -5,6 +5,10 @@
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.axis.ticks :refer [ticks]]))
 
+(defn make-tmp-scale-w-h [w h opts]
+  (let [new-opts (merge opts {:width w :height h})]
+    (scale/scale new-opts)))
+
 (defn make-tmp-scale [opts]
   (let [new-opts (merge {:width 100 :height 100} opts)]
     (scale/scale new-opts)))
@@ -22,18 +26,24 @@
    :margin-top    margin-top
    :margin-bottom margin-bottom})
 
+(defn sum-left-right [x] (+ (:margin-right x) (:margin-left x)))
+
+(defn solve-margins-x [w h prev-margins x recursion-limit]
+  (let [margs (meta (axis/render-axis (make-tmp-scale-w-h (- w (sum-left-right prev-margins)) h x)))
+        diff (Math/abs (- (sum-left-right margs) (sum-left-right prev-margins)))]
+    (cond (< diff 0.1) (margins margs)
+          (> recursion-limit 0) (solve-margins-x w h margs x (dec recursion-limit))
+          :else (throw (Exception. "Sorry! Diff is still >0.1, but search is exhausted!")))))
+
 (defn chart-inner [{width  :width
                     height :height
                     x      :x
                     y      :y
                     y2     :y2
                     or     {y2 nil}}]
-  (let [y-scale-rendered (axis/render-axis (make-tmp-scale y))
-        x-scale-rendered (axis/render-axis (make-tmp-scale x))
-
-        y-margins (margins (meta y-scale-rendered))
+  (let [y-margins (margins (meta (axis/render-axis (make-tmp-scale y))))
         y2-margins (if y2 (margins (meta (axis/render-axis (make-tmp-scale y2)))) (margins {}))
-        x-margins (margins (meta x-scale-rendered))
+        x-margins (solve-margins-x width height (margins {}) x 10)
 
         all-margins [y-margins y2-margins x-margins]
 
@@ -50,14 +60,14 @@
         x-scale (scale/scale (merge x new-opts))
         y-scale (scale/scale (merge y new-opts))
 
-        result (cond-> {:margin-left max-left
-                        :margin-top  max-top
-                        :margin-right max-right
+        result (cond-> {:margin-left   max-left
+                        :margin-top    max-top
+                        :margin-right  max-right
                         :margin-bottom max-bottom
-                        :plot-width  chart-width
-                        :plot-height chart-height
-                        :x           x-scale
-                        :y           y-scale}
+                        :plot-width    chart-width
+                        :plot-height   chart-height
+                        :x             x-scale
+                        :y             y-scale}
                        y2 (assoc :y2 (scale/scale (merge y2 new-opts))))
         ]
     result))
@@ -74,52 +84,25 @@
         (= ::none (get y :axis ::none)) (recur (assoc-in config [:y :axis] :y))
         :else (chart-inner config)))
 
-(def svg-width 320)
-(def svg-height 240)
-
-(def xx {:type        :linear
-         :orientation :both
-         :ticks       5
-         :domain      [0 1000]})
-
-(def yy {:type        :linear
-         :orientation :left
-         :ticks       5
-         :domain      [77 88]})
-
-(def yy2 {:type        :linear
-          :orientation :right
-          :ticks       5
-          :domain      [0 100]})
-
-(def cfg {:width  svg-width
-          :height svg-height
-          :x      xx
-          :y      yy
-          :y2     yy2})
-
-(def c (chart cfg))
-
-(defn diagram []
-  [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
-   [:rect {:width "100%" :height "100%" :fill-opacity "0.2" :fill "steelblue"}]
-   [:g {:transform (translate (:margin-left c) (:margin-top c))}
-
-    [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]
-    [:circle {:transform (translate 0 (:plot-height c))
-              :r         7 :fill "yellow" :stroke "black" :stroke-width 3}]
-
-    [:g {:transform (translate (:plot-width c) 0)}
-     [:circle {:r 7 :fill "yellow" :stroke "black" :stroke-width 3}]
-     [:circle {:transform (translate 0 (:plot-height c))
-               :r         7 :fill "yellow" :stroke "black" :stroke-width 3}]
-     ]
-
-    (axis/render-axis (:y c))
-    (axis/render-axis (:y2 c))
-    (axis/render-axis (:x c))
-
-    ]])
-
-(defn render-self []
-  (core/render "./img/chart.svg" (diagram)))
+;(def svg-width 200)
+;(def svg-height 200)
+;(def x-domain ["ASDFASDF1" "ASDFASDF2" "ASDFASDF3" "ASDFASDF4" "ASDFASDF5" "ASDFASDF6"])
+;
+;(def xx {:type          :ordinal
+;         :axis          :x
+;         :domain        x-domain
+;         :tick-values   [(first x-domain) (last x-domain)]
+;         :orientation   :bottom})
+;
+;(def margs (solve-margins-x svg-width svg-height (margins {}) xx 10))
+;
+;(def x (scale/scale (merge xx {:width  (- svg-width (sum-left-right margs)) :height 100})))
+;
+;(defn diagram []
+;  [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
+;   [:rect {:width "100%" :height "100%" :fill-opacity 0.5 :fill "#ffaa00"}]
+;   [:g {:transform (translate (:margin-left margs) 0)}
+;    (axis/render-axis x)]])
+;
+;(defn render-self []
+;  (core/render "./img/dev/chart.svg" (diagram)))

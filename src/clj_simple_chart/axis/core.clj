@@ -1,10 +1,8 @@
 (ns clj-simple-chart.axis.core
   (:require [clj-simple-chart.point :refer [center-point]]
+            [clj-simple-chart.translate :refer [translate]]
             [clj-simple-chart.axis.ticks :refer [ticks]]
             [clj-simple-chart.opentype :as opentype]))
-
-(defn translate [x y]
-  (str "translate(" x "," y ")"))
 
 (def scale-and-argument (fn [scale v] (:type scale)))
 
@@ -55,9 +53,15 @@
         neg-sign (* -1 sign)
         sign-char (if (= -1 sign) "-" "")
         txt-meta (meta-texts-for-scale scale)
+        tiks (ticks scale)
+        x-pos (mapv (partial center-point scale) tiks)
+        x-pos (if (:reverse scale) (reverse x-pos) x-pos)
         max-height-font (inc (apply max (mapv :height txt-meta)))
-        spacing-left (inc (double (/ (:width (first txt-meta)) 2)))
-        spacing-right (inc (double (/ (:width (last txt-meta)) 2)))]
+        spacing-left (double (/ (:width (first txt-meta)) 2))
+        overflow-left (Math/max 0.0 (- spacing-left (first x-pos)))
+        spacing-right (double (/ (:width (last txt-meta)) 2))
+        overflow-right (Math/max 0.0 (- (+ (last x-pos) spacing-right)
+                                        (:width scale)))]
     (with-meta
       [:g
        [:path {:stroke       color
@@ -80,8 +84,8 @@
                           :text-anchor "middle"} scale d)
                        (frmt scale d))]) (ticks scale))]
       {margin-direction (+ 9 max-height-font)
-       :margin-left     spacing-left
-       :margin-right    (+ 0.5 spacing-right)})))
+       :margin-left     (- overflow-left 0.5)
+       :margin-right    (+ 0.5 overflow-right)})))
 
 (defn render-y-axis [scale sign text-anchor margin-direction]
   (let [color (get scale :color "#000")
