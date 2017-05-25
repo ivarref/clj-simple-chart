@@ -94,13 +94,24 @@
         neg-sign (* -1 sign)
         rng (:range scale)
         meta-txts (meta-texts-for-scale scale)
-        axis-label-max-width (apply max (map :width meta-txts))
+        tiks (ticks scale)
+        y-pos (mapv (partial center-point scale) tiks)
+        y-pos (if (:reverse scale) (reverse y-pos) y-pos)
+
+        last-y-pos (last y-pos)
         offset-height-top (* 0.32 (:font-size (last meta-txts)))
-        margin-top (inc (- (:height (last meta-txts)) offset-height-top))
+        used-space-above-center (- (:height (last meta-txts)) offset-height-top)
+        top-pos (- last-y-pos used-space-above-center)
+        margin-top (Math/abs (Math/min 0.0 top-pos))
 
+        first-y-pos (first y-pos)
         offset-height-bottom (* 0.32 (:font-size (first meta-txts)))
-        margin-bottom (inc (- (:height (first meta-txts)) offset-height-top))
+        used-space-above-center (- (:height (first meta-txts)) offset-height-bottom)
+        used-space-below-center (- (:height (first meta-txts)) used-space-above-center)
+        bottom-pos (+ first-y-pos used-space-below-center)
+        margin-bottom (Math/max 0.0 (- bottom-pos (:height scale)))
 
+        axis-label-max-width (apply max (map :width meta-txts))
         width (+ 9 axis-label-max-width)]
     (with-meta
       [:g
@@ -124,7 +135,7 @@
                           :text-anchor text-anchor} scale d)
                        (frmt scale d))]) (ticks scale))]
       {margin-direction width
-       :margin-top      margin-top
+       :margin-top      (- margin-top 0.5)
        :margin-bottom   (+ 0.5 margin-bottom)})))
 
 (defn render-y-axis-ordinal [scale sign margin]
@@ -195,6 +206,10 @@
 (defmethod render-axis [:x :ordinal :bottom] [scale]
   (transform-with-meta 0 (:height scale)
                        (render-x-axis scale 1 ".71em" :margin-bottom)))
+
+(defmethod render-axis [:x :ordinal :top] [scale]
+  (transform-with-meta 0 0
+                       (render-x-axis scale -1 ".0em" :margin-top)))
 
 ;(defmethod render-axis [:x :bottom] [scale]
 ;  [:g {:transform (translate 0 (:height scale))}

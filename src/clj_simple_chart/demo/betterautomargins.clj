@@ -7,14 +7,16 @@
   (let [svg-width 250
         svg-height 240
         x-domain ["ASDFASDF1" "ASDFASDF2" "ASDFASDF3" "ASDFASDF4ASDFASDF4"]
-        xx {:type        :ordinal
-            :orientation :bottom
-            :domain      x-domain
-            :tick-values [(first x-domain) #_(last x-domain)]}
-        yy {:type        :linear
-            :orientation :right
-            :ticks       5
-            :domain      [0 100]}
+        xx {:type               :ordinal
+            :orientation        :bottom
+            :domain             x-domain
+            :axis-text-style-fn (fn [x] {:font-size 16})
+            :tick-values        [(first x-domain) #_(last x-domain)]}
+        yy {:type               :linear
+            :orientation        :right
+            :ticks              5
+            :axis-text-style-fn (fn [x] {:font-size 16})
+            :domain             [44 80]}
         c (chart/chart {:width  svg-width
                         :height svg-height
                         :x      xx

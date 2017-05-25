@@ -146,6 +146,9 @@
     header
 
     [:g {:transform (translate 0 (+ (:height (meta header)) (:margin-top c)))}
+     #_[:rect {:width        (:plot-width c) :height (:plot-height c)
+             :fill-opacity "0.2"
+             :fill         "#ffaa00"}]
      (axis/render-axis (:y c))
      [:g (bars (mapv make-rect data))]
      [:g (map make-txt end-of-year-data)]
