@@ -7,6 +7,7 @@
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
             [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.translate :refer [translate]]
             [clojure.test :as test]
             [clojure.string :as string]))
 
@@ -71,7 +72,7 @@
                ]))
 
 (def info-right
-  [:g {:transform (core/translate (- svg-width marg) (:height (meta header)))}
+  [:g {:transform (translate (- svg-width marg) (:height (meta header)))}
    (opentype/text
      {:text        "Særskatt på utvinning av petroleum"
       :text-anchor "end"
@@ -155,7 +156,7 @@
    {:p (:dato opts) :c saerskatt :h (get opts saerskatt) :fill saerskatt-fill}])
 
 (defn make-txt [{dato :dato year :year summ :sum}]
-  [:g {:transform (core/translate (xfn dato) (yfn summ))}
+  [:g {:transform (translate (xfn dato) (yfn summ))}
    [:circle {:r 2}]
    [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
    (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
@@ -197,7 +198,7 @@
    header
    info-right
    ;[:g {:transform (core/translate 0 (+ (:height (meta header)) (:margin-top c)))} info-right]
-   [:g {:transform (core/translate (+ marg (:margin-left c)) (+ (:height (meta header)) (:margin-top c)))}
+   [:g {:transform (translate (+ marg (:margin-left c)) (+ (:height (meta header)) (:margin-top c)))}
     (axis/render-axis (:y c))
     (axis/render-axis (:y2 c))
     [:g (bars (mapv make-rect data))]
@@ -205,8 +206,8 @@
     [:g (map make-txt end-of-year-data)]
     #_detail
     (axis/render-axis (:x c))]
-   [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer]
-   [:g {:transform (core/translate 0 (+ (:height (meta header)) available-height))} footer2]
+   [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]
+   [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer2]
    ])
 
 
