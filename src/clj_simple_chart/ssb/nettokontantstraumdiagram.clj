@@ -49,7 +49,7 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 30}
-               {:text "Milliardar 2016-kroner, 4 kvartaler glidande sum" :font "Roboto Bold" :font-size 16}
+               {:text "Milliardar 2016-kroner, 4 kvartal glidande sum" :font "Roboto Bold" :font-size 16}
                {:text (str "Sum per " (:dato last-data) ": "
                            (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
                            " mrd kr") :font "Roboto Bold" :font-size 16}
@@ -76,7 +76,7 @@
          :domain        x-domain
          :sub-domain    sub-domain
          :padding-inner 0.1
-         :padding-outer 0.2})
+         :padding-outer 0.1})
 
 (def yy {:type               :linear
          :orientation        :right
@@ -95,7 +95,8 @@
                      :y      yy}))
 
 (def translate-info {sdoe    (str "Netto kontantstraum frå SDØE*")
-                     utbytte "Utbytte frå Statoil"})
+                     utbytte "Utbytte frå Statoil"
+                     skatter "Skattar på utvinning av petroleum"})
 
 (def info
   (opentype/stack
