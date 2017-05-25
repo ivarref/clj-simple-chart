@@ -144,7 +144,7 @@
         neg-sign (* -1 sign)
         rng (:range scale)
         meta-txts (meta-texts-for-scale scale)
-        axis-label-max-width (inc (apply max (map :x2 meta-txts)))
+        axis-label-max-width (apply max (map :width meta-txts))
         width (+ 6 axis-label-max-width)]
     (with-meta
       [:g
@@ -154,14 +154,15 @@
                :d            (str "M" sign-char "3," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "3")}]
        (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
                      (opentype/text
-                       (apply-axis-text-style-fn {:x  (- (* sign 6)
-                                                         (if (= 1 sign)
-                                                           0
-                                                           axis-label-max-width))
-                                                  :dy ".32em"
-                                                  :y  0.5} scale d)
+                       (apply-axis-text-style-fn {:x           (if (= 1 sign)
+                                                                 6
+                                                                 (- (Math/ceil width)))
+                                                  :text-anchor "start"
+                                                  :dy          ".32em"
+                                                  :y           0.5} scale d)
                        (frmt scale d))]) (ticks scale))]
-      {margin width})))
+      {margin width
+       :margin-bottom 0.5})))
 
 (defn transform-with-meta [x y k]
   (with-meta

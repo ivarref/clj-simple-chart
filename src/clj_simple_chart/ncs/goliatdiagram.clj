@@ -1,4 +1,4 @@
-(ns clj-simple-chart.ncs.goliatdiagramthree
+(ns clj-simple-chart.ncs.goliatdiagram
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.ncs.goliat :as goliat]
