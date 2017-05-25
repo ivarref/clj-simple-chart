@@ -140,24 +140,19 @@
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
-
-    #_[:rect {:width        (- svg-width two-marg) :height (- svg-height two-marg)
-            :fill-opacity "0.2"
-            :fill         "steelblue"}]
     header
 
-    [:g {:transform (translate 0 (+ (:height (meta header)) (:margin-top c)))}
-     #_[:rect {:width        (:plot-width c) :height (:plot-height c)
-             :fill-opacity "0.2"
-             :fill         "#ffaa00"}]
+    [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
+     #_[:rect {:width        available-width :height available-height
+               :fill-opacity "0.2"
+               :fill         "steelblue"}]
      (axis/render-axis (:y c))
      [:g (bars (mapv make-rect data))]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
      [:g {:transform (translate 0 (+ 7 (yfn 500)))} info]]
 
-    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]
-    ]])
+    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
   (core/render "./img/nettokontantstraum.svg" "./img/nettokontantstraum.png" (diagram)))

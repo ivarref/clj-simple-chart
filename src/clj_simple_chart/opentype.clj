@@ -311,7 +311,11 @@
         (= [:bottom :right] alignment) [:g {:transform (translate width (- height (:height (meta group))))} group]
         (= [:bottom :left] alignment) [:g {:transform (translate 0 (- height (:height (meta group))))} group]))
 
-(defn stack [{width :width} txts]
+(defn stack [{width        :width
+              fill         :fill
+              fill-opacity :fill-opacity
+              :or          {fill         nil
+                            fill-opacity 1}} txts]
   (let [with-alignment (mapv #(assoc % :align (or (:align %) :left)) txts)
         with-alignment (mapv #(assoc % :valign (or (:valign %) :top)) with-alignment)
         grouped (group-by (fn [x] [(:valign x) (:align x)]) with-alignment)
@@ -319,5 +323,10 @@
         group-map (zipmap (mapv first groups) (mapv second groups))
         max-height (apply max (mapv (comp :height meta) (vals group-map)))
         with-translation (map (partial add-translation width max-height) groups)]
-    (with-meta [:g with-translation]
-               {:height max-height :width width})))
+    (with-meta [:g
+                (when fill [:rect {:width        width
+                                   :height       max-height
+                                   :fill-opacity fill-opacity
+                                   :fill         fill}])
+                [:g with-translation]]
+               {:height (Math/ceil max-height) :width width})))

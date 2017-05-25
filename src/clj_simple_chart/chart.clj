@@ -71,14 +71,16 @@
         x-scale (scale/scale (merge x new-opts))
         y-scale (scale/scale (merge y new-opts))
 
-        result (cond-> {:margin-left   max-left
-                        :margin-top    max-top
-                        :margin-right  max-right
-                        :margin-bottom max-bottom
-                        :plot-width    chart-width
-                        :plot-height   chart-height
-                        :x             x-scale
-                        :y             y-scale}
+        result (cond-> {:margin-left      max-left
+                        :margin-top       max-top
+                        :margin-right     max-right
+                        :margin-bottom    max-bottom
+                        :available-width  width
+                        :available-height height
+                        :plot-width       chart-width
+                        :plot-height      chart-height
+                        :x                x-scale
+                        :y                y-scale}
                        y2 (assoc :y2 (scale/scale (merge y2 new-opts))))]
     result))
 
@@ -93,26 +95,3 @@
         (= ::none (get x :axis ::none)) (recur (assoc-in config [:x :axis] :x))
         (= ::none (get y :axis ::none)) (recur (assoc-in config [:y :axis] :y))
         :else (chart-inner config)))
-
-;(def svg-width 200)
-;(def svg-height 200)
-;(def x-domain ["ASDFASDF1" "ASDFASDF2" "ASDFASDF3" "ASDFASDF4" "ASDFASDF5" "ASDFASDF6"])
-;
-;(def xx {:type          :ordinal
-;         :axis          :x
-;         :domain        x-domain
-;         :tick-values   [(first x-domain) (last x-domain)]
-;         :orientation   :bottom})
-;
-;(def margs (solve-margins-x svg-width svg-height (margins {}) xx 10))
-;
-;(def x (scale/scale (merge xx {:width  (- svg-width (sum-left-right margs)) :height 100})))
-;
-;(defn diagram []
-;  [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
-;   [:rect {:width "100%" :height "100%" :fill-opacity 0.5 :fill "#ffaa00"}]
-;   [:g {:transform (translate (:margin-left margs) 0)}
-;    (axis/render-axis x)]])
-;
-;(defn render-self []
-;  (core/render "./img/dev/chart.svg" (diagram)))
