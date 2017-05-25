@@ -15,6 +15,7 @@
 
 (def oil-reserve-data (->> reserve/data-parsed
                            (map keep-fields-fn)
+                           (filter #(> (:fldRecoverableOil %) 0))
                            (map to-mboe)))
 
 (def goliat (first (filter #(= "GOLIAT" (:fldName %)) oil-reserve-data)))
@@ -33,6 +34,14 @@
             (string/replace
               (decapitalize-str fldName)
               "Johan " "J. "))))
+
+(def top-ten (->> oil-reserve-data
+                  (sort-by :fldRecoverableOil)
+                  (take-last 10)))
+
+(def the-rest (->> oil-reserve-data
+                  (sort-by :fldRecoverableOil)
+                  (take (- (count oil-reserve-data) 10))))
 
 (def top-ten-plus-goliat (->> oil-reserve-data
                               (sort-by :fldRecoverableOil)
