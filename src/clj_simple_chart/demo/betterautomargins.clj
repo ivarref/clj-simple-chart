@@ -8,14 +8,14 @@
         svg-height 240
         x-domain ["ASDFASDF1" "ASDFASDF2" "ASDFASDF3" "ASDFASDF4ASDFASDF4"]
         xx {:type               :ordinal
-            :orientation        :bottom
+            :orientation        :top
             :domain             x-domain
             :axis-text-style-fn (fn [x] {:font-size 16})
             :tick-values        [(first x-domain) #_(last x-domain)]}
         yy {:type               :linear
             :orientation        :right
             :ticks              5
-            :axis-text-style-fn (fn [x] {:font-size 16})
+            :axis-text-style-fn (fn [x] {:font-size 36})
             :domain             [44 80]}
         c (chart/chart {:width  svg-width
                         :height svg-height
