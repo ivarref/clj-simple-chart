@@ -3,6 +3,7 @@
             [clj-time.core :as time]
             [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.ssb.valutakurser :as valutakurser]
+            [clj-simple-chart.ssb.kpi :as kpi]
             [clojure.set :as set]
             [clojure.test :as test])
   (:import (org.eclipse.jetty.util UrlEncoded MultiMap)))
@@ -60,4 +61,24 @@
 (def one-usd-date-to-nok valutakurser/one-usd-date-to-nok)
 
 (def brent-12-mma-dato-to-nok (reduce (fn [o v] (assoc o (:dato v) (* (get one-usd-date-to-nok (:dato v))
-                                                                      (:usd v)))) {} brent-12-mma))
+                                                                      (:usd v))))
+                                      {} brent-12-mma))
+
+(defn dato-to-kvartal [dato]
+  (cond (.endsWith dato "-03") (str (subs dato 0 4) "K1")
+        (.endsWith dato "-06") (str (subs dato 0 4) "K2")
+        (.endsWith dato "-09") (str (subs dato 0 4) "K3")
+        (.endsWith dato "-12") (str (subs dato 0 4) "K4")
+        :else nil))
+
+(def brent-4qma-to-2016-nok
+  (->> brent-12-mma
+       (filter #(dato-to-kvartal (:dato %)))
+       (reduce (fn [o v]
+                 (assoc o (dato-to-kvartal (:dato v))
+                          (kpi/to-2016-nok-4qma (dato-to-kvartal (:dato v))
+                                                (* (get one-usd-date-to-nok (:dato v)) (:usd v)))))
+               {})))
+
+;; Goal: Add 4 kvartal glidande gjennomsnitt oljepris i 2016-NOK ...
+;; YYYYK[1-4] => Oljepris (gj. føregåande 12 mnd) i 2016-kroner

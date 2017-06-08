@@ -79,8 +79,17 @@
                     (sort-by :dato)
                     (vec)))
 
+(def quarterly-4qma (->> quarterly
+                         (map-indexed (fn [idx x] (assoc x :prev-rows (take-last 4 (take (inc idx) quarterly)))))
+                         (filter #(= 4 (count (:prev-rows %))))
+                         (map #(assoc % :kpi (/ (reduce + 0 (mapv :kpi (:prev-rows %))) 4)))
+                         (mapv #(dissoc % :prev-rows))))
+
 (def quarter-to-kpi (zipmap (mapv :dato quarterly)
                             (mapv :kpi quarterly)))
+
+(def quarter-4qma-to-kpi (zipmap (mapv :dato quarterly-4qma)
+                                 (mapv :kpi quarterly-4qma)))
 
 (def baseline-sum (->> parsed
                        (filter #(= "2016" (:year %)))
@@ -91,6 +100,9 @@
 
 (defn to-2016-nok [dato-with-quarter v]
   (* v (/ baseline (get quarter-to-kpi dato-with-quarter))))
+
+(defn to-2016-nok-4qma [dato-with-quarter v]
+  (* v (/ baseline (get quarter-4qma-to-kpi dato-with-quarter))))
 
 (csv/write-csv "./data/08981/08981-kpi-quarterly.csv"
                {:data    (mapv #(assoc % :kpi (format "%.1f" (:kpi %))) quarterly)
