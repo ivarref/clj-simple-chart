@@ -74,9 +74,8 @@
                                       :else (subs x 2 4)))
          :domain        x-domain
          :sub-domain    sub-domain
-         :round         true
          :padding-inner 0.1
-         :padding-outer 0})
+         :padding-outer 0.1})
 
 (def yy {:type               :linear
          :orientation        :right
