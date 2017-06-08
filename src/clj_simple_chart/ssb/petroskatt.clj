@@ -98,7 +98,7 @@
           (reduce (fn [o k] (update o k #(format "%.1f" %))) row
                   (mapv keyword skattart))) rows))
 
-(csv/write-csv "7022-summed.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-summed.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
                                   :data    (rows-round-str output-rows-numeric)})
 
 ;;; Start de-aggregated summed data
@@ -115,7 +115,7 @@
                      (map-indexed (fn [idx x] (deagg-row output-rows-numeric idx x)))
                      (remove nil?)))
 
-(csv/write-csv "7022-deagg-summed.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
+(csv/write-csv "data/7022/7022-deagg-summed.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
                                         :data    (rows-round-str deagg-rows)})
 
 ;;; Start 12-mma de-agg summed data
@@ -131,8 +131,8 @@
                      (mapv (partial twelve-mma-contract-row (mapv keyword skattart)))
                      (map #(dissoc % :prev-rows))))
 
-(csv/write-csv "7022-deagg-summed-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
-                                               :data    (rows-round-str twelve-mma)})
+(csv/write-csv "data/7022/7022-deagg-summed-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+                                                         :data    (rows-round-str twelve-mma)})
 
 (def twelve-mma-mrd-monthly (->> deagg-rows
                                  (map-indexed (partial twelve-mma-row deagg-rows))
@@ -142,8 +142,8 @@
                                                            (assoc o k (/ (get o k) (* 12 1000)))) row (map keyword skattart))))
                                  (map #(dissoc % :prev-rows))))
 
-(csv/write-csv "7022-deagg-summed-mrd-12-mma.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
-                                                   :data    (rows-round-str twelve-mma-mrd-monthly)})
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mma.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+                                                             :data    (rows-round-str twelve-mma-mrd-monthly)})
 
 (def twelve-mma-mrd (->> deagg-rows
                          (map-indexed (partial twelve-mma-row deagg-rows))
@@ -153,13 +153,13 @@
                                                    (assoc o k (/ (get o k) 1000))) row (map keyword skattart))))
                          (map #(dissoc % :prev-rows))))
 
-(csv/write-csv "7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
-                                                   :data    (rows-round-str twelve-mma-mrd)})
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+                                                             :data    (rows-round-str twelve-mma-mrd)})
 
 (def twelve-mma-mrd-yearly-ytd (filter #(or (= (:dato %) (:dato (last twelve-mma-mrd))) (.endsWith (:dato %) "-12")) twelve-mma-mrd))
 
-(csv/write-csv "7022-deagg-summed-mrd-yearly-ytd.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
-                                                       :data    (rows-round-str twelve-mma-mrd-yearly-ytd)})
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-yearly-ytd.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+                                                                 :data    (rows-round-str twelve-mma-mrd-yearly-ytd)})
 
 
 ;;; Start grouped by region
@@ -174,5 +174,5 @@
                                 (sort-by :region)
                                 (sort-by :dato)))
 
-(csv/write-csv "7022-by-region.csv" {:columns (vec (flatten [:dato :region (mapv keyword skattart)]))
-                                     :data    output-rows-by-region})
+(csv/write-csv "data/7022/7022-by-region.csv" {:columns (vec (flatten [:dato :region (mapv keyword skattart)]))
+                                               :data    output-rows-by-region})
