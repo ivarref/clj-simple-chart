@@ -1,9 +1,27 @@
 (ns clj-simple-chart.ssb.valutakurser
   (:require [clj-http.client :as client]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clojure.test :as test]))
+            [clojure.test :as test]
+            [hickory.core :as hickory]))
 
-(defonce resp (client/get "https://raw.githubusercontent.com/ivarref/valutakurser/master/valuta_mnd.csv"))
+(defonce exchange-rate-page (client/get "http://www.norges-bank.no/en/Statistics/exchange_rates/"))
+(test/is (= 200 (:status exchange-rate-page)))
+(def valuta-url (->> exchange-rate-page
+                     :body
+                     (hickory/parse)
+                     (hickory/as-hiccup)
+                     (second)
+                     (tree-seq coll? identity)
+                     (filter vector?)
+                     (filter #(>= (count %) 2))
+                     (filter #(= :a (first %)))
+                     (mapv second)
+                     (mapv :href)
+                     (remove nil?)
+                     (filter #(.contains % "valuta_mnd.csv"))
+                     (first)))
+
+(defonce resp (client/get valuta-url))
 (test/is (= 200 (:status resp)))
 
 (def columns (:columns (csv/csv-map (:body resp))))
@@ -39,7 +57,7 @@
 
 (def one-usd-numeric (->> parsed
                           (mapv (fn [x] {:dato (:Date x)
-                                    :usd  (read-string (get x (keyword "1 USD")))}))
+                                         :usd  (read-string (get x (keyword "1 USD")))}))
                           (sort-by :dato)))
 
 (def one-usd-numeric-12-mma
