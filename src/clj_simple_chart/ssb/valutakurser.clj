@@ -24,14 +24,15 @@
 (defonce resp (client/get valuta-url))
 (test/is (= 200 (:status resp)))
 
-(def columns (:columns (csv/csv-map (:body resp))))
-(def data (:data (csv/csv-map (:body resp))))
-(test/is (= columns (mapv keyword ["Date" "1 AUD" "100 BGN" "1 BRL" "1 CAD" "100 CHF" "100 CNY" "100 CZK"
-                                   "100 DKK" "1 EUR" "1 GBP" "1 HKD" "100 HRK" "100 HUF" " I44" "100 IDR"
-                                   "1 ILS" "100 INR" "100 JPY" "100 KRW" "1 LTL" "100 MXN" "1 MYR" "1 NZD"
-                                   "100 PHP" "100 PKR" "1 PLN" "100 RON" "100 RUB" "100 SEK" "1 SGD"
-                                   "100 THB" "100 TRY" "100 TWD" " TWI" "1 USD" "1 XDR" "1 ZAR" "100 BYR"
-                                   "1 BYN" "100 BDT" "100 MMK"])))
+(def expected-columns ["Date" "1 AUD" "100 BGN" "1 BRL" "1 CAD" "100 CHF" "100 CNY" "100 CZK"
+                       "100 DKK" "1 EUR" "1 GBP" "1 HKD" "100 HRK" "100 HUF" " I44" "100 IDR"
+                       "1 ILS" "100 INR" "100 JPY" "100 KRW" "1 LTL" "100 MXN" "1 MYR" "1 NZD"
+                       "100 PHP" "100 PKR" "1 PLN" "100 RON" "100 RUB" "100 SEK" "1 SGD"
+                       "100 THB" "100 TRY" "100 TWD" " TWI" "1 USD" "1 XDR" "1 ZAR" "100 BYR"
+                       "1 BYN"])
+
+(def columns (:columns (csv/csv-map-assert-columns (:body resp) expected-columns)))
+(def data (:data (csv/csv-map-assert-columns (:body resp) expected-columns)))
 
 (test/is (= "Jan-60" (:Date (first data))))
 
