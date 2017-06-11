@@ -207,7 +207,7 @@
      [:g (add-oil-price-line)]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
-     [:g {:transform (translate 5 (+ 5 (yfn 500)))} info]]
+     [:g {:transform (translate 3 (+ 2 (yfn 500)))} info]]
 
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
