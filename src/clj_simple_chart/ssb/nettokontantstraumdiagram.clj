@@ -23,10 +23,12 @@
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
 (def utbytte (keyword "Utbytte fra Statoil"))
-(def sdoe (keyword "Netto kontantstrøm fra SDØE"))
+(def netto-sdoe (keyword "Netto kontantstrøm fra SDØE"))
 (def netto-sum (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet"))
 
-(def sub-domain [skatter avgift sdoe utbytte])
+(def sub-domain [skatter avgift netto-sdoe utbytte])
+
+; http://bl.ocks.org/aaizemberg/78bd3dade9593896a59d
 
 (def blue "rgb(31, 119, 180)")
 (def orange "rgb(255, 127, 14)")
@@ -38,12 +40,15 @@
 (def lilla "rgb(148, 103, 189)")
 (def cyan "rgb(23, 190, 207)")
 
-(def oil-price-fill "#8c6d31")
+(def oil-price-fill
+  ;"#8c6d31"
+  "#990099"
+  )
 
-(def fills {skatter blue
-            sdoe    red
-            avgift  green
-            utbytte orange})
+(def fills {utbytte    orange
+            netto-sdoe red
+            avgift     green
+            skatter    blue})
 
 (def x-domain (map :dato data))
 
@@ -116,9 +121,9 @@
                      :y      yy
                      :y2     yy2}))
 
-(def translate-info {sdoe    "Netto kontantstraum frå SDØE*"
-                     utbytte "Utbytte frå Statoil"
-                     skatter "Skattar på utvinning av petroleum"})
+(def translate-info {netto-sdoe "Netto kontantstraum frå SDØE*"
+                     utbytte    "Utbytte frå Statoil"
+                     skatter    "Skattar på utvinning av petroleum"})
 
 (def info
   (opentype/stack
@@ -160,14 +165,12 @@
                    :text-anchor "middle"
                    :text        (string/replace (format "%.1f" (get opts netto-sum)) "." ",")})])
 
-
-
 (defn add-oil-price-line []
   (let [dat data
         first-point (first dat)
         last-point (last dat)
         rest-of-data (drop 1 dat)
-        oil-price-stroke-width 3
+        oil-price-stroke-width 4
         line-to (reduce (fn [o v] (str o " "
                                        "L"
                                        (xfn (:dato v))
