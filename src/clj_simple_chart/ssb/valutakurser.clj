@@ -31,7 +31,7 @@
                                    "1 ILS" "100 INR" "100 JPY" "100 KRW" "1 LTL" "100 MXN" "1 MYR" "1 NZD"
                                    "100 PHP" "100 PKR" "1 PLN" "100 RON" "100 RUB" "100 SEK" "1 SGD"
                                    "100 THB" "100 TRY" "100 TWD" " TWI" "1 USD" "1 XDR" "1 ZAR" "100 BYR"
-                                   "1 BYN"])))
+                                   "1 BYN" "100 BDT" "100 MMK"])))
 
 (test/is (= "Jan-60" (:Date (first data))))
 
