@@ -2,6 +2,7 @@
   (:require [clj-simple-chart.core :as core]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.ssb.nettokontantstraum :as nettokontantstraum]
+            [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.translate :refer [translate translate-y]]
@@ -16,7 +17,8 @@
 (def svg-height 500)
 
 (def data (->> nettokontantstraum/four-quarters-moving-sum-adjusted-mrd
-               (filter #(>= (:year %) 1996))))
+               (filter #(>= (:year %) 1996))
+               (mapv #(assoc % :oilprice (get brentoilprice/brent-4qma-to-2016-nok (:dato %) ::none)))))
 
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
@@ -31,11 +33,17 @@
 (def green "rgb(44, 160, 44)")
 (def brown "rgb(140, 86, 75)")
 (def red "rgb(214, 39, 40)")
+(def pink "rgb(227, 119, 194)")
+(def gusjegul "rgb(188, 189, 34)")
+(def lilla "rgb(148, 103, 189)")
+(def cyan "rgb(23, 190, 207)")
+
+(def oil-price-fill cyan)
 
 (def fills {skatter blue
+            sdoe    red
             avgift  green
-            utbytte orange
-            sdoe    red})
+            utbytte orange})
 
 (def x-domain (map :dato data))
 
@@ -49,18 +57,24 @@
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 30}
                {:text "Milliardar 2016-kroner, 4 kvartal glidande sum" :font "Roboto Bold" :font-size 16}
-               {:text (str "Sum per " (:dato last-data) ": "
-                           (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
-                           " mrd kr") :font "Roboto Bold" :font-size 16}
+               {:text          (str "Sum per " (:dato last-data) ": "
+                                    (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
+                                    " mrd kr")
+                :font          "Roboto Bold" :font-size 16
+                :margin-bottom 10}
 
+               {:text "Oljepris, 2016-kroner/fat, 4 kvartal glidande gjennomsnitt"
+                :fill oil-price-fill :font "Roboto Bold" :font-size 16}
+
+               {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "Milliardar 2016-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                ]))
 
 (def footer (opentype/stack
               {:width available-width}
               [{:margin-top 4 :text "*Statens direkte økonomiske engasjement" :font "Roboto Regular" :font-size 16}
-               {:text "Kjelde: SSB" :font "Roboto Regular" :font-size 16}
-               {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 16 :valign :bottom :align :right}
+               {:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font "Roboto Regular" :font-size 16}
+               {:text "© Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 16 :valign :bottom :align :right}
                ]))
 
 (def xx {:type          :ordinal
@@ -84,6 +98,14 @@
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          :domain             [0 (apply max (map netto-sum data))]})
 
+
+(def yy2 {:type               :linear
+          :orientation        :left
+          :color              oil-price-fill
+          :ticks              5
+          :axis-text-style-fn (fn [x] {:font "Roboto Black"})
+          :domain             [0 (apply max (mapv :oilprice data))]})
+
 (def available-height (- svg-height (+ two-marg
                                        (:height (meta header))
                                        (:height (meta footer)))))
@@ -91,7 +113,8 @@
 (def c (chart/chart {:width  available-width
                      :height available-height
                      :x      xx
-                     :y      yy}))
+                     :y      yy
+                     :y2     yy2}))
 
 (def translate-info {sdoe    "Netto kontantstraum frå SDØE*"
                      utbytte "Utbytte frå Statoil"
@@ -110,6 +133,7 @@
 (def y (:y c))
 
 (def yfn (partial point/center-point y))
+(def y2fn (partial point/center-point (:y2 c)))
 (def xfn (partial point/center-point x))
 
 (def bars (rect/scaled-rect (:x c) (:y c)))
@@ -136,6 +160,35 @@
                    :text-anchor "middle"
                    :text        (string/replace (format "%.1f" (get opts netto-sum)) "." ",")})])
 
+
+
+(defn add-oil-price-line []
+  (let [dat data
+        first-point (first dat)
+        last-point (last dat)
+        rest-of-data (drop 1 dat)
+        oil-price-stroke-width 2
+        line-to (reduce (fn [o v] (str o " "
+                                       "L"
+                                       (xfn (:dato v))
+                                       " "
+                                       (y2fn (:oilprice v)))) "" rest-of-data)
+        dots (map (fn [{dato :dato oilprice :oilprice}]
+                    [:circle {:cx           (xfn dato)
+                              :cy           (y2fn oilprice)
+                              :stroke       "black"
+                              :stroke-width oil-price-stroke-width
+                              :fill         oil-price-fill
+                              :r            4}]) end-of-year-data)]
+    [:g
+     [:path {:stroke-width oil-price-stroke-width
+             :stroke       oil-price-fill
+             :fill         "none"
+             :d
+                           (str "M" (xfn (:dato first-point)) " " (y2fn (:oilprice first-point))
+                                " " line-to)}]
+     #_dots]))
+
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
@@ -146,10 +199,12 @@
                :fill-opacity "0.2"
                :fill         "steelblue"}]
      (axis/render-axis (:y c))
+     (axis/render-axis (:y2 c))
      [:g (bars (mapv make-rect data))]
+     [:g (add-oil-price-line)]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
-     [:g {:transform (translate-y (+ 7 (yfn 500)))} info]]
+     [:g {:transform (translate 5 (+ 5 (yfn 500)))} info]]
 
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
