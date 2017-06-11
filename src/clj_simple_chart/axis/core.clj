@@ -56,7 +56,7 @@
         tiks (ticks scale)
         x-pos (mapv (partial center-point scale) tiks)
         x-pos (if (:reverse scale) (reverse x-pos) x-pos)
-        max-height-font (inc (apply max (mapv :height txt-meta)))
+        max-height-font (apply max (mapv :height txt-meta))
         spacing-left (double (/ (:width (first txt-meta)) 2))
         overflow-left (Math/max 0.0 (- spacing-left (first x-pos)))
         spacing-right (double (/ (:width (last txt-meta)) 2))
