@@ -108,7 +108,7 @@
           :orientation        :left
           :color              oil-price-fill
           :ticks              5
-          :axis-text-style-fn (fn [x] {:font "Roboto Black"})
+          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
           :domain             [0 (apply max (mapv :oilprice data))]})
 
 (def available-height (- svg-height (+ two-marg
@@ -198,8 +198,8 @@
     header
 
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
-     #_[:rect {:width        available-width :height available-height
-               :fill-opacity "0.2"
+     #_[:rect {:width        (:plot-width c) :height (:plot-height c)
+               :fill-opacity "0.1"
                :fill         "steelblue"}]
      (axis/render-axis (:y c))
      (axis/render-axis (:y2 c))
