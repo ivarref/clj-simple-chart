@@ -1,6 +1,7 @@
 (ns clj-simple-chart.csv.csvmap
   (:require [clojure.data.csv :as csv]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [clojure.string :as string]))
 
 (defn- debomify
   [^String line]
@@ -32,7 +33,7 @@
                              (remove nil?))]
     (when (pos? (count missing-columns))
       (println "missing columns: " (str missing-columns))
-      (throw (Exception. (str "missing columns: " (str missing-columns)))))
+      (throw (Exception. (str "missing columns: " (string/join ", " missing-columns)))))
     {:columns columns
      :data    (mapv #(produce-row columns %) data)}))
 
