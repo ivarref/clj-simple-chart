@@ -18,7 +18,7 @@
 
 (def data (->> nettokontantstraum/four-quarters-moving-sum-adjusted-mrd
                (filter #(>= (:year %) 1996))
-               (mapv #(assoc % :oilprice (get brentoilprice/brent-4qma-to-2016-nok (:dato %) ::none)))))
+               (mapv #(assoc % :oilprice (get brentoilprice/brent-4qma-to-2017-nok (:dato %) ::none)))))
 
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
@@ -38,7 +38,7 @@
 (def lilla "rgb(148, 103, 189)")
 (def cyan "rgb(23, 190, 207)")
 
-(def oil-price-fill cyan)
+(def oil-price-fill "#8c6d31")
 
 (def fills {skatter blue
             sdoe    red
@@ -56,18 +56,18 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 30}
-               {:text "Milliardar 2016-kroner, 4 kvartal glidande sum" :font "Roboto Bold" :font-size 16}
+               {:text "Milliardar 2017-kroner, 4 kvartal glidande sum" :font "Roboto Bold" :font-size 16}
                {:text          (str "Sum per " (:dato last-data) ": "
                                     (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
                                     " mrd kr")
                 :font          "Roboto Bold" :font-size 16
                 :margin-bottom 10}
 
-               {:text "Oljepris, 2016-kroner/fat, 4 kvartal glidande gjennomsnitt"
+               {:text "Oljepris, 2017-kroner/fat, 4 kvartal glidande gjennomsnitt"
                 :fill oil-price-fill :font "Roboto Bold" :font-size 16}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:text "Milliardar 2016-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
+               {:text "Milliardar 2017-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                ]))
 
 (def footer (opentype/stack
@@ -167,7 +167,7 @@
         first-point (first dat)
         last-point (last dat)
         rest-of-data (drop 1 dat)
-        oil-price-stroke-width 2
+        oil-price-stroke-width 3
         line-to (reduce (fn [o v] (str o " "
                                        "L"
                                        (xfn (:dato v))
@@ -179,7 +179,7 @@
                               :stroke       "black"
                               :stroke-width oil-price-stroke-width
                               :fill         oil-price-fill
-                              :r            4}]) end-of-year-data)]
+                              :r            2.5}]) end-of-year-data)]
     [:g
      [:path {:stroke-width oil-price-stroke-width
              :stroke       oil-price-fill

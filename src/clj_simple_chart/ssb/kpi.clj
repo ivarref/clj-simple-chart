@@ -96,6 +96,12 @@
                        (mapv (comp read-string :kpi))
                        (reduce + 0)))
 
+(def baseline-2017-items (->> parsed
+                              (filter #(= "2017" (:year %)))
+                              (mapv (comp read-string :kpi))))
+
+(def baseline-2017 (/ (reduce + 0 baseline-2017-items) (count baseline-2017-items)))
+
 (def baseline (/ baseline-sum 12))
 
 (defn to-2016-nok [dato-with-quarter v]
@@ -103,6 +109,12 @@
 
 (defn to-2016-nok-4qma [dato-with-quarter v]
   (* v (/ baseline (get quarter-4qma-to-kpi dato-with-quarter))))
+
+(defn to-2017-nok-4qma [dato-with-quarter v]
+  (* v (/ baseline-2017 (get quarter-4qma-to-kpi dato-with-quarter))))
+
+(defn to-2017-nok [dato-with-quarter v]
+  (* v (/ baseline-2017 (get quarter-to-kpi dato-with-quarter))))
 
 (csv/write-csv "./data/08981/08981-kpi-quarterly.csv"
                {:data    (mapv #(assoc % :kpi (format "%.1f" (:kpi %))) quarterly)
