@@ -8,23 +8,30 @@
             [clj-simple-chart.chart :as chart]
             [clojure.test :as test]))
 
-(def translate-countries {"Russian Federation" "Russia"})
+(def translate-countries {"Russian Federation" "Russia"
+                          "Total Middle East" "Middle East"
+                          "Total Africa" "Africa"
+                          "Total Asia-Pacific" "Asia-Pacific"})
 
 (def select-countries ["Norway"
                        "Sweden"
                        "Denmark"
-                       "Netherlands"
-                       "Spain"
-                       "Finland"
                        "United States"
                        "Russia"
-                       ;"World"
                        "Canada"
                        "Germany"
                        "France"
-                       "Greece"
+                       "OECD"
+                       "Africa"
+                       "Eurozone"
+                       "World"
+                       ;"Asia-Pacific"
+                       "Saudi Arabia"
+                       "Middle East"
+                       "Non OECD"
                        "China"
                        "India"
+                       "South Africa"
                        "Brazil"
                        "Indonesia"])
 
@@ -34,6 +41,13 @@
                        :nuclear          "cyan"
                        :hydro            "rgb(51, 102, 255)"
                        :other_renewables "darkorange"})
+
+(def resource-to-name {:coal             "Coal"
+                       :oil              "Oil"
+                       :gas              "Gas"
+                       :nuclear          "Nuclear"
+                       :hydro            "Hydro"
+                       :other_renewables "Other renewables"})
 
 (def per-capita-properties [:coal :oil :gas :nuclear :hydro :other_renewables])
 (def one-million 1000000)
@@ -67,8 +81,8 @@
 (def header (opentype/stack
               {}
               [{:text "Energy Consumption" :font "Roboto Black" :font-size 24}
-               {:text "Selected countries" :font "Roboto Bold" :font-size 16}
-               {:text          "Tonnes oil equivalents per capita" :font-size 16
+               ;{:text "Selected nations and groups of nations" :font "Roboto Bold" :font-size 16}
+               {:text "Tonnes of oil equivalents per capita" :font-size 16
                 :margin-bottom 0}]))
 
 (def footer (opentype/stack
@@ -103,19 +117,26 @@
 (def x (:x c))
 (def y (:y c))
 
+(def legend (opentype/stack
+              {:width (:plot-width c)}
+              (mapv (fn [resource]
+                      {:align :right
+                       :fill  (get resource-to-fill resource)
+                       :text  (get resource-to-name resource)}) per-capita-properties)))
+
 (def rect (rect/scaled-rect x y))
 
 (defn make-rect [{country :country
                   coal    :coal
                   total   :total
                   :as     item}]
-  (mapv (fn [resource]
-          {:p    country
-           :h    (get item resource)
-           :c    resource
-           :fill (get resource-to-fill resource)})
-        per-capita-properties))
-;[{:p country :h coal :c :coal :fill "steelblue"}])
+  #_(mapv (fn [resource]
+            {:p    country
+             :h    (get item resource)
+             :c    resource
+             :fill (get resource-to-fill resource)})
+          per-capita-properties)
+  {:p country :h total :fill "steelblue"})
 
 (defn total-text [{country :country
                    total   :total}]
@@ -133,7 +154,9 @@
      (rect (mapv make-rect data))
      (map total-text data)
      (axis/render-axis y)
-     (axis/render-axis x)]
+     (axis/render-axis x)
+     [:g {:transform (translate-y (- (:plot-height c) (:height (meta legend))))}
+      #_legend]]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]
     ]])
 
