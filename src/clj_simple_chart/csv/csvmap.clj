@@ -10,8 +10,6 @@
       (.substring line 1)
       line)))
 
-(def sample-csv "hello,world\n123,999\n333,777")
-
 (defn- produce-row
   [columns row]
   (zipmap columns row))
@@ -22,6 +20,42 @@
         data (filter #(= (count columns) (count %)) (rest csv-raw))]
     {:columns columns
      :data    (mapv #(produce-row columns %) data)}))
+
+(defn tsv-map [^String input]
+  (let [csv-raw (csv/read-csv (debomify input) :separator \tab)
+        columns (mapv keyword (first csv-raw))
+        data (filter #(= (count columns) (count %)) (rest csv-raw))]
+    {:columns columns
+     :data    (mapv #(produce-row columns %) data)}))
+
+(defn assert-columns [expected-columns {columns :columns
+                                        data    :data
+                                        :as input}]
+  (let [missing-columns (->> expected-columns
+                             (mapv keyword)
+                             (mapv #(if (some #{%} columns) nil %))
+                             (remove nil?))]
+    (when (pos? (count missing-columns))
+      (println "got columns: " (string/join ", " columns))
+      (println "missing columns: " (string/join ", " missing-columns))
+      (throw (Exception. (str "missing columns: " (string/join ", " missing-columns)))))
+    input))
+
+(defn read-string-columns [columns data]
+  (let [make-row (fn [x])]
+    (mapv (fn [x]
+            (reduce (fn [o [k v]]
+                      (if (some #{k} columns)
+                        (assoc o k (read-string v))
+                        (assoc o k v))) {} x)) data)))
+
+(defn drop-columns [columns data]
+  (let [make-row (fn [x])]
+    (mapv (fn [x]
+            (reduce (fn [o [k v]]
+                      (if (some #{k} columns)
+                        o
+                        (assoc o k v))) {} x)) data)))
 
 (defn csv-map-assert-columns [^String input expected-columns]
   (let [csv-raw (csv/read-csv (debomify input))
