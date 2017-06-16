@@ -20,6 +20,8 @@
                        "Russia"
                        "Canada"
                        "Germany"
+                       "Poland"
+                       "Pakistan"
                        "France"
                        "OECD"
                        "Africa"
@@ -80,9 +82,9 @@
 
 (def header (opentype/stack
               {}
-              [{:text "Energy Consumption" :font "Roboto Black" :font-size 24}
+              [{:text "Primary Energy Consumption" :font "Roboto Black" :font-size 22}
                ;{:text "Selected nations and groups of nations" :font "Roboto Bold" :font-size 16}
-               {:text "Tonnes of oil equivalents per capita" :font-size 16
+               {:text "Tonnes of oil equivalents per capita per year" :font-size 14
                 :margin-bottom 0}]))
 
 (def footer (opentype/stack
