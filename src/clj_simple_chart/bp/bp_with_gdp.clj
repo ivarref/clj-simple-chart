@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.bp-per-capita-selected-ten
+(ns clj-simple-chart.bp.bp-with-gdp
   (:require [clj-simple-chart.bp.bpdata :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -9,8 +9,8 @@
             [clojure.test :as test]))
 
 (def translate-countries {"Russian Federation" "Russia"
-                          "Total Middle East" "Middle East"
-                          "Total Africa" "Africa"
+                          "Total Middle East"  "Middle East"
+                          "Total Africa"       "Africa"
                           "Total Asia-Pacific" "Asia-Pacific"})
 
 (def select-countries ["Norway"
@@ -51,12 +51,20 @@
                        :hydro            "Hydro"
                        :other_renewables "Other renewables"})
 
+(def per-capita-properties [:coal :oil :gas :nuclear :hydro :other_renewables])
+(def one-million 1000000)
+
 (def data (->> bpdata/data
                (filter #(= "2016" (:year %)))
                (mapv #(update % :country (fn [c] (get translate-countries c c))))
                (filter #(some #{(:country %)} select-countries))
-               (mapv #(merge % (:per-capita %)))
-               (sort-by :total)))
+               (mapv #(update % :total (reduce + 0 (mapv (fn [x] (get % x)) per-capita-properties))))
+               (mapv (fn [x] (reduce (fn [o [k v]]
+                                       (if (some #{k} (conj per-capita-properties :total))
+                                         (assoc o k (/ (* one-million v) (:population x)))
+                                         (assoc o k v))) {} x)))
+               (sort-by :total)
+               ))
 
 (test/is (= (count select-countries) (count data)))
 
@@ -76,7 +84,7 @@
               {}
               [{:text "Primary Energy Consumption" :font "Roboto Black" :font-size 22}
                ;{:text "Selected nations and groups of nations" :font "Roboto Bold" :font-size 16}
-               {:text "Tonnes of oil equivalents per capita per year" :font-size 14
+               {:text          "Tonnes of oil equivalents per capita per year" :font-size 14
                 :margin-bottom 0}]))
 
 (def footer (opentype/stack
@@ -95,9 +103,16 @@
          :ticks       5
          :domain      [0 10]})
 
+(def xx2 {:type        :linear
+          :axis        :x
+          :orientation :bottom
+          :ticks       5
+          :domain      [0 10]})
+
 (def yy {:type          :ordinal
          :axis          :y
          :domain        domain
+         :sub-domain    per-capita-properties
          :orientation   :left
          :round         true
          :padding-inner 0.4
@@ -106,9 +121,18 @@
 (def c (chart/chart {:width  available-width
                      :height available-height
                      :x      xx
+                     :x2     xx2
                      :y      yy}))
 (def x (:x c))
+(def x2 (:x2 c))
 (def y (:y c))
+
+(def legend (opentype/stack
+              {:width (:plot-width c)}
+              (mapv (fn [resource]
+                      {:align :right
+                       :fill  (get resource-to-fill resource)
+                       :text  (get resource-to-name resource)}) per-capita-properties)))
 
 (def rect (rect/scaled-rect x y))
 
@@ -116,6 +140,12 @@
                   coal    :coal
                   total   :total
                   :as     item}]
+  #_(mapv (fn [resource]
+            {:p    country
+             :h    (get item resource)
+             :c    resource
+             :fill (get resource-to-fill resource)})
+          per-capita-properties)
   {:p country :h total :fill "steelblue"})
 
 (defn total-text [{country :country
@@ -135,10 +165,11 @@
      (map total-text data)
      (axis/render-axis y)
      (axis/render-axis x)
-     #_[:g {:transform (translate-y (- (:plot-height c) (:height (meta legend))))}
+     (axis/render-axis x2)
+     [:g {:transform (translate-y (- (:plot-height c) (:height (meta legend))))}
       #_legend]]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]
     ]])
 
 (defn render-self []
-  (render "./img/energy-per-capita.svg" "./img/energy-per-capita.png" (diagram)))
+  (render "./img/energy-per-capita-with-gdp.svg" "./img/energy-per-capita-with-gdp.png" (diagram)))

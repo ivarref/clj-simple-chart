@@ -30,7 +30,7 @@
 
 (defn assert-columns [expected-columns {columns :columns
                                         data    :data
-                                        :as input}]
+                                        :as     input}]
   (let [missing-columns (->> expected-columns
                              (mapv keyword)
                              (mapv #(if (some #{%} columns) nil %))
@@ -50,12 +50,11 @@
                         (assoc o k v))) {} x)) data)))
 
 (defn drop-columns [columns data]
-  (let [make-row (fn [x])]
-    (mapv (fn [x]
-            (reduce (fn [o [k v]]
-                      (if (some #{k} columns)
-                        o
-                        (assoc o k v))) {} x)) data)))
+  (mapv (fn [x]
+          (reduce (fn [o [k v]]
+                    (if (some #{k} columns)
+                      o
+                      (assoc o k v))) {} x)) data))
 
 (defn csv-map-assert-columns [^String input expected-columns]
   (let [csv-raw (csv/read-csv (debomify input))

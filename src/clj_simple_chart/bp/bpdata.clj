@@ -11,17 +11,63 @@
 
 (def expected-columns
   [:year :country :country_code
-   :population :gdp	:coal	:gas :hydro :nuclear :oil :other_renewables
+   :population :gdp :coal :gas :hydro :nuclear :oil :other_renewables
    :solar :wind :coal_production :oil_production
    :gas_production])
+
+(def mtoe-properties [:coal
+                      :oil
+                      :gas
+                      :nuclear
+                      :hydro
+                      :other_renewables])
+
+(def one-million 1000000)
+
+(defn add-per-capita [{year       :year
+                       country    :country
+                       gdp        :gdp
+                       population :population
+                       coal       :coal
+                       oil        :oil
+                       gas        :gas
+                       nuclear    :nuclear
+                       hydro      :hydro
+                       renewables :other_renewables
+                       total      :total
+                       :as        original}]
+  (let [per-capita-props
+        {:coal             (/ (* one-million coal) population)
+         :oil              (/ (* one-million oil) population)
+         :gas              (/ (* one-million gas) population)
+         :nuclear          (/ (* one-million nuclear) population)
+         :hydro            (/ (* one-million hydro) population)
+         :other_renewables (/ (* one-million renewables) population)
+         :total            (/ (* one-million total) population)
+         :gdp              (when (number? gdp)
+                             (/ gdp population))}]
+    (assoc original :per-capita per-capita-props)))
 
 (def data (->> (csv/tsv-map (:body response))
                (csv/assert-columns expected-columns)
                (:data)
-               (csv/read-string-columns [:population :coal :oil :gas :nuclear :hydro :other_renewables])
-               (csv/drop-columns [:country_code :gdp :coal_production
-                                  :oil_production :gas_production
-                                  :solar :wind])))
+               (csv/read-string-columns [:gdp
+                                         :population
+                                         :coal
+                                         :oil
+                                         :gas
+                                         :nuclear
+                                         :hydro
+                                         :other_renewables])
+               (mapv #(update % :gdp (fn [gdp] (when (number? gdp) gdp))))
+               (mapv #(assoc % :total (reduce + 0 (mapv (fn [x] (get % x)) mtoe-properties))))
+               (mapv add-per-capita)
+               (csv/drop-columns [:country_code
+                                  :coal_production
+                                  :oil_production
+                                  :gas_production
+                                  :solar
+                                  :wind])))
 
 (def countries (->> data
                     (mapv :country)

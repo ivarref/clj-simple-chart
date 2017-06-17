@@ -55,8 +55,10 @@
                     x      :x
                     y      :y
                     y2     :y2
-                    or     {y2 nil}}]
-  (let [max-margins (solve-margins width height (margins {}) [x y y2] 10)
+                    x2     :x2
+                    :or    {y2 nil
+                            x2 nil}}]
+  (let [max-margins (solve-margins width height (margins {}) [x y x2 y2] 10)
 
         max-right (Math/ceil (:margin-right max-margins))
         max-left (Math/ceil (:margin-left max-margins))
@@ -81,7 +83,9 @@
                         :plot-height      chart-height
                         :x                x-scale
                         :y                y-scale}
-                       y2 (assoc :y2 (scale/scale (merge y2 new-opts))))]
+
+                       y2 (assoc :y2 (scale/scale (merge y2 new-opts)))
+                       x2 (assoc :x2 (scale/scale (merge x2 new-opts))))]
     result))
 
 (defn chart [{width  :width
@@ -89,9 +93,14 @@
               x      :x
               y      :y
               y2     :y2
+              x2     :x2
               :as    config
-              or     {y2 nil}}]
-  (cond (and (map? y2) (= ::none (get y2 :axis ::none))) (recur (assoc-in config [:y2 :axis] :y))
+              :or    {y2 nil
+                      x2 nil}}]
+  (cond (and (map? y2) (= ::none (get y2 :axis ::none)))
+        (recur (assoc-in config [:y2 :axis] :y))
+        (and (map? x2) (= ::none (get x2 :axis ::none)))
+        (recur (assoc-in config [:x2 :axis] :x))
         (= ::none (get x :axis ::none)) (recur (assoc-in config [:x :axis] :x))
         (= ::none (get y :axis ::none)) (recur (assoc-in config [:y :axis] :y))
         :else (chart-inner config)))
