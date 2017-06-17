@@ -34,6 +34,9 @@
                        "Non OECD"
                        "China"
                        "India"
+                       ;"Qatar"
+                       ;"Singapore"
+                       "Bangladesh"
                        "South Africa"
                        "Brazil"
                        "Indonesia"])
