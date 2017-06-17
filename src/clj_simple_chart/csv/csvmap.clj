@@ -49,6 +49,14 @@
                         (assoc o k (read-string v))
                         (assoc o k v))) {} x)) data)))
 
+(defn number-or-nil-columns [columns data]
+  (let [make-row (fn [x])]
+    (mapv (fn [x]
+            (reduce (fn [o [k v]]
+                      (if (some #{k} columns)
+                        (assoc o k (if (number? v) v nil))
+                        (assoc o k v))) {} x)) data)))
+
 (defn drop-columns [columns data]
   (mapv (fn [x]
           (reduce (fn [o [k v]]

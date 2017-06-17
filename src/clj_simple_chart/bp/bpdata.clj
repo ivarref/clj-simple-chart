@@ -39,19 +39,21 @@
 
 (def one-million 1000000)
 
-(defn add-per-capita [{year       :year
-                       country    :country
-                       gdp        :gdp
-                       population :population
-                       coal       :coal
-                       oil        :oil
-                       gas        :gas
-                       nuclear    :nuclear
-                       hydro      :hydro
-                       renewables :other_renewables
-                       co2        :co2
-                       total      :total
-                       :as        original}]
+(defn add-per-capita [{year           :year
+                       country        :country
+                       gdp            :gdp
+                       population     :population
+                       coal           :coal
+                       oil            :oil
+                       gas            :gas
+                       nuclear        :nuclear
+                       hydro          :hydro
+                       renewables     :other_renewables
+                       gas-production :gas_production
+                       oil-production :oil_production
+                       co2            :co2
+                       total          :total
+                       :as            original}]
   (let [per-capita-props
         {:coal             (/ (* one-million coal) population)
          :oil              (/ (* one-million oil) population)
@@ -63,7 +65,11 @@
          :gdp              (when (number? gdp)
                              (/ gdp population))
          :co2              (when (number? co2)
-                             (/ (* one-million co2) population))}]
+                             (/ (* one-million co2) population))
+         :gas_production   (when (number? gas-production)
+                             (/ (* one-million gas-production) population))
+         :oil_production   (when (number? oil-production)
+                             (/ (* one-million oil-production) population))}]
     (assoc original :per-capita per-capita-props)))
 
 (def data (->> (csv/tsv-map (:body response))
@@ -77,15 +83,14 @@
                                          :nuclear
                                          :hydro
                                          :other_renewables
-                                         :co2])
-               (mapv #(update % :gdp (fn [gdp] (when (number? gdp) gdp))))
-               (mapv #(update % :co2 (fn [co2] (when (number? co2) co2))))
+                                         :co2
+                                         :gas_production
+                                         :oil_production])
+               (csv/number-or-nil-columns [:gdp :co2 :gas_production :oil_production])
                (mapv #(assoc % :total (reduce + 0 (mapv (fn [x] (get % x)) mtoe-properties))))
                (mapv add-per-capita)
-               (csv/drop-columns [:country_code
+               (csv/drop-columns [
                                   :coal_production
-                                  :oil_production
-                                  :gas_production
                                   :solar
                                   :wind])))
 
