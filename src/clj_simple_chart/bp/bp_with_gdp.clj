@@ -6,12 +6,14 @@
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.chart :as chart]
-            [clojure.test :as test]))
+            [clojure.test :as test]
+            [clj-simple-chart.point :as point]))
 
 (def translate-countries {"Russian Federation" "Russia"
                           "Total Middle East"  "Middle East"
                           "Total Africa"       "Africa"
-                          "Total Asia-Pacific" "Asia-Pacific"})
+                          "Total Asia-Pacific" "Asia-Pacific"
+                          "United Arab Emirates" "U.A.E."})
 
 (def select-countries ["Norway"
                        "Sweden"
@@ -22,11 +24,16 @@
                        "Germany"
                        "Poland"
                        "Pakistan"
+                       "U.A.E."
+                       "Switzerland"
                        "France"
                        "OECD"
                        "Africa"
                        "Eurozone"
                        "World"
+                       "Qatar"
+                       "Singapore"
+                       "Kuwait"
                        ;"Asia-Pacific"
                        "Saudi Arabia"
                        "Middle East"
@@ -37,34 +44,13 @@
                        "Brazil"
                        "Indonesia"])
 
-(def resource-to-fill {:coal             "gray"
-                       :oil              "rgb(24, 116, 24)"
-                       :gas              "rgb(254, 24, 24)"
-                       :nuclear          "cyan"
-                       :hydro            "rgb(51, 102, 255)"
-                       :other_renewables "darkorange"})
-
-(def resource-to-name {:coal             "Coal"
-                       :oil              "Oil"
-                       :gas              "Gas"
-                       :nuclear          "Nuclear"
-                       :hydro            "Hydro"
-                       :other_renewables "Other renewables"})
-
-(def per-capita-properties [:coal :oil :gas :nuclear :hydro :other_renewables])
-(def one-million 1000000)
-
 (def data (->> bpdata/data
-               (filter #(= "2016" (:year %)))
+               (filter #(= "2015" (:year %)))
                (mapv #(update % :country (fn [c] (get translate-countries c c))))
                (filter #(some #{(:country %)} select-countries))
-               (mapv #(update % :total (reduce + 0 (mapv (fn [x] (get % x)) per-capita-properties))))
-               (mapv (fn [x] (reduce (fn [o [k v]]
-                                       (if (some #{k} (conj per-capita-properties :total))
-                                         (assoc o k (/ (* one-million v) (:population x)))
-                                         (assoc o k v))) {} x)))
-               (sort-by :total)
-               ))
+               (mapv #(merge % (:per-capita %)))
+               (mapv #(update % :gdp (fn [gdp] (/ gdp 1000))))
+               (sort-by :total)))
 
 (test/is (= (count select-countries) (count data)))
 
@@ -84,13 +70,15 @@
               {}
               [{:text "Primary Energy Consumption" :font "Roboto Black" :font-size 22}
                ;{:text "Selected nations and groups of nations" :font "Roboto Bold" :font-size 16}
-               {:text          "Tonnes of oil equivalents per capita per year" :font-size 14
-                :margin-bottom 0}]))
+               {:text "Tonnes of oil equivalents per capita per year" :font-size 14 :margin-bottom 0}]))
+
+(def gdp-per-capita-fill "rgb(214, 39, 40)")
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 10 :text "Sources: BP (2017), World Bank (2016)" :font "Roboto Regular" :font-size 14}
-               {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14}
+              [{:text "GDP per capita, '000 USD" :fill gdp-per-capita-fill :font "Roboto Regular" :font-size 14}
+               {:margin-top 10 :text "Sources: BP (2017), World Bank (2016)." :font "Roboto Regular" :font-size 14}
+               {:margin-top 2 :text "Data for 2015. © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14}
                ]))
 
 (def available-height (- svg-height (+ two-marg
@@ -101,18 +89,18 @@
          :axis        :x
          :orientation :top
          :ticks       5
-         :domain      [0 10]})
+         :domain      [0 25]})
 
 (def xx2 {:type        :linear
           :axis        :x
           :orientation :bottom
-          :ticks       5
-          :domain      [0 10]})
+          :color       gdp-per-capita-fill
+          :ticks       10
+          :domain      [0 (apply max (mapv :gdp data))]})
 
 (def yy {:type          :ordinal
          :axis          :y
          :domain        domain
-         :sub-domain    per-capita-properties
          :orientation   :left
          :round         true
          :padding-inner 0.4
@@ -127,26 +115,25 @@
 (def x2 (:x2 c))
 (def y (:y c))
 
-(def legend (opentype/stack
-              {:width (:plot-width c)}
-              (mapv (fn [resource]
-                      {:align :right
-                       :fill  (get resource-to-fill resource)
-                       :text  (get resource-to-name resource)}) per-capita-properties)))
-
 (def rect (rect/scaled-rect x y))
+
+(def x2-fn (partial point/center-point (:x2 c)))
+(def y-fn (partial point/center-point (:y c)))
 
 (defn make-rect [{country :country
                   coal    :coal
                   total   :total
                   :as     item}]
-  #_(mapv (fn [resource]
-            {:p    country
-             :h    (get item resource)
-             :c    resource
-             :fill (get resource-to-fill resource)})
-          per-capita-properties)
   {:p country :h total :fill "steelblue"})
+
+(defn gdp-point [{gdp     :gdp
+                  country :country
+                  :as     item}]
+  [:g {:transform (translate (x2-fn gdp)
+                             (y-fn country))}
+   [:circle {:r      3
+             :fill   gdp-per-capita-fill
+             :stroke "black"}]])
 
 (defn total-text [{country :country
                    total   :total}]
@@ -162,12 +149,12 @@
     header
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (rect (mapv make-rect data))
+     (map gdp-point data)
      (map total-text data)
      (axis/render-axis y)
      (axis/render-axis x)
      (axis/render-axis x2)
-     [:g {:transform (translate-y (- (:plot-height c) (:height (meta legend))))}
-      #_legend]]
+     ]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]
     ]])
 
