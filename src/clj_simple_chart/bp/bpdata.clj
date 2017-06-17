@@ -9,10 +9,25 @@
 
 (defonce response (client/get data-url))
 
+(test/is (= 200 (:status response)))
+
 (def expected-columns
-  [:year :country :country_code
-   :population :gdp :coal :gas :hydro :nuclear :oil :other_renewables
-   :solar :wind :coal_production :oil_production
+  [:year
+   :country
+   :country_code
+   :population
+   :gdp
+   :coal
+   :gas
+   :hydro
+   :nuclear
+   :oil
+   :other_renewables
+   :solar
+   :wind
+   :co2
+   :coal_production
+   :oil_production
    :gas_production])
 
 (def mtoe-properties [:coal
@@ -34,6 +49,7 @@
                        nuclear    :nuclear
                        hydro      :hydro
                        renewables :other_renewables
+                       co2        :co2
                        total      :total
                        :as        original}]
   (let [per-capita-props
@@ -45,7 +61,9 @@
          :other_renewables (/ (* one-million renewables) population)
          :total            (/ (* one-million total) population)
          :gdp              (when (number? gdp)
-                             (/ gdp population))}]
+                             (/ gdp population))
+         :co2              (when (number? co2)
+                             (/ (* one-million co2) population))}]
     (assoc original :per-capita per-capita-props)))
 
 (def data (->> (csv/tsv-map (:body response))
@@ -58,8 +76,10 @@
                                          :gas
                                          :nuclear
                                          :hydro
-                                         :other_renewables])
+                                         :other_renewables
+                                         :co2])
                (mapv #(update % :gdp (fn [gdp] (when (number? gdp) gdp))))
+               (mapv #(update % :co2 (fn [co2] (when (number? co2) co2))))
                (mapv #(assoc % :total (reduce + 0 (mapv (fn [x] (get % x)) mtoe-properties))))
                (mapv add-per-capita)
                (csv/drop-columns [:country_code
