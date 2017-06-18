@@ -74,7 +74,7 @@
               [{:margin-top 10 :text "Sources: BP (2017), World Bank (2016)" :font "Roboto Regular" :font-size 14}
                {:margin-top 2
                 :text "Population data from 2015." :font "Roboto Regular" :font-size 14}
-               {:valign :bottom :align :right :text "Diagram: @ivarref" :font "Roboto Regular" :font-size 14}
+               {:valign :bottom :align :right :text "Diagram © @ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 
 (def available-height (- svg-height (+ two-marg
@@ -108,7 +108,7 @@
                   coal    :coal
                   total   :total
                   :as     item}]
-  {:p country :h total :fill "steelblue"})
+  {:p country :h total :fill "gray"})
 
 (defn total-text [{country :country
                    total   :total}]
