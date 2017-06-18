@@ -15,10 +15,6 @@
                           "Venezuela, Bolivarian Republic of" "Venezuela"
                           "Iran, Islamic Republic of" "Iran"})
 
-(def remove-countries ["Norway"
-                       "United States"
-                       "Russia"])
-
 (def data (->> bpdata/data
                (filter #(= "2016" (:year %)))
                (mapv #(update % :country (fn [c] (get translate-countries c c))))
@@ -27,6 +23,8 @@
                (mapv #(dissoc % :per-capita))
                (mapv #(assoc % :total (:oil_production %)))
                (remove #(nil? (:total %)))
+               (filter #(pos? (:total %)))
+               (mapv #(assoc % :total (- (:oil_production %) (:oil %))))
                (filter #(pos? (:total %)))
                (sort-by :total)
                (take-last 10)))
@@ -47,8 +45,8 @@
 
 (def header (opentype/stack
               {}
-              [{:text "Oil Production" :font "Roboto Black" :font-size 22}
-               {:text "Top ten oil producers per capita" :font "Roboto Bold" :font-size 16 :margin-bottom 5}
+              [{:text "Top Ten Oil Exporters Per Capita" :font "Roboto Black" :font-size 20}
+               ;{:text "Top ten oil exporters per capita" :font "Roboto Bold" :font-size 16 :margin-bottom 5}
                {:text "Tonnes of Oil Per Capita Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
 
 (def footer (opentype/stack
@@ -67,7 +65,7 @@
          :axis        :x
          :orientation :top
          :ticks       5
-         :domain      [0 50]})
+         :domain      [0 45]})
 
 (def yy {:type          :ordinal
          :axis          :y

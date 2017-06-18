@@ -28,6 +28,8 @@
                (mapv #(assoc % :total (:gas_production %)))
                (remove #(nil? (:total %)))
                (filter #(pos? (:total %)))
+               (mapv #(assoc % :total (- (:gas_production %) (:gas %))))
+               (filter #(pos? (:total %)))
                (sort-by :total)
                (take-last 10)))
 
@@ -47,8 +49,8 @@
 
 (def header (opentype/stack
               {}
-              [{:text "Gas Production" :font "Roboto Black" :font-size 22}
-               {:text "Top ten gas producers per capita" :font "Roboto Bold" :font-size 16 :margin-bottom 5}
+              [{:text "Top Ten Gas Exporters Per Capita" :font "Roboto Black" :font-size 20}
+               ;{:text "Top ten gas producers per capita" :font "Roboto Bold" :font-size 16 :margin-bottom 5}
                {:text "Tonnes Oil Equivalents Per Capita Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
 
 (def footer (opentype/stack
@@ -67,7 +69,7 @@
          :axis        :x
          :orientation :top
          :ticks       5
-         :domain      [0 90]})
+         :domain      [0 65]})
 
 (def yy {:type          :ordinal
          :axis          :y
