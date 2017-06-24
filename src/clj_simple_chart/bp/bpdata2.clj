@@ -1,9 +1,11 @@
 (ns clj-simple-chart.bp.bpdata2
   (:require [clojure.test :as test]
+            [clj-simple-chart.bp.wbdata :as wbdata]
             [clj-http.client :as client]
             [clojure.pprint :refer [pprint]]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.set :as set]))
 
 (def cached-get (memoize client/get))
 
@@ -57,18 +59,23 @@
          (:data)
          (csv/read-string-columns (:columns csv-map))
          (csv/number-or-nil-columns (:columns csv-map))
+         (mapv #(set/rename-keys % {:country :country_code}))
          (mapv #(reduce
                   (fn [o [k v]]
                     (if (not= :YEAR k)
-                      (conj o {:year (:YEAR %) :country k prop v})
+                      (conj o {:year (:YEAR %) :country_code k prop v})
                       o)) [] %)))))
 
 (def all-data (->> urls
                    (mapv #(parse-url (first %) (second %)))
                    (flatten)
-                   (group-by (fn [x] [(:year x) (:country x)]))
+                   (group-by (fn [x] [(:year x) (:country_code x)]))
                    (vals)
-                   (mapv #(reduce merge {} %))))
+                   (mapv #(reduce merge {} %))
+                   (mapv #(assoc % :country (get wbdata/cc2-to-name (:country_code %))))))
+
+(def missing-country (filter #(nil? (:country %)) all-data))
+(test/is (zero? (count missing-country)))
 
 (def most-recent-data (filter #(= 2016 (:year %)) all-data))
 
