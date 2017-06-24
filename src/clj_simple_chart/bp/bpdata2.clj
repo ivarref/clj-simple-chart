@@ -12,7 +12,8 @@
 (def url-prefix "https://raw.githubusercontent.com/ivarref/EnergyExportDatabrowser/master/StaticData/2017/")
 
 (def urls
-  {"BP_2017_co2_emissions_mt.csv"                          :co2_emissions_mt
+  {
+   "BP_2017_co2_emissions_mt.csv"                          :co2_emissions_mt
 
    "BP_2017_coal_consumption_mtoe.csv"                     :coal_consumption_mtoe
    "BP_2017_coal_production_mtoe.csv"                      :coal_production_mtoe
@@ -66,18 +67,27 @@
                       (conj o {:year (:YEAR %) :country_code k prop v})
                       o)) [] %)))))
 
+
+(defn get-wb-data [{cc :country_code year :year}]
+  (-> (get wbdata/all-data [cc year]
+           (get wbdata/all-data [cc (dec year)] {}))
+      (assoc :year year)))
+
 (def all-data (->> urls
                    (mapv #(parse-url (first %) (second %)))
                    (flatten)
-                   (group-by (fn [x] [(:year x) (:country_code x)]))
+                   (group-by (fn [x] [(:country_code x) (:year x)]))
                    (vals)
                    (mapv #(reduce merge {} %))
-                   (mapv #(assoc % :country (get wbdata/cc2-to-name (:country_code %))))))
+                   (mapv #(assoc % :country (get wbdata/cc2-to-name (:country_code %))))
+                   (mapv #(merge (get-wb-data %) %))))
 
 (def missing-country (filter #(nil? (:country %)) all-data))
 (test/is (zero? (count missing-country)))
 
-(def most-recent-data (filter #(= (apply max (mapv :year all-data)) (:year %)) all-data))
+(def max-year (apply max (mapv :year all-data)))
+
+(def most-recent-data (filter #(= max-year (:year %)) all-data))
 
 (defn find-recent-country [country]
-  (first (filter #(= country (:country %)) most-recent-data)))
+  (first (filter #(= country (:country_code %)) most-recent-data)))

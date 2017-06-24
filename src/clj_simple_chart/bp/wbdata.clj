@@ -80,4 +80,6 @@
                    (group-by (fn [x] [(:year x) (:country x)]))
                    (vals)
                    (mapv #(reduce merge {} %))
-                   (mapv #(assoc % :country_code (keyword (get cc3-to-cc2 (:country_code %)))))))
+                   (mapv #(assoc % :country_code (keyword (get cc3-to-cc2 (:country_code %)))))
+                   (group-by (fn [x] [(:country_code x) (:year x)]))
+                   (reduce (fn [o [k v]] (assoc o k (first v))) {})))
