@@ -80,7 +80,8 @@
                    (vals)
                    (mapv #(reduce merge {} %))
                    (mapv #(assoc % :country (get wbdata/cc2-to-name (:country_code %))))
-                   (mapv #(merge (get-wb-data %) %))))
+                   (mapv #(merge (get-wb-data %) %))
+                   (mapv #(assoc % :regular_country (not (.startsWith (name (:country_code %)) "BP_"))))))
 
 (def missing-country (filter #(nil? (:country %)) all-data))
 (test/is (zero? (count missing-country)))
@@ -88,6 +89,7 @@
 (def max-year (apply max (mapv :year all-data)))
 
 (def most-recent-data (filter #(= max-year (:year %)) all-data))
+(def most-recent-data-countries (filter #(:regular_country %) most-recent-data))
 
 (defn find-recent-country [country]
   (first (filter #(= country (:country_code %)) most-recent-data)))
