@@ -23,7 +23,7 @@
        (mapv #(reduce merge {} %))
        (reduce (fn [o v] (assoc o (get v "alpha-3") (get v "alpha-2"))) {})))
 
-(def bp-cc2-to-name
+(def bp-country-code-to-name
   {:BP_TNA  "North America"
    :BP_OSCA "Other S. & Cent. America"
    :BP_TSCA "S. & Cent. America"
@@ -43,8 +43,21 @@
    :BP_TAF "Total Africa"
    :BP_OAF "Other Africa"})
 
+(defn string-country-names [names]
+  nil)
+
+(defn cc3-country-names [names]
+  nil)
+
+(def bp-group-to-countries
+  {:BP_FSU
+  (string-country-names "Armenia| Azerbaijan| Belarus| Estonia| Georgia| Kazakhstan| Kyrgyzstan| Latvia| Lithuania| Moldova, Republic of| Russian Federation| Tajikistan| Turkmenistan| Ukraine| Uzbekistan")
+   :BP_TAF
+  (cc3-country-names "DZA, AGO, SHN, BEN, BWA, BFA, BDI, CMR, CPV, CAF, TCD, COM, COG, DJI, EGY, GNQ, ERI, ETH, GAB, GMB, GHA, GNB, GIN, CIV, KEN, LSO, LBR, LBY, MDG, MWI, MLI, MRT, MUS, MYT, MAR, MOZ, NAM, NER, NGA, STP, REU, RWA, STP, SEN, SYC, SLE, SOM, ZAF, SHN, SDN, SWZ, TZA, TGO, TUN, UGA, COD, ZMB, TZA, ZWE, SSD, COD")
+  })
+
 (def cc2-to-name
-  (merge (reduce (fn [o v] (assoc o (keyword (get v "alpha-2")) (get v "name"))) {} cc2) bp-cc2-to-name))
+  (merge (reduce (fn [o v] (assoc o (keyword (get v "alpha-2")) (get v "name"))) {} cc2) bp-country-code-to-name))
 
 (defn parse-url [url prop]
   (let [resp (cached-get url)
