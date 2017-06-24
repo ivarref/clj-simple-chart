@@ -19,9 +19,9 @@
    "BP_2017_coal_production_mtoe.csv"                      :coal_production_mtoe
    "BP_2017_coal_production_ton.csv"                       :coal_production_ton
 
-   "BP_2017_gas_consumption_m3.csv"                        :gas_consumption_m3
+   "BP_2017_gas_consumption_m3.csv"                        :gas_consumption_bm3
    "BP_2017_gas_consumption_mtoe.csv"                      :gas_consumption_mtoe
-   "BP_2017_gas_production_m3.csv"                         :gas_production_m3
+   "BP_2017_gas_production_m3.csv"                         :gas_production_bm3
    "BP_2017_gas_production_mtoe.csv"                       :gas_production_mtoe
    "BP_2017_gas_proved_reserves_trillion_cubic_metres.csv" :gas_proved_reserves_trillion_cubic_metres
 

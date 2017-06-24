@@ -64,6 +64,13 @@
                       o
                       (assoc o k v))) {} x)) data))
 
+(defn keep-columns [columns data]
+  (mapv (fn [x]
+          (reduce (fn [o [k v]]
+                    (if (not (some #{k} columns))
+                      o
+                      (assoc o k v))) {} x)) data))
+
 (defn csv-map-assert-columns [^String input expected-columns]
   (let [csv-raw (csv/read-csv (debomify input))
         columns (mapv keyword (first csv-raw))

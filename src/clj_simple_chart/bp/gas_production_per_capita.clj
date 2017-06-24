@@ -1,11 +1,14 @@
 (ns clj-simple-chart.bp.gas-production-per-capita
-  (:require [clj-simple-chart.bp.bpdata :as bpdata]
+  (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer :all]
+            [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.chart :as chart]
+            [clj-simple-chart.bp.units :as units]
+            [clj-simple-chart.colors :as colors]
             [clojure.test :as test]))
 
 (def translate-countries {"Russian Federation"                "Russia"
@@ -19,21 +22,14 @@
                        "United States"
                        "Russia"])
 
-(def data (->> bpdata/data
-               (filter #(= "2016" (:year %)))
-               (mapv #(update % :country (fn [c] (get translate-countries c c))))
-               (remove #(.startsWith (:country_code %) "BP_"))
-               (mapv #(merge % (:per-capita %)))
-               (mapv #(dissoc % :per-capita))
-               (mapv #(assoc % :total (:gas_production %)))
-               (remove #(nil? (:total %)))
-               (filter #(pos? (:total %)))
-               (mapv #(assoc % :total (- (:gas_production %) (:gas %))))
+(def data (->> bpdata/most-recent-data-countries
+               (filter :gas_production_bm3)
+               (csv/keep-columns [:gas_production_bm3 :population :country :country_code])
+               (mapv #(assoc % :total (/ (* units/million (:gas_production_bm3 %)) (:population %))))
+               (csv/drop-columns [:gas_production_bm3])
                (filter #(pos? (:total %)))
                (sort-by :total)
                (take-last 10)))
-
-;(test/is (= (count select-countries) (count data)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -49,9 +45,9 @@
 
 (def header (opentype/stack
               {}
-              [{:text "Top Ten Gas Exporters Per Capita" :font "Roboto Black" :font-size 20}
+              [{:text "Top Ten Gas Producers Per Capita" :font "Roboto Black" :font-size 20}
                ;{:text "Top ten gas producers per capita" :font "Roboto Bold" :font-size 16 :margin-bottom 5}
-               {:text "Tonnes Oil Equivalents Per Capita Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
+               {:text "Thousand Cubic Metres Per Capita Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
 
 (def footer (opentype/stack
               {:width available-width}
@@ -69,7 +65,7 @@
          :axis        :x
          :orientation :top
          :ticks       5
-         :domain      [0 65]})
+         :domain      [0 100]})
 
 (def yy {:type          :ordinal
          :axis          :y
@@ -92,7 +88,7 @@
                   coal    :coal
                   total   :total
                   :as     item}]
-  {:p country :h total :fill "steelblue"})
+  {:p country :h total :fill colors/red})
 
 (defn total-text [{country :country
                    total   :total}]
