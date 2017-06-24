@@ -77,7 +77,7 @@
 (def missing-country (filter #(nil? (:country %)) all-data))
 (test/is (zero? (count missing-country)))
 
-(def most-recent-data (filter #(= 2016 (:year %)) all-data))
+(def most-recent-data (filter #(= (apply max (mapv :year all-data)) (:year %)) all-data))
 
 (defn find-recent-country [country]
   (first (filter #(= country (:country %)) most-recent-data)))
