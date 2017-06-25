@@ -18,6 +18,8 @@
    "United Arab Emirates"              "UAE"
    "Iran, Islamic Republic of"         "Iran"
    "Brunei Darussalam"                 "Brunei"
+   "Equatorial Guinea"                 "Eq. Guinea"
+   "Trinidad and Tobago"               "Trinidad & T."
    })
 
 (def urls {"https://raw.githubusercontent.com/ivarref/bp-diagrams/master/data/population.csv" :population

@@ -54,7 +54,7 @@
          :axis        :x
          :orientation :top
          :ticks       3
-         :domain      [0 400]})
+         :domain      [0 350]})
 
 (def yy {:type          :ordinal
          :axis          :y
