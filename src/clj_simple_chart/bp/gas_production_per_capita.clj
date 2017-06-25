@@ -14,11 +14,20 @@
 (def data (->> bpdata/most-recent-data-countries
                (filter :gas_production_bm3)
                (csv/keep-columns [:gas_production_bm3 :population :country :country_code])
-               (mapv #(assoc % :total (/ (* units/million (:gas_production_bm3 %)) (:population %))))
+               (mapv #(assoc % :total (/ (* units/billion (:gas_production_bm3 %))
+                                         (* 1000 (:population %)))))
                (csv/drop-columns [:gas_production_bm3])
                (filter #(pos? (:total %)))
                (sort-by :total)
                (take-last 20)))
+
+(def norway (first (filter #(= "Norway" (:country %)) data)))
+
+(def norway-gas-production-bill-sm3
+  (/ (* 1000 (:total norway) (:population norway))
+     units/billion))
+;; OD value: 116.649
+;; BP value: 116.649 (!)
 
 (def marg 10)
 (def two-marg (* 2 marg))
