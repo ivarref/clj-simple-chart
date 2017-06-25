@@ -113,4 +113,4 @@
     ]])
 
 (defn render-self []
-  (render "./img/oil-production-per-capita.svg" "./img/oil-production-per-capita.png" (diagram)))
+  (render "./img/oil-production-per-capita-old.svg" "./img/oil-production-per-capita-old.png" (diagram)))

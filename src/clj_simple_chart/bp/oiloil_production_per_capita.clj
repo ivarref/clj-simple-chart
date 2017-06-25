@@ -9,16 +9,27 @@
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.bp.units :as units]
             [clj-simple-chart.colors :as colors]
-            [clojure.test :as test]))
+            [clojure.test :as test])
+  (:import (java.time Year)))
+
+(def num-days (.length (Year/of bpdata/max-year)))
 
 (def data (->> bpdata/most-recent-data-countries
                (filter :oil_production_kbd)
                (csv/keep-columns [:oil_production_kbd :population :country :country_code])
-               (mapv #(assoc % :total (/ (* 1000 365 (:oil_production_kbd %)) (:population %))))
+               (mapv #(assoc % :total (/ (* 1000 num-days (:oil_production_kbd %)) (:population %))))
                (csv/drop-columns [:oil_production_kbd])
-               (filter #(pos? (:total %)))
                (sort-by :total)
                (take-last 20)))
+
+(def norway (first (filter #(= "Norway" (:country %)) data)))
+
+(def norway-oil-production-mill-sm3
+  (/ (* (:total norway) (:population norway))
+     (* 6.29 units/million)))
+;; 2016 value according to BP: 116.06028744038156
+;; 2016 value according to OD: (+ 94.009 20.176 1.879) => 116.06400000000001
+;; So that's a very good match
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -102,4 +113,4 @@
     ]])
 
 (defn render-self []
-  (render "./img/gas-production-per-capita.svg" "./img/gas-production-per-capita.png" (diagram)))
+  (render "./img/oil-production-per-capita.svg" "./img/oil-production-per-capita.png" (diagram)))
