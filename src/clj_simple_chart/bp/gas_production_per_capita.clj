@@ -18,7 +18,7 @@
                (csv/drop-columns [:gas_production_bm3])
                (filter #(pos? (:total %)))
                (sort-by :total)
-               (take-last 10)))
+               (take-last 20)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -34,7 +34,7 @@
 
 (def header (opentype/stack
               {}
-              [{:text "Top Ten Gas Producers Per Capita" :font "Roboto Black" :font-size 19}
+              [{:text "Top 20 Gas Producers Per Capita" :font "Roboto Black" :font-size 19}
                {:text "Thousand Cubic Metres Per Capita Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
 
 (def footer (opentype/stack

@@ -20,6 +20,7 @@
    "Brunei Darussalam"                 "Brunei"
    "Equatorial Guinea"                 "Eq. Guinea"
    "Trinidad and Tobago"               "Trinidad & T."
+   "Bolivia, Plurinational State of"   "Bolivia"
    })
 
 (def urls {"https://raw.githubusercontent.com/ivarref/bp-diagrams/master/data/population.csv" :population
