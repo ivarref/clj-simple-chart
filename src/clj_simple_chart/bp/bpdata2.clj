@@ -90,6 +90,10 @@
 
 (def most-recent-data (filter #(= max-year (:year %)) all-data))
 
+(def data-for-2000
+  (->> all-data
+       (filter #(= 2000 (:year %)))))
+
 (def data-for-2000-countries
   (->> all-data
        (filter #(= 2000 (:year %)))
