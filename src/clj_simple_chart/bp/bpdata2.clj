@@ -89,6 +89,12 @@
 (def max-year (apply max (mapv :year all-data)))
 
 (def most-recent-data (filter #(= max-year (:year %)) all-data))
+
+(def data-for-2000-countries
+  (->> all-data
+       (filter #(= 2000 (:year %)))
+       (filter #(:regular_country %))))
+
 (def most-recent-data-countries (filter #(:regular_country %) most-recent-data))
 
 (defn find-recent-country [country]
