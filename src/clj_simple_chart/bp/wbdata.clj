@@ -22,6 +22,7 @@
    "Trinidad and Tobago"               "Trinidad & T."
    "Bolivia, Plurinational State of"   "Bolivia"
    "Viet Nam"                          "Vietnam"
+   "Korea, Republic of"                "S. Korea"
    })
 
 (def urls {"https://raw.githubusercontent.com/ivarref/bp-diagrams/master/data/population.csv" :population
