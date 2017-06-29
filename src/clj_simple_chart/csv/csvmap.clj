@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [clojure.string :as string]))
 
-(defn- debomify
+(defn debomify
   [^String line]
   (let [bom "\uFEFF"]
     (if (.startsWith line bom)
