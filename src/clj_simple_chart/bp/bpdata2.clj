@@ -1,6 +1,6 @@
 (ns clj-simple-chart.bp.bpdata2
   (:require [clojure.test :as test]
-            [clj-simple-chart.bp.wbdata :as wbdata]
+            [clj-simple-chart.bp.wb-raw :as wbdata]
             [clj-http.client :as client]
             [clojure.pprint :refer [pprint]]
             [clj-simple-chart.csv.csvmap :as csv]

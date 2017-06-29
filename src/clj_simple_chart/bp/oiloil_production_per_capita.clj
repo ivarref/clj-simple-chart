@@ -16,6 +16,7 @@
 
 (def data (->> bpdata/most-recent-data-countries
                (filter :oil_production_kbd)
+               (filter :population)
                (csv/keep-columns [:oil_production_kbd :population :country :country_code])
                (mapv #(assoc % :total (/ (* 1000 num-days (:oil_production_kbd %)) (:population %))))
                (csv/drop-columns [:oil_production_kbd])
