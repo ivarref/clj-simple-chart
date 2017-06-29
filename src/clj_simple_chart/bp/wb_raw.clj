@@ -6,6 +6,7 @@
 
 (def urls {"SP.POP.TOTL"    :population
            "NY.GDP.MKTP.CD" :gdp
+           "NE.IMP.GNFS.ZS" :imports-of-goods-and-services-percentage
            })
 
 (def translate-countries
