@@ -41,7 +41,7 @@
 
 (defn parse-url [indicator prop]
   (let [resp (cached-get (str "http://api.worldbank.org/countries/all/indicators/" indicator "?format=csv"))
-        expected-columns [country-code country-name-kw "1990" "2015"]
+        expected-columns [country-code-kw country-name-kw "1990" "2015"]
         csv-map (csv/csv-map (:body resp))]
     (spit (str "./data/wb/" indicator ".csv") (csv/debomify (:body resp)))
     (test/is (= 200 (:status resp)))
