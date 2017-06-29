@@ -20,16 +20,15 @@
        (mapv #(reduce merge {} %))
        (reduce (fn [o v] (assoc o (get v "alpha-3") (get v "alpha-2"))) {})))
 
-(def country-name (keyword "Country Name"))
-(def country-code (keyword "Country Code"))
+(def country-name-kw (keyword "Country Name"))
+(def country-code-kw (keyword "Country Code"))
 
 (defn parse-country-record [prop c]
-  (let [country (get c country-name)
-        country-code (get c country-code)]
+  (let [country (get c country-name-kw)
+        country-code (get c country-code-kw)]
     (reduce (fn [o [k v]]
-              (if (or (= k country)
-                      (= k (keyword "Country"))
-                      (= k country-code)
+              (if (or (= k country-name-kw)
+                      (= k country-code-kw)
                       (zero? (count (name k))))
                 o
                 (let [year-value (read-string (name k))
@@ -42,11 +41,10 @@
 
 (defn parse-url [indicator prop]
   (let [resp (cached-get (str "http://api.worldbank.org/countries/all/indicators/" indicator "?format=csv"))
-        expected-columns [country-code country-name]
+        expected-columns [country-code country-name-kw "1990" "2015"]
         csv-map (csv/csv-map (:body resp))]
     (spit (str "./data/wb/" indicator ".csv") (csv/debomify (:body resp)))
     (test/is (= 200 (:status resp)))
-    (println (:columns csv-map))
     (->> csv-map
          (csv/assert-columns expected-columns)
          (:data)
