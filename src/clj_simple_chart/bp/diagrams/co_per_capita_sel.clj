@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.co-per-capita-sel
+(ns clj-simple-chart.bp.diagrams.co-per-capita-sel
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.bp.wb-raw :as wb-raw]

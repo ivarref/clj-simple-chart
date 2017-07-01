@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.renewables-share
+(ns clj-simple-chart.bp.diagrams.renewables-share
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -137,4 +137,4 @@
     ]])
 
 (defn render-self []
-  (render "./img/renewables-share.svg" "./img/renewables-share.png" (diagram)))
+  (render "./img/bp-svg/renewables-share.svg" "./img/bp-png/renewables-share.png" (diagram)))

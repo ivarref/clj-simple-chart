@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.oil-consumption-per-capita
+(ns clj-simple-chart.bp.diagrams.oil-consumption-per-capita
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -117,5 +117,5 @@
     ]])
 
 (defn render-self []
-  (render "./img/oil-consumption-per-capita.svg" "./img/oil-consumption-per-capita.png" (diagram)))
+  (render "./img/bp-svg/oil-consumption-per-capita.svg" "./img/bp-png/oil-consumption-per-capita.png" (diagram)))
 

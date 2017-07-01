@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.gas-production-per-capita
+(ns clj-simple-chart.bp.diagrams.gas-production-per-capita
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -110,4 +110,4 @@
     ]])
 
 (defn render-self []
-  (render "./img/gas-production-per-capita.svg" "./img/gas-production-per-capita.png" (diagram)))
+  (render "./img/bp-svg/gas-production-per-capita.svg" "./img/bp-png/gas-production-per-capita.png" (diagram)))

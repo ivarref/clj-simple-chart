@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.oiloil-production-per-capita
+(ns clj-simple-chart.bp.diagrams.oiloil-production-per-capita
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
