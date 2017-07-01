@@ -53,8 +53,6 @@
               {:width available-width}
               [
                {:margin-top 5 :text "*Includes crude oil, shale oil, oil sands and NGLs." :font "Roboto Regular" :font-size 14}
-               ;{:margin-top 5 :text "No data for Iraq, Libya, Nigeria, Sudan, ++." :font "Roboto Regular" :font-size 14}
-               ;{:margin-top 2 :text "of coal and natural gas." :font "Roboto Regular" :font-size 14}
                {:margin-top 2
                 :text       (str "Source: BP (" bpdata/bp-release-year ").") :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "© refsdal.ivar@gmail.com" :font "Roboto Regular" :font-size 14}

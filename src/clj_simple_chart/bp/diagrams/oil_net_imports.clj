@@ -50,7 +50,7 @@
               [{:margin-top 10 :text "*Consumption - production. See BP for details." :font "Roboto Regular" :font-size 14}
                ;{:margin-top 2 :text "of coal and natural gas." :font "Roboto Regular" :font-size 14}
                {:margin-top 2
-                :text       "Sources: BP (2017)." :font "Roboto Regular" :font-size 14}
+                :text       (str "Source: BP (" bpdata/bp-release-year ").") :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "© refsdal.ivar@gmail.com" :font "Roboto Regular" :font-size 14}
                ]))
 

@@ -9,7 +9,8 @@
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.bp.units :as units]
             [clj-simple-chart.colors :as colors]
-            [clojure.test :as test]))
+            [clojure.test :as test]
+            [clj-simple-chart.bp.wb-raw :as wb-raw]))
 
 (def data (->> bpdata/most-recent-data-countries
                (filter :gas_production_bm3)
@@ -48,10 +49,11 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 10 :text "Sources: BP (2017), World Bank (2017)." :font "Roboto Regular" :font-size 14}
-               {:margin-top 2
-                :text       "Data from 2016." :font "Roboto Regular" :font-size 14}
-               {:valign :bottom :align :right :text "Diagram: @ivarref" :font "Roboto Regular" :font-size 14}
+              [
+               {:margin-top 5 :text (str "Sources: BP (" bpdata/bp-release-year "), World Bank (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
+               #_{:margin-top 2
+                  :text       "Data from 2016." :font "Roboto Regular" :font-size 14}
+               {:valign :bottom :align :right :text "@ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 
 (def available-height (- svg-height (+ two-marg

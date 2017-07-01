@@ -58,7 +58,7 @@
               [{:margin-top 10 :text "*Includes biogasoline, biodiesel and derivatives" :font "Roboto Regular" :font-size 14}
                {:margin-top 2 :text "of coal and natural gas." :font "Roboto Regular" :font-size 14}
                {:margin-top 2
-                :text       (str "Sources: BP (2017), WB (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
+                :text       (str "Sources: BP (" bpdata/bp-release-year "), WB (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "© @ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 

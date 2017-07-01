@@ -61,8 +61,7 @@
 (def footer (opentype/stack
               {:width available-width}
               [{:margin-top 10 :text "*Primary energy. See BP for conversion details." :font "Roboto Regular" :font-size 14}
-               {:margin-top 2 :text "Source: BP (2017)." :font "Roboto Regular" :font-size 14}
-               ;{:margin-top 2 :text       "Population data from 2015." :font "Roboto Regular" :font-size 14}
+               {:margin-top 2 :text (str "Source: BP (" bpdata/bp-release-year ").") :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "Diagram: @ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 
