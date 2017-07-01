@@ -141,7 +141,7 @@
                     change     :change
                     value-2000 :share-2000}]
   (let [extra-txt (if (= country (:country (first data)))
-                    "Change since 2000:  "
+                    "Abs. change since 2000:  "
                     "")]
     (opentype/text {:x           (point x 105)
                     :text-anchor "end"
