@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.diagrams.oil-rp
+(ns clj-simple-chart.bp.diagrams.gas-rp
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -17,15 +17,14 @@
 (def cnt 15)
 
 (def data (->> bpdata/most-recent-data-countries
-               (filter :oil_production_kbd)
-               (filter :oil_reserves_gb)
-               (filter :population)
-               (sort-by :oil_production_kbd)
+               (filter :gas_production_bm3)
+               (filter :gas_proved_reserves_trillion_cubic_metres)
+               (sort-by :gas_production_bm3)
                (take-last cnt)
-               (csv/keep-columns [:population :oil_reserves_gb :oil_production_kbd :country :country_code])
-               (mapv #(assoc % :total (/ (* units/billion (:oil_reserves_gb %))
-                                         (* 1000 num-days (:oil_production_kbd %)))))
-               (csv/drop-columns [:oil_reserves_gb :oil_production_kbd])
+               (csv/keep-columns [:gas_production_bm3 :gas_proved_reserves_trillion_cubic_metres :country :country_code])
+               (mapv #(assoc % :total (/ (* units/trillion (:gas_proved_reserves_trillion_cubic_metres %))
+                                         (* units/billion (:gas_production_bm3 %)))))
+               (csv/drop-columns [:gas_production_bm3 :gas_proved_reserves_trillion_cubic_metres])
                (sort-by :total)))
 
 (def marg 10)
@@ -42,9 +41,9 @@
 
 (def header (opentype/stack
               {}
-              [{:text (str "Oil: Number Of Years Left") :font "Roboto Black" :font-size 20}
+              [{:text (str "Gas: Number Of Years Left") :font "Roboto Black" :font-size 20}
                {:text (str "Number of years left at current production pace.") :font "Roboto Regular" :font-size 14 :margin-top 2}
-               {:text (str "Reserves / Production. " (count data) " biggest oil producers.") :font "Roboto Regular" :font-size 14
+               {:text (str "Reserves / Production. " (count data) " biggest gas producers.") :font "Roboto Regular" :font-size 14
                 :margin-top 2
                 :margin-bottom 5}]))
 
@@ -88,7 +87,7 @@
                   coal    :coal
                   total   :total
                   :as     item}]
-  {:p country :h total :fill colors/green})
+  {:p country :h total :fill colors/red})
 
 (defn total-text [{country :country
                    total   :total}]
@@ -113,6 +112,7 @@
     ]])
 
 (defn render-self []
-  (render "./img/bp-svg/oil-reserves-production.svg"
-          "./img/bp-png/oil-reserves-production.png" (diagram)))
+  (render "./img/bp-svg/gas-reserves-production.svg"
+          "./img/bp-png/gas-reserves-production.png" (diagram)))
+
 

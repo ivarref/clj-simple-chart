@@ -6,4 +6,5 @@
     (* 10 (ten-power (dec x)))))
 
 (def billion (ten-power 9))
+(def trillion (ten-power 12))
 (def million (ten-power 6))
