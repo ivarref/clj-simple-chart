@@ -21,6 +21,7 @@
    "Viet Nam"                          "Vietnam"
    "Korea, Republic of"                "S. Korea"
    "Moldova, Republic of"              "Moldova"
+   "United Kingdom"                    "UK"
    })
 
 (def bp-country-code-to-name

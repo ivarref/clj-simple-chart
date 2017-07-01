@@ -88,6 +88,8 @@
 
 (def max-year (apply max (mapv :year all-data)))
 
+(def bp-release-year (inc max-year))
+
 (def most-recent-data (filter #(= max-year (:year %)) all-data))
 
 (def data-for-2000
