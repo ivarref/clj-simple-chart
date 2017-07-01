@@ -85,10 +85,10 @@
 (def footer (opentype/stack
               {:width available-width}
               [
-               {:margin-top 10 :text (str "Sources: BP (2017), World Bank (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
-               {:margin-top 2
+               {:margin-top 5 :text (str "Sources: BP (" bpdata/bp-release-year "), World Bank (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
+               #_{:margin-top 2
                 :text       "Data from 2016." :font "Roboto Regular" :font-size 14}
-               {:valign :bottom :align :right :text "Diagram: @ivarref" :font "Roboto Regular" :font-size 14}
+               {:valign :bottom :align :right :text "@ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 
 (def available-height (- svg-height (+ two-marg
