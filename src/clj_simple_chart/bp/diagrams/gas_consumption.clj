@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.diagrams.oil-consumption
+(ns clj-simple-chart.bp.diagrams.gas-consumption
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -15,25 +15,16 @@
 
 (def num-days (.length (Year/of bpdata/max-year)))
 
-(def missing-oil-consumption (->> bpdata/most-recent-data-countries
-                                  (remove :oil_consumption_kbd)))
+(def missing-gas-consumption (->> bpdata/most-recent-data-countries
+                                  (remove :gas_consumption_bm3)))
 
 (def data (->> bpdata/most-recent-data-countries
-               (filter :oil_consumption_kbd)
-               (csv/keep-columns [:oil_consumption_kbd :population :country :country_code])
-               (mapv #(assoc % :total (/ (:oil_consumption_kbd %) 1000.0)))
-               (csv/drop-columns [:oil_consumption_kbd])
+               (filter :gas_consumption_bm3)
+               (csv/keep-columns [:gas_consumption_bm3 :population :country :country_code])
+               (mapv #(assoc % :total (:gas_consumption_bm3 %)))
+               (csv/drop-columns [:gas_consumption_bm3])
                (sort-by :total)
                (take-last 20)))
-
-(def norway (first (filter #(= "Norway" (:country %)) data)))
-
-;(def norway-oil-production-mill-sm3
-;  (/ (* (:total norway) (:population norway))
-;     (* 6.29 units/million)))
-;; 2016 value according to BP: 116.06028744038156
-;; 2016 value according to OD: (+ 94.009 20.176 1.879) => 116.06400000000001
-;; So that's a very good match
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -49,12 +40,12 @@
 
 (def header (opentype/stack
               {}
-              [{:text (str "Top " (count data) " Oil Consumers") :font "Roboto Black" :font-size 20}
-               {:text "Million Barrels Per Day" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
+              [{:text (str "Top " (count data) " Gas Consumers") :font "Roboto Black" :font-size 20}
+               {:text "Billion Cubic Metres Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 5 :text "No data for Iraq, Libya, Nigeria, Sudan, ++." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 5 :text "No data for Iraq, Libya, Nigeria, ++." :font "Roboto Regular" :font-size 14}
                ;{:margin-top 2 :text "of coal and natural gas." :font "Roboto Regular" :font-size 14}
                {:margin-top 2
                 :text       (str "Source: BP (" bpdata/bp-release-year ").") :font "Roboto Regular" :font-size 14}
@@ -69,7 +60,7 @@
          :axis        :x
          :orientation :top
          :ticks       5
-         :domain      [0 25]})
+         :domain      [0 1000]})
 
 (def yy {:type          :ordinal
          :axis          :y
@@ -92,7 +83,7 @@
                   coal    :coal
                   total   :total
                   :as     item}]
-  {:p country :h total :fill colors/green})
+  {:p country :h total :fill colors/red})
 
 (defn total-text [{country :country
                    total   :total}]
@@ -117,4 +108,4 @@
     ]])
 
 (defn render-self []
-  (render "./img/bp-svg/oil-consumption.svg" "./img/bp-png/oil-consumption.png" (diagram)))
+  (render "./img/bp-svg/gas-consumption.svg" "./img/bp-png/gas-consumption.png" (diagram)))
