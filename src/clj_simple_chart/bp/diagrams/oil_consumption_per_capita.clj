@@ -21,7 +21,7 @@
                (filter :oil_consumption_kbd)
                (filter :population)
                (csv/keep-columns [:oil_consumption_kbd :population :country :country_code])
-               (mapv #(assoc % :total (/ (* 1000 num-days (:oil_consumption_kbd %)) (:population %))))
+               (mapv #(assoc % :total (/ (* 1000 159 (:oil_consumption_kbd %)) (:population %))))
                (csv/drop-columns [:oil_consumption_kbd])
                (sort-by :total)
                (take-last 20)))
@@ -50,7 +50,7 @@
 (def header (opentype/stack
               {}
               [{:text "Top 20 Oil* Consumers Per Capita" :font "Roboto Black" :font-size 20}
-               {:text "Barrels Per Capita Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
+               {:text "Litres Per Capita Per Day" :font "Roboto Regular" :font-size 14 :margin-bottom 0}]))
 
 (def footer (opentype/stack
               {:width available-width}
@@ -68,8 +68,8 @@
 (def xx {:type        :linear
          :axis        :x
          :orientation :top
-         :ticks       3
-         :domain      [0 100]})
+         :ticks       5
+         :domain      [0 50]})
 
 (def yy {:type          :ordinal
          :axis          :y
@@ -100,7 +100,7 @@
                   :dx ".20em"
                   :y  (center-point y country)
                   :dy ".32em"}
-                 (format "%.0f" total)))
+                 (format "%.1f" total)))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
