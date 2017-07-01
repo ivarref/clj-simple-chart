@@ -102,3 +102,5 @@
                    (mapv #(assoc % :country (get cc2-to-name (:country_code %))))
                    (group-by (fn [x] [(:country_code x) (:year x)]))
                    (reduce (fn [o [k v]] (assoc o k (first v))) {})))
+
+(def wb-release-year (inc (apply max (mapv second (keys all-data)))))

@@ -1,6 +1,7 @@
 (ns clj-simple-chart.bp.co-per-capita-sel
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
+            [clj-simple-chart.bp.wb-raw :as wb-raw]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer :all]
             [clj-simple-chart.csv.csvmap :as csv]
@@ -84,9 +85,9 @@
 (def footer (opentype/stack
               {:width available-width}
               [
-               {:margin-top 10 :text "Sources: BP (2017), World Bank (2016)." :font "Roboto Regular" :font-size 14}
+               {:margin-top 10 :text (str "Sources: BP (2017), World Bank (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
                {:margin-top 2
-                :text       "Population data from 2015." :font "Roboto Regular" :font-size 14}
+                :text       "Data from 2016." :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "Diagram: @ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 
@@ -161,5 +162,5 @@
     ]])
 
 (defn render-self []
-  (render "./img/co2-capita-sel.svg" "./img/co2-capita-sel.png" (diagram)))
+  (render "./img/bp-svg/co2-capita-sel.svg" "./img/bp-png/co2-capita-sel.png" (diagram)))
 
