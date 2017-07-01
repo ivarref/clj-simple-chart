@@ -9,6 +9,7 @@
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.bp.units :as units]
             [clj-simple-chart.colors :as colors]
+            [clj-simple-chart.bp.wb-raw :as wb-raw]
             [clojure.test :as test])
   (:import (java.time Year)))
 
@@ -57,7 +58,7 @@
               [{:margin-top 10 :text "*Includes biogasoline, biodiesel and derivatives" :font "Roboto Regular" :font-size 14}
                {:margin-top 2 :text "of coal and natural gas." :font "Roboto Regular" :font-size 14}
                {:margin-top 2
-                :text       "Sources: BP (2017), WB (2016)." :font "Roboto Regular" :font-size 14}
+                :text       (str "Sources: BP (2017), WB (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "© @ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 

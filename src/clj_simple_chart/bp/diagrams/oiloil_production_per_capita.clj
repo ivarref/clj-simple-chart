@@ -8,6 +8,7 @@
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.bp.units :as units]
+            [clj-simple-chart.bp.wb-raw :as wb-raw]
             [clj-simple-chart.colors :as colors]
             [clojure.test :as test])
   (:import (java.time Year)))
@@ -52,9 +53,11 @@
 (def footer (opentype/stack
               {:width available-width}
               [{:margin-top 10 :text "*Includes crude oil, shale oil, oil sands and NGLs." :font "Roboto Regular" :font-size 14}
-               {:margin-top 2 :text "Sources: BP (2017), World Bank (2016)." :font "Roboto Regular" :font-size 14}
                {:margin-top 2
-                :text       "Population data from 2015." :font "Roboto Regular" :font-size 14}
+                :text (str "Sources: BP (2017), World Bank (" wb-raw/wb-release-year ").")
+                :font "Roboto Regular" :font-size 14}
+               {:margin-top 2
+                :text       "Data from 2016." :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "Diagram: @ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 
@@ -114,4 +117,4 @@
     ]])
 
 (defn render-self []
-  (render "./img/oil-production-per-capita.svg" "./img/oil-production-per-capita.png" (diagram)))
+  (render "./img/bp-svg/oil-production-per-capita.svg" "./img/bp-png/oil-production-per-capita.png" (diagram)))
