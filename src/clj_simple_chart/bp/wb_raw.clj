@@ -42,7 +42,8 @@
    :BP_OPEC    "OPEC"
    :BP_FSU     "Former Soviet Union"
    :BP_TAF     "Total Africa"
-   :BP_OAF     "Other Africa"})
+   :BP_OAF     "Other Africa"
+   :TW         "Taiwan"})
 
 (def cached-get (memoize client/get))
 
