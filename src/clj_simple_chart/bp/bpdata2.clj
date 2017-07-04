@@ -81,6 +81,14 @@
                    (mapv #(reduce merge {} %))
                    (mapv #(assoc % :country (get wbdata/cc2-to-name (:country_code %))))
                    (mapv #(merge (get-wb-data %) %))
+                   (mapv #(assoc % :total_mtoe (apply +
+                                                      (mapv (fn [p] (if (number? (get % p 0)) (get % p 0) 0))
+                                                            [:coal_consumption_mtoe
+                                                             :gas_consumption_mtoe
+                                                             :oil_consumption_mtoe
+                                                             :nuclear_consumption_mtoe
+                                                             :hydro_consumption_mtoe
+                                                             :renewables_consumption_mtoe]))))
                    (mapv #(assoc % :regular_country (not (.startsWith (name (:country_code %)) "BP_"))))))
 
 (def missing-country (filter #(nil? (:country %)) all-data))

@@ -1,19 +1,14 @@
-(ns clj-simple-chart.bp.bp-with-gdp
-  (:require [clj-simple-chart.bp.bpdata :as bpdata]
+(ns clj-simple-chart.bp.diagrams.primary-energy-with-gdp
+  (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer :all]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.chart :as chart]
+            [clj-simple-chart.bp.units :as units]
             [clojure.test :as test]
             [clj-simple-chart.point :as point]))
-
-(def translate-countries {"Russian Federation" "Russia"
-                          "Total Middle East"  "Middle East"
-                          "Total Africa"       "Africa"
-                          "Total Asia-Pacific" "Asia-Pacific"
-                          "United Arab Emirates" "U.A.E."})
 
 (def select-countries ["Norway"
                        "Sweden"
@@ -24,7 +19,7 @@
                        "Germany"
                        "Poland"
                        "Pakistan"
-                       "U.A.E."
+                       "UAE"
                        "Switzerland"
                        "France"
                        "OECD"
@@ -44,15 +39,16 @@
                        "Brazil"
                        "Indonesia"])
 
-(def data (->> bpdata/data
-               (filter #(= "2015" (:year %)))
-               (mapv #(update % :country (fn [c] (get translate-countries c c))))
+(def data (->> bpdata/most-recent-data-countries
                (filter #(some #{(:country %)} select-countries))
-               (mapv #(merge % (:per-capita %)))
-               (mapv #(update % :gdp (fn [gdp] (/ gdp 1000))))
+               (filter :gdp)
+               (filter :total_mtoe)
+               (mapv #(assoc % :total (/ (* units/million (:total_mtoe %))
+                                         (:population %))))
+               (mapv #(update % :gdp (fn [gdp] (/ (/ gdp 1000) (:population %)))))
                (sort-by :total)))
 
-(test/is (= (count select-countries) (count data)))
+;(test/is (= (count select-countries) (count data)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -70,15 +66,15 @@
               {}
               [{:text "Primary Energy Consumption" :font "Roboto Black" :font-size 22}
                ;{:text "Selected nations and groups of nations" :font "Roboto Bold" :font-size 16}
-               {:text "Tonnes of oil equivalents per capita per year" :font-size 14 :margin-bottom 0}]))
+               {:text "Tonnes of Oil Equivalents Per Capita Per Year" :font-size 14 :margin-bottom 0}]))
 
 (def gdp-per-capita-fill "rgb(214, 39, 40)")
 
 (def footer (opentype/stack
               {:width available-width}
               [{:text "GDP per capita, '000 USD" :fill gdp-per-capita-fill :font "Roboto Regular" :font-size 14}
-               {:margin-top 10 :text "Sources: BP (2017), World Bank (2016)." :font "Roboto Regular" :font-size 14}
-               {:margin-top 2 :text "Data for 2015. © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14}
+               {:margin-top 10 :text "Sources: BP (2017), World Bank (2017)." :font "Roboto Regular" :font-size 14}
+               {:margin-top 2 :text "© Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14}
                ]))
 
 (def available-height (- svg-height (+ two-marg
@@ -159,4 +155,4 @@
     ]])
 
 (defn render-self []
-  (render "./img/energy-per-capita-with-gdp.svg" "./img/energy-per-capita-with-gdp.png" (diagram)))
+  (render "./img/bp-svg/primary-energy-per-capita-with-gdp.svg" "./img/bp-png/primary-energy-per-capita-with-gdp.png" (diagram)))
