@@ -55,6 +55,7 @@
 
 (defonce response (client/post url {:form-params q :content-type :json :as :byte-array}))
 (test/is (= 200 (:status response)))
+(test/is (= "text/csv; charset=Windows-1252" (get (:headers response) "Content-Type")))
 (def resp (String. (:body response) "Windows-1252"))
 (def parsed (csv/csv-map resp))
 (def data (:data parsed))
@@ -99,7 +100,7 @@
                   (mapv keyword skattart))) rows))
 
 (csv/write-csv "data/7022/7022-summed.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
-                                  :data    (rows-round-str output-rows-numeric)})
+                                            :data    (rows-round-str output-rows-numeric)})
 
 ;;; Start de-aggregated summed data
 (defn deagg-row [all-data idx x]
@@ -116,7 +117,7 @@
                      (remove nil?)))
 
 (csv/write-csv "data/7022/7022-deagg-summed.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
-                                        :data    (rows-round-str deagg-rows)})
+                                                  :data    (rows-round-str deagg-rows)})
 
 ;;; Start 12-mma de-agg summed data
 (defn twelve-mma-row [all-data idx row]
@@ -145,7 +146,7 @@
 (csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mma.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
                                                              :data    (rows-round-str twelve-mma-mrd-monthly)})
 
-(def twelve-mma-mrd (->> deagg-rows
+(def twelve-mms-mrd (->> deagg-rows
                          (map-indexed (partial twelve-mma-row deagg-rows))
                          (filter #(= 12 (count (:prev-rows %))))
                          (mapv (partial twelve-mma-contract-row (mapv keyword skattart)))
@@ -153,10 +154,19 @@
                                                    (assoc o k (/ (get o k) 1000))) row (map keyword skattart))))
                          (map #(dissoc % :prev-rows))))
 
-(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
-                                                             :data    (rows-round-str twelve-mma-mrd)})
+(def twelve-mms-sum-mrd (->> twelve-mms-mrd
+                             (mapv (fn [row]
+                                     (assoc row (keyword "Sum innbetalt petroleumsskatt")
+                                                (format "%.1f" (reduce (fn [o k] (+ o (get row (keyword k)))) 0 (take 2 skattart))))))))
 
-(def twelve-mma-mrd-yearly-ytd (filter #(or (= (:dato %) (:dato (last twelve-mma-mrd))) (.endsWith (:dato %) "-12")) twelve-mma-mrd))
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms-sum.csv" {:columns (vec (flatten [:dato (keyword "Sum innbetalt petroleumsskatt")]))
+                                                             :data    twelve-mms-sum-mrd})
+
+
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+                                                             :data    (rows-round-str twelve-mms-mrd)})
+
+(def twelve-mma-mrd-yearly-ytd (filter #(or (= (:dato %) (:dato (last twelve-mms-mrd))) (.endsWith (:dato %) "-12")) twelve-mms-mrd))
 
 (csv/write-csv "data/7022/7022-deagg-summed-mrd-yearly-ytd.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
                                                                  :data    (rows-round-str twelve-mma-mrd-yearly-ytd)})

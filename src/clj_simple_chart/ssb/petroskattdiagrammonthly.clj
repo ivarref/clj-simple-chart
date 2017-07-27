@@ -16,7 +16,7 @@
 
 (def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-nok)
 
-(def data (->> petroskatt/twelve-mma-mrd
+(def data (->> petroskatt/twelve-mms-mrd
                (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
                (mapv #(assoc % :sum (+ (get % ordinaer) (get % saerskatt))))
                (mapv #(assoc % :oilprice (get oil-date-to-usd (:dato %) ::none)))
