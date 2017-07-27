@@ -97,3 +97,22 @@
           (fn [row]
             (mapv (fn [key] (get row key)) columns))
           data)))))
+
+(defn write-csv-format
+  [^String filename {columns :columns
+                     data :data
+                     fmt :format}]
+  {:pre [(coll? columns) (coll? data)]}
+  (with-open [out-file (io/writer filename)]
+    (let [column-names (mapv #(if (string? %) % (subs (str %) 1)) columns)
+          format-fn (fn [col]
+                      (if (= ::none (get fmt col ::none))
+                        identity
+                        (fn [v] (format (get fmt col) v))))]
+      (csv/write-csv out-file [column-names])
+      (csv/write-csv
+        out-file
+        (mapv
+          (fn [row]
+            (mapv (fn [key] ((format-fn key) (get row key))) columns))
+          data)))))
