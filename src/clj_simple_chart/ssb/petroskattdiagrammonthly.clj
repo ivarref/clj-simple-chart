@@ -1,3 +1,7 @@
+;; Basert på data frå
+;; https://www.ssb.no/skatteregn
+;; Her står òg neste publiseringsdato (typisk midten av kvar månad).
+
 (ns clj-simple-chart.ssb.petroskattdiagrammonthly
   (:require [clj-simple-chart.ssb.petroskatt :as petroskatt]
             [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
