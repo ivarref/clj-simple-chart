@@ -3,6 +3,7 @@
 ; http://bl.ocks.org/aaizemberg/78bd3dade9593896a59d
 
 (def blue "rgb(31, 119, 180)")
+(def hydro-blue "rgb(51, 102, 255)")
 (def orange "rgb(255, 127, 14)")
 (def green "rgb(44, 160, 44)")
 (def brown "rgb(140, 86, 75)")
