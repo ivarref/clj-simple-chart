@@ -46,7 +46,9 @@
                                                :data    raw-data})
 
 (def brent-numeric (->> raw-data
-                        (mapv #(update % :usd read-string))))
+                        (mapv #(update % :usd read-string))
+                        (filter #(number? (:usd %)))))
+
 (test/is (every? number? (map :usd brent-numeric)))
 
 (def brent-12-mma

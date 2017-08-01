@@ -216,4 +216,4 @@
 
 
 (defn render-self []
-  (core/render "./img/petroskatt-mms.svg" "./img/petroskatt-mms.png" (diagram)))
+  (core/render "./img/ssb-svg/petroskatt-mms.svg" "./img/ssb-png/petroskatt-mms.png" (diagram)))
