@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.diagrams.low-carbon-electricity-share
+(ns clj-simple-chart.bp.diagrams.low-carbon-electricity-per-capita
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -17,6 +17,7 @@
                (filter :nuclear_consumption_twh)
                (filter :renewables_consumption_twh)
                (filter :electricity_generation_twh)
+               (filter :population)
                (csv/keep-columns [:hydro_consumption_twh
                                   :nuclear_consumption_twh
                                   :renewables_consumption_twh
@@ -25,7 +26,8 @@
                (mapv #(assoc % :total (+ (:hydro_consumption_twh %)
                                          (:nuclear_consumption_twh %)
                                          (:renewables_consumption_twh %))))
-               (mapv #(assoc % :total (* 100 (/ (:total %) (:electricity_generation_twh %)))))
+               (mapv #(assoc % :total (/ (* units/million (:total %))
+                                         (:population %))))
                (csv/drop-columns [:hydro_consumption_twh
                                   :nuclear_consumption_twh
                                   :renewables_consumption_twh
@@ -49,15 +51,15 @@
 (def header (opentype/stack
               {}
               [{:text (str "Top " (count data) " low carbon electricity producers") :font "Roboto Black" :font-size 17}
-               {:text "Low Carbon Sources'* share of Electricity Production" :font "Roboto Regular" :font-size 13 :margin-bottom 0}
+               {:text "MWh Per Capita Per Year" :font "Roboto Regular" :font-size 13 :margin-bottom 0}
                ;{:text "Low Carbon Sources' share of Eletricity Production" :font "Roboto Regular" :font-size 14 :margin-bottom 0}
                ]))
 
 (def footer (opentype/stack
               {:width available-width}
               [
-               {:margin-top 5 :text (str "*Includes hydro, nuclear and other renewables.") :font "Roboto Regular" :font-size 14}
-               {:margin-top 2 :text (str "Source: BP (" bpdata/bp-release-year ").") :font "Roboto Regular" :font-size 14}
+               {:margin-top 5 :text (str "Includes hydro, nuclear and other renewables.") :font "Roboto Regular" :font-size 14}
+               {:margin-top 2 :text (str "Sources: BP (" bpdata/bp-release-year "), World Bank (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
                {:valign :bottom :align :right :text "@ivarref" :font "Roboto Regular" :font-size 14}
                ]))
 
@@ -69,7 +71,7 @@
          :axis        :x
          :orientation :top
          :ticks       5
-         :domain      [0 100]})
+         :domain      [0 30]})
 
 (def yy {:type          :ordinal
          :axis          :y
@@ -100,7 +102,7 @@
                   :dx ".20em"
                   :y  (center-point y country)
                   :dy ".32em"}
-                 (format "%.0f" total)))
+                 (format "%.1f" total)))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -117,4 +119,5 @@
     ]])
 
 (defn render-self []
-  (render "./img/bp-svg/low-carbon-electricity-share.svg" "./img/bp-png/low-carbon-electricity-share.png" (diagram)))
+  (render "./img/bp-svg/low-carbon-electricity-per-capita.svg" "./img/bp-png/low-carbon-electricity-per-capita.png" (diagram)))
+
