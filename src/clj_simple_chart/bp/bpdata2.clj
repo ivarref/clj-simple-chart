@@ -48,6 +48,8 @@
 
    "BP_2017_wind_consumption_mtoe.csv"                     :wind_consumption_mtoe
    "BP_2017_wind_consumption_twh.csv"                      :wind_consumption_twh
+
+   "BP_2017_electricity_generation_twh.csv"                :electricity_generation_twh
    })
 
 (defn parse-url [url prop]
