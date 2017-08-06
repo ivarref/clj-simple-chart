@@ -17,9 +17,13 @@
                   py     :y
                   height :h
                   fill   :fill
+                  stroke :stroke
+                  stroke-width :stroke-width
                   :as    all
                   :or    {py   (first (:domain yscale))
-                          fill "red"}}]
+                          fill "red"
+                          stroke "none"
+                          stroke-width "1px"}}]
   (let [svg-natural-order (apply < (:range yscale))]
     (if svg-natural-order
       (let [bottom (first (:range yscale))
@@ -30,6 +34,8 @@
                 :height (double h)
                 :fill   fill
                 :style  "shape-rendering:crispEdges;"
+                :stroke stroke
+                :stroke-width stroke-width
                 :width  (:bandwidth xscale)}])
       (let [top (first (:range yscale))
             h (- top (point yscale height))
@@ -38,6 +44,8 @@
                 :y      (double yy)
                 :height (double h)
                 :fill   fill
+                :stroke stroke
+                :stroke-width stroke-width
                 :style  "shape-rendering:crispEdges;"
                 :width  (:bandwidth xscale)}]))))
 
@@ -47,9 +55,13 @@
                   px     :x
                   height :h
                   fill   :fill
+                  stroke :stroke
+                  stroke-width :stroke-width
                   :as    all
                   :or    {px   (first (:domain xscale))
-                          fill "red"}}]
+                          fill "red"
+                          stroke "none"
+                          stroke-width "1px"}}]
   (let [svg-natural-order (apply < (:range xscale))]
     (if svg-natural-order
       (let [bottom (first (:range xscale))
@@ -58,6 +70,8 @@
                 :y      (point yscale py)
                 :height (:bandwidth yscale)
                 :fill   fill
+                :stroke stroke
+                :stroke-width stroke-width
                 :style  "shape-rendering:crispEdges;"
                 :width  (double w)}])
       (let [top (first (:range xscale))
@@ -67,6 +81,8 @@
                 :y      (point yscale py)
                 :height (:bandwidth yscale)
                 :fill   fill
+                :stroke stroke
+                :stroke-width stroke-width
                 :style  "shape-rendering:crispEdges;"
                 :width  (double h)}]))))
 
