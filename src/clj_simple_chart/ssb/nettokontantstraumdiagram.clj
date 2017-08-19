@@ -83,7 +83,7 @@
               {:width available-width}
               [{:margin-top 4 :text "*Statens direkte økonomiske engasjement" :font "Roboto Regular" :font-size 16}
                {:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font "Roboto Regular" :font-size 16}
-               {:text "© Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 16 :valign :bottom :align :right}
+               {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 16 :valign :bottom :align :right}
                ]))
 
 (def xx {:type          :ordinal
@@ -100,20 +100,24 @@
          :padding-inner 0.1
          :padding-outer 0.1})
 
+; Thanks to Rune Likvern for suggestion about tick values
+
 (def yy {:type               :linear
          :orientation        :right
-         :ticks              5
+         ;:ticks              5
+         :tick-values        (mapv #(* 50.0 %) (range 11))
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain             [0 (apply max (map netto-sum data))]})
+         :domain             [0 550 #_(apply max (map netto-sum data))]})
 
 
 (def yy2 {:type               :linear
           :orientation        :left
           :color              oil-price-fill
-          :ticks              5
+          ;:ticks              5
+          :tick-values       (mapv #(* 70.0 %) (range 11))
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-          :domain             [0 (apply max (mapv :oilprice data))]})
+          :domain             [0 770 #_(apply max (mapv :oilprice data))]})
 
 (def available-height (- svg-height (+ two-marg
                                        (:height (meta header))
@@ -216,4 +220,4 @@
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (core/render "./img/nettokontantstraum.svg" "./img/nettokontantstraum.png" (diagram)))
+  (core/render "./img/ssb-svg/nettokontantstraum.svg" "./img/ssb-png/nettokontantstraum.png" (diagram)))

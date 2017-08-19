@@ -44,9 +44,11 @@
 
 (defmethod ticks :linear
   [scale]
-  (linear-ticks (first (:domain scale))
-                (last (:domain scale))
-                (get scale :ticks 10)))
+  (if (:tick-values scale)
+    (mapv double (:tick-values scale))
+    (linear-ticks (first (:domain scale))
+                  (last (:domain scale))
+                  (get scale :ticks 10))))
 
 (defmethod ticks :ordinal
   [scale]
