@@ -127,15 +127,18 @@
 
 (def yy {:type        :linear
          :orientation :right
-         ;:ticks       5
+         :grid        true
+         :grid-stroke-opacity 0.35
+         :tick-values  (mapv #(* 25.0 %) (range 11))
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain      [0 (apply max (map :sum data))]})
+         :domain      [0 250 #_(apply max (map :sum data))]})
 
 (def yy2 {:type        :linear
           :orientation :left
           :color       oil-fill
+          :tick-values (mapv #(* 70.0 %) (range 11))
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-          :domain      [0 (apply max (map :oilprice data))]})
+          :domain      [0 700 #_(apply max (map :oilprice data))]})
 
 (def available-height (- svg-height (:height (meta header)) (:height (meta footer))))
 

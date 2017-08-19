@@ -105,7 +105,7 @@
 (def yy {:type               :linear
          :orientation        :right
          ;:ticks              5
-         :tick-values        (mapv #(* 50.0 %) (range 11))
+         :tick-values        (mapv #(* 50.0 %) (range 12))
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          :domain             [0 550 #_(apply max (map netto-sum data))]})
@@ -115,7 +115,7 @@
           :orientation        :left
           :color              oil-price-fill
           ;:ticks              5
-          :tick-values       (mapv #(* 70.0 %) (range 11))
+          :tick-values       (mapv #(* 70.0 %) (range 12))
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
           :domain             [0 770 #_(apply max (mapv :oilprice data))]})
 
@@ -138,8 +138,8 @@
     {:width (:plot-width c)}
     (mapv (fn [x] {:text      (get translate-info x (name x))
                    :fill      (get fills x)
-                   :font      "Roboto Bold"
-                   :font-size 16})
+                   :font      "Roboto Black"
+                   :font-size 15})
           (reverse sub-domain))))
 
 (def x (:x c))

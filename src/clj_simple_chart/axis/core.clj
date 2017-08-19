@@ -73,7 +73,7 @@
                      [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
                      (when (:grid scale)
                        [:line {:stroke         color
-                               :stroke-opacity grid-stroke-opacity
+                               :stroke-opacity (or (:grid-stroke-opacity scale) grid-stroke-opacity)
                                :y2             (* neg-sign (:height scale))
                                :x1             0.5 :x2 0.5}])
                      (opentype/text
@@ -123,7 +123,7 @@
                      [:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
                      (when (:grid scale)
                        [:line {:stroke         color
-                               :stroke-opacity grid-stroke-opacity
+                               :stroke-opacity (or (:grid-stroke-opacity scale) grid-stroke-opacity)
                                :x2             (* neg-sign (:width scale))
                                :y1             0.5 :y2 0.5}])
                      (opentype/text
