@@ -170,7 +170,7 @@
    (opentype/text {:dy          "-1.71em"
                    :font        "Roboto Bold"
                    :text-anchor "middle"
-                   :text        (string/replace (format "%.1f" summ) "." ",")})])
+                   :text        (string/replace (format "%.0f" summ) "." ",")})])
 
 (defn add-oil-price-line []
   (let [dat data

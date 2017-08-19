@@ -171,7 +171,7 @@
    (opentype/text {:dy          "-1.71em"
                    :font        "Roboto Bold"
                    :text-anchor "middle"
-                   :text        (string/replace (format "%.1f" (get opts netto-sum)) "." ",")})])
+                   :text        (string/replace (format "%.0f" (get opts netto-sum)) "." ",")})])
 
 (defn add-oil-price-line []
   (let [dat data
