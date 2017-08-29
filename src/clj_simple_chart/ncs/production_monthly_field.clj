@@ -120,7 +120,8 @@
                       (map #(dissoc % :total)))]
     (csvmap/write-csv filename
                       {:columns (cons :date (cons :mma (sort (keys empty-buckets))))
-                       :data    with-mma})
+                       :data    (filter #(or (.endsWith (:date %) "-12")
+                                             (= % (last with-mma))) with-mma)})
     (println "wrote" filename)))
 
 (generate-bucket-file "./data/ncs/gas-production-rp-bucket-stacked.csv"
