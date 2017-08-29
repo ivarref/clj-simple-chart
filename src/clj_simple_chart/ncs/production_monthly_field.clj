@@ -127,12 +127,11 @@
 (generate-bucket-file "./data/ncs/gas-production-rp-bucket-stacked.csv"
                       with-cumulative
                       #(cond
-                         (< (:gas-rp %) 1) "1- 0 - 1 R/P"
-                         (< (:gas-rp %) 2) "2- 1 - 2 R/P"
-                         (< (:gas-rp %) 5) "3- 2 - 5 R/P"
-                         (< (:gas-rp %) 10) "4- 5 - 10 R/P"
-                         (< (:gas-rp %) 15) "5- 10 - 15 R/P"
-                         :else "6- >= 15 R/P"))
+                         (< (:gas-rp %) 3) "1- 0 - 3 R/P"
+                         (< (:gas-rp %) 5) "2- 3 - 5 R/P"
+                         (< (:gas-rp %) 10) "3- 5 - 10 R/P"
+                         (< (:gas-rp %) 15) "4- 10 - 15 R/P"
+                         :else "5- >= 15 R/P"))
 
 (def field-names (->> data
                       (mapv :prfInformationCarrier)
