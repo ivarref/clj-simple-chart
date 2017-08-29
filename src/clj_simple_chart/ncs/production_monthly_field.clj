@@ -75,6 +75,7 @@
        (add-prev-rows-last-n 12)
        (filter #(= 12 (count (:prev-rows %))))
        (mapv #(assoc % :gas-production-12-months (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
+       (mapv #(assoc % :gas-production-12-mma (/ (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %))) 12)))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :gas-remaining (- (:fldRecoverableGas %) (:gas-cumulative %))))
        (filter #(pos? (:gas-production-12-months %)))
@@ -90,7 +91,7 @@
         days-in-month (:days-in-month (first production))
         mboe (fn [x] (format "%.2f" (/ (* 6.29 x) days-in-month)))
         ;oil-buckets (map #(mboe (reduce + 0.0 (map :prfPrdOilNetMillSm3 %))) (vals buckets))
-        gas-buckets (map #(mboe (reduce + 0.0 (map :prfPrdGasNetBillSm3 %))) (vals buckets))
+        gas-buckets (map #(mboe (reduce + 0.0 (map :gas-production-12-mma %))) (vals buckets))
         ;oe-buckets (map #(mboe (reduce + 0.0 (map :prfPrdOeNetMillSm3 %))) (vals buckets))
         ]
     (merge {:date          (:date (first production))
@@ -127,11 +128,11 @@
 (generate-bucket-file "./data/ncs/gas-production-rp-bucket-stacked.csv"
                       with-cumulative
                       #(cond
-                         (< (:gas-rp %) 3) "1- 0 - 3 R/P"
-                         (< (:gas-rp %) 5) "2- 3 - 5 R/P"
-                         (< (:gas-rp %) 10) "3- 5 - 10 R/P"
-                         (< (:gas-rp %) 15) "4- 10 - 15 R/P"
-                         :else "5- >= 15 R/P"))
+                         (= "TROLL" (:prfInformationCarrier %)) "5- TROLL"
+                         (< (:gas-rp %) 5) "1- 0 - 5 R/P"
+                         (< (:gas-rp %) 10) "2- 5 - 10 R/P"
+                         (< (:gas-rp %) 15) "3- 10 - 15 R/P"
+                         :else "4- >= 15 R/P"))
 
 (def field-names (->> data
                       (mapv :prfInformationCarrier)
