@@ -85,10 +85,11 @@
           :sum           (reduce + 0.0 (mapv :gas-production-12-months-est production))}
          (reduce (fn [org [k v]]
                    (assoc org k
-                              (->> production
-                                   (filter #(= k (:bucket %)))
-                                   (mapv :gas-production-12-months-est)
-                                   (reduce + 0.0)))) {} empty-buckets)))
+                              (or (->> production
+                                       (filter #(= k (:bucket %)))
+                                       (mapv :gas-production-12-months-est)
+                                       (reduce + 0.0))
+                                  0.0))) {} empty-buckets)))
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)))
@@ -96,10 +97,17 @@
 (csvmap/write-csv-format
   "./data/ncs/gas-production-rp-bucket-stacked-yearly.csv"
   {:columns (flatten [:date (sort (keys empty-buckets)) :sum])
-   :format  (merge {:sum "%.2f"}
+   :format  (merge {:sum "%.3f"}
                    (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
    :data    (filter #(or (.endsWith (:date %) "-12")
                          (= % (last by-date))) by-date)})
+
+(csvmap/write-csv-format
+  "./data/ncs/gas-production-rp-bucket-stacked-monthly.csv"
+  {:columns (flatten [:date (sort (keys empty-buckets)) :sum])
+   :format  (merge {:sum "%.3f"}
+                   (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
+   :data    by-date})
 
 (def field-names (->> data
                       (mapv :prfInformationCarrier)
