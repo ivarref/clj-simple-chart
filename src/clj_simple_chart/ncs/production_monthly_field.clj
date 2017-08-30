@@ -12,25 +12,12 @@
                       (:body)
                       (csv/csv-map)))
 
-(test/is (= (:columns raw-data) [:prfInformationCarrier
-                                 :prfYear
-                                 :prfMonth
-                                 :prfPrdOilNetMillSm3
-                                 :prfPrdGasNetBillSm3
-                                 :prfPrdNGLNetMillSm3
-                                 :prfPrdCondensateNetMillSm3
-                                 :prfPrdOeNetMillSm3
-                                 :prfPrdProducedWaterInFieldMillSm3
-                                 :prfNpdidInformationCarrier]))
+(test/is (= (:columns raw-data) [:prfInformationCarrier :prfYear :prfMonth :prfPrdOilNetMillSm3 :prfPrdGasNetBillSm3
+                                 :prfPrdNGLNetMillSm3 :prfPrdCondensateNetMillSm3 :prfPrdOeNetMillSm3
+                                 :prfPrdProducedWaterInFieldMillSm3 :prfNpdidInformationCarrier]))
 
-(def numeric-columns [:prfYear
-                      :prfMonth
-                      :prfPrdOilNetMillSm3
-                      :prfPrdGasNetBillSm3
-                      :prfPrdNGLNetMillSm3
-                      :prfPrdCondensateNetMillSm3
-                      :prfPrdOeNetMillSm3
-                      :prfPrdProducedWaterInFieldMillSm3])
+(def numeric-columns [:prfYear :prfMonth :prfPrdOilNetMillSm3 :prfPrdGasNetBillSm3 :prfPrdNGLNetMillSm3
+                      :prfPrdCondensateNetMillSm3 :prfPrdOeNetMillSm3 :prfPrdProducedWaterInFieldMillSm3])
 
 (def data (->> raw-data
                :data
@@ -47,6 +34,7 @@
                (map #(assoc % :fldRecoverableOil (reserve/get-reserve (:prfInformationCarrier %) :fldRecoverableOil)))
                (map #(assoc % :fldRecoverableGas (reserve/get-reserve (:prfInformationCarrier %) :fldRecoverableGas)))
                (map #(assoc % :fldRecoverableOE (reserve/get-reserve (:prfInformationCarrier %) :fldRecoverableOE)))
+               (filter #(pos? (:fldRecoverableGas %)))
                ; remove unused values
                (map #(dissoc % :prfPrdNGLNetMillSm3))
                (map #(dissoc % :prfPrdCondensateNetMillSm3))
@@ -55,14 +43,16 @@
                (sort-by :date)
                (vec)))
 
-(defn percentage-produced
-  [production reserve item]
-  (if (> (get item reserve) 0)
-    (* 100 (/ (get item production) (get item reserve)))
-    -1.0))
-
 (defn add-prev-rows-last-n [n rows]
-  (map-indexed (fn [idx x] (assoc x :prev-rows (take-last 12 (take (inc idx) rows)))) rows))
+  (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
+
+(def bucket-fn
+  #(cond
+     (= "TROLL" (:prfInformationCarrier %)) "5- TROLL"
+     (< (:gas-rp %) 5) "1- 0 - 5 R/P"
+     (< (:gas-rp %) 10) "2- 5 - 10 R/P"
+     (< (:gas-rp %) 15) "3- 10 - 15 R/P"
+     :else "4- >= 15 R/P"))
 
 (defn produce-cumulative
   [production]
@@ -73,66 +63,43 @@
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
        (reductions (fn [old n] (update n :oe-cumulative (fn [v] (+ v (:oe-cumulative old))))))
        (add-prev-rows-last-n 12)
-       (filter #(= 12 (count (:prev-rows %))))
-       (mapv #(assoc % :gas-production-12-months (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
-       (mapv #(assoc % :gas-production-12-mma (/ (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %))) 12)))
+       (mapv #(assoc % :gas-production-12-months-est (* (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))
+                                                        (/ 12 (count (:prev-rows %))))))
+       (remove #(zero? (:gas-production-12-months-est %)))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :gas-remaining (- (:fldRecoverableGas %) (:gas-cumulative %))))
-       (filter #(pos? (:gas-production-12-months %)))
-       (filter #(pos? (:gas-remaining %)))
-       (mapv #(assoc % :gas-rp (/ (:gas-remaining %) (:gas-production-12-months %))))))
+       (mapv #(assoc % :gas-rp (if (neg? (:gas-remaining %))
+                                 0
+                                 (/ (:gas-remaining %) (:gas-production-12-months-est %)))))
+       (mapv #(assoc % :bucket (bucket-fn %)))))
 
 (def with-cumulative (mapcat produce-cumulative (vals (group-by :prfInformationCarrier data))))
 
+(def empty-buckets (reduce (fn [o n] (assoc o n 0.0)) {} (distinct (map :bucket with-cumulative))))
+
 (defn process-date
-  [empty-buckets production]
+  [production]
   {:pre [(coll? production)]}
-  (let [buckets (group-by :bucket production)
-        days-in-month (:days-in-month (first production))
-        mboe (fn [x] (format "%.2f" (/ (* 6.29 x) days-in-month)))
-        ;oil-buckets (map #(mboe (reduce + 0.0 (map :prfPrdOilNetMillSm3 %))) (vals buckets))
-        gas-buckets (map #(mboe (reduce + 0.0 (map :gas-production-12-mma %))) (vals buckets))
-        ;oe-buckets (map #(mboe (reduce + 0.0 (map :prfPrdOeNetMillSm3 %))) (vals buckets))
-        ]
-    (merge {:date          (:date (first production))
-            :days-in-month days-in-month
-            :total         (reduce + 0 (map :prfPrdGasNetBillSm3 production))
-            :mboed         (mboe (reduce + 0 (map :prfPrdGasNetBillSm3 production)))}
-           (merge empty-buckets (zipmap (keys buckets) gas-buckets)))))
+  (merge {:date          (:date (first production))
+          :days-in-month (:days-in-month (first production))
+          :sum           (reduce + 0.0 (mapv :gas-production-12-months-est production))}
+         (reduce (fn [org [k v]]
+                   (assoc org k
+                              (->> production
+                                   (filter #(= k (:bucket %)))
+                                   (mapv :gas-production-12-months-est)
+                                   (reduce + 0.0)))) {} empty-buckets)))
 
-(defn mma [prod {date :date}]
-  (let [items (take-last 12 (filter #(>= (compare date (:date %)) 0) prod))
-        production (->> items (map :total) (reduce + 0))
-        days (->> items (map :days-in-month) (reduce + 0))]
-    (format "%.2f" (/ (* 6.29 production) days))))
+(def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
+                  (sort-by :date)))
 
-(defn generate-bucket-file
-  [filename data bucket-fn]
-  (let [with-bucket (->> data (mapv #(assoc % :bucket (bucket-fn %))))
-        empty-buckets (reduce (fn [o n] (assoc o n "0.00")) {} (distinct (map :bucket with-bucket)))
-        flat-production (->> with-bucket
-                             (group-by :date)
-                             vals
-                             (map (partial process-date empty-buckets))
-                             (sort-by :date))
-        with-mma (->> flat-production
-                      (map #(assoc % :mma (mma flat-production %)))
-                      (map #(dissoc % :days-in-month))
-                      (map #(dissoc % :total)))]
-    (csvmap/write-csv filename
-                      {:columns (cons :date (cons :mma (sort (keys empty-buckets))))
-                       :data    (filter #(or (.endsWith (:date %) "-12")
-                                             (= % (last with-mma))) with-mma)})
-    (println "wrote" filename)))
-
-(generate-bucket-file "./data/ncs/gas-production-rp-bucket-stacked.csv"
-                      with-cumulative
-                      #(cond
-                         (= "TROLL" (:prfInformationCarrier %)) "5- TROLL"
-                         (< (:gas-rp %) 5) "1- 0 - 5 R/P"
-                         (< (:gas-rp %) 10) "2- 5 - 10 R/P"
-                         (< (:gas-rp %) 15) "3- 10 - 15 R/P"
-                         :else "4- >= 15 R/P"))
+(csvmap/write-csv-format
+  "./data/ncs/gas-production-rp-bucket-stacked-yearly.csv"
+  {:columns (flatten [:date (sort (keys empty-buckets)) :sum])
+   :format  (merge {:sum "%.2f"}
+                   (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
+   :data    (filter #(or (.endsWith (:date %) "-12")
+                         (= % (last by-date))) by-date)})
 
 (def field-names (->> data
                       (mapv :prfInformationCarrier)
