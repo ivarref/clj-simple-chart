@@ -129,13 +129,15 @@
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)))
 
+(def year-end-data (filter #(or (.endsWith (:date %) "-12")
+                                (= % (last by-date))) by-date))
+
 (csvmap/write-csv-format
   "./data/ncs/gas-production-rp-bucket-stacked-yearly.csv"
   {:columns (flatten [:date (sort (keys empty-buckets)) :sum])
    :format  (merge {:sum "%.3f"}
                    (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
-   :data    (filter #(or (.endsWith (:date %) "-12")
-                         (= % (last by-date))) by-date)})
+   :data    year-end-data})
 
 (csvmap/write-csv-format
   "./data/ncs/gas-production-rp-bucket-stacked-monthly.csv"
