@@ -88,8 +88,7 @@
      (= "TROLL" (:prfInformationCarrier %)) "5- TROLL"
      (< (:gas-rp %) 5) "1- 0 - 5 R/P"
      (< (:gas-rp %) 10) "2- 5 - 10 R/P"
-     (< (:gas-rp %) 15) "3- 10 - 15 R/P"
-     :else "4- >= 15 R/P"))
+     :else "3- >= 10 R/P"))
 
 (defn produce-cumulative
   [production]
