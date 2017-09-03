@@ -68,16 +68,15 @@
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}
                ]))
 
-(def xx {:type          :ordinal
-         :tick-values   x-ticks
-         :tick-format   (fn [x] (if (.endsWith x "5-12")
-                                  (subs x 2 4)
-                                  (subs x 0 4)))
-         :orientation   :bottom
-         :domain        x-domain
-         :sub-domain    sub-domain
-         :padding-inner 0.1
-         :padding-outer 0.1})
+(def xx {:type        :ordinal
+         :tick-values x-ticks
+         :tick-format (fn [x] (if (.endsWith x "5-12")
+                                (subs x 2 4)
+                                (subs x 0 4)))
+         :orientation :bottom
+         :domain      x-domain
+         :sub-domain  sub-domain
+         })
 
 (def yy {:type               :linear
          :orientation        :right
@@ -101,6 +100,9 @@
 
 (def bars (rect/scaled-rect (:x c) (:y c)))
 
+; how to do an area chart?
+; obvious: stack based on values "below"
+
 (defn make-rect [opts]
   (map (fn [[k fill]]
          {:p    (:date opts)
@@ -108,6 +110,20 @@
           :fill fill
           :h    (get opts k 0)})
        bucket-to-fill))
+
+(def flat (vec (flatten (mapv make-rect data))))
+
+(defn add-below [coll item]
+  (let [below-sub-domain (take-while #(not= (:c item) %) (:sub-domain x))
+        below-items (filter #(some #{(:c %)} below-sub-domain) coll)]
+    (assoc item :below (reduce + 0 (mapv :h below-items)))))
+
+(def with-others (->> flat
+                      (group-by :p)
+                      (vals)
+                      (mapv #(mapv (partial add-below %) %))
+                      (flatten)
+                      (vec)))
 
 (defn make-txt [{dato :date year :year :as opts}]
   [:g {:transform (translate (xfn dato) (yfn (get opts :sum)))}
@@ -142,4 +158,3 @@
 
 (defn render-self []
   (core/render "./img/ncs-svg/gas-rp.svg" "./img/ncs-png/gas-rp.png" (diagram)))
-

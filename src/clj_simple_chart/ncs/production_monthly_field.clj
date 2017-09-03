@@ -102,6 +102,7 @@
        (remove #(zero? (:gas-production-12-months-est %)))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :gas-remaining (- (:fldRecoverableGas %) (:gas-cumulative %))))
+       (mapv #(assoc % :percentage-produced (* 100 (/ (:gas-cumulative %) (:fldRecoverableGas %)))))
        (mapv #(assoc % :gas-rp (if (neg? (:gas-remaining %))
                                  0
                                  (/ (:gas-remaining %) (:gas-production-12-months-est %)))))
@@ -127,6 +128,8 @@
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)))
+
+(def troll (last (filter #(= "TROLL" (:prfInformationCarrier %)) with-cumulative)))
 
 (def year-end-data (filter #(or (.endsWith (:date %) "-12")
                                 (= % (last by-date))) by-date))
