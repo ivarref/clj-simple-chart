@@ -108,7 +108,7 @@
           format-fn (fn [col]
                       (if (= ::none (get fmt col ::none))
                         identity
-                        (fn [v] (format (get fmt col) v))))]
+                        (fn [v] (format (get fmt col) (double v)))))]
       (csv/write-csv out-file [column-names])
       (csv/write-csv
         out-file

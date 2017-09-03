@@ -75,21 +75,21 @@
 
 (def with-cumulative (mapcat produce-cumulative (vals (group-by :prfInformationCarrier data))))
 
-(def empty-buckets (reduce (fn [o n] (assoc o n 0.0)) {} (distinct (map :bucket with-cumulative))))
+(def empty-buckets (reduce (fn [o n] (assoc o n 0)) {} (distinct (map :bucket with-cumulative))))
 
 (defn process-date
   [production]
   {:pre [(coll? production)]}
   (merge {:date          (:date (first production))
           :days-in-month (:days-in-month (first production))
-          :sum           (reduce + 0.0 (mapv :gas-production-12-months-est production))}
+          :sum           (reduce + 0 (mapv :gas-production-12-months-est production))}
          (reduce (fn [org [k v]]
                    (assoc org k
                               (or (->> production
                                        (filter #(= k (:bucket %)))
                                        (mapv :gas-production-12-months-est)
-                                       (reduce + 0.0))
-                                  0.0))) {} empty-buckets)))
+                                       (reduce + 0))
+                                  0))) {} empty-buckets)))
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)))
