@@ -20,9 +20,18 @@
 (def svg-width 900)
 (def svg-height 500)
 
+(defn prev-quarter [s]
+  (let [parts (string/split s #"K")
+        year (read-string (first parts))
+        quarter (read-string (last parts))]
+    (if (= quarter 1)
+      (str (dec year) "K4")
+      (str year "K" (dec quarter)))))
+
 (def data (->> nettokontantstraum/four-quarters-moving-sum-adjusted-mrd
                (filter #(>= (:year %) 1996))
-               (mapv #(assoc % :oilprice (get brentoilprice/brent-4qma-to-2017-nok (:dato %) ::none)))))
+               (mapv #(assoc % :oilprice
+                               (get brentoilprice/brent-4qma-to-2017-nok (prev-quarter (prev-quarter (:dato %))) ::none)))))
 
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
@@ -65,19 +74,18 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 30}
-               {:text "Milliardar 2017-kroner, 4 kvartal glidande sum" :font "Roboto Bold" :font-size 16}
-               {:text          (str "Sum per " (:dato last-data) ": "
-                                    (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
-                                    " mrd kr")
-                :font          "Roboto Bold" :font-size 16
+               {:text (str "Milliardar 2017-kroner, 4 kvartal glidande sum. "
+                           "Per " (:dato last-data) ": "
+                           (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
+                           " mrd kr")
+                :font "Roboto Bold" :font-size 16
+                :margin-top 2
                 :margin-bottom 10}
-
-               {:text "Oljepris, 2017-kroner/fat, 4 kvartal glidande gjennomsnitt"
-                :fill oil-price-fill :font "Roboto Bold" :font-size 16}
+               {:text "Oljepris, 2017-kroner/fat" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
+               {:text "4 kvartal glidande gjennomsnitt, 2 kvartal framskyvd" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:text "Milliardar 2017-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               ]))
+               {:text "Milliardar 2017-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
