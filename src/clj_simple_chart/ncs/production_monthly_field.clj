@@ -4,45 +4,13 @@
             [clojure.string :as string]
             [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.ncs.reserve :as reserve]
+            [clj-simple-chart.ncs.raw-production :as raw-production]
             [clj-simple-chart.csv.csvmap :as csvmap])
   (:import (java.time YearMonth)))
 
-(defn year-month [s]
-  {:pre [(string? s)]}
-  (let [parts (string/split s #"-0?")
-        year (read-string (first parts))
-        month (read-string (last parts))]
-    (YearMonth/of year month)))
-
-(defn date-range
-  ([start stop] (date-range [] start stop))
-  ([sofar start stop]
-   (cond
-     (string? start) (recur sofar (year-month start) stop)
-     (string? stop) (recur sofar start (year-month stop))
-     (.equals start stop)
-     (mapv #(format "%04d-%02d" (.getYear %) (.getMonthValue %)) (conj sofar stop))
-     :else (date-range (conj sofar start) (.plusMonths start 1) stop))))
-
-(def field-monthly-production-url "http://factpages.npd.no/ReportServer?/FactPages/TableView/field_production_monthly&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=80.213.237.130&CultureCode=en")
-(defonce raw-data (-> field-monthly-production-url
-                      (client/get)
-                      (:body)
-                      (csv/csv-map)))
-
-(test/is (= (:columns raw-data) [:prfInformationCarrier :prfYear :prfMonth :prfPrdOilNetMillSm3 :prfPrdGasNetBillSm3
-                                 :prfPrdNGLNetMillSm3 :prfPrdCondensateNetMillSm3 :prfPrdOeNetMillSm3
-                                 :prfPrdProducedWaterInFieldMillSm3 :prfNpdidInformationCarrier]))
-
-(def numeric-columns [:prfYear :prfMonth :prfPrdOilNetMillSm3 :prfPrdGasNetBillSm3 :prfPrdNGLNetMillSm3
-                      :prfPrdCondensateNetMillSm3 :prfPrdOeNetMillSm3 :prfPrdProducedWaterInFieldMillSm3])
-
-(def data (->> raw-data
-               :data
+(def data (->> raw-production/data
                (remove #(= "33/9-6 DELTA" (:prfInformationCarrier %)))
                (remove #(= "SINDRE" (:prfInformationCarrier %)))
-               (csv/read-string-columns numeric-columns)
-               (csv/number-or-nil-columns numeric-columns)
                ; bootstrap cumulative values
                (map #(assoc % :gas-cumulative (:prfPrdGasNetBillSm3 %)))
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
@@ -64,25 +32,6 @@
 (defn add-prev-rows-last-n [n rows]
   (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
 
-(defn fill-gaps [production]
-  {:pre [(coll? production)]}
-  (let [field-name (:prfInformationCarrier (first production))
-        dates (sort (mapv :date production))
-        date-range (date-range (first dates) (last dates))
-        missing-months (->> date-range
-                            (remove #(some #{%} dates))
-                            (vec))
-        filled-gaps (mapv (fn [date]
-                            {:gas-cumulative        0.0
-                             :date                  date
-                             :days-in-month         (.lengthOfMonth (year-month date))
-                             :prfInformationCarrier field-name
-                             :prfPrdGasNetBillSm3   0.0
-                             :fldRecoverableGas     (:fldRecoverableGas (first production))}) missing-months)]
-    (->> (concat production filled-gaps)
-         (sort-by :date)
-         (vec))))
-
 (def bucket-fn
   #(cond
      (= "TROLL" (:prfInformationCarrier %)) "5- TROLL"
@@ -94,7 +43,6 @@
   [production]
   {:pre [(coll? production)]}
   (->> (sort-by :date production)
-       (fill-gaps)
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
        (add-prev-rows-last-n 12)
        (mapv #(assoc % :gas-production-12-months-est (* (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))

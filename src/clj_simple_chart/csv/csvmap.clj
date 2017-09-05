@@ -57,6 +57,13 @@
                         (assoc o k (if (number? v) v nil))
                         (assoc o k v))) {} x)) data)))
 
+(defn number-or-throw-columns [columns data]
+  (mapv (fn [x]
+          (reduce (fn [o [k v]]
+                    (if (some #{k} columns)
+                      (assoc o k (if (number? v) v (throw (ex-info "column contained non-number" {:column k :value v}))))
+                      (assoc o k v))) {} x)) data))
+
 (defn drop-columns [columns data]
   (mapv (fn [x]
           (reduce (fn [o [k v]]
@@ -100,8 +107,8 @@
 
 (defn write-csv-format
   [^String filename {columns :columns
-                     data :data
-                     fmt :format}]
+                     data    :data
+                     fmt     :format}]
   {:pre [(coll? columns) (coll? data)]}
   (with-open [out-file (io/writer filename)]
     (let [column-names (mapv #(if (string? %) % (subs (str %) 1)) columns)
