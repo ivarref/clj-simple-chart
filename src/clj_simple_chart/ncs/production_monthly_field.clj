@@ -8,6 +8,9 @@
             [clj-simple-chart.csv.csvmap :as csvmap])
   (:import (java.time YearMonth)))
 
+(defn add-prev-rows-last-n [n rows]
+  (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
+
 (def data (->> raw-production/data
                (remove #(= "33/9-6 DELTA" (:prfInformationCarrier %)))
                (remove #(= "SINDRE" (:prfInformationCarrier %)))
@@ -29,9 +32,6 @@
                (sort-by :date)
                (vec)))
 
-(defn add-prev-rows-last-n [n rows]
-  (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
-
 (def bucket-fn
   #(cond
      (= "TROLL" (:prfInformationCarrier %)) "5- TROLL"
@@ -41,7 +41,8 @@
 
 (defn produce-cumulative
   [production]
-  {:pre [(coll? production)]}
+  {:pre [(coll? production)
+         (= 1 (count (distinct (mapv :prfInformationCarrier production))))]}
   (->> (sort-by :date production)
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
        (add-prev-rows-last-n 12)
