@@ -1,7 +1,8 @@
 (ns clj-simple-chart.scale.core
   (:require [clojure.spec :as s]
             [clj-simple-chart.scale.ordinal :as ordinal]
-            [clj-simple-chart.scale.linear :as linear]))
+            [clj-simple-chart.scale.linear :as linear]
+            [clj-simple-chart.scale.ordinal-linear :as ordinal-linear]))
 
 (defn rng [{width  :width
             height :height
@@ -13,7 +14,7 @@
         v (if rev (reverse v) v)]
     (vec v)))
 
-(s/def ::type #{:linear :ordinal})
+(s/def ::type #{:linear :ordinal :ordinal-linear})
 (s/def ::axis #{:x :y})
 (s/def ::width (s/and number? #(> % 0)))
 (s/def ::height (s/and number? #(> % 0)))
@@ -31,6 +32,8 @@
 (s/def ::ordinal-scale (s/keys :req-un [::type ::axis ::width ::height ::domain
                                         ::reverse ::padding-inner ::padding-outer
                                         ::align ::round]))
+
+(s/def ::ordinal-linear-scale (s/keys :req-un [::type ::axis ::width ::height ::domain ::reverse]))
 
 (def linear-defaults {:reverse false})
 
@@ -55,3 +58,6 @@
 
 (defmethod scale :linear [options]
   (make-scale linear-defaults options ::linear-scale linear/scale-linear))
+
+(defmethod scale :ordinal-linear [options]
+  (make-scale {:reverse false} options ::ordinal-linear-scale ordinal-linear/scale-ordinal-linear))

@@ -153,8 +153,7 @@
                                        ;"2013-12"
                                        "2015-12"]) data))]
      (axis/render-axis (:x c))]
-    [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]
-    ]])
+    [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
   (core/render "./img/ncs-svg/gas-rp.svg" "./img/ncs-png/gas-rp.png" (diagram)))

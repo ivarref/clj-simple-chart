@@ -50,6 +50,12 @@
                   (last (:domain scale))
                   (get scale :ticks 10))))
 
+(defmethod ticks :ordinal-linear
+  [scale]
+  (if (:tick-values scale)
+    (:tick-values scale)
+    (:domain scale)))
+
 (defmethod ticks :ordinal
   [scale]
   (if (:tick-values scale)

@@ -14,6 +14,12 @@
     ((:tick-format scale) v)
     v))
 
+(defmethod frmt :ordinal-linear
+  [scale v]
+  (if (:tick-format scale)
+    ((:tick-format scale) v)
+    v))
+
 ;;;; TODO: How does d3 do this?
 (defn number-of-decimals [scale]
   (let [domain (:domain scale)
@@ -201,6 +207,10 @@
   (render-x-axis scale -1 "0em" :margin-top))
 
 (defmethod render-axis [:x :linear :bottom] [scale]
+  (transform-with-meta 0 (:height scale)
+                       (render-x-axis scale 1 ".71em" :margin-bottom)))
+
+(defmethod render-axis [:x :ordinal-linear :bottom] [scale]
   (transform-with-meta 0 (:height scale)
                        (render-x-axis scale 1 ".71em" :margin-bottom)))
 

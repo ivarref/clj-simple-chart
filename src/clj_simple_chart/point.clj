@@ -9,6 +9,10 @@
   (double (+ (/ (:bandwidth scale) 2)
              ((:point-fn scale) v))))
 
+(defmethod center-point :ordinal-linear
+  [scale v]
+  (double ((:point-fn scale) v)))
+
 (defmethod center-point :linear
   [scale v]
   (double ((:point-fn scale) v)))

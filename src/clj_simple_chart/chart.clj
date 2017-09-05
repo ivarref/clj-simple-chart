@@ -50,7 +50,7 @@
           (pos? recursion-limit) (solve-margins w h margs axes (dec recursion-limit))
           :else (throw (Exception. "Sorry! Diff is still >0.1, but search is exhausted!")))))
 
-(defn chart-inner [{width  :width
+(defn- chart-inner [{width  :width
                     height :height
                     x      :x
                     y      :y
