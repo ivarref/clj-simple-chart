@@ -68,11 +68,10 @@
           :sum           (reduce + 0 (mapv :gas-production-12-months-est production))}
          (reduce (fn [org [k v]]
                    (assoc org k
-                              (or (->> production
-                                       (filter #(= k (:bucket %)))
-                                       (mapv :gas-production-12-months-est)
-                                       (reduce + 0))
-                                  0))) {} empty-buckets)))
+                              (->> production
+                                   (filter #(= k (:bucket %)))
+                                   (mapv :gas-production-12-months-est)
+                                   (reduce + 0)))) {} empty-buckets)))
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)))
