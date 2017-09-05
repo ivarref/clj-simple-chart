@@ -1,6 +1,6 @@
 ;; Basert på data frå
 ;; https://www.ssb.no/statsregn
-;; Her står òg neste publiseringsdato (5. september 2017).
+;; Her står òg neste publiseringsdato (24. november 2017).
 
 (ns clj-simple-chart.ssb.nettokontantstraumdiagram
   (:require [clj-simple-chart.core :as core]
