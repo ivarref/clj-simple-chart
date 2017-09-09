@@ -7,6 +7,7 @@
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
+            [clj-simple-chart.area :as clj-area]
             [clojure.string :as string]))
 
 (def marg 10)
@@ -15,7 +16,7 @@
 (def svg-width 900)
 (def svg-height 500)
 
-(def data (->> production/by-date))
+(def data (filter #(<= 1990 (:eofYear %)) production/by-date))
 (def buckets (vec (reverse (sort (keys production/empty-buckets)))))
 
 (def bucket-to-fill (zipmap (sort (keys production/empty-buckets))
@@ -30,7 +31,7 @@
 
 (def x-domain (map :date data))
 
-(def x-ticks (filter #(or (= (first x-domain) %)
+(def x-ticks (filter #(or ;(= (first x-domain) %)
                           (.endsWith % "5-12")
                           (.endsWith % "0-12"))
                      (map :date data)))
@@ -51,14 +52,15 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Gassproduksjon etter R/P" :font "Roboto Bold" :font-size 30}
-               {:text       (str "Per " (months-str (:date last-data)) ": "
+               {:text       "R/P = Reservar / Produksjon, gjenverande levetid i år"
+                :font       "Roboto Bold" :font-size 16
+                :margin-top 3}
+               {:text       (str "Produksjon per " (months-str (:date last-data)) ": "
                                  (string/replace (format "%.1f" (get last-data :sum)) "." ",")
                                  " mrd Sm³")
                 :font       "Roboto Bold" :font-size 16
                 :margin-top 3}
-               {:text       "R/P = Reservar / Produksjon, gjenverande levetid i år"
-                :font       "Roboto Bold" :font-size 16
-                :margin-top 3}
+
                {:text "Gassproduksjon, mrd Sm³" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "12 månadar glidande sum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
@@ -68,11 +70,9 @@
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}
                ]))
 
-(def xx {:type        :ordinal
+(def xx {:type        :ordinal-linear
          :tick-values x-ticks
-         :tick-format (fn [x] (if (.endsWith x "5-12")
-                                (subs x 2 4)
-                                (subs x 0 4)))
+         :tick-format (fn [x] (subs x 0 4))
          :orientation :bottom
          :domain      x-domain
          :sub-domain  sub-domain
@@ -98,11 +98,6 @@
 (def yfn (partial point/center-point y))
 (def xfn (partial point/center-point x))
 
-(def bars (rect/scaled-rect (:x c) (:y c)))
-
-; how to do an area chart?
-; obvious: stack based on values "below"
-
 (defn make-rect [opts]
   (map (fn [[k fill]]
          {:p    (:date opts)
@@ -112,18 +107,6 @@
        bucket-to-fill))
 
 (def flat (vec (flatten (mapv make-rect data))))
-
-(defn add-below [coll item]
-  (let [below-sub-domain (take-while #(not= (:c item) %) (:sub-domain x))
-        below-items (filter #(some #{(:c %)} below-sub-domain) coll)]
-    (assoc item :below (reduce + 0 (mapv :h below-items)))))
-
-(def with-others (->> flat
-                      (group-by :p)
-                      (vals)
-                      (mapv #(mapv (partial add-below %) %))
-                      (flatten)
-                      (vec)))
 
 (defn make-txt [{dato :date year :year :as opts}]
   [:g {:transform (translate (xfn dato) (yfn (get opts :sum)))}
@@ -141,7 +124,9 @@
     header
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
-     [:g (bars (mapv make-rect data))]
+     (clj-area/area c flat
+                    (fn [{:keys [fill]}] {:fill-opacity "0.7"
+                                          :stroke       fill}))
      [:g (map make-txt (filter #(some #{(:date %)}
                                       ["1980-12"
                                        "1985-12"

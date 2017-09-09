@@ -5,7 +5,8 @@
             [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.ncs.reserve :as reserve]
             [clj-simple-chart.ncs.raw-production :as raw-production]
-            [clj-simple-chart.csv.csvmap :as csvmap])
+            [clj-simple-chart.csv.csvmap :as csvmap]
+            [clojure.string :as str])
   (:import (java.time YearMonth)))
 
 (defn add-prev-rows-last-n [n rows]
@@ -75,7 +76,11 @@
                                    (reduce + 0)))) {} empty-buckets)))
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
-                  (sort-by :date)))
+                  (sort-by :date)
+                  (mapv #(assoc % :prfYear (read-string (first (str/split (:date %) #"-0?")))))
+                  (mapv #(assoc % :prfMonth (read-string (last (str/split (:date %) #"-0?")))))
+                  (mapv #(assoc % :eofYear (if (= 12 (:prfMonth %)) (:prfYear %)
+                                                                    (dec (:prfYear %)))))))
 
 (def troll (last (filter #(= "TROLL" (:prfInformationCarrier %)) with-cumulative)))
 
