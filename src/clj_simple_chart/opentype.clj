@@ -139,11 +139,12 @@
                     fill         :fill
                     stroke       :stroke
                     rect         :rect
+                    min-height   :min-height
                     border-tight :border-tight}
                    text]
   (let [bb (get-bounding-box font-name text x y font-size)
         metadata {:font-size (double font-size)
-                  :height    (Math/abs (- (:y1 bb) (:y2 bb)))
+                  :height    (or (if rect min-height nil) (Math/abs (- (:y1 bb) (:y2 bb))))
                   :text      text
                   :width     (Math/abs (- (:x1 bb) (:x2 bb)))}
         metadata (merge metadata bb)
@@ -176,9 +177,8 @@
                           :y2     (:y2 (meta txt))
                           :stroke border-tight}]])
         rect-size (or (:size rect) (Math/ceil (* 0.75 font-size)))
-        rectangle (if rect
-                    (do
-                      [:rect {:x            (:x1 bb)
+        rectangle (when rect
+                      [:rect {:x            (+ 0.5 (:x1 bb))
                               :y            0
                               :height       rect-size
                               :width        rect-size
@@ -186,8 +186,8 @@
                               :stroke       (or (:stroke rect) "black")
                               :stroke-width (or (:stroke-width rect) "1px")
                               :fill-opacity (or (:fill-opacity rect) 1.0)}])
-                    {})
         text-offset (+ (or (:margin rect) (Math/ceil (* 0.15 font-size))) (if rect rect-size 0))
+        text-offset (if rect text-offset 0)
         path [:g rectangle [:g {:transform (translate text-offset 0)} font-path border]]]
     (with-meta path metadata)))
 
@@ -200,6 +200,7 @@
      dy                 :dy
      text-anchor        :text-anchor
      border-tight       :border-tight
+     min-height         :min-height
      alignment-baseline :alignment-baseline
      fill               :fill
      stroke             :stroke
@@ -218,7 +219,8 @@
                          alignment-baseline "auto"
                          font               "Roboto Regular"
                          spacing            ::none
-                         border-tight       false}
+                         border-tight       false
+                         min-height         nil}
      } text]
    {:pre [(some #{font} (keys font-name-to-font))
           (number? font-size)
@@ -268,6 +270,7 @@
                             :font-size    font-size
                             :fill         fill
                             :rect         rect
+                            :min-height   min-height
                             :stroke       stroke
                             :border-tight border-tight}
                            text)))
@@ -314,6 +317,13 @@
                                                (number? (:margin-bottom v)) [(dissoc v :margin-bottom) {:spacing (:margin-bottom v)}]
                                                :else [v])) txts)))
         with-baseline (map #(assoc % :alignment-baseline "hanging") texts-with-spacing)
+        max-height-for-rects (->> with-baseline
+                                  (filter :rect)
+                                  (mapv text)
+                                  (mapv meta)
+                                  (mapv :height)
+                                  (reduce max 0))
+        with-baseline (mapv #(assoc % :min-height max-height-for-rects) with-baseline)
         with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
         with-path (map (fn [x] (assoc x :path (text x))) with-idx)
         paths (map :path with-path)
