@@ -39,7 +39,7 @@
      (< gas-rp 5) "1- 0 - 5"
      (< gas-rp 10) "2- 5 - 10"
      (< gas-rp 20) "3- 10 - 20"
-     :else "4- >= 20"))
+     :else "4- ≥ 20"))
 
 (defn produce-cumulative
   [production]
