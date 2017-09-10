@@ -109,6 +109,7 @@
   (map (fn [[k fill]]
          {:p    (:date opts)
           :c    k
+          :stroke "black"
           :fill fill
           :h    (get opts k 0)})
        bucket-to-fill))

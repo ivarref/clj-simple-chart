@@ -44,8 +44,8 @@
                                                            (reverse coll2))
                                                    " Z")
                                 :fill         (or (:fill (first coll2)) (fill-from-scale x (:c (first coll2))) "red")
-                                :stroke       "none"
-                                :stroke-width "1px"}
+                                :stroke       (or (:stroke (first coll2)) "none")
+                                :stroke-width (or (:stroke-width (first coll2)) "1px")}
                                (cond (fn? style-cb)
                                      (style-cb (first coll2))
                                      (map? style-cb) style-cb
