@@ -107,11 +107,11 @@
 
 (defn make-rect [opts]
   (map (fn [[k fill]]
-         {:p    (:date opts)
-          :c    k
-          :stroke "black"
-          :fill fill
-          :h    (get opts k 0)})
+         {:p            (:date opts)
+          :c            k
+          :stroke       "black"
+          :fill         fill
+          :h            (get opts k 0)})
        bucket-to-fill))
 
 (def flat (vec (flatten (mapv make-rect data))))
