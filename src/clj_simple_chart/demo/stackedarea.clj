@@ -48,9 +48,6 @@
    {:p "2002" :c "c" :h 10}
    ])
 
-(def xfn (partial point/center-point (:x c)))
-(def yfn (partial point/center-point (:y c)))
-
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate (+ (:margin-left c) marg) (+ (:margin-top c) marg))}

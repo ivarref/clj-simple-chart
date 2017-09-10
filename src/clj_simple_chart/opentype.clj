@@ -132,14 +132,15 @@
     (.startsWith em-str ".") (recur font-size (str "0" em-str))
     :else (* font-size (read-string (string/replace em-str "em" "")))))
 
-(defn text-inner [{font-name    :font-name
-                   font-size    :font-size
-                   x            :x
-                   y            :y
-                   fill         :fill
-                   stroke       :stroke
-                   border-tight :border-tight}
-                  text]
+(defn- text-inner [{font-name    :font-name
+                    font-size    :font-size
+                    x            :x
+                    y            :y
+                    fill         :fill
+                    stroke       :stroke
+                    rect         :rect
+                    border-tight :border-tight}
+                   text]
   (let [bb (get-bounding-box font-name text x y font-size)
         metadata {:font-size (double font-size)
                   :height    (Math/abs (- (:y1 bb) (:y2 bb)))
@@ -174,7 +175,20 @@
                           :y1     (:y2 (meta txt))
                           :y2     (:y2 (meta txt))
                           :stroke border-tight}]])
-        path [:g font-path border]]
+        rect-size (or (:size rect) (Math/ceil (* 0.75 font-size)))
+        rectangle (if rect
+                    (do
+                      [:rect {:x            (:x1 bb)
+                              :y            0
+                              :height       rect-size
+                              :width        rect-size
+                              :fill         (or (:fill rect) "red")
+                              :stroke       (or (:stroke rect) "black")
+                              :stroke-width (or (:stroke-width rect) "1px")
+                              :fill-opacity (or (:fill-opacity rect) 1.0)}])
+                    {})
+        text-offset (+ (or (:margin rect) (Math/ceil (* 0.15 font-size))) (if rect rect-size 0))
+        path [:g rectangle [:g {:transform (translate text-offset 0)} font-path border]]]
     (with-meta path metadata)))
 
 (defn text
@@ -190,11 +204,13 @@
      fill               :fill
      stroke             :stroke
      spacing            :spacing
+     rect               :rect
      :as                config
      :or                {x                  0.0
                          y                  0.0
                          dx                 0.0
                          dy                 0.0
+                         rect               nil
                          fill               "#000"
                          text-anchor        :none
                          font-size          14
@@ -210,20 +226,23 @@
           (number? y)]}
    (cond (and (string? dx) (.endsWith dx "em"))
          (recur (update config :dx (partial em-to-number font-size)) text)
+         (and (string? dy) (.endsWith dy "em"))
+         (recur (update config :dy (partial em-to-number font-size)) text)
          (not= ::none spacing) (with-meta [:g] {:font-size spacing
                                                 :x1        0.0
                                                 :x2        0.0
                                                 :height    spacing :width 0})
-         (and (string? dy) (.endsWith dy "em"))
-         (recur (update config :dy (partial em-to-number font-size)) text)
          (not (string? text))
          (recur config (str text))
+
+         ;; start text anchor
          (= text-anchor "start")
          (let [bb (get-bounding-box font text 0 0 font-size)
                w (- (:x2 bb) (:x1 bb))]
            (recur (-> config
                       (assoc :dx (double (- dx (:x1 bb))))
                       (dissoc :text-anchor)) text))
+
          (= text-anchor "middle")
          (let [bb (get-bounding-box font text 0 0 font-size)
                w (- (:x2 bb) (:x1 bb))]
@@ -231,11 +250,13 @@
            (recur (-> config
                       (assoc :dx (double (- dx (/ w 2) (:x1 bb))))
                       (dissoc :text-anchor)) text))
+
          (= text-anchor "end")
          (let [bb (get-bounding-box font text 0 0 font-size)]
            (recur (-> config
                       (assoc :dx (- dx (:x2 bb)))
                       (dissoc :text-anchor)) text))
+
          (= alignment-baseline "hanging")
          (let [bb (get-bounding-box font text 0 0 font-size)]
            (recur (-> config
@@ -246,6 +267,7 @@
                             :font-name    font
                             :font-size    font-size
                             :fill         fill
+                            :rect         rect
                             :stroke       stroke
                             :border-tight border-tight}
                            text)))
