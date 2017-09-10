@@ -110,6 +110,7 @@
          {:p            (:date opts)
           :c            k
           :stroke       "black"
+          :stroke-width-top 1.4
           :fill         fill
           :h            (get opts k 0)})
        bucket-to-fill))

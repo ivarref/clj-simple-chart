@@ -50,19 +50,41 @@
         point-str (fn [{:keys [p h h0]}] (str (xfn p) " " (yfn (+ h0 h))))
         point-str-h0 (fn [{:keys [p h0]}] (str (xfn p) " " (yfn h0)))
         stacked (stack x coll)
-        lines (mapv (fn [coll2]
-                      [:g
-                       [:path (merge
-                                {:d            (reduce (fn [o v] (str o " L" (point-str v)))
-                                                       (str "M" (point-str (first coll2)))
-                                                       (drop 1 coll2))
-                                 :fill         "none"
-                                 :stroke       (or (:stroke (first coll2)) "none")
-                                 :stroke-width (or (:stroke-width (first coll2)) "1px")}
-                                (cond (fn? style-cb)
-                                      (style-cb (first coll2))
-                                      (map? style-cb) style-cb
-                                      :else {}))]]) stacked)
+        lines (mapcat (fn [coll-outer]
+                        (mapv (fn [coll2]
+                                (when-not (:is-top (first coll2))
+                                  [:g
+                                   [:path (merge
+                                            {:d            (reduce (fn [o v] (str o " L" (point-str v)))
+                                                                   (str "M" (point-str (first coll2)))
+                                                                   (drop 1 coll2))
+                                             :fill         "none"
+                                             :stroke       (or (:stroke (first coll2)) "none")
+                                             :stroke-width (or (:stroke-width (first coll2)) "1px")}
+                                            (cond (fn? style-cb)
+                                                  (style-cb (first coll2))
+                                                  (map? style-cb) style-cb
+                                                  :else {}))]]))
+                              (partition-by :is-top coll-outer))) stacked)
+        top-line-coll (->> stacked
+                           (flatten)
+                           (filter :is-top)
+                           (sort-by :p))
+        top-line (mapv (fn [coll2]
+                         [:g
+                          [:path (merge
+                                   {:d            (reduce (fn [o v] (str o " L" (point-str v)))
+                                                          (str "M" (point-str (first coll2)))
+                                                          (drop 1 coll2))
+                                    :fill         "none"
+                                    :stroke       (or (:stroke (first coll2)) "none")
+                                    :stroke-width (or (:stroke-width-top (first coll2))
+                                                      (:stroke-width (first coll2))
+                                                      "1px")}
+                                   (cond (fn? style-cb)
+                                         (style-cb (first coll2))
+                                         (map? style-cb) style-cb
+                                         :else {}))]]) [top-line-coll])
         areas (mapv (fn [coll2]
                       [:g
                        [:path (merge
@@ -81,4 +103,4 @@
                                       (map? style-cb) style-cb
                                       :else {}))]])
                     stacked)]
-    (vec (concat [:g] areas lines))))
+    (vec (concat [:g] areas lines top-line))))
