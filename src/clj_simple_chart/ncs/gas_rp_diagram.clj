@@ -143,6 +143,19 @@
                                        ;"2013-12"
                                        "2015-12"]) data))]
      (axis/render-axis (:x c))]
+    [:g {:transform (translate 0 (+ 0 (+ (:height (meta header)) (:margin-top c))))}
+     (opentype/stack {}
+                     (flatten
+                       [{:text "R/P-kategori" :font "Roboto Black" :font-size 16}
+                        (mapv (fn [k]
+                                {:text      (if (= "TROLL" (subs k 3))
+                                              (str "Troll, R/P = " (format "%.0f" (:gas-rp production/troll)) "")
+                                              (subs k 3))
+                                 :font-size 16
+                                 :font      "Roboto Bold"
+                                 :rect      {:fill (get bucket-to-fill k)
+                                             :size nil}})
+                              (reverse (sort (keys production/empty-buckets))))]))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []

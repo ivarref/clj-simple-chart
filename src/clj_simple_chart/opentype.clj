@@ -176,7 +176,7 @@
                           :y1     (:y2 (meta txt))
                           :y2     (:y2 (meta txt))
                           :stroke border-tight}]])
-        rect-size (or (:size rect) (Math/ceil (* 0.75 font-size)))
+        rect-size (or (:size rect) (Math/ceil (* 0.8 font-size)))
         rectangle (when rect
                     [:rect {:x            (+ 0.5 (:x1 bb))
                             :y            0
@@ -186,10 +186,10 @@
                             :stroke       (or (:stroke rect) "black")
                             :stroke-width (or (:stroke-width rect) "1px")
                             :fill-opacity (or (:fill-opacity rect) 1.0)}])
-        text-offset (+ (or (:margin rect) (Math/ceil (* 0.15 font-size))) (if rect rect-size 0))
+        text-offset (+ (or (:margin rect) (Math/ceil (* 0.2 font-size))) (if rect rect-size 0))
         text-offset (if rect text-offset 0)
         path [:g rectangle [:g {:transform (translate text-offset 0)} font-path border]]]
-    (with-meta path metadata)))
+    (with-meta path (update metadata :width #(+ % text-offset)))))
 
 (defn text
   ([{font               :font
@@ -343,21 +343,21 @@
         (= [:bottom :right] alignment) [:g {:transform (translate width (- height (:height (meta group))))} group]
         (= [:bottom :left] alignment) [:g {:transform (translate 0 (- height (:height (meta group))))} group]))
 
-(defn stack-inner [{width         :width
-                    fill          :fill
-                    fill-opacity  :fill-opacity
-                    margin-left   :margin-left
-                    margin-right  :margin-right
-                    margin-bottom :margin-bottom
-                    margin-top    :margin-top
-                    stroke        :stroke
-                    stroke-width  :stroke-width
-                    :as           config
-                    :or           {margin-left  0 margin-right 0 margin-top 0 margin-bottom 0
-                                   fill         nil
-                                   stroke       "black"
-                                   stroke-width "1px"
-                                   fill-opacity 1}} txts]
+(defn- stack-inner [{width         :width
+                     fill          :fill
+                     fill-opacity  :fill-opacity
+                     margin-left   :margin-left
+                     margin-right  :margin-right
+                     margin-bottom :margin-bottom
+                     margin-top    :margin-top
+                     stroke        :stroke
+                     stroke-width  :stroke-width
+                     :as           config
+                     :or           {margin-left  0 margin-right 0 margin-top 0 margin-bottom 0
+                                    fill         nil
+                                    stroke       "black"
+                                    stroke-width "1px"
+                                    fill-opacity 1}} txts]
   (let [with-alignment (mapv #(assoc % :align (or (:align %) :left)) txts)
         with-alignment (mapv #(assoc % :valign (or (:valign %) :top)) with-alignment)
         grouped (group-by (fn [x] [(:valign x) (:align x)]) with-alignment)

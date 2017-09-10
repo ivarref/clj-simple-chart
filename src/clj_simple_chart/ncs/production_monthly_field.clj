@@ -33,13 +33,13 @@
                (sort-by :date)
                (vec)))
 
-(def bucket-fn
-  #(cond
-     (= "TROLL" (:prfInformationCarrier %)) "5- TROLL"
-     (< (:gas-rp %) 5) "1- 0 - 5 R/P"
-     (< (:gas-rp %) 10) "2- 5 - 10 R/P"
-     (< (:gas-rp %) 20) "3- 10 - 20 R/P"
-     :else "4- >= 20 R/P"))
+(defn bucket-fn [{:keys [prfInformationCarrier gas-rp]}]
+  (cond
+     (= "TROLL" prfInformationCarrier) "5- TROLL"
+     (< gas-rp 5) "1- 0 - 5"
+     (< gas-rp 10) "2- 5 - 10"
+     (< gas-rp 20) "3- 10 - 20"
+     :else "4- >= 20"))
 
 (defn produce-cumulative
   [production]
