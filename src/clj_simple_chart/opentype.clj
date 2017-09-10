@@ -178,14 +178,14 @@
                           :stroke border-tight}]])
         rect-size (or (:size rect) (Math/ceil (* 0.75 font-size)))
         rectangle (when rect
-                      [:rect {:x            (+ 0.5 (:x1 bb))
-                              :y            0
-                              :height       rect-size
-                              :width        rect-size
-                              :fill         (or (:fill rect) "red")
-                              :stroke       (or (:stroke rect) "black")
-                              :stroke-width (or (:stroke-width rect) "1px")
-                              :fill-opacity (or (:fill-opacity rect) 1.0)}])
+                    [:rect {:x            (+ 0.5 (:x1 bb))
+                            :y            0
+                            :height       rect-size
+                            :width        rect-size
+                            :fill         (or (:fill rect) "red")
+                            :stroke       (or (:stroke rect) "black")
+                            :stroke-width (or (:stroke-width rect) "1px")
+                            :fill-opacity (or (:fill-opacity rect) 1.0)}])
         text-offset (+ (or (:margin rect) (Math/ceil (* 0.15 font-size))) (if rect rect-size 0))
         text-offset (if rect text-offset 0)
         path [:g rectangle [:g {:transform (translate text-offset 0)} font-path border]]]
@@ -343,22 +343,58 @@
         (= [:bottom :right] alignment) [:g {:transform (translate width (- height (:height (meta group))))} group]
         (= [:bottom :left] alignment) [:g {:transform (translate 0 (- height (:height (meta group))))} group]))
 
-(defn stack [{width        :width
-              fill         :fill
-              fill-opacity :fill-opacity
-              :or          {fill         nil
-                            fill-opacity 1}} txts]
+(defn stack-inner [{width         :width
+                    fill          :fill
+                    fill-opacity  :fill-opacity
+                    margin-left   :margin-left
+                    margin-right  :margin-right
+                    margin-bottom :margin-bottom
+                    margin-top    :margin-top
+                    stroke        :stroke
+                    stroke-width  :stroke-width
+                    :as           config
+                    :or           {margin-left  0 margin-right 0 margin-top 0 margin-bottom 0
+                                   fill         nil
+                                   stroke       "black"
+                                   stroke-width "1px"
+                                   fill-opacity 1}} txts]
   (let [with-alignment (mapv #(assoc % :align (or (:align %) :left)) txts)
         with-alignment (mapv #(assoc % :valign (or (:valign %) :top)) with-alignment)
         grouped (group-by (fn [x] [(:valign x) (:align x)]) with-alignment)
         groups (map (fn [[k v]] [k (text-stack (second k) v)]) grouped)
         group-map (zipmap (mapv first groups) (mapv second groups))
         max-height (apply max (mapv (comp :height meta) (vals group-map)))
-        with-translation (map (partial add-translation width max-height) groups)]
+        max-width (apply max (mapv (comp :width meta) (vals group-map)))
+        with-translation (map (partial add-translation width max-height) groups)
+        width-w-margs (+ margin-left margin-right (or width max-width))
+        height-w-margs (+ margin-top margin-bottom max-height)]
     (with-meta [:g
-                (when fill [:rect {:width        width
-                                   :height       max-height
+                (when fill [:rect {:width        width-w-margs
+                                   :height       height-w-margs
+                                   :stroke       stroke
+                                   :stroke-width stroke-width
                                    :fill-opacity fill-opacity
                                    :fill         fill}])
-                [:g with-translation]]
-               {:height (Math/ceil max-height) :width width})))
+                [:g {:transform (translate margin-left margin-top)} with-translation]]
+               {:height (Math/ceil height-w-margs)
+                :width  (Math/ceil width-w-margs)})))
+
+(defn stack [{width         :width
+              fill          :fill
+              fill-opacity  :fill-opacity
+              margin        :margin
+              margin-left   :margin-left
+              margin-right  :margin-right
+              margin-bottom :margin-bottom
+              margin-top    :margin-top
+              :as           config
+              :or           {margin       nil margin-left nil margin-right nil margin-top nil margin-bottom nil
+                             fill         nil
+                             fill-opacity 1}} txts]
+  (cond margin
+        (recur (assoc config :margin nil
+                             :margin-left (or margin-left margin)
+                             :margin-right (or margin-right margin)
+                             :margin-bottom (or margin-bottom margin)
+                             :margin-top (or margin-top margin)) txts)
+        :else (stack-inner config txts)))
