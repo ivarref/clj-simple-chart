@@ -50,12 +50,10 @@
    ])
 
 (def my-great-text
-  [{:p "2002" :c "a" :h 10 :text "A"}
-   {:p "2002" :c "b" :h 15 :text "B"}
-   {:p "2002" :c "c" :h 10 :text "C"}
+  [{:p "2002" :c "a" :h 10 :text {:text "A" :font "Roboto Black" :fill "white" :font-size 15}}
+   {:p "2002" :c "b" :h 15 :text {:text "B" :font "Roboto Black" :fill "white" :font-size 15}}
+   {:p "2002" :c "c" :h 10 :text {:text "C" :font "Roboto Black" :fill "white" :font-size 15}}
    ])
-
-;(println (act/stack (:x c) my-great-text))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}

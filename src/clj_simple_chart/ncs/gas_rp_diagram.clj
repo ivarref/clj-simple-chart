@@ -8,7 +8,9 @@
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
             [clj-simple-chart.area :as clj-area]
-            [clojure.string :as string]))
+            [clj-simple-chart.area-center-text :as act]
+            [clojure.string :as string]
+            [clojure.string :as str]))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -107,15 +109,24 @@
 
 (defn make-rect [opts]
   (map (fn [[k fill]]
-         {:p            (:date opts)
-          :c            k
-          :stroke       "black"
+         {:p                (:date opts)
+          :c                k
+          :stroke           "black"
           :stroke-width-top 1.4
-          :fill         fill
-          :h            (get opts k 0)})
+          :fill             fill
+          :text
+          {:fill      "white"
+                             :font      "Roboto Black"
+                             :font-size 15
+                             :text      (str/replace (format "%.1f" (double (get opts k 0)))
+                                                     "." ",")}
+          :h                (get opts k 0)})
        bucket-to-fill))
 
 (def flat (vec (flatten (mapv make-rect data))))
+
+(def last-text (vec (flatten (make-rect (last data)))))
+
 
 (defn make-txt [{dato :date year :year :as opts}]
   [:g {:transform (translate (xfn dato) (yfn (get opts :sum)))}
@@ -134,6 +145,7 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
      (clj-area/area c flat)
+     (act/area-center-text c last-text)
      [:g (map make-txt (filter #(some #{(:date %)}
                                       ["1980-12"
                                        "1985-12"
@@ -157,7 +169,8 @@
                                  :font      "Roboto Bold"
                                  :rect      {:fill (get bucket-to-fill k)
                                              :size nil}})
-                              (reverse (sort (keys production/empty-buckets))))]))]
+                              (reverse (sort (keys production/empty-buckets))))
+                        {:text "Hvite tall:  av produksjon per juni 2017" :font "Roboto Regular" :font-size 14}]))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []

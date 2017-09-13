@@ -24,13 +24,13 @@
   [{:keys [x y]} coll & [style-cb]]
   (let [xfn (partial point/center-point x)
         yfn (partial point/center-point y)
-        stacked (do (println (stack x coll)) (stack x coll))
+        stacked (stack x coll)
         text-items (filter :text stacked)
         texts (mapv (fn [{:keys [p c h h0 text]}]
                       [:g (translate/translate-map (xfn p) (yfn (+ (/ h 2) h0)))
-                       [:circle {:r 10 :fill "yellow"}]
-                       ]
-                      )
+                       (let [txt (opentype/text text)
+                             woff (- (- (:width (meta txt))) 3)
+                             hoff (/ (:height (meta txt)) 2)]
+                         [:g (translate/translate-map woff hoff) txt])])
                     text-items)]
-    (println "texts is" texts)
     (vec (concat [:g] texts))))
