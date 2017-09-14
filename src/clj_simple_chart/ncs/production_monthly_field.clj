@@ -31,11 +31,11 @@
 
 (defn bucket-fn [{:keys [prfInformationCarrier gas-rp]}]
   (cond
-     (= "TROLL" prfInformationCarrier) "5- TROLL"
-     (< gas-rp 5) "1- 0 - 5"
-     (< gas-rp 10) "2- 5 - 10"
-     (< gas-rp 20) "3- 10 - 20"
-     :else "4- ≥ 20"))
+    (= "TROLL" prfInformationCarrier) "5- TROLL"
+    (< gas-rp 5) "1- 0 - 5"
+    (< gas-rp 10) "2- 5 - 10"
+    (< gas-rp 20) "3- 10 - 20"
+    :else "4- ≥ 20"))
 
 (defn produce-cumulative
   [production]
@@ -82,13 +82,13 @@
 
 (def year-end-data (->> by-date
                         (filter #(or (.endsWith (:date %) "-12") (= % (last by-date))))
-                        (mapv #(assoc % :diff (- (:sum %)
-                                                 (raw-production/sum-for-year (:prfYear %) :prfPrdGasNetBillSm3))))))
+                        (mapv #(assoc % :diff (Math/abs (- (:sum %)
+                                                           (raw-production/sum-for-year (:prfYear %) :prfPrdGasNetBillSm3)))))))
 
 (csvmap/write-csv-format
   "./data/ncs/gas-production-rp-bucket-stacked-yearly.csv"
   {:columns (flatten [:date (sort (keys empty-buckets)) :sum :diff])
-   :format  (merge {:sum "%.3f"
+   :format  (merge {:sum  "%.3f"
                     :diff "%.3f"}
                    (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
    :data    year-end-data})
