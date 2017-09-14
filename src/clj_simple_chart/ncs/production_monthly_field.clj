@@ -85,13 +85,16 @@
 
 (def troll (last (filter #(= "TROLL" (:prfInformationCarrier %)) with-cumulative)))
 
-(def year-end-data (filter #(or (.endsWith (:date %) "-12")
-                                (= % (last by-date))) by-date))
+(def year-end-data (->> by-date
+                        (filter #(or (.endsWith (:date %) "-12") (= % (last by-date))))
+                        (mapv #(assoc % :diff (- (:sum %)
+                                                 (raw-production/sum-for-year (:prfYear %) :prfPrdGasNetBillSm3))))))
 
 (csvmap/write-csv-format
   "./data/ncs/gas-production-rp-bucket-stacked-yearly.csv"
-  {:columns (flatten [:date (sort (keys empty-buckets)) :sum])
-   :format  (merge {:sum "%.3f"}
+  {:columns (flatten [:date (sort (keys empty-buckets)) :sum :diff])
+   :format  (merge {:sum "%.3f"
+                    :diff "%.3f"}
                    (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
    :data    year-end-data})
 
