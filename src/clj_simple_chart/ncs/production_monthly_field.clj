@@ -20,7 +20,6 @@
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
                (map #(assoc % :days-in-month (. (YearMonth/of (:prfYear %) (:prfMonth %)) lengthOfMonth)))
                (map #(assoc % :fldRecoverableGas (reserve/get-reserve (:prfInformationCarrier %) :fldRecoverableGas)))
-               (filter #(pos? (:fldRecoverableGas %)))
                ; remove unused values
                (map #(dissoc % :prfPrdNGLNetMillSm3
                              :prfPrdCondensateNetMillSm3
@@ -48,12 +47,10 @@
   (->> (sort-by :date production)
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
        (add-prev-rows-last-n 12)
-       (mapv #(assoc % :gas-production-12-months-est (* (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))
-                                                        (/ 12 (count (:prev-rows %))))))
+       (mapv #(assoc % :gas-production-12-months-est (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
        (remove #(zero? (:gas-production-12-months-est %)))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :gas-remaining (- (:fldRecoverableGas %) (:gas-cumulative %))))
-       (mapv #(assoc % :percentage-produced (* 100 (/ (:gas-cumulative %) (:fldRecoverableGas %)))))
        (mapv #(assoc % :gas-rp (if (neg? (:gas-remaining %))
                                  0
                                  (/ (:gas-remaining %) (:gas-production-12-months-est %)))))
@@ -110,8 +107,6 @@
                       (distinct)
                       (sort)
                       (vec)))
-
-(test/is (not (some #{"SINDRE"} field-names)))
 
 (test/is (some #{"ÅSGARD"} field-names))
 (test/is (some #{"ØST FRIGG"} field-names))
