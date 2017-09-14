@@ -13,8 +13,8 @@
   (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
 
 (def data (->> raw-production/data
-               (remove #(= "33/9-6 DELTA" (:prfInformationCarrier %)))
-               (remove #(= "SINDRE" (:prfInformationCarrier %)))
+               ;(remove #(= "33/9-6 DELTA" (:prfInformationCarrier %)))
+               ;(remove #(= "SINDRE" (:prfInformationCarrier %)))
                ; bootstrap cumulative values
                (map #(assoc % :gas-cumulative (:prfPrdGasNetBillSm3 %)))
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))

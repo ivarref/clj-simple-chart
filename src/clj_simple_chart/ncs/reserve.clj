@@ -2,6 +2,7 @@
   (:require [clj-http.client :as client]
             [clj-simple-chart.csv.csvmap :as csv]
             [clojure.pprint :as pprint]
+            [clj-simple-chart.ncs.raw-production :as raw-production]
             [clojure.test :as test]))
 
 (def field-reserves-url "http://factpages.npd.no/ReportServer?/FactPages/TableView/field_reserves&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=80.213.237.130&CultureCode=en")
@@ -46,8 +47,20 @@
 (def field-names (map :fldName data))
 
 (defn get-reserve [field-name kind]
-  {:pre [(some #{field-name} field-names)
+  {:pre [(or (some #{field-name} field-names)
+             (some #{field-name} ["SINDRE" "33/9-6 DELTA"]))
          (some #{kind} [:fldRecoverableOE :fldRecoverableOil :fldRecoverableGas])]}
-  (-> (filter #(= (:fldName %) field-name) data-parsed)
-      first
-      (get kind)))
+  (cond (not (some #{field-name} field-names))
+        (let [prop (get {:fldRecoverableOE  :prfPrdOeNetMillSm3
+                         :fldRecoverableOil :prfPrdOilNetMillSm3
+                         :fldRecoverableGas :prfPrdGasNetBillSm3} kind)]
+          (->> raw-production/data
+               (filter #(= field-name (:prfInformationCarrier %)))
+               (mapv prop)
+               (filter number?)
+               (reduce + 0)
+               (double)))
+        :else
+        (-> (filter #(= (:fldName %) field-name) data-parsed)
+            first
+            (get kind))))

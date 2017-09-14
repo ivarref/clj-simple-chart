@@ -3,7 +3,6 @@
             [clj-http.client :as client]
             [clojure.string :as string]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clj-simple-chart.ncs.reserve :as reserve]
             [clj-simple-chart.csv.csvmap :as csvmap])
   (:import (java.time YearMonth)))
 
@@ -51,17 +50,17 @@
         date-range (date-range (first dates) (last dates))
         missing-months (remove #(some #{%} dates) date-range)
         filled-gaps (mapv (fn [date]
-                            {:prfInformationCarrier (:prfInformationCarrier f)
-                             :date date
-                             :prfYear (.getYear (year-month date))
-                             :prfMonth (.getMonthValue (year-month date))
-                             :prfPrdOilNetMillSm3   0.0
-                             :prfPrdGasNetBillSm3   0.0
-                             :prfPrdNGLNetMillSm3   0.0
-                             :prfPrdCondensateNetMillSm3 0.0
-                             :prfPrdOeNetMillSm3    0.0
+                            {:prfInformationCarrier             (:prfInformationCarrier f)
+                             :date                              date
+                             :prfYear                           (.getYear (year-month date))
+                             :prfMonth                          (.getMonthValue (year-month date))
+                             :prfPrdOilNetMillSm3               0.0
+                             :prfPrdGasNetBillSm3               0.0
+                             :prfPrdNGLNetMillSm3               0.0
+                             :prfPrdCondensateNetMillSm3        0.0
+                             :prfPrdOeNetMillSm3                0.0
                              :prfPrdProducedWaterInFieldMillSm3 0.0
-                             :prfNpdidInformationCarrier (:prfNpdidInformationCarrier f)}) missing-months)]
+                             :prfNpdidInformationCarrier        (:prfNpdidInformationCarrier f)}) missing-months)]
     (when-not (empty? missing-months)
       (swap! filled-data (fn [o] (conj o filled-gaps)))
       (swap! filled-gaps-for-fields (fn [o] (conj o field-name))))
@@ -69,8 +68,6 @@
 
 (def data (->> raw-data
                :data
-         ;      (remove #(= "33/9-6 DELTA" (:prfInformationCarrier %)))
-         ;      (remove #(= "SINDRE" (:prfInformationCarrier %)))
                (csv/read-string-columns numeric-columns)
                (csv/number-or-throw-columns numeric-columns)
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
