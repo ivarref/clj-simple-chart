@@ -77,3 +77,13 @@
                (flatten)
                (sort-by :date)
                (vec)))
+
+(defn sum-for-year [year kind]
+  (format "%.3f" (->> data
+                      (filter #(= year (:prfYear %)))
+                      (mapv kind)
+                      (reduce + 0.0))))
+
+(test/is (= "94.009" (sum-for-year 2016 :prfPrdOilNetMillSm3)))
+(test/is (= "90.965" (sum-for-year 2015 :prfPrdOilNetMillSm3)))
+(test/is (= "87.741" (sum-for-year 2014 :prfPrdOilNetMillSm3)))
