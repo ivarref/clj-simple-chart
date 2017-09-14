@@ -170,7 +170,7 @@
                                  :rect      {:fill (get bucket-to-fill k)
                                              :size nil}})
                               (reverse (sort (keys production/empty-buckets))))
-                        {:text "Hvite tall:  av produksjon per juni 2017" :font "Roboto Regular" :font-size 14}]))]
+                        {:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []

@@ -179,14 +179,15 @@
         rect-size (or (:size rect) (Math/ceil (* 0.8 font-size)))
         rectangle (when rect
                     [:rect {:x            (+ 0.5 (:x1 bb))
-                            :y            0
+                            :y            -0.5
                             :height       rect-size
                             :width        rect-size
                             :fill         (or (:fill rect) "red")
                             :stroke       (or (:stroke rect) "black")
                             :stroke-width (or (:stroke-width rect) "1px")
                             :fill-opacity (or (:fill-opacity rect) 1.0)}])
-        text-offset (+ (or (:margin rect) (Math/ceil (* 0.2 font-size))) (if rect rect-size 0))
+        text-margin (or (:margin rect) (Math/ceil (* 0.2 font-size)))
+        text-offset (+ rect-size text-margin)
         text-offset (if rect text-offset 0)
         path [:g rectangle [:g {:transform (translate text-offset 0)} font-path border]]]
     (with-meta path (update metadata :width #(+ % text-offset)))))
@@ -322,7 +323,8 @@
                                   (mapv text)
                                   (mapv meta)
                                   (mapv :height)
-                                  (reduce max 0))
+                                  (reduce max 0)
+                                  (Math/ceil))
         with-baseline (mapv #(assoc % :min-height max-height-for-rects) with-baseline)
         with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
         with-path (map (fn [x] (assoc x :path (text x))) with-idx)
