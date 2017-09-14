@@ -49,8 +49,7 @@
   (->> (sort-by :date production)
        (reductions (fn [old n] (update n :cumulative (fn [v] (+ v (:cumulative old))))))
        (add-prev-rows-last-n 12)
-       (mapv #(assoc % :production-12-months-est (* (apply + (mapv :production (:prev-rows %)))
-                                                    (/ 12.0 (count (:prev-rows %))))))
+       (mapv #(assoc % :production-12-months-est (apply + (mapv :production (:prev-rows %)))))
        (remove #(zero? (:production-12-months-est %)))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :remaining (- (:recoverable %) (:cumulative %))))
@@ -91,7 +90,7 @@
 
 (csvmap/write-csv-format
   "./data/ncs/oil-production-pp-bucket-stacked-yearly.csv"
-  {:columns (flatten [:date #_(sort (keys empty-buckets)) :sum :diff])
+  {:columns (flatten [:date (sort (keys empty-buckets)) :sum :diff])
    :format  (merge {:sum "%.3f"
                     :diff "%.3f"}
                    (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
