@@ -82,6 +82,7 @@
   (->> data
        (filter #(= year (:prfYear %)))
        (mapv kind)
+       (sort)
        (reduce + 0.0)))
 
 (defn sum-for-year-format [year kind]

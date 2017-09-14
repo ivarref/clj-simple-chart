@@ -63,7 +63,7 @@
   {:pre [(coll? production)]}
   (merge {:date          (:date (first production))
           :days-in-month (:days-in-month (first production))
-          :sum           (reduce + 0 (mapcat :prev-prod production))}
+          :sum           (reduce + 0 (sort (mapcat :prev-prod production)))}
          (reduce (fn [org [k v]]
                    (assoc org k
                               (->> production
@@ -105,13 +105,3 @@
                       (distinct)
                       (sort)
                       (vec)))
-
-(test/is (some #{"ÅSGARD"} field-names))
-(test/is (some #{"ØST FRIGG"} field-names))
-(test/is (some #{"STATFJORD"} field-names))
-(test/is (some #{"EKOFISK"} field-names))
-(test/is (some #{"TROLL"} field-names))
-(test/is (some #{"GINA KROG"} field-names))
-(test/is (some #{"TYRIHANS"} field-names))
-(test/is (some #{"REV"} field-names))
-(test/is (some #{"GULLFAKS"} field-names))
