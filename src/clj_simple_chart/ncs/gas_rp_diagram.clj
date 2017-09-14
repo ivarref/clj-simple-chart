@@ -115,7 +115,7 @@
           :stroke-width-top 1.4
           :fill             fill
           :text
-          {:fill      "white"
+                            {:fill      "white"
                              :font      "Roboto Black"
                              :font-size 15
                              :text      (str/replace (format "%.1f" (double (get opts k 0)))
