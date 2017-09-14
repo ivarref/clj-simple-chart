@@ -79,11 +79,14 @@
                (vec)))
 
 (defn sum-for-year [year kind]
-  (format "%.3f" (->> data
-                      (filter #(= year (:prfYear %)))
-                      (mapv kind)
-                      (reduce + 0.0))))
+  (->> data
+       (filter #(= year (:prfYear %)))
+       (mapv kind)
+       (reduce + 0.0)))
 
-(test/is (= "94.009" (sum-for-year 2016 :prfPrdOilNetMillSm3)))
-(test/is (= "90.965" (sum-for-year 2015 :prfPrdOilNetMillSm3)))
-(test/is (= "87.741" (sum-for-year 2014 :prfPrdOilNetMillSm3)))
+(defn sum-for-year-format [year kind]
+  (format "%.3f" (sum-for-year year kind)))
+
+(test/is (= "94.009" (sum-for-year-format 2016 :prfPrdOilNetMillSm3)))
+(test/is (= "90.965" (sum-for-year-format 2015 :prfPrdOilNetMillSm3)))
+(test/is (= "87.741" (sum-for-year-format 2014 :prfPrdOilNetMillSm3)))
