@@ -82,6 +82,7 @@
   (->> data
        (filter #(= year (:prfYear %)))
        (mapv kind)
+       (mapv double)
        (sort)
        (reduce + 0.0)))
 
@@ -98,3 +99,4 @@
 (test/is (= "117.152" (sum-for-year-format 2015 :prfPrdGasNetBillSm3)))
 (test/is (= "108.820" (sum-for-year-format 2014 :prfPrdGasNetBillSm3)))
 (test/is (= "108.746" (sum-for-year-format 2013 :prfPrdGasNetBillSm3)))
+(test/is (= "79.179" (sum-for-year-format 2004 :prfPrdGasNetBillSm3)))
