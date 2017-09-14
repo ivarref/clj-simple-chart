@@ -13,9 +13,6 @@
   (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
 
 (def data (->> raw-production/data
-               ;(remove #(= "33/9-6 DELTA" (:prfInformationCarrier %)))
-               ;(remove #(= "SINDRE" (:prfInformationCarrier %)))
-               ; bootstrap cumulative values
                (map #(assoc % :gas-cumulative (:prfPrdGasNetBillSm3 %)))
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
                (map #(assoc % :days-in-month (. (YearMonth/of (:prfYear %) (:prfMonth %)) lengthOfMonth)))
@@ -48,6 +45,7 @@
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
        (add-prev-rows-last-n 12)
        (mapv #(assoc % :gas-production-12-months-est (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
+       (mapv #(assoc % :prev-prod (mapv :prfPrdGasNetBillSm3 (:prev-rows %))))
        (remove #(zero? (:gas-production-12-months-est %)))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :gas-remaining (- (:fldRecoverableGas %) (:gas-cumulative %))))
@@ -65,12 +63,12 @@
   {:pre [(coll? production)]}
   (merge {:date          (:date (first production))
           :days-in-month (:days-in-month (first production))
-          :sum           (reduce + 0 (mapv :gas-production-12-months-est production))}
+          :sum           (reduce + 0 (mapcat :prev-prod production))}
          (reduce (fn [org [k v]]
                    (assoc org k
                               (->> production
                                    (filter #(= k (:bucket %)))
-                                   (mapv :gas-production-12-months-est)
+                                   (mapcat :prev-prod)
                                    (reduce + 0)))) {} empty-buckets)))
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))

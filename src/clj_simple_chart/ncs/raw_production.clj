@@ -91,4 +91,9 @@
 (test/is (= "90.965" (sum-for-year-format 2015 :prfPrdOilNetMillSm3)))
 (test/is (= "87.741" (sum-for-year-format 2014 :prfPrdOilNetMillSm3)))
 
+;; According to OD this should be 116.649
 (test/is (= "116.650" (sum-for-year-format 2016 :prfPrdGasNetBillSm3)))
+
+(test/is (= "117.152" (sum-for-year-format 2015 :prfPrdGasNetBillSm3)))
+(test/is (= "108.820" (sum-for-year-format 2014 :prfPrdGasNetBillSm3)))
+(test/is (= "108.746" (sum-for-year-format 2013 :prfPrdGasNetBillSm3)))
