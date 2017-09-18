@@ -25,6 +25,14 @@
      (mapv #(format "%04d-%02d" (.getYear %) (.getMonthValue %)) (conj sofar stop))
      :else (date-range (conj sofar start) (.plusMonths start 1) stop))))
 
+(defn prev-12-months [s]
+  {:pre [(string? s)]}
+  (let [parts (string/split s #"-0?")
+        year (read-string (first parts))
+        month (read-string (last parts))]
+    (date-range (.minusMonths (YearMonth/of year month) 11)
+                (YearMonth/of year month))))
+
 (def field-monthly-production-url "http://factpages.npd.no/ReportServer?/FactPages/TableView/field_production_monthly&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=80.213.237.130&CultureCode=en")
 (defonce raw-data (-> field-monthly-production-url
                       (client/get)
@@ -71,6 +79,7 @@
                (csv/read-string-columns numeric-columns)
                (csv/number-or-throw-columns numeric-columns)
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
+               (map #(assoc % :prev-months (prev-12-months (:date %))))
                (group-by :prfInformationCarrier)
                (vals)
                (mapv fill-gaps)
@@ -101,9 +110,8 @@
 (test/is (= "108.746" (sum-for-year-format 2013 :prfPrdGasNetBillSm3)))
 (test/is (= "79.179" (sum-for-year-format 2004 :prfPrdGasNetBillSm3)))
 
-#_(def count-2014 (->> data
-                     (filter #(= 2014 (:prfYear %)))
+(def whole-2004 (->> data
+                     (filter #(= 2004 (:prfYear %)))
                      (mapv :prfPrdGasNetBillSm3)
-                     (filter pos?)
-                     (count)
+
                      ))
