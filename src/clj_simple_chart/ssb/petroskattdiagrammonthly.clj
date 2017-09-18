@@ -51,7 +51,7 @@
              "juni" "juli" "august" "september" "oktober" "november" "desember"])
 
 (defn date-readable [d]
-  (let [pieces (string/split d #"-")
+  (let [pieces (string/split d #"-0?")
         year (first pieces)
         month (nth months (read-string (second pieces)))]
     (str month " " year)))
