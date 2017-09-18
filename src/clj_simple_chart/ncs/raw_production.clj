@@ -110,8 +110,4 @@
 (test/is (= "108.746" (sum-for-year-format 2013 :prfPrdGasNetBillSm3)))
 (test/is (= "79.179" (sum-for-year-format 2004 :prfPrdGasNetBillSm3)))
 
-(def whole-2004 (->> data
-                     (filter #(= 2004 (:prfYear %)))
-                     (mapv :prfPrdGasNetBillSm3)
-
-                     ))
+(def whole-2004 (->> data (filter #(= 2004 (:prfYear %)))))
