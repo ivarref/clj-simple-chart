@@ -100,3 +100,10 @@
 (test/is (= "108.820" (sum-for-year-format 2014 :prfPrdGasNetBillSm3)))
 (test/is (= "108.746" (sum-for-year-format 2013 :prfPrdGasNetBillSm3)))
 (test/is (= "79.179" (sum-for-year-format 2004 :prfPrdGasNetBillSm3)))
+
+#_(def count-2014 (->> data
+                     (filter #(= 2014 (:prfYear %)))
+                     (mapv :prfPrdGasNetBillSm3)
+                     (filter pos?)
+                     (count)
+                     ))

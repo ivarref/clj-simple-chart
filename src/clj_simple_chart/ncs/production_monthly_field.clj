@@ -12,6 +12,10 @@
 (defn add-prev-rows-last-n [n rows]
   (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
 
+; steps:
+; with-cumulative:  group by field name, add cumulative / prev rows
+; by-date: group by date, sum all prev rows ...
+
 (def data (->> raw-production/data
                (map #(assoc % :gas-cumulative (:prfPrdGasNetBillSm3 %)))
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
@@ -40,7 +44,9 @@
 (defn produce-cumulative
   [production]
   {:pre [(coll? production)
-         (= 1 (count (distinct (mapv :prfInformationCarrier production))))]}
+         (= 1 (count (distinct (mapv :prfInformationCarrier production))))
+         (= (count production)
+            (count (distinct (mapv :date production))))]}
   (->> (sort-by :date production)
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
        (add-prev-rows-last-n 12)
@@ -55,6 +61,7 @@
        (mapv #(assoc % :bucket (bucket-fn %)))))
 
 (def with-cumulative (mapcat produce-cumulative (vals (group-by :prfInformationCarrier data))))
+;(def with-cumulative-eoy-2014 (filter #(= "2004-12" (:date %)) with-cumulative))
 
 (def empty-buckets (reduce (fn [o n] (assoc o n 0)) {} (distinct (map :bucket with-cumulative))))
 
