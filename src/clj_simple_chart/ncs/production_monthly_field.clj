@@ -9,9 +9,6 @@
             [clojure.string :as str])
   (:import (java.time YearMonth)))
 
-(defn add-prev-rows-last-n [n rows]
-  (map-indexed (fn [idx x] (assoc x :prev-rows (filter #(some #{(:date %)} (:prev-months x)) rows))) rows))
-
 ; steps:
 ; with-cumulative:  group by field name, add cumulative / prev rows
 ; by-date: group by date, sum all prev rows ...
@@ -48,7 +45,6 @@
   (->> production
        (sort-by :date)
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
-       (add-prev-rows-last-n 12)
        (mapv #(assoc % :gas-production-12-months-est (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
        (mapv #(assoc % :prev-prod (mapv double (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
        (remove #(zero? (:gas-production-12-months-est %)))

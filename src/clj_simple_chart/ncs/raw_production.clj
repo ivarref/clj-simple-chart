@@ -87,14 +87,27 @@
 
 (def max-date (:date (last (sort-by :date-int pre-group-data))))
 
-(def data (->> pre-group-data
+(def pre-prev-rows (->> pre-group-data
+                        (group-by :prfInformationCarrier)
+                        (vals)
+                        (mapv (partial fill-gaps max-date))
+                        (flatten)
+                        (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
+                        (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))
+                        (map #(assoc % :prev-months (prev-12-months (:date %))))
+                        (sort-by :date)
+                        (vec)))
+
+(defn add-prev-rows-last-n [n rows]
+  {:pre [(= 1 (count (distinct (mapv :prfInformationCarrier rows))))]}
+  (mapv (fn [x] (assoc x :prev-rows
+                         (doall (filter #(some #{(:date %)} (:prev-months x)) rows)))) rows))
+
+(def data (->> pre-prev-rows
                (group-by :prfInformationCarrier)
                (vals)
-               (mapv (partial fill-gaps max-date))
+               (mapv #(add-prev-rows-last-n 12 %))
                (flatten)
-               (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
-               (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))
-               (map #(assoc % :prev-months (prev-12-months (:date %))))
                (sort-by :date)
                (vec)))
 
