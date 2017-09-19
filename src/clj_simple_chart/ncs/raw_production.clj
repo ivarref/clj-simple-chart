@@ -26,7 +26,8 @@
      :else (date-range (conj sofar start) (.plusMonths start 1) stop))))
 
 (defn prev-12-months [s]
-  {:pre [(string? s)]}
+  {:pre  [(string? s)]
+   :post [(= 12 (count %))]}
   (let [parts (string/split s #"-0?")
         year (read-string (first parts))
         month (read-string (last parts))]
@@ -50,12 +51,15 @@
 (def filled-gaps-for-fields (atom #{}))
 (def filled-data (atom #{}))
 
-(defn- fill-gaps [production]
+(defn- fill-gaps [max-date production]
   {:pre [(coll? production)]}
   (let [f (first production)
         field-name (:prfInformationCarrier (first production))
         dates (sort (mapv :date production))
-        date-range (date-range (first dates) (last dates))
+        global-end-date (year-month max-date)
+        end-date (.plusMonths (year-month (last dates)) 11)
+        end-date (if (.isAfter end-date global-end-date) global-end-date end-date)
+        date-range (date-range (first dates) end-date)
         missing-months (remove #(some #{%} dates) date-range)
         filled-gaps (mapv (fn [date]
                             {:prfInformationCarrier             (:prfInformationCarrier f)
@@ -74,18 +78,36 @@
       (swap! filled-gaps-for-fields (fn [o] (conj o field-name))))
     (concat production filled-gaps)))
 
-(def data (->> raw-data
-               :data
-               (csv/read-string-columns numeric-columns)
-               (csv/number-or-throw-columns numeric-columns)
-               (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
-               (map #(assoc % :prev-months (prev-12-months (:date %))))
+(def pre-group-data (->> raw-data
+                         :data
+                         (csv/read-string-columns numeric-columns)
+                         (csv/number-or-throw-columns numeric-columns)
+                         (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
+                         (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))))
+
+(def max-date (:date (last (sort-by :date-int pre-group-data))))
+
+(def data (->> pre-group-data
                (group-by :prfInformationCarrier)
                (vals)
-               (mapv fill-gaps)
+               (mapv (partial fill-gaps max-date))
                (flatten)
+               (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
+               (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))
+               (map #(assoc % :prev-months (prev-12-months (:date %))))
                (sort-by :date)
                (vec)))
+
+(def frigg-last-dates (->> data
+                           (filter #(= "FRIGG" (:prfInformationCarrier %)))
+                           (mapv :date)
+                           (sort)
+                           (take-last 12)
+                           (vec)))
+
+(def expected-frigg-last-dates (date-range "2004-10" (.plusMonths (year-month "2004-10") 11)))
+
+(test/is (= frigg-last-dates expected-frigg-last-dates))
 
 (defn sum-for-year [year kind]
   (->> data
@@ -110,4 +132,6 @@
 (test/is (= "108.746" (sum-for-year-format 2013 :prfPrdGasNetBillSm3)))
 (test/is (= "79.179" (sum-for-year-format 2004 :prfPrdGasNetBillSm3)))
 
-(def whole-2004 (->> data (filter #(= 2004 (:prfYear %)))))
+(def whole-2004 (->> data
+                     (filter #(= 2004 (:prfYear %)))
+                     (filter #(pos? (:prfPrdGasNetBillSm3 %)))))

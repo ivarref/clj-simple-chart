@@ -44,16 +44,14 @@
   {:pre  [(coll? production)
           (= 1 (count (distinct (mapv :prfInformationCarrier production))))
           (= (count production)
-             (count (distinct (mapv :date production))))]
-   :post [(= (count production)
-             (count %))]}
+             (count (distinct (mapv :date production))))]}
   (->> production
        (sort-by :date)
        (reductions (fn [old n] (update n :gas-cumulative (fn [v] (+ v (:gas-cumulative old))))))
        (add-prev-rows-last-n 12)
        (mapv #(assoc % :gas-production-12-months-est (apply + (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
        (mapv #(assoc % :prev-prod (mapv double (mapv :prfPrdGasNetBillSm3 (:prev-rows %)))))
-       ;(remove #(zero? (:gas-production-12-months-est %)))
+       (remove #(zero? (:gas-production-12-months-est %)))
        ;(mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :gas-remaining (- (:fldRecoverableGas %) (:gas-cumulative %))))
        (mapv #(assoc % :gas-rp (if (or (neg? (:gas-remaining %)) (zero? (:gas-production-12-months-est %)))
@@ -62,13 +60,6 @@
        (mapv #(assoc % :bucket (bucket-fn %)))))
 
 (def with-cumulative (mapcat produce-cumulative (vals (group-by :prfInformationCarrier data))))
-(def with-cumulative-eoy-2004 (->> with-cumulative
-                                   (filter #(= "2004-12" (:date %)))
-                                   (mapcat :prev-prod)))
-
-(test/is (= (count (filter #(= 2004 (:prfYear %)) with-cumulative)) (count raw-production/whole-2004)))
-(test/is (= (count (filter #(= 2004 (:prfYear %)) data)) (count raw-production/whole-2004)))
-(test/is (= (count with-cumulative) (count data)))
 
 (def eoy-2004-fields (->> with-cumulative
                           (filter #(= "2004-12" (:date %)))
