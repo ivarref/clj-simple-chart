@@ -66,7 +66,7 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text (str "Råoljeproduksjon etter feltmogning, "
+              [{:text (str "Råoljeproduksjonen etter feltmogning "
                            (:prfYear (first data))
                            "–"
                            (:prfYear (last data)))
