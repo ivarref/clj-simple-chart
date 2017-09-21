@@ -6,7 +6,11 @@
             [clj-simple-chart.csv.csvmap :as csvmap])
   (:import (java.time YearMonth)))
 
-; Goal: Raw production with filled gaps
+; Goal:
+; Raw production with
+; * filled gaps
+; * appended 11 empty entries for shut down fields
+; * prev-rows property containing 12 last months of same field
 
 (defn year-month [s]
   {:pre [(string? s)]}
@@ -101,7 +105,9 @@
 (defn add-prev-rows-last-n [n rows]
   {:pre [(= 1 (count (distinct (mapv :prfInformationCarrier rows))))]}
   (mapv (fn [x] (assoc x :prev-rows
-                         (doall (filter #(some #{(:date %)} (:prev-months x)) rows)))) rows))
+                         (doall (->> rows
+                                     (filter #(some #{(:date %)} (:prev-months x)))
+                                     (mapv #(dissoc % :prev-months)))))) rows))
 
 (def data (->> pre-prev-rows
                (group-by :prfInformationCarrier)
@@ -109,6 +115,7 @@
                (mapv #(add-prev-rows-last-n 12 %))
                (flatten)
                (sort-by :date)
+               (mapv #(dissoc % :prev-months))
                (vec)))
 
 (def frigg-last-dates (->> data
