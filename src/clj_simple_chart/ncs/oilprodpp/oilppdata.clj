@@ -9,11 +9,7 @@
             [clojure.string :as str])
   (:import (java.time YearMonth)))
 
-(defn add-prev-rows-last-n [n rows]
-  (map-indexed (fn [idx x] (assoc x :prev-rows (take-last n (take (inc idx) rows)))) rows))
-
 (def data (->> raw-production/data
-               (remove #(= 2017 (:prfYear %)))
                ; bootstrap cumulative values
                (map #(assoc % :cumulative (:prfPrdOilNetMillSm3 %)))
                (map #(assoc % :production (:prfPrdOilNetMillSm3 %)))
@@ -48,9 +44,7 @@
   {:pre [(coll? production) (= 1 (count (distinct (mapv :prfInformationCarrier production))))]}
   (->> (sort-by :date production)
        (reductions (fn [old n] (update n :cumulative (fn [v] (+ v (:cumulative old))))))
-       (add-prev-rows-last-n 12)
-       (mapv #(assoc % :production-12-months-est (apply + (mapv :production (:prev-rows %)))))
-       (remove #(zero? (:production-12-months-est %)))
+       (mapv #(assoc % :production-12-months-est (apply + (mapv :prfPrdOilNetMillSm3 (:prev-rows %)))))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :remaining (- (:recoverable %) (:cumulative %))))
        (mapv #(assoc % :percentage-produced
@@ -85,13 +79,13 @@
 
 (def year-end-data (->> by-date
                         (filter #(or (.endsWith (:date %) "-12") (= % (last by-date))))
-                        (mapv #(assoc % :diff (- (:sum %)
-                                                 (raw-production/sum-for-year (:prfYear %) :prfPrdOilNetMillSm3))))))
+                        (mapv #(assoc % :diff (Math/abs (- (:sum %)
+                                                           (raw-production/sum-for-year (:prfYear %) :prfPrdOilNetMillSm3)))))))
 
 (csvmap/write-csv-format
   "./data/ncs/oil-production-pp-bucket-stacked-yearly.csv"
   {:columns (flatten [:date (sort (keys empty-buckets)) :sum :diff])
-   :format  (merge {:sum "%.3f"
+   :format  (merge {:sum  "%.3f"
                     :diff "%.3f"}
                    (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
    :data    year-end-data})
