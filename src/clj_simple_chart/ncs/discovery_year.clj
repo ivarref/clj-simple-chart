@@ -1,0 +1,79 @@
+(ns clj-simple-chart.ncs.discovery-year
+  (:require [clojure.test :as test]
+            [clj-http.client :as client]
+            [clojure.string :as string]
+            [clj-simple-chart.csv.csvmap :as csvmap]))
+
+(def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/discovery&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=81.191.126.253&CultureCode=en")
+; factpages => discovery => table view => overview
+
+(defonce raw-data (-> url
+                      (client/get)
+                      (:body)
+                      (csvmap/csv-map)))
+
+(def data (:data raw-data))
+
+(test/is (= [:dscName
+             :cmpLongName
+             :dscCurrentActivityStatus
+             :dscHcType
+             :wlbName
+             :nmaName
+             :fldName
+             :dscDateFromInclInField
+             :dscDiscoveryYear
+             :dscResInclInDiscoveryName
+             :dscOwnerKind
+             :dscOwnerName
+             :dscNpdidDiscovery
+             :fldNpdidField
+             :wlbNpdidWellbore
+             :dscFactPageUrl
+             :dscFactMapUrl
+             :dscDateUpdated
+             :dscDateUpdatedMax
+             :DatesyncNPD]
+            (:columns raw-data)))
+
+(def numeric-columns [:dscDiscoveryYear])
+
+(def field-names (->> (map :fldName data)
+                      (distinct)
+                      (remove empty?)
+                      (sort)
+                      (vec)))
+
+(defn de-duplicate [coll]
+  {:pre [(coll? coll)]}
+  (->> coll
+       (sort-by :dscDiscoveryYear)
+       (first)))
+
+(def data-parsed (->> data
+                      (csvmap/read-string-columns numeric-columns)
+                      (csvmap/number-or-throw-columns numeric-columns)
+                      (group-by :fldName)
+                      (vals)
+                      (mapv de-duplicate)
+                      (flatten)))
+
+(defn discovery-year [fldName]
+  {:pre [(some #{fldName} field-names)]}
+  (->> data-parsed
+       (filter #(= (:fldName %) fldName))
+       (first)
+       (:dscDiscoveryYear)))
+
+(test/is (= 1969 (discovery-year "EKOFISK")))
+(test/is (= 1978 (discovery-year "GULLFAKS")))
+(test/is (= 1979 (discovery-year "TROLL")))
+(test/is (= 1979 (discovery-year "SNORRE")))
+(test/is (= 1981 (discovery-year "VESLEFRIKK")))
+(test/is (= 1984 (discovery-year "SNØHVIT")))
+(test/is (= 1988 (discovery-year "EMBLA")))
+
+(test/is (= 2000 (discovery-year "GOLIAT")))
+(test/is (= 2010 (discovery-year "JOHAN SVERDRUP")))
+
+
