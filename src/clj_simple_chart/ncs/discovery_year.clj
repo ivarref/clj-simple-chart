@@ -53,6 +53,7 @@
 (def data-parsed (->> data
                       (csvmap/read-string-columns numeric-columns)
                       (csvmap/number-or-throw-columns numeric-columns)
+                      (remove #(= "Included in other discovery" (:dscCurrentActivityStatus %)))
                       (group-by :fldName)
                       (vals)
                       (mapv de-duplicate)
@@ -65,6 +66,7 @@
        (first)
        (:dscDiscoveryYear)))
 
+; TODO: Consider adding more tests.
 (test/is (= 1969 (discovery-year "EKOFISK")))
 (test/is (= 1978 (discovery-year "GULLFAKS")))
 (test/is (= 1979 (discovery-year "TROLL")))
