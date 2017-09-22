@@ -69,10 +69,10 @@
                {:text "R/P = Reservar / Produksjon, gjenverande levetid i år" :font "Roboto Bold" :font-size 16 :margin-top 1}
                {:text (str "Produksjon per " (months-str (:date last-data)) ": "
                            (string/replace (format "%.1f" (get last-data :sum)) "." ",")
-                           " mrd Sm³")
+                           " mrd. Sm³")
                 :font "Roboto Bold" :font-size 16 :margin-top 3}
 
-               {:text "Gassproduksjon, mrd Sm³" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
+               {:text "Gassproduksjon, mrd. Sm³" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "12 månadar glidande sum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack

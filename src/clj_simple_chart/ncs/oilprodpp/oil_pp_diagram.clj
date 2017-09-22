@@ -34,20 +34,21 @@
 
 (def bucket-to-fill (zipmap (sort (keys production/empty-buckets))
                             (reverse [
-                             "#d62728"                      ; red
-                             "#ff7f0e"                      ; orange
-                             "#8c564b"                      ; brown
-                             "#1f77b4"                      ; blue
-                             "#17becf"                      ; cyan
-                             "#e377c2"                      ; pink
-                             ;"#9467bd"                      ; purple
-                             ])))
+                                      "#d62728"             ; red
+                                      "#ff7f0e"             ; orange
+                                      "#8c564b"             ; brown
+                                      "#1f77b4"             ; blue
+                                      "#17becf"             ; cyan
+                                      "#e377c2"             ; pink
+                                      ;"#9467bd"                      ; purple
+                                      ])))
 
 (def sub-domain buckets)
 
 (def x-domain (map :date data))
 
-(def x-ticks (filter #(or (.endsWith % "5-12")
+(def x-ticks (filter #(or (= % "1971-12")
+                          (.endsWith % "5-12")
                           (.endsWith % "0-12"))
                      (map :date data)))
 
@@ -64,21 +65,23 @@
     (str (nth months (read-string (last parts)))
          " " (first parts))))
 
+(def feltmogning-ex-txt (str "Feltmogning: Prosent produsert av opprinneleg utvinnbart"
+                             ;(:prfYear (first data)) "–" (:prfYear (last data))
+
+                             ))
+
 (def header (opentype/stack
               {:width available-width}
-              [{:text (str "Råoljeproduksjonen etter feltmogning "
-                           (:prfYear (first data))
-                           "–"
-                           (:prfYear (last data)))
+              [{:text (str "Råoljeproduksjon etter feltmogning")
                 :font "Roboto Bold" :font-size 30}
-               {:text "Feltmogning: Prosent produsert av opprinneleg utvinnbart" :font "Roboto Bold" :font-size 16 :margin-top 1}
+               {:text feltmogning-ex-txt :font "Roboto Bold" :font-size 16 :margin-top 1}
                {:text (str "Produksjon per " (months-str (:date last-data)) ": "
                            (string/replace (format "%.1f" (get last-data :sum)) "." ",")
-                           " mill Sm³")
+                           " mill. Sm³")
                 :font "Roboto Bold" :font-size 16 :margin-top 3}
 
-               {:text "Råoljeproduksjon, mill Sm³" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:text "12 månadar glidande sum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
+               {:text "Råoljeproduksjon, mill. Sm³" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
+               {:text "12 månadar glidande sum" :margin-top 1 :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
@@ -152,7 +155,8 @@
      (clj-area/area c flat)
      #_(act/area-center-text c last-text)
      [:g (map make-txt (filter #(some #{(:date %)}
-                                      ["1975-12"
+                                      [;"1971-12"
+                                       "1975-12"
                                        "1980-12"
                                        "1985-12"
                                        "1990-12"
@@ -164,23 +168,23 @@
                                        "2013-12"
                                        "2015-12"]) data))]
      (axis/render-axis (:x c))]
-    (let [infotext (opentype/stack #_{:fill "lightgray"
-                                    :fill-opacity 0.3
-                                    :margin 5}
+    (let [infotext (opentype/stack #_{:fill         "lightgray"
+                                      :fill-opacity 0.3
+                                      :margin       5}
                      {}
-                                   (flatten
-                                     [{:text "Feltmogningskategori" :font "Roboto Black" :font-size 16}
-                                      (mapv (fn [k]
-                                              {:text      (str (subs k 3) "%")
-                                               :font-size 16
-                                               :font      "Roboto Bold"
-                                               :rect      {:fill (get bucket-to-fill k)
-                                                           :size nil}})
-                                            (sort (keys production/empty-buckets)))
-                                      #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
+                     (flatten
+                       [{:text "Feltmogningskategori" :font "Roboto Black" :font-size 16}
+                        (mapv (fn [k]
+                                {:text      (str (subs k 3) "%")
+                                 :font-size 16
+                                 :font      "Roboto Bold"
+                                 :rect      {:fill (get bucket-to-fill k)
+                                             :size nil}})
+                              (sort (keys production/empty-buckets)))
+                        #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
       [:g {:transform (translate 0 #_(- (+ (:margin-left c) (:plot-width c))
-                                    (:width (meta infotext))
-                                    10)
+                                        (:width (meta infotext))
+                                        10)
                                  (+ 0 (+ (:height (meta header)) (:margin-top c))))}
        infotext
        ]
