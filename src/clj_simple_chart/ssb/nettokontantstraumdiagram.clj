@@ -89,9 +89,9 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 4 :text "*Statens direkte økonomiske engasjement" :font "Roboto Regular" :font-size 16}
-               {:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font "Roboto Regular" :font-size 16}
-               {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 16 :valign :bottom :align :right}
+              [{:margin-top 4 :text "Kjelder: SSB, Norges Bank, St. Louis Fed. *Statens Direkte Økonomiske Engasjement" :font "Roboto Regular" :font-size 14}
+               ;{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font "Roboto Regular" :font-size 14}
+               {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}
                ]))
 
 (def xx {:type          :ordinal
@@ -145,6 +145,7 @@
   (opentype/stack
     {:width (:plot-width c)}
     (mapv (fn [x] {:text      (get translate-info x (name x))
+                   ;:rect {:fill (get fills x)}
                    :fill      (get fills x)
                    :font      "Roboto Black"
                    :font-size 15})
@@ -223,7 +224,7 @@
      [:g (add-oil-price-line)]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
-     [:g {:transform (translate 3 (+ 2 (yfn 500)))} info]]
+     [:g {:transform (translate 30 (+ 2 (yfn 500)))} info]]
 
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
