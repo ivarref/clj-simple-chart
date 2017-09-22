@@ -74,7 +74,8 @@
       (get manual-lookup fldName)))
 
 (doseq [fld production/field-names]
-  (assert (number? (discovery-year fld)) (str "Expected discovery year for " fld)))
+  (assert (and (number? (discovery-year fld))
+               (< 1960 (discovery-year fld))) (str "Expected discovery year for " fld)))
 
 ; TODO: Consider adding more tests.
 (test/is (= 1969 (discovery-year "EKOFISK")))
