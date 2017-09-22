@@ -61,14 +61,14 @@
 (def siste-verdi-str
   (str "Per " (date-readable (:dato last-data)) ": "
        (string/replace (format "%.1f" (:sum last-data)) "." ",")
-       " mrd NOK"))
+       " mrd. NOK"))
 
 (def header (opentype/text-stack-downwards
               {:margin-top  5
                :margin-left marg}
               [{:text "Innbetalt petroleumsskatt" :font "Roboto Bold" :font-size 36}
-               {:text (str "Milliardar NOK, 12 månadar glidande sum" #_siste-verdi-str) :font "Roboto Black" :font-size 16}
-               {:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 20}
+               {:text (str "Milliardar NOK, 12 månadar glidande sum" #_siste-verdi-str) :font "Roboto Black" :font-size 16 :margin-bottom 2}
+               {:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 10}
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
                {:text "Oljepris, NOK/fat" :fill oil-fill :font "Roboto Black" :font-size 16}
@@ -92,7 +92,7 @@
       :font        "Roboto Black"
       :font-size   16})
    (opentype/text
-     {:text        "Mrd NOK"
+     {:text        "Mrd. NOK"
       :text-anchor "end"
       :dy          "-2em"
       :fill        "black"
@@ -103,14 +103,14 @@
               {:margin-left   marg
                :margin-top    8
                :margin-bottom 3}
-              [{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font-size 16}]))
+              [{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font-size 14}]))
 
 (def footer2 (opentype/text
                {:text               "Diagram © Refsdal.Ivar@gmail.com"
                 :alignment-baseline "hanging"
                 :dy                 ".5em"
                 :dx                 (- svg-width marg)
-                :text-anchor        "end" :font-size 16}))
+                :text-anchor        "end" :font-size 14}))
 
 (def x-ticks (filter #(.endsWith % "-01") (map :dato data)))
 (def end-of-year-data (filter #(.endsWith (:dato %) "-12") data))
