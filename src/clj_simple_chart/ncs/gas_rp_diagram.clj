@@ -66,7 +66,7 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Gassproduksjon etter R/P" :font "Roboto Bold" :font-size 30}
-               {:text "R/P = Reservar / Produksjon, gjenverande levetid i år" :font "Roboto Bold" :font-size 16 :margin-top 1}
+               {:text "R/P: Reservar / Produksjon, gjenverande levetid i år" :font "Roboto Bold" :font-size 16 :margin-top 1}
                {:text (str "Produksjon per " (months-str (:date last-data)) ": "
                            (string/replace (format "%.1f" (get last-data :sum)) "." ",")
                            " mrd. Sm³")
@@ -141,11 +141,12 @@
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
+    ;[:g {:transform (translate (:margin-left c) 0)}
     header
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
      (clj-area/area c flat)
-     (act/area-center-text c last-text)
+     ;(act/area-center-text c last-text)
      [:g (map make-txt (filter #(some #{(:date %)}
                                       ["1980-12"
                                        "1985-12"
@@ -170,7 +171,7 @@
                                  :rect      {:fill (get bucket-to-fill k)
                                              :size nil}})
                               (reverse (sort (keys production/empty-buckets))))
-                        {:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
+                        #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
