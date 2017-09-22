@@ -193,4 +193,4 @@
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (core/render "./img/ncs-svg/oil-pp.svg" "./img/ncs-png/oil-rp.png" (diagram)))
+  (core/render "./img/ncs-svg/oil-pp.svg" "./img/ncs-png/oil-pp.png" (diagram)))
