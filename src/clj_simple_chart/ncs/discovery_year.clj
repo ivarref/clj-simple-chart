@@ -2,6 +2,7 @@
   (:require [clojure.test :as test]
             [clj-http.client :as client]
             [clojure.string :as string]
+            [clj-simple-chart.ncs.raw-production :as production]
             [clj-simple-chart.csv.csvmap :as csvmap]))
 
 (def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/discovery&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=81.191.126.253&CultureCode=en")
@@ -59,12 +60,21 @@
                       (mapv de-duplicate)
                       (flatten)))
 
+(def manual-lookup {"33/9-6 DELTA" 1976})
+
 (defn discovery-year [fldName]
-  {:pre [(some #{fldName} field-names)]}
-  (->> data-parsed
-       (filter #(= (:fldName %) fldName))
-       (first)
-       (:dscDiscoveryYear)))
+  {:pre [(or (some #{fldName} field-names)
+             (some #{fldName} (keys manual-lookup)))
+         (not (and (some #{fldName} field-names)
+                   (some #{fldName} (keys manual-lookup))))]}
+  (or (->> data-parsed
+           (filter #(= (:fldName %) fldName))
+           (first)
+           (:dscDiscoveryYear))
+      (get manual-lookup fldName)))
+
+(doseq [fld production/field-names]
+  (assert (number? (discovery-year fld)) (str "Expected discovery year for " fld)))
 
 ; TODO: Consider adding more tests.
 (test/is (= 1969 (discovery-year "EKOFISK")))
@@ -77,5 +87,4 @@
 
 (test/is (= 2000 (discovery-year "GOLIAT")))
 (test/is (= 2010 (discovery-year "JOHAN SVERDRUP")))
-
-
+(test/is (= 2017 (discovery-year "SINDRE")))

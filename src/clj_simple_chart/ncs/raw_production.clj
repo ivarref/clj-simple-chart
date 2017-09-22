@@ -129,6 +129,12 @@
 
 (test/is (= frigg-last-dates expected-frigg-last-dates))
 
+(def field-names (->> data
+                      (mapv :prfInformationCarrier)
+                      (sort)
+                      (distinct)
+                      (vec)))
+
 (defn sum-for-year [year kind]
   (->> data
        (filter #(= year (:prfYear %)))
