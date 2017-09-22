@@ -13,17 +13,26 @@
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer [translate]]
             [clojure.test :as test]
-            [clojure.string :as string]))
+            [clojure.string :as string])
+  (:import (java.time YearMonth)))
 
 (def ordinaer (keyword "Ordinær skatt på utvinning av petroleum"))
 (def saerskatt (keyword "Særskatt på utvinning av petroleum"))
 
 (def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-nok)
 
+(defn six-months-ago [s]
+  {:pre [(string? s)]}
+  (let [parts (string/split s #"-0?")
+        year (read-string (first parts))
+        month (read-string (last parts))
+        six-m-ago (.minusMonths (YearMonth/of year month) 6)]
+    (format "%04d-%02d" (.getYear six-m-ago) (.getMonthValue six-m-ago))))
+
 (def data (->> petroskatt/twelve-mms-mrd
                (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
                (mapv #(assoc % :sum (+ (get % ordinaer) (get % saerskatt))))
-               (mapv #(assoc % :oilprice (get oil-date-to-usd (:dato %) ::none)))
+               (mapv #(assoc % :oilprice (get oil-date-to-usd (six-months-ago (:dato %)) ::none)))
                #_(filter #(>= (:year %) 2010))))
 
 (test/is (= 0 (count (filter #(= ::none (:oilprice %)) data))))
@@ -72,7 +81,7 @@
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
                {:text "Oljepris, NOK/fat" :fill oil-fill :font "Roboto Black" :font-size 16}
-               {:text "12 mnd. glidande gjennomsnitt" :fill oil-fill :font "Roboto Black" :font-size 14}
+               {:text "12 månadar glidande gjennomsnitt, 6 månadar framskyvd" :fill oil-fill :font "Roboto Black" :font-size 14}
                ]))
 
 (def info-right
@@ -177,7 +186,7 @@
         first-point (first dat)
         last-point (last dat)
         rest-of-data (drop 1 dat)
-        oil-price-stroke-width 2
+        oil-price-stroke-width 3
         line-to (reduce (fn [o v] (str o " "
                                        "L"
                                        (xfn (:dato v))
