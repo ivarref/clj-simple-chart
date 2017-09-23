@@ -34,11 +34,8 @@
   (cond
     (< percentage-produced 25) "0- 0–25"
     (< percentage-produced 50) "1- 25–50"
-    (< percentage-produced 60) "2- 50–60"
-    (< percentage-produced 70) "3- 60–70"
-    (< percentage-produced 80) "4- 70–80"
-    (< percentage-produced 90) "5- 80–90"
-    :else "6- 90–100"))
+    (< percentage-produced 75) "2- 50–75"
+    :else "6- 75–100"))
 
 (defn produce-cumulative
   [production]
