@@ -73,6 +73,11 @@
            (:dscDiscoveryYear))
       (get manual-lookup fldName)))
 
+(defn discovery-decade [fldName]
+  (let [year (discovery-year fldName)
+        decade (- year (mod year 10))]
+    decade))
+
 (doseq [fld production/field-names]
   (assert (and (number? (discovery-year fld))
                (< 1960 (discovery-year fld))) (str "Expected discovery year for " fld)))
