@@ -100,7 +100,7 @@
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          :domain             [0 200]})
 
-(def available-height (- svg-height (+ two-marg
+(def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
                                        (:height (meta footer)))))
 
