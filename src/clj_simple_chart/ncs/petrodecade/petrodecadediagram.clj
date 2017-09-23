@@ -30,20 +30,20 @@
 ;"#bcbd22", //gusjegul
 ;"#9467bd", //purple
 ;"#7f7f7f", //gray
-;"#2ca02c", //green
 
-(def bucket-to-fill (zipmap (sort (keys production/empty-buckets))
+(def bucket-to-fill (zipmap buckets
                             [
-                             "#e377c2"             ; pink
-                             "#17becf"             ; cyan
-                             "#1f77b4"             ; blue
-                             "#8c564b"             ; brown
-                             "#ff7f0e"             ; orange
-                             "#d62728"             ; red
+                             "#8c564b"                      ; brown
+                             "#ff7f0e"                      ; orange
+                             "#2ca02c"                      ;green
+                             "#1f77b4"                      ; blue
+                             "#e377c2"                      ; pink
+                             "#d62728"                      ; red
+
+                             ;"#8c564b"                      ; brown
+                             ;"#17becf"                      ; cyan
                              ;"#9467bd"                      ; purple
                              ]))
-
-(def sub-domain buckets)
 
 (def x-domain (map :date data))
 
@@ -92,7 +92,7 @@
          :tick-format (fn [x] (subs x 0 4))
          :orientation :bottom
          :domain      x-domain
-         :sub-domain  (reverse sub-domain)})
+         :sub-domain  buckets})
 
 (def yy {:type               :linear
          :orientation        :right
@@ -179,7 +179,7 @@
                                  :font      "Roboto Bold"
                                  :rect      {:fill (get bucket-to-fill k)
                                              :size nil}})
-                              (sort (keys production/empty-buckets)))
+                              (reverse buckets))
                         #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
       [:g {:transform (translate 0 #_(- (+ (:margin-left c) (:plot-width c))
                                         (:width (meta infotext))

@@ -82,8 +82,7 @@
 
 (defn discovery-decade-bucket [fldName]
   (let [dd (discovery-decade fldName)]
-    (str (- (count discovery-decades)
-            (.indexOf discovery-decades dd)) "- " dd)))
+    (str (.indexOf discovery-decades dd) "- " dd)))
 
 (doseq [fld production/field-names]
   (assert (and (number? (discovery-year fld))
