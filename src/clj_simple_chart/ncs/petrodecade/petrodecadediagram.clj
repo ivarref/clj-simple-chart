@@ -34,14 +34,14 @@
 (def bucket-to-fill (zipmap buckets
                             [
                              "#8c564b"                      ; brown
-                             "#ff7f0e"                      ; orange
+                             ;                             "#ff7f0e"                      ; orange
+                             "#17becf"                      ; cyan
                              "#2ca02c"                      ;green
                              "#1f77b4"                      ; blue
                              "#e377c2"                      ; pink
                              "#d62728"                      ; red
 
                              ;"#8c564b"                      ; brown
-                             ;"#17becf"                      ; cyan
                              ;"#9467bd"                      ; purple
                              ]))
 

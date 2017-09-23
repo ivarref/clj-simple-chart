@@ -19,27 +19,30 @@
 (def svg-height 500)
 
 (def data production/by-date)
-(def buckets (vec (sort (keys production/empty-buckets))))
+(def buckets (vec (reverse (sort (keys production/empty-buckets)))))
 
 ;"#d62728",  //red
 ;"#ff7f0e", //orange
 ;"#8c564b", //brown
 ;"#1f77b4", //blue
-;"#17becf", //cyan
 ;"#e377c2", //pink
+;"#17becf", //cyan
 ;"#bcbd22", //gusjegul
 ;"#9467bd", //purple
 ;"#7f7f7f", //gray
 ;"#2ca02c", //green
 
-(def bucket-to-fill (zipmap (sort (keys production/empty-buckets))
+(def bucket-to-fill (zipmap buckets
                             (reverse [
-                                      "#d62728"             ; red
-                                      "#ff7f0e"             ; orange
-                                      "#8c564b"             ; brown
-                                      "#1f77b4"             ; blue
-                                      "#17becf"             ; cyan
                                       "#e377c2"             ; pink
+                                      "#2ca02c"             ;green
+                                      "#9467bd"             ; purple
+                                      "#17becf"             ; cyan
+                                      "#1f77b4"             ; blue
+
+                                      "#8c564b"             ; brown
+                                      "#ff7f0e"             ; orange
+                                      "#d62728"             ; red
                                       ;"#9467bd"                      ; purple
                                       ])))
 
@@ -93,7 +96,7 @@
          :tick-format (fn [x] (subs x 0 4))
          :orientation :bottom
          :domain      x-domain
-         :sub-domain  (reverse sub-domain)})
+         :sub-domain  buckets})
 
 (def yy {:type               :linear
          :orientation        :right
