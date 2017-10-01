@@ -58,8 +58,7 @@
                       ;:year
                       ))
        (mapv #(update % :total double))
-       (mapv #(assoc % :coal_consumption_per_capita_oe (:total %)))
-       ))
+       (mapv #(assoc % :coal_consumption_per_capita_oe (:total %)))))
 
 (def data (->> (produce-data bpdata/most-recent-data)
                (sort-by :total)
@@ -74,3 +73,4 @@
                                  :coal_consumption_per_capita_oe
                                  :population
                                  :coal_consumption_mtoe]})
+
