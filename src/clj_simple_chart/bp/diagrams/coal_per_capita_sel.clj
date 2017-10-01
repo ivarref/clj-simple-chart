@@ -61,11 +61,10 @@
        (mapv #(assoc % :coal_consumption_per_capita_oe (:total %)))))
 
 (def data (->> (produce-data bpdata/most-recent-data)
-               (sort-by :total)
-               (reverse)))
+               (sort-by :total)))
 
 (csv/write-csv-format "data/bp/coal-consumption-per-capita-oe.csv"
-                      {:data    data
+                      {:data    (reverse data)
                        :format  {:coal_consumption_per_capita_oe "%.1f"
                                  :coal_consumption_mtoe "%.1f"}
                        :columns [:year
@@ -74,3 +73,95 @@
                                  :population
                                  :coal_consumption_mtoe]})
 
+(def data (->> data
+               (take-last 27)
+               (remove #(some #{(:country %)}
+                              ["Czech Republic"
+                               "Bulgaria"
+                               "Israel"
+                               "Malaysia"
+                               "Slovakia"
+                               "Chile"
+                               "Ireland"
+                               "Greece"
+                               "Hong Kong"]))))
+
+(def marg 10)
+(def two-marg (* 2 marg))
+
+; https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+; iPhone 4, 4s
+(def svg-width 320)
+(def svg-height 480)
+
+(def available-width (- svg-width two-marg))
+
+(def domain (mapv :country data))
+
+(def header (opentype/stack
+              {}
+              [{:text "Coal Consumption" :font "Roboto Black" :font-size 20}
+               #_{:text "Selected countries and regions, percentage" :font "Roboto Regular" :font-size 14 :margin-bottom 0}
+               {:text "Kilograms of Oil Equivalents Per Capita Per Year" :font "Roboto Regular" :font-size 14 :margin-bottom 0}
+               ]))
+
+(def footer (opentype/stack
+              {:width available-width}
+              [{:margin-top 5 :text (str "Sources: BP (" bpdata/bp-release-year "), World Bank (" wb-raw/wb-release-year ").") :font "Roboto Regular" :font-size 14}
+               {:valign :bottom :align :right :text "@ivarref" :font "Roboto Regular" :font-size 14}]))
+
+(def available-height (- svg-height (+ two-marg
+                                       (:height (meta header))
+                                       (:height (meta footer)))))
+
+(def xx {:type        :linear
+         :axis        :x
+         :orientation :top
+         :ticks       5
+         :domain      [0 2500]})
+
+(def yy {:type          :ordinal
+         :axis          :y
+         :domain        domain
+         :orientation   :left
+         :round         true
+         :padding-inner 0.4
+         :padding-outer 0.3})
+
+(def c (chart/chart {:width  available-width
+                     :height available-height
+                     :x      xx
+                     :y      yy}))
+(def x (:x c))
+(def y (:y c))
+
+(def rect (rect/scaled-rect x y))
+
+(defn make-rect [{country :country
+                  coal    :coal
+                  total   :total
+                  :as     item}]
+  {:p country :h total :fill "gray"})
+
+(defn total-text [{country :country
+                   total   :total}]
+  (opentype/text {:x  (point x total)
+                  :dx ".20em"
+                  :y  (center-point y country)
+                  :dy ".32em"}
+                 (format "%.0f" total)))
+
+(defn diagram []
+  [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
+   [:g {:transform (translate marg marg)}
+    header
+    [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
+     (rect (mapv make-rect data))
+     (map total-text data)
+     (axis/render-axis y)
+     (axis/render-axis x)
+    [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]
+    ]])
+
+(defn render-self []
+  (render "./img/bp-svg/coal-per-capita-sel.svg" "./img/bp-png/coal-per-capita-sel.png" (diagram)))
