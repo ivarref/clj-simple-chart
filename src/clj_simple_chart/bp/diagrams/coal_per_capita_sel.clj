@@ -161,7 +161,7 @@
      (axis/render-axis y)
      (axis/render-axis x)
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]
-    ]])
+    ]]])
 
 (defn render-self []
   (render "./img/bp-svg/coal-per-capita-sel.svg" "./img/bp-png/coal-per-capita-sel.png" (diagram)))
