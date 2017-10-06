@@ -36,11 +36,8 @@
 
 (def bucket-to-fill (zipmap buckets
                             (reverse [
-                                      "#e377c2"             ; pink
-                                      "#2ca02c"             ;green
-                                      "#9467bd"             ; purple
-                                      "#17becf"             ; cyan
-                                      "#1f77b4"             ; blue
+                                      ;"rgb(31, 119, 180)"             ; blue
+                                      "#1f77b4"
 
                                       "#8c564b"             ; brown
                                       "#ff7f0e"             ; orange
@@ -53,7 +50,7 @@
 (def x-domain (map :date data))
 
 (def x-ticks (filter #(or (= % "1971-12")
-                          (.endsWith % "5-12")
+                          (.endsWith % "12")
                           (.endsWith % "0-12"))
                      (map :date data)))
 
@@ -95,7 +92,11 @@
 
 (def xx {:type        :ordinal-linear
          :tick-values x-ticks
-         :tick-format (fn [x] (subs x 0 4))
+         :tick-format (fn [x] (let [year (subs x 0 4)]
+                                (if (or (.endsWith year "5")
+                                        (.endsWith year "0"))
+                                  year
+                                  (subs year 2 4))))
          :orientation :bottom
          :domain      x-domain
          :sub-domain  buckets})
@@ -144,9 +145,8 @@
 (defn make-txt [{date :date year :year :as opts}]
   (let [year (subs date 0 4)
         fmt (if (some #{year} ["2000" "2001"]) "%.1f" "%.0f")]
-    (if (or (.endsWith year "0")
-            (.endsWith year "5")
-            (= "2013" year))
+    (if (or (some #{year} ["2000" "2005" "2010"])
+            (>= (read-string year) 2013))
       [:g {:transform (translate (xfn date) (yfn (get opts :sum)))}
        [:circle {:r 2.5}]
        [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
