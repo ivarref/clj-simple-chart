@@ -72,20 +72,27 @@
        (string/replace (format "%.1f" (:sum last-data)) "." ",")
        " mrd. NOK"))
 
-(def header (opentype/text-stack-downwards
+(def header (opentype/stack
               {:margin-top  5
                :margin-left marg}
               [{:text "Innbetalt petroleumsskatt" :font "Roboto Bold" :font-size 36}
-               {:text (str "Milliardar NOK, 12 månadar glidande sum" #_siste-verdi-str) :font "Roboto Black" :font-size 16 :margin-bottom 2}
-               {:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 10}
+               {:text (str "Milliardar NOK, 12 månadar glidande sum. " siste-verdi-str) :font "Roboto Black" :font-size 16}
+               ;{:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 10}
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
-               {:text "Oljepris, NOK/fat" :fill oil-fill :font "Roboto Black" :font-size 16}
+               {:margin-top 16 :text "Oljepris, NOK/fat" :fill oil-fill :font "Roboto Black" :font-size 16}
                {:text "12 månadar glidande gjennomsnitt, 6 månadar framskyvd" :fill oil-fill :font "Roboto Black" :font-size 14}
                ]))
 
 (def info-right
-  [:g {:transform (translate (- svg-width marg) (:height (meta header)))}
+  [:g {:transform (translate (- svg-width marg) (- (:height (meta header)) 2))}
+   (opentype/text
+     {:text        "Milliardar NOK"
+      :text-anchor "end"
+      :dy          "-2em"
+      :fill        "black"
+      :font        "Roboto Black"
+      :font-size   16})
    (opentype/text
      {:text        "Særskatt på utvinning av petroleum"
       :text-anchor "end"
@@ -98,13 +105,6 @@
       :text-anchor "end"
       :dy          "-0em"
       :fill        ordinaer-fill
-      :font        "Roboto Black"
-      :font-size   16})
-   (opentype/text
-     {:text        "Mrd. NOK"
-      :text-anchor "end"
-      :dy          "-2em"
-      :fill        "black"
       :font        "Roboto Black"
       :font-size   16})])
 
