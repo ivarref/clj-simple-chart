@@ -127,7 +127,7 @@
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
           :domain             [0 770 #_(apply max (mapv :oilprice data))]})
 
-(def available-height (- svg-height (+ (+ 4 marg)
+(def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
                                        (:height (meta footer)))))
 
@@ -146,6 +146,7 @@
     {:width (:plot-width c)}
     (mapv (fn [x] {:text      (get translate-info x (name x))
                    ;:rect {:fill (get fills x)}
+                   :margin-top (if (= x avgift) 2 0)
                    :fill      (get fills x)
                    :font      "Roboto Black"
                    :font-size 15})
