@@ -11,25 +11,67 @@
            (javafx.embed.swing SwingFXUtils)
            (javax.imageio ImageIO)
            (java.io File)
-           (javafx.concurrent Worker$State)))
+           (javafx.concurrent Worker$State)
+           (javafx.event EventHandler)
+           (javafx.scene.input KeyCode)))
 
 (defonce latch (CountDownLatch. 1))
+(defonce zoom (atom 1.0))
 (defonce webview (atom nil))
 (defonce stage (atom nil))
 (defonce engine (atom nil))
+(defonce scene (atom nil))
+
+(defonce input-height (atom nil))
+(defonce input-width (atom nil))
+
+(defn update-zoom! [zoomvalue]
+  (swap! zoom (fn [o] zoomvalue))
+  (Platform/runLater (fn [] (.setZoom @webview @zoom)))
+  (Platform/runLater (fn [] (.setPrefHeight @webview (* @zoom @input-height))))
+  (Platform/runLater (fn [] (.setPrefWidth @webview (* @zoom @input-width))))
+  (Platform/runLater (fn [] (.sizeToScene @stage))))
+
+(def zoom-handler
+  (reify EventHandler
+    (handle [_ v]
+      (update-zoom! (* @zoom (.getZoomFactor v))))))
+
+(def zoom-delta 0.025)
+
+(def key-released-handler
+  (reify EventHandler
+    (handle [_ v]
+      (cond (and (.isControlDown v)
+                 (= (.getText v) "0"))
+            (update-zoom! 1.0)
+
+            (and (.isControlDown v)
+                 (= (.getCode v) KeyCode/MINUS))
+            (update-zoom! (- @zoom zoom-delta))
+
+            (and (.isControlDown v)
+                 (= (.getCode v) KeyCode/EQUALS))
+            (update-zoom! (+ @zoom zoom-delta))
+
+            :else (do (println "unhandled" v))))))
 
 (defn -start [this internal-stage]
   (.setTitle internal-stage "SVG Output")
   (let [internal-webview (WebView.)
         internal-engine (.getEngine internal-webview)
         layout (VBox. 0.0)
+        internal-scene (Scene. layout)
         children (.getChildren layout)]
     (.loadContent internal-engine "about:blank")
     (.setAll children [internal-webview])
-    (.setScene internal-stage (Scene. layout))
+    (.setScene internal-stage internal-scene)
+    (.setOnZoom internal-scene zoom-handler)
+    (.setOnKeyReleased internal-scene key-released-handler)
     (.show internal-stage)
     (swap! engine (fn [x] internal-engine))
     (swap! stage (fn [x] internal-stage))
+    (swap! scene (fn [x] internal-scene))
     (swap! webview (fn [x] internal-webview)))
   (Platform/runLater (fn [] (.countDown latch))))
 
@@ -81,9 +123,12 @@
         width (:width attrs)
         height (:height attrs)
         s (hiccup.core/html (conj body svg))]
+    (swap! input-height (fn [o] height))
+    (swap! input-width (fn [o] width))
     (bootstrap)
-    (Platform/runLater (fn [] (.setPrefHeight @webview height)))
-    (Platform/runLater (fn [] (.setPrefWidth @webview width)))
+    (Platform/runLater (fn [] (.setZoom @webview @zoom)))
+    (Platform/runLater (fn [] (.setPrefHeight @webview (* @zoom height))))
+    (Platform/runLater (fn [] (.setPrefWidth @webview (* @zoom width))))
     (render-string s)
     (Platform/runLater (fn [] (.sizeToScene @stage)))
     (Platform/runLater (fn [] (.show @stage)))
@@ -99,11 +144,10 @@
     (Platform/runLater
       (fn []
         (let [snap (SnapshotParameters.)]
-          (.setViewport snap (Rectangle2D. 0 0 width height))
+          (.setViewport snap (Rectangle2D. 0 0 (* @zoom width) (* @zoom height)))
           (let [image (.snapshot @webview snap nil)
                 bufimage (SwingFXUtils/fromFXImage image nil)]
-            (ImageIO/write bufimage "png" (File. filename))
-            #_(println "\nwrote " filename #_"md5=" #_(digest/md5 (File. filename)))))))
+            (ImageIO/write bufimage "png" (File. filename))))))
     (Platform/runLater (fn [] (.countDown ll)))
     (.await ll)))
 
