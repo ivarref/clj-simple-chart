@@ -74,12 +74,12 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 30}
-               {:text (str "Milliardar 2017-kroner, 4 kvartal glidande sum. "
-                           "Per " (:dato last-data) ": "
-                           (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
-                           " mrd kr")
-                :font "Roboto Bold" :font-size 16
-                :margin-top 2
+               {:text          (str "Milliardar 2017-kroner, 4 kvartal glidande sum. "
+                                    "Per " (:dato last-data) ": "
+                                    (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
+                                    " mrd kr")
+                :font          "Roboto Bold" :font-size 16
+                :margin-top    2
                 :margin-bottom 10}
                {:text "Oljepris, 2017-kroner/fat" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
                {:text "4 kvartal glidande gjennomsnitt, 2 kvartal framskyvd" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
@@ -123,11 +123,11 @@
           :orientation        :left
           :color              oil-price-fill
           ;:ticks              5
-          :tick-values       (mapv #(* 70.0 %) (range 12))
+          :tick-values        (mapv #(* 70.0 %) (range 12))
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
           :domain             [0 770 #_(apply max (mapv :oilprice data))]})
 
-(def available-height (- svg-height (+ two-marg
+(def available-height (- svg-height (+ (+ 4 marg)
                                        (:height (meta header))
                                        (:height (meta footer)))))
 
@@ -168,9 +168,24 @@
           :h    (get opts k)})
        fills))
 
+(def txt-for-years [1996
+                    1998
+                    2000
+                    2002
+                    2004
+                    2005
+                    2006
+                    2008
+                    2010
+                    2012
+                    2013
+                    2014
+                    2015
+                    2016])
+
 (def end-of-year-data (->> data
-                           (filter #(.endsWith (:dato %) "K4"))
-                           (remove #(odd? (:year %)))))
+                           (filter #(and (some #{(:year %)} txt-for-years)
+                                         (.endsWith (:dato %) "K4")))))
 
 (defn make-txt [{dato :dato year :year :as opts}]
   [:g {:transform (translate (xfn dato) (yfn (get opts netto-sum)))}
