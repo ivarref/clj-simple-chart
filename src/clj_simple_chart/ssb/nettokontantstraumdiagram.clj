@@ -77,7 +77,7 @@
                {:text          (str "Milliardar 2017-kroner, 4 kvartal glidande sum. "
                                     "Per " (:dato last-data) ": "
                                     (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
-                                    " mrd kr")
+                                    " mrd. kr")
                 :font          "Roboto Bold" :font-size 16
                 :margin-top    2
                 :margin-bottom 10}
