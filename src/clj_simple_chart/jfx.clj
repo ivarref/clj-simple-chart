@@ -29,17 +29,17 @@
 (defonce window-height (atom nil))
 (defonce window-width (atom nil))
 
-(defn update-zoom! [zoomvalue]
+(defn update-zoom-and-resize! [zoomvalue]
   (swap! zoom (fn [o] zoomvalue))
   (Platform/runLater (fn [] (.setZoom @webview @zoom)))
   (Platform/runLater (fn [] (.setPrefHeight @webview (* @zoom @input-height))))
   (Platform/runLater (fn [] (.setPrefWidth @webview (* @zoom @input-width))))
   (Platform/runLater (fn [] (.sizeToScene @stage))))
 
-(def zoom-handler
-  (reify EventHandler
-    (handle [_ v]
-      (update-zoom! (* @zoom (.getZoomFactor v))))))
+(defn zoom-handler
+  [zoomvalue]
+  (swap! zoom (fn [o] (* o zoomvalue)))
+  (Platform/runLater (fn [] (.setZoom @webview @zoom))))
 
 (def zoom-delta 0.025)
 
@@ -50,19 +50,19 @@
   [v]
   (cond (and (.isControlDown v)
              (= (.getText v) "0"))
-        (update-zoom! 1.0)
+        (update-zoom-and-resize! 1.0)
 
         (and (.isControlDown v)
              (= (.getCode v) KeyCode/W))
-        (update-zoom! (/ @window-width @input-width))
+        (update-zoom-and-resize! (/ @window-width @input-width))
 
         (and (.isControlDown v)
              (= (.getCode v) KeyCode/MINUS))
-        (update-zoom! (- @zoom zoom-delta))
+        (update-zoom-and-resize! (- @zoom zoom-delta))
 
         (and (.isControlDown v)
              (= (.getCode v) KeyCode/EQUALS))
-        (update-zoom! (+ @zoom zoom-delta))
+        (update-zoom-and-resize! (+ @zoom zoom-delta))
 
         :else (do #_(println "unhandled" v))))
 
@@ -84,7 +84,9 @@
     (.loadContent internal-engine "about:blank")
     (.setAll children [internal-webview])
     (.setScene internal-stage internal-scene)
-    (.setOnZoom internal-scene zoom-handler)
+    (.setOnZoom internal-scene (reify EventHandler
+                                 (handle [_ v]
+                                   (zoom-handler (.getZoomFactor v)))))
     (.addListener (.widthProperty internal-scene) (reify ChangeListener
                                                     (changed [_ val old new]
                                                       (window-width-change-handler new))))
