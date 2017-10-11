@@ -13,7 +13,8 @@
            (java.io File)
            (javafx.concurrent Worker$State)
            (javafx.event EventHandler)
-           (javafx.scene.input KeyCode)))
+           (javafx.scene.input KeyCode)
+           (javafx.beans.value ChangeListener)))
 
 (defonce latch (CountDownLatch. 1))
 (defonce zoom (atom 1.0))
@@ -24,6 +25,9 @@
 
 (defonce input-height (atom nil))
 (defonce input-width (atom nil))
+
+(defonce window-height (atom nil))
+(defonce window-width (atom nil))
 
 (defn update-zoom! [zoomvalue]
   (swap! zoom (fn [o] zoomvalue))
@@ -39,22 +43,36 @@
 
 (def zoom-delta 0.025)
 
-(def key-released-handler
-  (reify EventHandler
-    (handle [_ v]
-      (cond (and (.isControlDown v)
-                 (= (.getText v) "0"))
-            (update-zoom! 1.0)
+; input-width * zoom = new
+; zoom = new / input-width
 
-            (and (.isControlDown v)
-                 (= (.getCode v) KeyCode/MINUS))
-            (update-zoom! (- @zoom zoom-delta))
+(defn key-released-handler
+  [v]
+  (cond (and (.isControlDown v)
+             (= (.getText v) "0"))
+        (update-zoom! 1.0)
 
-            (and (.isControlDown v)
-                 (= (.getCode v) KeyCode/EQUALS))
-            (update-zoom! (+ @zoom zoom-delta))
+        (and (.isControlDown v)
+             (= (.getCode v) KeyCode/W))
+        (update-zoom! (/ @window-width @input-width))
 
-            :else (do (println "unhandled" v))))))
+        (and (.isControlDown v)
+             (= (.getCode v) KeyCode/MINUS))
+        (update-zoom! (- @zoom zoom-delta))
+
+        (and (.isControlDown v)
+             (= (.getCode v) KeyCode/EQUALS))
+        (update-zoom! (+ @zoom zoom-delta))
+
+        :else (do #_(println "unhandled" v))))
+
+(defn window-width-change-handler [new]
+  (when (number? new)
+    (swap! window-width (fn [o] new))))
+
+(defn window-height-change-handler [new]
+  (when (number? new)
+    (swap! window-height (fn [o] new))))
 
 (defn -start [this internal-stage]
   (.setTitle internal-stage "SVG Output")
@@ -67,7 +85,15 @@
     (.setAll children [internal-webview])
     (.setScene internal-stage internal-scene)
     (.setOnZoom internal-scene zoom-handler)
-    (.setOnKeyReleased internal-scene key-released-handler)
+    (.addListener (.widthProperty internal-scene) (reify ChangeListener
+                                                    (changed [_ val old new]
+                                                      (window-width-change-handler new))))
+    (.addListener (.heightProperty internal-scene) (reify ChangeListener
+                                                     (changed [_ val old new]
+                                                       (window-height-change-handler new))))
+    (.setOnKeyReleased internal-scene (reify EventHandler
+                                        (handle [_ v]
+                                          (key-released-handler v))))
     (.show internal-stage)
     (swap! engine (fn [x] internal-engine))
     (swap! stage (fn [x] internal-stage))
