@@ -66,6 +66,9 @@
 
         :else (do #_(println "unhandled" v))))
 
+#_(defn scroll-handler [v]
+  (println "hello from scroll-handler" v))
+
 (defn window-width-change-handler [new]
   (when (number? new)
     (swap! window-width (fn [o] new))))
@@ -87,6 +90,9 @@
     (.setOnZoom internal-scene (reify EventHandler
                                  (handle [_ v]
                                    (zoom-handler (.getZoomFactor v)))))
+    #_(.setOnScroll internal-scene (reify EventHandler
+                                   (handle [_ v]
+                                     (scroll-handler v))))
     (.addListener (.widthProperty internal-scene) (reify ChangeListener
                                                     (changed [_ val old new]
                                                       (window-width-change-handler new))))
