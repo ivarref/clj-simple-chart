@@ -46,6 +46,33 @@
 ; input-width * zoom = new
 ; zoom = new / input-width
 
+(defn key-pressed-handler
+  [v]
+  (cond (and (.isControlDown v)
+             (= (.getText v) "0"))
+        (update-zoom-and-resize! 1.0)
+
+        (and (.isControlDown v)
+             (= (.getCode v) KeyCode/W))
+        (update-zoom-and-resize! (/ @window-width @input-width))
+
+        (and (.isControlDown v)
+             (= (.getCode v) KeyCode/H))
+        (update-zoom-and-resize! (/ @window-height @input-height))
+
+        (and (.isControlDown v)
+             (= (.getCode v) KeyCode/MINUS))
+        (update-zoom-and-resize! (- @zoom zoom-delta))
+
+        (and (.isControlDown v)
+             (= (.getCode v) KeyCode/EQUALS))
+        (update-zoom-and-resize! (+ @zoom zoom-delta))
+
+        (and (= (.getCode v) KeyCode/T))
+        (.setAlwaysOnTop @stage (not (.isAlwaysOnTop @stage)))
+
+        :else (do #_(println "unhandled" v))))
+
 (defn key-released-handler
   [v]
   (cond (and (.isControlDown v)
@@ -67,7 +94,7 @@
         :else (do #_(println "unhandled" v))))
 
 #_(defn scroll-handler [v]
-  (println "hello from scroll-handler" v))
+    (println "hello from scroll-handler" v))
 
 (defn window-width-change-handler [new]
   (when (number? new)
@@ -91,14 +118,17 @@
                                  (handle [_ v]
                                    (zoom-handler (.getZoomFactor v)))))
     #_(.setOnScroll internal-scene (reify EventHandler
-                                   (handle [_ v]
-                                     (scroll-handler v))))
+                                     (handle [_ v]
+                                       (scroll-handler v))))
     (.addListener (.widthProperty internal-scene) (reify ChangeListener
                                                     (changed [_ val old new]
                                                       (window-width-change-handler new))))
     (.addListener (.heightProperty internal-scene) (reify ChangeListener
                                                      (changed [_ val old new]
                                                        (window-height-change-handler new))))
+    (.setOnKeyPressed internal-scene (reify EventHandler
+                                       (handle [_ v]
+                                         (key-pressed-handler v))))
     (.setOnKeyReleased internal-scene (reify EventHandler
                                         (handle [_ v]
                                           (key-released-handler v))))
