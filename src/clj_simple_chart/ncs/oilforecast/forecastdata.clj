@@ -20,7 +20,7 @@
            "2009"
            ; Sokkelåret 2009 http://www.npd.no/no/Nyheter/Nyheter/2010/Sokkelaret-2009/Sokkelaret-2009---Petroleumsproduksjon/
            {:prfPrdOilNetMillSm3 [108.7 100.1 97.6 93.0 91.6]}
-            ;:prfPrdGasNetBillSm3 [105.0 109.0 112.0 112.0 112.2]
+           ;:prfPrdGasNetBillSm3 [105.0 109.0 112.0 112.0 112.2]
 
            "2010"
            ; Sokkelåret 2010 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkel%C3%A5ret-2010/Tabell.pdf
@@ -49,7 +49,7 @@
            "2016"
            ; Sokkelåret 2016 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret-2016/Figurgrunnlag-Sokkelaret-2016.xlsx
            {:prfPrdOilNetMillSm3 [93.88 88.05 83.30 91.27 98.90]}
-            ;:prfPrdGasNetBillSm3 [114.47 114.54 114.46 114.34 113.76]
+           ;:prfPrdGasNetBillSm3 [114.47 114.54 114.46 114.34 113.76]
 
            })
 
@@ -84,3 +84,17 @@
                            (filter #(= 2017 (:predictionYear %)))
                            (sort-by :prfYear)
                            (vec)))
+
+(defn- yearly-forecast-to-months
+  [{:keys [prfYear prfPrdOilNetMillSm3]}]
+  (for [month (range 1 13)]
+    {:prfYear prfYear
+     :prfMonth month
+     :date (format "%d-%02d" prfYear month)
+     :prfPrdOilNetMillSm3 prfPrdOilNetMillSm3}))
+
+(defn forecast-monthly [forecast]
+  (->> forecast
+       (mapv yearly-forecast-to-months)
+       (flatten)
+       (vec)))
