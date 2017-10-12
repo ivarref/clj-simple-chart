@@ -29,6 +29,6 @@
                      (vec))
         svg-dots (mapv (fn [{:keys [p c h h0 fill]}]
                          [:g (translate/translate-map (xfn p) (yfn (+ h h0)))
-                          [:circle {:r    10
+                          [:circle {:r    5
                                     :fill (or fill (fill-from-scale x c) "red")}]]) stacked)]
     (vec (cons :g svg-dots))))

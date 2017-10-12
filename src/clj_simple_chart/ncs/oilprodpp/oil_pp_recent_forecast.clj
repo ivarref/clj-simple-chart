@@ -8,6 +8,7 @@
             [clj-simple-chart.ncs.oilprognosis.forecastdata :as forecastdata]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
+            [clj-simple-chart.dots :as dots]
             [clj-simple-chart.area :as clj-area]
             [clj-simple-chart.area-center-text :as act]
             [clojure.string :as string]
@@ -36,7 +37,13 @@
 
 (def sub-domain buckets)
 
-(def x-domain (vec (sort (distinct (flatten [(map :date data) (map :date forecast)])))))
+(def x-domain (vec (sort (distinct
+                           (flatten [(map :date data)
+                                     (map :date forecast)
+                                     (map :date (forecastdata/yearly-forecast-to-months
+                                                  {:prfYear (inc (last (sort (map :prfYear forecast))))
+                                                   :prfPrdOilNetMillSm3 0.0}))
+                                     ])))))
 
 (def x-ticks (filter #(or (= % "1971-12")
                           (.endsWith % "-12"))
@@ -130,8 +137,10 @@
 (defn make-txt [{date :date year :year :as opts}]
   (let [year (subs date 0 4)
         fmt (if (some #{year} ["2000" "2001"]) "%.1f" "%.0f")]
-    (if (or (some #{year} ["2000" "2005" "2010" "2013" "2016"])
-            #_(>= (read-string year) 2013))
+    (if (or (some #{year} ["2000" "2005" "2010" "2013" ;"2016"
+                           "2017"
+                           "2020"])
+            #_(>= (read-string year) 2017))
       [:g {:transform (translate (xfn date) (yfn (get opts :sum)))}
        [:circle {:r 2.5}]
        [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
@@ -149,6 +158,11 @@
                        :text-anchor "middle"
                        :text        (string/replace (format fmt (get opts :sum)) "." ",")})])))
 
+(defn forecast-line []
+  (->> forecast-eoy
+       (mapv (fn [{:keys [date prfPrdOilNetMillSm3]}]
+               {:p date :h prfPrdOilNetMillSm3}))
+       (dots/dots c)))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -157,6 +171,8 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
      (clj-area/area c flat)
+     (forecast-line)
+     [:g (map make-txt forecast-eoy)]
      [:g (map make-txt (filter #(some #{(:date %)} (mapv (fn [x] (str x "-12")) (range 2000 2017))) data))]
      (axis/render-axis (:x c))]
     (let [offset-xy 20

@@ -85,12 +85,14 @@
                            (sort-by :prfYear)
                            (vec)))
 
-(defn- yearly-forecast-to-months
+(defn yearly-forecast-to-months
   [{:keys [prfYear prfPrdOilNetMillSm3]}]
   (for [month (range 1 13)]
     {:prfYear prfYear
      :prfMonth month
+     :year (str prfYear)
      :date (format "%d-%02d" prfYear month)
+     :sum prfPrdOilNetMillSm3
      :prfPrdOilNetMillSm3 prfPrdOilNetMillSm3}))
 
 (defn forecast-monthly [forecast]
