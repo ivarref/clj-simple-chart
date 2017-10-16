@@ -20,7 +20,7 @@
 (def ordinaer (keyword "Ordinær skatt på utvinning av petroleum"))
 (def saerskatt (keyword "Særskatt på utvinning av petroleum"))
 
-(def oil-date-to-usd brentoilprice/brent-12-mma-dato-to-nok)
+(def oil-date-to-nok brentoilprice/brent-12-mma-dato-to-nok)
 
 (defn six-months-ago [s]
   {:pre [(string? s)]}
@@ -30,15 +30,25 @@
         six-m-ago (.minusMonths (YearMonth/of year month) 6)]
     (format "%04d-%02d" (.getYear six-m-ago) (.getMonthValue six-m-ago))))
 
+(defn six-months-future [s]
+  {:pre [(string? s)]}
+  (let [parts (string/split s #"-0?")
+        year (read-string (first parts))
+        month (read-string (last parts))
+        six-m-future (.plusMonths (YearMonth/of year month) 6)]
+    (format "%04d-%02d" (.getYear six-m-future) (.getMonthValue six-m-future))))
+
 (def data (->> petroskatt/twelve-mms-mrd
                (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
                (mapv #(assoc % :sum (+ (get % ordinaer) (get % saerskatt))))
-               (mapv #(assoc % :oilprice (get oil-date-to-usd (six-months-ago (:dato %)) ::none)))
-               #_(filter #(>= (:year %) 2010))))
+               (mapv #(assoc % :oilprice (get oil-date-to-nok (six-months-ago (:dato %)) ::none)))))
 
 (test/is (= 0 (count (filter #(= ::none (:oilprice %)) data))))
 
-(def x-domain (map :dato data))
+(def x-domain (vec (sort (distinct (flatten [(map :dato data)
+                                             #_(->> data
+                                                    (mapv :dato)
+                                                    (mapv six-months-future))])))))
 
 (def svg-width 900)
 (def svg-height 500)
@@ -122,7 +132,7 @@
                 :dx                 (- svg-width marg)
                 :text-anchor        "end" :font-size 14}))
 
-(def x-ticks (filter #(.endsWith % "-01") (map :dato data)))
+(def x-ticks (filter #(.endsWith % "-01") x-domain))
 (def end-of-year-data (filter #(.endsWith (:dato %) "-12") data))
 
 (def xx {:type          :ordinal
@@ -191,12 +201,13 @@
     [:g (bars (mapv make-rect data))]
     (line/line {:x         (:x c)
                 :y         (:y2 c)
-                :p         :dato
-                :h         :oilprice
                 :path      {:stroke-width 3 :stroke oil-fill}
                 :dot       (fn [{:keys [p]}] (.endsWith p "-12"))
                 :dot-style {:fill oil-fill :r 3.5 :stroke "black" :stroke-width 2}}
-               data)
+               (->> x-domain
+                    (mapv (fn [dato]
+                            {:p dato
+                             :h (get oil-date-to-nok (six-months-ago dato))}))))
     [:g (map make-txt end-of-year-data)]
     #_detail
     (axis/render-axis (:x c))]
