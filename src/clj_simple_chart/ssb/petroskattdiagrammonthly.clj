@@ -9,6 +9,7 @@
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.rect :as rect]
+            [clj-simple-chart.line :as line]
             [clj-simple-chart.point :as point]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer [translate]]
@@ -131,23 +132,22 @@
          :domain        x-domain
          :sub-domain    [ordinaer saerskatt]
          :padding-inner 0.1
-         :padding-outer 0.2
-         })
+         :padding-outer 0.2})
 
-(def yy {:type        :linear
-         :orientation :right
-         :grid        true
+(def yy {:type                :linear
+         :orientation         :right
+         :grid                true
          :grid-stroke-opacity 0.35
-         :tick-values  (mapv #(* 25.0 %) (range 11))
-         :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain      [0 250 #_(apply max (map :sum data))]})
+         :tick-values         (mapv #(* 25.0 %) (range 11))
+         :axis-text-style-fn  (fn [x] {:font "Roboto Bold"})
+         :domain              [0 250]})
 
-(def yy2 {:type        :linear
-          :orientation :left
-          :color       oil-fill
-          :tick-values (mapv #(* 70.0 %) (range 11))
+(def yy2 {:type               :linear
+          :orientation        :left
+          :color              oil-fill
+          :tick-values        (mapv #(* 70.0 %) (range 11))
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-          :domain      [0 700 #_(apply max (map :oilprice data))]})
+          :domain             [0 700]})
 
 (def available-height (- svg-height (:height (meta header)) (:height (meta footer))))
 
@@ -163,7 +163,6 @@
 
 (def xfn (partial point/center-point x))
 (def yfn (partial point/center-point y))
-(def y2fn (partial point/center-point y2))
 
 (def bars (rect/scaled-rect (:x c) (:y c)))
 
@@ -181,34 +180,6 @@
                    :text-anchor "middle"
                    :text        (string/replace (format "%.0f" summ) "." ",")})])
 
-(defn add-oil-price-line []
-  (let [dat data
-        first-point (first dat)
-        last-point (last dat)
-        rest-of-data (drop 1 dat)
-        oil-price-stroke-width 3
-        line-to (reduce (fn [o v] (str o " "
-                                       "L"
-                                       (xfn (:dato v))
-                                       " "
-                                       (y2fn (:oilprice v)))) "" rest-of-data)
-        dots (map (fn [{dato :dato oilprice :oilprice}]
-                    [:circle {:cx           (xfn dato)
-                              :cy           (y2fn oilprice)
-                              :stroke       "black"
-                              :stroke-width oil-price-stroke-width
-                              :fill         oil-fill
-                              :r            4}]) end-of-year-data)]
-    [:g
-     [:path {:stroke-width oil-price-stroke-width
-             :stroke       oil-fill
-             :fill         "none"
-             :d
-                           (str "M" (xfn (:dato first-point)) " " (y2fn (:oilprice first-point))
-                                " " line-to)}]
-     #_dots]))
-
-
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    header
@@ -218,14 +189,20 @@
     (axis/render-axis (:y c))
     (axis/render-axis (:y2 c))
     [:g (bars (mapv make-rect data))]
-    [:g (add-oil-price-line)]
+    (line/line {:x         (:x c)
+                :y         (:y2 c)
+                :p         :dato
+                :h         :oilprice
+                :path      {:stroke-width 3 :stroke oil-fill}
+                :dot       (fn [{:keys [p]}] (.endsWith p "-12"))
+                :dot-style {:fill oil-fill :r 4 :stroke "black" :stroke-width 2}}
+               data)
     [:g (map make-txt end-of-year-data)]
     #_detail
     (axis/render-axis (:x c))]
    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]
    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer2]
    ])
-
 
 (defn render-self []
   (core/render "./img/ssb-svg/petroskatt-mms.svg" "./img/ssb-png/petroskatt-mms.png" (diagram)))
