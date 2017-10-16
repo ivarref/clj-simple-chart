@@ -53,6 +53,14 @@
         (update-zoom-and-resize! 1.0)
 
         (and (.isControlDown v)
+             (= (.getText v) "2"))
+        (update-zoom-and-resize! 0.5)
+
+        (and (.isControlDown v)
+             (= (.getText v) "5"))
+        (update-zoom-and-resize! 0.6)
+
+        (and (.isControlDown v)
              (= (.getCode v) KeyCode/W))
         (update-zoom-and-resize! (/ @window-width @input-width))
 
@@ -78,18 +86,6 @@
   (cond (and (.isControlDown v)
              (= (.getText v) "0"))
         (update-zoom-and-resize! 1.0)
-
-        (and (.isControlDown v)
-             (= (.getCode v) KeyCode/W))
-        (update-zoom-and-resize! (/ @window-width @input-width))
-
-        (and (.isControlDown v)
-             (= (.getCode v) KeyCode/MINUS))
-        (update-zoom-and-resize! (- @zoom zoom-delta))
-
-        (and (.isControlDown v)
-             (= (.getCode v) KeyCode/EQUALS))
-        (update-zoom-and-resize! (+ @zoom zoom-delta))
 
         :else (do #_(println "unhandled" v))))
 
