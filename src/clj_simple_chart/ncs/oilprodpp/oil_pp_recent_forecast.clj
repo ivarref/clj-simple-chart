@@ -5,10 +5,11 @@
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.ncs.oilprodpp.oilppdata :as production]
             [clj-simple-chart.translate :refer [translate translate-y]]
-            [clj-simple-chart.ncs.oilprognosis.forecastdata :as forecastdata]
+            [clj-simple-chart.ncs.oilforecast.forecastdata :as forecastdata]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
             [clj-simple-chart.dots :as dots]
+            [clj-simple-chart.line :as line]
             [clj-simple-chart.area :as clj-area]
             [clj-simple-chart.area-center-text :as act]
             [clojure.string :as string]
@@ -162,7 +163,7 @@
   (->> forecast-eoy
        (mapv (fn [{:keys [date prfPrdOilNetMillSm3]}]
                {:p date :h prfPrdOilNetMillSm3}))
-       (dots/dots c)))
+       (line/line c)))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}

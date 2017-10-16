@@ -195,7 +195,7 @@
                 :h         :oilprice
                 :path      {:stroke-width 3 :stroke oil-fill}
                 :dot       (fn [{:keys [p]}] (.endsWith p "-12"))
-                :dot-style {:fill oil-fill :r 4 :stroke "black" :stroke-width 2}}
+                :dot-style {:fill oil-fill :r 3.5 :stroke "black" :stroke-width 2}}
                data)
     [:g (map make-txt end-of-year-data)]
     #_detail

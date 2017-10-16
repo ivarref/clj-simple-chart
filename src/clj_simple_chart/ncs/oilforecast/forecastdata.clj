@@ -1,4 +1,4 @@
-(ns clj-simple-chart.ncs.oilprognosis.forecastdata)
+(ns clj-simple-chart.ncs.oilforecast.forecastdata)
 
 (def data {
            "2005"
