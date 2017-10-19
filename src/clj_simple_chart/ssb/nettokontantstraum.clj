@@ -99,6 +99,17 @@
 (csv/write-csv "./data/11013/11013-4qms.csv" {:data    four-quarters-moving-sum
                                               :columns actual-columns})
 
+(def four-quarters-moving-sum-eoy
+  (->> four-quarters-moving-sum
+       (filter #(string/ends-with? (:dato %) "K4"))
+       (mapv #(assoc % :year (subs (:dato %) 0 4)))
+       (mapv #(assoc % :netto-kontantstraum (get % (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet"))))))
+
+(csv/write-csv-format "./data/11013/11013-4qms-eoy.csv" {:data    four-quarters-moving-sum-eoy
+                                                         :columns [:year
+                                                                   :netto-kontantstraum]
+                                                         :format {:netto-kontantstraum "%,7.0f"}})
+
 (defn produce-mrd [x]
   (reduce (fn [o [k v]]
             (cond (= k :dato) (assoc o k v)
