@@ -105,6 +105,26 @@
        (mapv #(assoc % :year (subs (:dato %) 0 4)))
        (mapv #(assoc % :netto-kontantstraum (get % (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet"))))))
 
+; Statens netto kontantstrøm fra olje- og gassnæringen, som inkluderer direkte inntekter,
+; skatter og avgifter samt utbytte fra Statoil,
+; øker fra 175 milliarder kroner i år (2017) til 183 milliarder kroner neste år, ifølge regjeringen.
+; http://e24.no/makro-og-politikk/statsbudsjettet-2018/regjeringen-tapper-fortsatt-oljefondet-for-aa-budsjettet-til-aa-gaa-opp/24161664
+
+; Statsbudsjettet 2014 https://www.statsbudsjettet.no/Statsbudsjettet-2014/Satsinger/?pid=59880#hopp
+; netto 2013 og 2014: 343,9 og 314,1
+
+; Statsbudsjettet 2015 https://www.statsbudsjettet.no/Statsbudsjettet-2015/Satsinger/?pid=65153#hopp
+; netto 2014 og 2015: 297,2 og 304,0
+
+; Statsbudsjettet 2016 https://www.statsbudsjettet.no/Statsbudsjettet-2016/Satsinger/?pid=69114#hopp
+; netto 2015 og 2016: 217,9 og 204,1
+
+; Statsbudsjettet 2017 https://www.statsbudsjettet.no/Statsbudsjettet-2017/Satsinger/?pid=72986
+; netto 2016 og 2017: 124,5 og 138,3
+
+; Statsbudsjettet 2018 https://www.statsbudsjettet.no/Statsbudsjettet-2018/Satsinger/?pid=83808
+; netto 2017 og 2018: 175 og 183
+
 (csv/write-csv-format "./data/11013/11013-4qms-eoy.csv" {:data    four-quarters-moving-sum-eoy
                                                          :columns [:year
                                                                    :netto-kontantstraum]

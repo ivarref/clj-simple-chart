@@ -75,6 +75,21 @@
                  (sort-by :prfYear)
                  (vec)))
 
+(def plus-4 (->> pretty-data
+                 (filter #(= 4 (:offsetYear %)))
+                 (sort-by :prfYear)
+                 (vec)))
+
+(def plus-3 (->> pretty-data
+                 (filter #(= 3 (:offsetYear %)))
+                 (sort-by :prfYear)
+                 (vec)))
+
+(def plus-2 (->> pretty-data
+                 (filter #(= 2 (:offsetYear %)))
+                 (sort-by :prfYear)
+                 (vec)))
+
 (def plus-1 (->> pretty-data
                  (filter #(= 1 (:offsetYear %)))
                  (sort-by :prfYear)
@@ -99,4 +114,10 @@
   (->> forecast
        (mapv yearly-forecast-to-months)
        (flatten)
+       (vec)))
+
+(defn forecast-monthly-eoy [forecast]
+  (->> forecast
+       (forecast-monthly)
+       (filter #(= 12 (:prfMonth %)))
        (vec)))

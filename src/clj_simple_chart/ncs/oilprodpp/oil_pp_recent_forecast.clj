@@ -22,11 +22,11 @@
 (def svg-height 500)
 
 (def data (->> production/by-date
-               (filter #(>= (:eofYear %) 2000))))
+               (filter #(>= (:eofYear %) 2006))))
 
-(def forecast (forecastdata/forecast-monthly forecastdata/current-forecast))
-(def forecast-eoy (->> forecast
-                       (filter #(= 12 (:prfMonth %)))))
+#_(def forecast (forecastdata/forecast-monthly forecastdata/plus-5))
+#_(def forecast-eoy (->> forecast
+                         (filter #(= 12 (:prfMonth %)))))
 
 (def buckets (vec (reverse (sort (keys production/empty-buckets)))))
 
@@ -42,7 +42,7 @@
                            (flatten [(map :date data)
                                      (map :date forecast)
                                      (map :date (forecastdata/yearly-forecast-to-months
-                                                  {:prfYear (inc (last (sort (map :prfYear forecast))))
+                                                  {:prfYear             (inc (last (sort (map :prfYear forecast))))
                                                    :prfPrdOilNetMillSm3 0.0}))
                                      ])))))
 
@@ -97,7 +97,7 @@
 (def yy {:type               :linear
          :orientation        :right
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain             [0 200]})
+         :domain             [0 160]})
 
 (def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
@@ -138,7 +138,7 @@
 (defn make-txt [{date :date year :year :as opts}]
   (let [year (subs date 0 4)
         fmt (if (some #{year} ["2000" "2001"]) "%.1f" "%.0f")]
-    (if (or (some #{year} ["2000" "2005" "2010" "2013" ;"2016"
+    (if (or (some #{year} ["2000" "2005" "2010" "2013"      ;"2016"
                            "2017"
                            "2020"])
             #_(>= (read-string year) 2017))
@@ -159,12 +159,6 @@
                        :text-anchor "middle"
                        :text        (string/replace (format fmt (get opts :sum)) "." ",")})])))
 
-(defn forecast-line []
-  (->> forecast-eoy
-       (mapv (fn [{:keys [date prfPrdOilNetMillSm3]}]
-               {:p date :h prfPrdOilNetMillSm3}))
-       (line/line c)))
-
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
@@ -172,9 +166,35 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
      (clj-area/area c flat)
-     (forecast-line)
-     [:g (map make-txt forecast-eoy)]
-     [:g (map make-txt (filter #(some #{(:date %)} (mapv (fn [x] (str x "-12")) (range 2000 2017))) data))]
+
+     #_(let [data [forecastdata/plus-5
+                 forecastdata/plus-4
+                 forecastdata/plus-3
+                 forecastdata/plus-2
+                 forecastdata/plus-1]])
+     (line/line (assoc c
+                  :p :date
+                  :path {:stroke "yellow" :stroke-opacity 0.7}
+                  :h :prfPrdOilNetMillSm3) (forecastdata/forecast-monthly-eoy forecastdata/plus-2))
+     (line/line (assoc c
+                  :p :date
+                  :path {:stroke "blue" :stroke-opacity 0.7}
+                  :h :prfPrdOilNetMillSm3) (forecastdata/forecast-monthly-eoy forecastdata/plus-3))
+
+     (line/line (assoc c
+                  :p :date
+                  :path {:stroke "black" :stroke-opacity 0.7}
+                  :h :prfPrdOilNetMillSm3) (forecastdata/forecast-monthly-eoy forecastdata/plus-5))
+     (line/line (assoc c
+                  :p :date
+                  :path {:stroke "red" :stroke-opacity 0.7}
+                  :h :prfPrdOilNetMillSm3) (forecastdata/forecast-monthly-eoy forecastdata/plus-4))
+     (line/line (assoc c
+                  :p :date
+                  :path {:stroke "cyan" :stroke-opacity 0.85}
+                  :h :prfPrdOilNetMillSm3) (forecastdata/forecast-monthly-eoy forecastdata/plus-1))
+     #_[:g (map make-txt forecast-eoy)]
+     #_[:g (map make-txt (filter #(some #{(:date %)} (mapv (fn [x] (str x "-12")) (range 2000 2017))) data))]
      (axis/render-axis (:x c))]
     (let [offset-xy 20
           infotext (opentype/stack {:fill         "lightgray"
