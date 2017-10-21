@@ -13,78 +13,78 @@
       (update new :x #(+ h (or x 0.0) (or % 0.0)))) coll))
 
 (defn vertical-rect
-  [xscale yscale {px     :p
-                  py     :y
-                  height :h
-                  fill   :fill
-                  stroke :stroke
+  [xscale yscale {px           :p
+                  py           :y
+                  height       :h
+                  fill         :fill
+                  stroke       :stroke
                   stroke-width :stroke-width
-                  :as    all
-                  :or    {py   (first (:domain yscale))
-                          fill "red"
-                          stroke "none"
-                          stroke-width "1px"}}]
+                  :as          all
+                  :or          {py           (first (:domain yscale))
+                                fill         "red"
+                                stroke       "none"
+                                stroke-width "1px"}}]
   (let [svg-natural-order (apply < (:range yscale))]
     (if svg-natural-order
       (let [bottom (first (:range yscale))
             h (- (point yscale height) bottom)
             yy (point yscale py)]
-        [:rect {:x      (point xscale px)
-                :y      (double yy)
-                :height (double h)
-                :fill   fill
-                :style  "shape-rendering:crispEdges;"
-                :stroke stroke
+        [:rect {:x            (point xscale px)
+                :y            (double yy)
+                :height       (double h)
+                :fill         fill
+                :style        "shape-rendering:crispEdges;"
+                :stroke       stroke
                 :stroke-width stroke-width
-                :width  (:bandwidth xscale)}])
+                :width        (:bandwidth xscale)}])
       (let [top (first (:range yscale))
             h (- top (point yscale height))
             yy (- (point yscale py) h)]
-        [:rect {:x      (point xscale px)
-                :y      (double yy)
-                :height (double h)
-                :fill   fill
-                :stroke stroke
+        [:rect {:x            (point xscale px)
+                :y            (double yy)
+                :height       (double h)
+                :fill         fill
+                :stroke       stroke
                 :stroke-width stroke-width
-                :style  "shape-rendering:crispEdges;"
-                :width  (:bandwidth xscale)}]))))
+                :style        "shape-rendering:crispEdges;"
+                :width        (:bandwidth xscale)}]))))
 
 
 (defn horizontal-rect
-  [xscale yscale {py     :p
-                  px     :x
-                  height :h
-                  fill   :fill
-                  stroke :stroke
+  [xscale yscale {py           :p
+                  px           :x
+                  height       :h
+                  fill         :fill
+                  stroke       :stroke
                   stroke-width :stroke-width
-                  :as    all
-                  :or    {px   (first (:domain xscale))
-                          fill "red"
-                          stroke "none"
-                          stroke-width "1px"}}]
+                  :as          all
+                  :or          {px           (first (:domain xscale))
+                                fill         "red"
+                                stroke       "none"
+                                stroke-width "1px"}}]
   (let [svg-natural-order (apply < (:range xscale))]
     (if svg-natural-order
       (let [bottom (first (:range xscale))
             w (- (point xscale height) bottom)]
-        [:rect {:x      (point xscale px)
-                :y      (point yscale py)
-                :height (:bandwidth yscale)
-                :fill   fill
-                :stroke stroke
+        [:rect {:x            (point xscale px)
+                :y            (point yscale py)
+                :height       (:bandwidth yscale)
+                :fill         fill
+                :stroke       stroke
                 :stroke-width stroke-width
-                :style  "shape-rendering:crispEdges;"
-                :width  (double w)}])
+                :style        "shape-rendering:crispEdges;"
+                :width        (double w)}])
       (let [top (first (:range xscale))
             h (- top (point xscale height))
             xx (- (point xscale px) h)]
-        [:rect {:x      xx
-                :y      (point yscale py)
-                :height (:bandwidth yscale)
-                :fill   fill
-                :stroke stroke
+        [:rect {:x            xx
+                :y            (point yscale py)
+                :height       (:bandwidth yscale)
+                :fill         fill
+                :stroke       stroke
                 :stroke-width stroke-width
-                :style  "shape-rendering:crispEdges;"
-                :width  (double h)}]))))
+                :style        "shape-rendering:crispEdges;"
+                :width        (double h)}]))))
 
 (defn update-fill-color [xscale item]
   (cond
@@ -158,3 +158,24 @@
 (defmethod scaled-rect [:ordinal :linear]
   [x y]
   (partial rect-or-stacked-vertical x y))
+
+(defn- fill-fn [fill]
+  (cond (string? fill)
+        (fn [x] fill)
+
+        (fn? fill)
+        fill
+
+        :else nil))
+
+(defn bars [c {:keys [p h fill] :as config} data]
+  (let [pp (or p :p)
+        hh (or h :h)
+        fill (fill-fn fill)
+        processed-data (->> data
+                            (flatten)
+                            (mapv #(assoc % :p (pp %)))
+                            (mapv #(assoc % :h (hh %)))
+                            (mapv #(if fill (assoc % :fill (fill %)) %))
+                            (vec))]
+    ((scaled-rect (:x c) (:y c)) processed-data)))
