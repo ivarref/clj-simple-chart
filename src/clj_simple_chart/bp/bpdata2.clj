@@ -91,7 +91,9 @@
                                                              :nuclear_consumption_mtoe
                                                              :hydro_consumption_mtoe
                                                              :renewables_consumption_mtoe]))))
-                   (mapv #(assoc % :regular_country (not (.startsWith (name (:country_code %)) "BP_"))))))
+                   (mapv #(assoc % :regular_country (not (.startsWith (name (:country_code %)) "BP_"))))
+                   (sort-by :year)
+                   (vec)))
 
 (def missing-country (filter #(nil? (:country %)) all-data))
 (test/is (zero? (count missing-country)))
