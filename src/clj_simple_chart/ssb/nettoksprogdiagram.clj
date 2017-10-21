@@ -27,14 +27,14 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 28}
-               {:text "Røynd (søyler) og anslag frå statsbudsjettet (linje)" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
+               {:text "Røynd (søyler) og anslag frå Statsbudsjettet for kommande år (linje)" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "Milliardar kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelder: SSB, Statsbudsjettet 2000-2016" :font "Roboto Regular" :font-size 14}
+              [{:margin-top 8 :text "Kjelder: SSB, Statsbudsjettet 2000–2018" :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def xx {:type          :ordinal
@@ -59,6 +59,16 @@
                      :x      xx
                      :y      yy}))
 
+(def blue "rgb(31, 119, 180)")
+(def orange "rgb(255, 127, 14)")
+(def green "rgb(44, 160, 44)")
+(def brown "rgb(140, 86, 75)")
+(def red "rgb(214, 39, 40)")
+(def pink "rgb(227, 119, 194)")
+(def gusjegul "rgb(188, 189, 34)")
+(def lilla "rgb(148, 103, 189)")
+(def cyan "rgb(23, 190, 207)")
+
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
@@ -66,19 +76,19 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
      (rect/bars c
-                {:p :year
-                 :fill "yellow"
-                 :h :netto-kontantstraum}
+                {:p    :year
+                 :fill green
+                 :h    :netto-kontantstraum}
                 data)
-     (line/line c {:p :year
-                   :h :netto-kontantstraum
-                   :dot true
-                   :dot-style {:r 4.5
-                               :fill "green"
-                               :stroke "black"
-                               :stroke-width 1.5}
-                   :path {:stroke "black"
-                          :stroke-width 3}} prognose/gul-bok)
+     (line/line c {:p         :year
+                   :h         :netto-kontantstraum
+                   :dot       true
+                   :dot-style {:r            4.5
+                               :fill         orange
+                               :stroke       "black"
+                               :stroke-width 2.0}
+                   :path      {:stroke       "black"
+                               :stroke-width 3}} prognose/gul-bok)
      (axis/render-axis (:x c))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
