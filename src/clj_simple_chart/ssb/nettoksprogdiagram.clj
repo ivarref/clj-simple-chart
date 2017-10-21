@@ -27,7 +27,7 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 28}
-               {:text "Røynd (søyler) og anslag frå Statsbudsjettet for kommande år (linje)" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
+               {:text "Røynd (søyler) og anslag frå Statsbudsjettet for komande år (linje)" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "Milliardar kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
