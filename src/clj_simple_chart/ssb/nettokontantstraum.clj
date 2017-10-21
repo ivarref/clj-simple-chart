@@ -108,7 +108,7 @@
        (mapv #(assoc % :netto-kontantstraum (/ (get % (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet")) 1000)))
        (csv/keep-columns [:year :netto-kontantstraum])
        (mapv #(assoc % :prognose (get forecast/year-to-forecast (:year %) 0.0)))
-       (mapv #(assoc % :diff (- (:netto-kontantstraum %) (:prognose %))))))
+       (mapv #(assoc % :diff (- (:prognose %) (:netto-kontantstraum %))))))
 
 (csv/write-csv-format "./data/11013/11013-4qms-eoy.csv" {:data    four-quarters-moving-sum-eoy
                                                          :columns [:year
