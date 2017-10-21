@@ -199,9 +199,8 @@
     (axis/render-axis (:y c))
     (axis/render-axis (:y2 c))
     [:g (bars (mapv make-rect data))]
-    (line/line {:x         (:x c)
-                :y         (:y2 c)
-                :path      {:stroke-width 3 :stroke oil-fill}
+    (line/line (assoc c :y (:y2 c))
+               {:path      {:stroke-width 3 :stroke oil-fill}
                 :dot       (fn [{:keys [p]}] (.endsWith p "-12"))
                 :dot-style {:fill oil-fill :r 3.5 :stroke "black" :stroke-width 2}}
                (->> x-domain
