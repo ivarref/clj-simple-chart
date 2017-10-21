@@ -1,4 +1,4 @@
-(ns clj-simple-chart.bp.diagrams.world.coaldiagram
+(ns clj-simple-chart.bp.diagrams.world.gasdiagram
   (:require [clj-simple-chart.bp.bpdata2 :as bpdata]
             [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.opentype :as opentype]
@@ -11,17 +11,18 @@
 
 (def data (->> bpdata/all-data
                (filter #(= "World" (:country %)))
-               (csv/keep-columns [:coal_consumption_mtoe :year])
+               (csv/keep-columns [:gas_consumption_mtoe :year])
+               (mapv #(assoc % :value (:gas_consumption_mtoe %)))
                (filter #(>= (:year %) 1990))
                (sort-by :year)
                (vec)))
 
-(def max-value (apply max (mapv :coal_consumption_mtoe data)))
+(def max-value (apply max (mapv :value data)))
 (def all-time-high-year (->> data
-                             (filter #(= (:coal_consumption_mtoe %) max-value))
+                             (filter #(= (:value %) max-value))
                              (first)
                              (:year)))
-(def percent-all-time-high (* 100 (/ (:coal_consumption_mtoe (last data)) max-value)))
+(def percent-all-time-high (* 100 (/ (:value (last data)) max-value)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -37,10 +38,10 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "World: Coal consumption" :font "Roboto Bold" :font-size 28}
+              [{:text "World: Gas consumption" :font "Roboto Bold" :font-size 28}
                {:text "Million tonnes of oil equivalents" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
 
-               {:text "Coal consumption" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
+               {:text "Gas consumption" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "Million tonnes of oil equivalents" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
@@ -64,7 +65,7 @@
          :orientation        :right
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain             [0 4000]})
+         :domain             [0 3500]})
 
 (def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
@@ -94,11 +95,13 @@
      (axis/render-axis (:y c))
      (rect/bars c
                 {:p    :year
-                 :fill brown
-                 :h    :coal_consumption_mtoe}
+                 :fill red
+                 :h    :value}
                 data)
      (axis/render-axis (:x c))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (core/render "./img/bp-svg/world-coal.svg" "./img/bp-png/world-coal.png" (diagram)))
+  (core/render "./img/bp-svg/world-gas.svg" "./img/bp-png/world-gas.png" (diagram)))
+
+
