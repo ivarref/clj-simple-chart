@@ -27,3 +27,7 @@
                                     :netto-kontantstraum (last (get data year))}))
                   (sort-by :year)
                   (vec)))
+
+(def year-to-forecast (->> (keys data)
+                           (mapv (fn [year] [year (last (get data year))]))
+                           (into {})))
