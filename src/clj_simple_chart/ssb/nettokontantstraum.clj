@@ -116,9 +116,9 @@
                                                                    :netto-kontantstraum
                                                                    :prognose
                                                                    :diff]
-                                                         :format {:netto-kontantstraum "%,4.1f"
-                                                                  :prognose "%.1f"
-                                                                  :diff "%.1f"
+                                                         :format {:netto-kontantstraum "%.0f"
+                                                                  :prognose "%.0f"
+                                                                  :diff "%.0f"
                                                                   }})
 
 (defn produce-mrd [x]
