@@ -16,6 +16,13 @@
                (sort-by :year)
                (vec)))
 
+(def max-value (apply max (mapv :coal_consumption_mtoe data)))
+(def all-time-high-year (->> data
+                             (filter #(= (:coal_consumption_mtoe %) max-value))
+                             (first)
+                             (:year)))
+(def percent-all-time-high (* 100 (/ (:coal_consumption_mtoe (last data)) max-value)))
+
 (def marg 10)
 (def two-marg (* 2 marg))
 
