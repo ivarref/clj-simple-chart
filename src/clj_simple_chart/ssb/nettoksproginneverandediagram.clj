@@ -27,7 +27,7 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 28}
-               {:text "Røynda og prognose frå Statsbudsjettet" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
+               {:text "Prognoser frå Statsbudsjettet og røynda" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "Milliardar kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
@@ -59,15 +59,19 @@
                      :x      xx
                      :y      yy}))
 
+(def red "rgb(214, 39, 40)")
+(def pink "rgb(227, 119, 194)")
+
 (def blue "rgb(31, 119, 180)")
 (def orange "rgb(255, 127, 14)")
 (def green "rgb(44, 160, 44)")
 (def brown "rgb(140, 86, 75)")
-(def red "rgb(214, 39, 40)")
-(def pink "rgb(227, 119, 194)")
+
 (def gusjegul "rgb(188, 189, 34)")
 (def lilla "rgb(148, 103, 189)")
 (def cyan "rgb(23, 190, 207)")
+
+(def komande-fill "#990099")
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -81,10 +85,9 @@
                 data)
      [:g {:transform (translate 0 2)}
       (opentype/stack {}
-                      [;{:text "Netto kontantstraum" :font "Roboto Bold"}
-                       {:text "Røynd netto kontantstraum" :rect {:fill green} :font "Roboto Bold"}
+                      [{:text "Røynd netto kontantstraum" :rect {:fill green} :font "Roboto Bold"}
                        {:text "Prognose inneverande år" :circle {:r 4.5 :stroke-width 2 :fill orange} :path {:stroke orange} :font "Roboto Bold"}
-                       {:text "Prognose komande år" :circle {:r 4.5 :stroke-width 2 :fill blue} :path {:stroke blue} :font "Roboto Bold"}])
+                       {:text "Prognose komande år" :circle {:r 4.5 :stroke-width 2 :fill komande-fill} :path {:stroke komande-fill} :font "Roboto Bold"}])
       ]
      (line/line c {:p         :year
                    :h         :netto-kontantstraum
@@ -99,10 +102,10 @@
                    :h         :netto-kontantstraum
                    :dot       true
                    :dot-style {:r            4.5
-                               :fill         blue
+                               :fill         komande-fill
                                :stroke       "black"
                                :stroke-width 2.0}
-                   :path      {:stroke       blue
+                   :path      {:stroke       komande-fill
                                :stroke-width 3}} prognose/gul-bok)
      (axis/render-axis (:x c))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
