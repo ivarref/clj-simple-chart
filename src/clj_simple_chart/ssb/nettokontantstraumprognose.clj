@@ -28,6 +28,13 @@
                   (sort-by :year)
                   (vec)))
 
+(def inneverande-aar (->> (keys data)
+                          (mapv (fn [year] {:year                (str (dec (read-string year)))
+                                            :netto-kontantstraum (first (get data year))}))
+                          (sort-by :year)
+                          (drop 1)
+                          (vec)))
+
 (def year-to-forecast (->> (keys data)
                            (mapv (fn [year] [year (last (get data year))]))
                            (into {})))

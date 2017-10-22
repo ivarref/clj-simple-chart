@@ -139,12 +139,14 @@
                     fill         :fill
                     stroke       :stroke
                     rect         :rect
+                    circle       :circle
+                    path         :path
                     min-height   :min-height
                     border-tight :border-tight}
                    text]
   (let [bb (get-bounding-box font-name text x y font-size)
         metadata {:font-size (double font-size)
-                  :height    (or (if rect min-height nil) (Math/abs (- (:y1 bb) (:y2 bb))))
+                  :height    (or (if (or rect circle) min-height nil) (Math/abs (- (:y1 bb) (:y2 bb))))
                   :text      text
                   :width     (Math/abs (- (:x1 bb) (:x2 bb)))}
         metadata (merge metadata bb)
@@ -177,6 +179,7 @@
                           :y2     (:y2 (meta txt))
                           :stroke border-tight}]])
         rect-size (or (:size rect) (Math/ceil (* 0.8 font-size)))
+        circle-r (or (:r circle) (Math/ceil (* 0.35 font-size)))
         rectangle (when rect
                     [:rect {:x            (+ #_0.5 (:x1 bb))
                             :y            0 #_-0.5
@@ -186,10 +189,22 @@
                             :stroke       (or (:stroke rect) "black")
                             :stroke-width (or (:stroke-width rect) "1px")
                             :fill-opacity (or (:fill-opacity rect) 1.0)}])
+        circle-elem (when circle
+                      [:g
+                       [:path {:d            (str "M 0," (dec (Math/floor (* 0.5 (or min-height 0.0))))
+                                                  " H " font-size)
+                               :stroke       (or (:stroke path) "black")
+                               :stroke-width (or (:stroke-width path) 3.5)}]
+                       [:circle {:r            circle-r
+                                 :cx           (Math/floor (* 0.5 (or font-size 0.0)))
+                                 :cy           (dec (Math/floor (* 0.5 (or min-height 0.0))))
+                                 :stroke-width (or (:stroke-width circle) 1)
+                                 :stroke       (or (:stroke circle) "black")
+                                 :fill         (or (:fill circle) "red")}]])
         text-margin (or (:margin rect) (Math/ceil (* 0.2 font-size)))
         text-offset (+ rect-size text-margin)
-        text-offset (if rect text-offset 0)
-        path [:g rectangle [:g {:transform (translate text-offset 0)} font-path border]]]
+        text-offset (if (or rect circle) text-offset 0)
+        path [:g rectangle circle-elem [:g {:transform (translate text-offset 0)} font-path border]]]
     (with-meta path (update metadata :width #(+ % text-offset)))))
 
 (defn text
@@ -207,12 +222,15 @@
      stroke             :stroke
      spacing            :spacing
      rect               :rect
+     circle             :circle
+     path               :path
      :as                config
      :or                {x                  0.0
                          y                  0.0
                          dx                 0.0
                          dy                 0.0
                          rect               nil
+                         circle             nil
                          fill               "#000"
                          text-anchor        :none
                          font-size          14
@@ -271,6 +289,8 @@
                             :font-size    font-size
                             :fill         fill
                             :rect         rect
+                            :circle       circle
+                            :path         path
                             :min-height   min-height
                             :stroke       stroke
                             :border-tight border-tight}
@@ -319,7 +339,7 @@
                                                :else [v])) txts)))
         with-baseline (map #(assoc % :alignment-baseline "hanging") texts-with-spacing)
         max-height-for-rects (->> with-baseline
-                                  (filter :rect)
+                                  (filter #(or (:rect %) (:circle %)))
                                   (mapv text)
                                   (mapv meta)
                                   (mapv :height)
