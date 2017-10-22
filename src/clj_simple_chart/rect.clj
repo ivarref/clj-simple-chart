@@ -168,14 +168,31 @@
 
         :else nil))
 
+(defn- h-fn [h item]
+  (cond (nil? h)
+        [(assoc item :h (:h item))]
+
+        (keyword? h)
+        [(assoc item :h (h item))]
+
+        (fn? h)
+        [(assoc item :h (h item))]
+
+        (and (vector? h) (every? vector? h))
+        (mapv #(assoc item :h ((first %) item)
+                           :fill (second %)
+                           :c (first %)) h)
+
+        :else (throw (ex-info "unhandled state" {:h h :item item}))))
+
 (defn bars [c {:keys [p h fill] :as config} data]
   (let [pp (or p :p)
-        hh (or h :h)
         fill (fill-fn fill)
         processed-data (->> data
                             (flatten)
                             (mapv #(assoc % :p (pp %)))
-                            (mapv #(assoc % :h (hh %)))
+                            (mapv (partial h-fn h))
+                            (flatten)
                             (mapv #(if fill (assoc % :fill (fill %)) %))
                             (vec))]
     ((scaled-rect (:x c) (:y c)) processed-data)))

@@ -178,8 +178,8 @@
                           :stroke border-tight}]])
         rect-size (or (:size rect) (Math/ceil (* 0.8 font-size)))
         rectangle (when rect
-                    [:rect {:x            (+ 0.5 (:x1 bb))
-                            :y            -0.5
+                    [:rect {:x            (+ #_0.5 (:x1 bb))
+                            :y            0 #_-0.5
                             :height       rect-size
                             :width        rect-size
                             :fill         (or (:fill rect) "red")
@@ -370,9 +370,9 @@
         with-translation (map (partial add-translation width max-height) groups)
         width-w-margs (+ margin-left margin-right (or width max-width))
         height-w-margs (+ margin-top margin-bottom max-height)]
-    (with-meta [:g
-                (when fill [:rect {:width        width-w-margs
-                                   :height       height-w-margs
+    (with-meta [:g {:transform (translate 0.5 0.5)}
+                (when fill [:rect {:width        (Math/ceil width-w-margs)
+                                   :height       (Math/ceil height-w-margs)
                                    :stroke       stroke
                                    :stroke-width stroke-width
                                    :fill-opacity fill-opacity
