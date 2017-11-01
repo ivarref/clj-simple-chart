@@ -42,18 +42,20 @@
 
 (def data-parsed (->> data
                       (csv/read-string-columns numeric-columns)
-                      (csv/number-or-throw-columns numeric-columns)))
+                      (csv/number-or-throw-columns numeric-columns)
+                      (mapv #(assoc % :fldRecoverableLiquids (reduce + 0 (mapv % [:fldRecoverableOil :fldRecoverableCondensate :fldRecoverableNGL]))))))
 
 (def field-names (map :fldName data))
 
 (defn get-reserve [field-name kind]
   {:pre [(or (some #{field-name} field-names)
              (some #{field-name} ["SINDRE" "33/9-6 DELTA"]))
-         (some #{kind} [:fldRecoverableOE :fldRecoverableOil :fldRecoverableGas])]}
+         (some #{kind} [:fldRecoverableOE :fldRecoverableOil :fldRecoverableGas :fldRecoverableLiquids])]}
   (cond (not (some #{field-name} field-names))
-        (let [prop (get {:fldRecoverableOE  :prfPrdOeNetMillSm3
-                         :fldRecoverableOil :prfPrdOilNetMillSm3
-                         :fldRecoverableGas :prfPrdGasNetBillSm3} kind)]
+        (let [prop (get {:fldRecoverableOE      :prfPrdOeNetMillSm3
+                         :fldRecoverableOil     :prfPrdOilNetMillSm3
+                         :fldRecoverableLiquids :prfPrdLiquidsNetMillSm3
+                         :fldRecoverableGas     :prfPrdGasNetBillSm3} kind)]
           (->> raw-production/data
                (filter #(= field-name (:prfInformationCarrier %)))
                (mapv prop)
@@ -64,3 +66,10 @@
         (-> (filter #(= (:fldName %) field-name) data-parsed)
             first
             (get kind))))
+
+(test/is (not (some #{"SINDRE"} field-names)))
+(test/is (not (some #{"33/9-6 DELTA"} field-names)))
+
+(test/is (= 8.6 (get-reserve "JOHAN SVERDRUP" :fldRecoverableGas)))
+(test/is (= 282.3 (get-reserve "JOHAN SVERDRUP" :fldRecoverableOil)))
+(test/is (= 286.1 (get-reserve "JOHAN SVERDRUP" :fldRecoverableLiquids)))
