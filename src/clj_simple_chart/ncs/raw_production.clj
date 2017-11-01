@@ -99,6 +99,7 @@
                         (flatten)
                         (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
                         (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))
+                        (map #(assoc % :days-in-month (. (YearMonth/of (:prfYear %) (:prfMonth %)) lengthOfMonth)))
                         (map #(assoc % :prev-months (prev-12-months (:date %))))
                         (map #(assoc % :prfPrdLiquidsNetMillSm3 (reduce + 0 (mapv % [:prfPrdOilNetMillSm3 :prfPrdNGLNetMillSm3 :prfPrdCondensateNetMillSm3]))))
                         (sort-by :date)
