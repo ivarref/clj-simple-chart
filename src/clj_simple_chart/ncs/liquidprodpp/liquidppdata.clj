@@ -15,7 +15,6 @@
                (map #(assoc % :production (:prfPrdLiquidsNetMillSm3 %)))
                (map #(assoc % :recoverable (reserve/get-reserve (:prfInformationCarrier %) :fldRecoverableLiquids)))
                (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
-               (map #(assoc % :days-in-month (. (YearMonth/of (:prfYear %) (:prfMonth %)) lengthOfMonth)))
                ;(filter #(pos? (:recoverable %)))
                ; remove unused values
                (map #(dissoc % :prfPrdNGLNetMillSm3
@@ -35,8 +34,6 @@
     (< percentage-produced 25) "0- 0–25"
     (< percentage-produced 50) "1- 25–50"
     (< percentage-produced 75) "2- 50–75"
-    ;(< percentage-produced 80) "3- 70–80"
-    ;(< percentage-produced 90) "4- 80–90"
     :else "5- 75–100"))
 
 (defn produce-cumulative
@@ -45,6 +42,7 @@
   (->> (sort-by :date production)
        (reductions (fn [old n] (update n :cumulative (fn [v] (+ v (:cumulative old))))))
        (mapv #(assoc % :production-12-months-est (apply + (mapv :prfPrdLiquidsNetMillSm3 (:prev-rows %)))))
+       (mapv #(assoc % :num-days (apply + (mapv :days-in-month (:prev-rows %)))))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :remaining (- (:recoverable %) (:cumulative %))))
        (mapv #(assoc % :percentage-produced
@@ -62,13 +60,15 @@
   {:pre [(coll? production)]}
   (merge {:date          (:date (first production))
           :days-in-month (:days-in-month (first production))
-          :sum           (reduce + 0 (mapv :production-12-months-est production))}
+          :sum           (/ (* 6.29 (reduce + 0 (mapv :production-12-months-est production)))
+                            (apply max (mapv :num-days production)))}
          (reduce (fn [org [k v]]
                    (assoc org k
-                              (->> production
-                                   (filter #(= k (:bucket %)))
-                                   (mapv :production-12-months-est)
-                                   (reduce + 0)))) {} empty-buckets)))
+                              (/ (* 6.29 (->> production
+                                              (filter #(= k (:bucket %)))
+                                              (mapv :production-12-months-est)
+                                              (reduce + 0)))
+                                 (apply max (mapv :num-days production))))) {} empty-buckets)))
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)
@@ -80,20 +80,20 @@
 (def year-end-data (->> by-date
                         (filter #(or (.endsWith (:date %) "-12") (= % (last by-date))))
                         (mapv #(assoc % :diff (Math/abs (- (:sum %)
-                                                           (raw-production/sum-for-year (:prfYear %) :prfPrdLiquidsNetMillSm3)))))))
+                                                           (raw-production/sum-for-year-mboed (:prfYear %) :prfPrdLiquidsNetMillSm3)))))))
 
 (csvmap/write-csv-format
   "./data/ncs/liquids-production-pp-bucket-stacked-yearly.csv"
   {:columns (flatten [:date (sort (keys empty-buckets)) :sum :diff])
    :format  (merge {:sum  "%.3f"
                     :diff "%.3f"}
-                   (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
+                   (into {} (mapv (fn [[k v]] [k "%.2f"]) empty-buckets)))
    :data    year-end-data})
 
 (csvmap/write-csv-format
   "./data/ncs/liquids-production-pp-bucket-stacked-monthly.csv"
   {:columns (flatten [:date (sort (keys empty-buckets)) :sum])
    :format  (merge {:sum "%.3f"}
-                   (into {} (mapv (fn [[k v]] [k "%.1f"]) empty-buckets)))
+                   (into {} (mapv (fn [[k v]] [k "%.2f"]) empty-buckets)))
    :data    by-date})
 

@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.csv.csvmap :as csvmap])
-  (:import (java.time YearMonth)))
+  (:import (java.time YearMonth Year)))
 
 ; Goal:
 ; Raw production with
@@ -146,8 +146,15 @@
        (sort)
        (reduce + 0.0)))
 
+(defn sum-for-year-mboed [year kind]
+  (/ (* 6.29 (sum-for-year year kind))
+     (.length (Year/of year))))
+
 (defn sum-for-year-format [year kind]
   (format "%.3f" (sum-for-year year kind)))
+
+(defn sum-for-year-mboed-format [year kind]
+  (format "%.3f" (sum-for-year-mboed year kind)))
 
 (test/is (= "94.009" (sum-for-year-format 2016 :prfPrdOilNetMillSm3)))
 (test/is (= "90.965" (sum-for-year-format 2015 :prfPrdOilNetMillSm3)))
