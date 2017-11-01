@@ -39,6 +39,9 @@
     (date-range (.minusMonths (YearMonth/of year month) 11)
                 (YearMonth/of year month))))
 
+(defn prev-12-months-num-days [s]
+  (apply + (mapv #(.lengthOfMonth %) (mapv year-month (prev-12-months s)))))
+
 (def field-monthly-production-url "http://factpages.npd.no/ReportServer?/FactPages/TableView/field_production_monthly&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=80.213.237.130&CultureCode=en")
 (defonce raw-data (-> field-monthly-production-url
                       (client/get)
@@ -99,7 +102,6 @@
                         (flatten)
                         (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
                         (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))
-                        (map #(assoc % :days-in-month (. (YearMonth/of (:prfYear %) (:prfMonth %)) lengthOfMonth)))
                         (map #(assoc % :prev-months (prev-12-months (:date %))))
                         (map #(assoc % :prfPrdLiquidsNetMillSm3 (reduce + 0 (mapv % [:prfPrdOilNetMillSm3 :prfPrdNGLNetMillSm3 :prfPrdCondensateNetMillSm3]))))
                         (sort-by :date)

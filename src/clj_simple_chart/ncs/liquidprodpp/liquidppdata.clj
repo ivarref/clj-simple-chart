@@ -6,7 +6,8 @@
             [clj-simple-chart.ncs.reserve :as reserve]
             [clj-simple-chart.ncs.raw-production :as raw-production]
             [clj-simple-chart.csv.csvmap :as csvmap]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clj-simple-chart.ncs.raw-production :as production])
   (:import (java.time YearMonth)))
 
 (def data (->> raw-production/data
@@ -42,7 +43,6 @@
   (->> (sort-by :date production)
        (reductions (fn [old n] (update n :cumulative (fn [v] (+ v (:cumulative old))))))
        (mapv #(assoc % :production-12-months-est (apply + (mapv :prfPrdLiquidsNetMillSm3 (:prev-rows %)))))
-       (mapv #(assoc % :num-days (apply + (mapv :days-in-month (:prev-rows %)))))
        (mapv #(dissoc % :prev-rows))
        (mapv #(assoc % :remaining (- (:recoverable %) (:cumulative %))))
        (mapv #(assoc % :percentage-produced
@@ -57,18 +57,18 @@
 
 (defn process-date
   [production]
-  {:pre [(coll? production)]}
+  {:pre [(coll? production)
+         (= 1 (count (distinct (mapv :date production))))]}
   (merge {:date          (:date (first production))
-          :days-in-month (:days-in-month (first production))
           :sum           (/ (* 6.29 (reduce + 0 (mapv :production-12-months-est production)))
-                            (apply max (mapv :num-days production)))}
+                            (production/prev-12-months-num-days (:date (first production))))}
          (reduce (fn [org [k v]]
                    (assoc org k
                               (/ (* 6.29 (->> production
                                               (filter #(= k (:bucket %)))
                                               (mapv :production-12-months-est)
                                               (reduce + 0)))
-                                 (apply max (mapv :num-days production))))) {} empty-buckets)))
+                                 (production/prev-12-months-num-days (:date (first production)))))) {} empty-buckets)))
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)
