@@ -30,7 +30,9 @@
 
 (defmethod frmt :linear
   [scale v]
-  (format (str "%." (number-of-decimals scale) "f") v))
+  (if-let [tf (:tick-format scale)]
+    (tf v)
+    (format (str "%." (number-of-decimals scale) "f") v)))
 
 (def axis-font-properties
   {:font-size 14
@@ -167,7 +169,7 @@
                                                   :dy          ".32em"
                                                   :y           0.5} scale d)
                        (frmt scale d))]) (ticks scale))]
-      {margin width
+      {margin         width
        :margin-bottom 0.5})))
 
 (defn transform-with-meta [x y k]
