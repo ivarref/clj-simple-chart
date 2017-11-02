@@ -167,13 +167,12 @@
      (axis/render-axis (:y c))
      (clj-area/area c flat)
      (line/line c {:p         :date
-                   :path      {:stroke forecast-color :stroke-opacity 0.7}
+                   :path      {:stroke forecast-color :stroke-opacity 1.0 :stroke-width 3}
                    :dot       true
-                   :dot-style {:fill forecast-color}
+                   :dot-style {:fill "yellow" :stroke "black" :stroke-width 1 :r 4}
                    :h         :prfPrdLiquidsNetMillMboed} forecast)
      [:g {:transform (translate (xfn "2019-12") (yfn 1.6))}
-      (opentype/text {:text "OD Pronose 2016" :font "Roboto Black" :font-size 14 :text-anchor "middle"})]
-     #_(act/area-center-text c last-text)
+      (opentype/text {:text "OD Prognose 12.01.2017" :font "Roboto Black" :font-size 14 :text-anchor "middle"})]
      [:g (map make-txt (filter #(some #{(:date %)}
                                       [;"1971-12"
                                        "1975-12"
@@ -186,7 +185,8 @@
                                        "2005-12"
                                        "2010-12"
                                        "2013-12"
-                                       "2015-12"]) data))]
+                                       "2015-12"
+                                       "2016-12"]) data))]
      [:g (map make-txt (->> forecast (mapv #(assoc % :sum (:prfPrdLiquidsNetMillMboed %)))))]
      (axis/render-axis (:x c))]
     (let [infotext (opentype/stack {:fill         "white"
