@@ -48,7 +48,8 @@
 
            "2016"
            ; Sokkelåret 2016 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret-2016/Figurgrunnlag-Sokkelaret-2016.xlsx
-           {:prfPrdOilNetMillSm3 [93.88 88.05 83.30 91.27 98.90]}
+           {:prfPrdOilNetMillSm3       [93.88 88.05 83.30 91.27 98.90]
+            :prfPrdLiquidsNetMillMboed [1.98 1.88 1.80 1.92 2.04]}
            ;:prfPrdGasNetBillSm3 [114.47 114.54 114.46 114.34 113.76]
 
            })
@@ -101,14 +102,15 @@
                            (vec)))
 
 (defn yearly-forecast-to-months
-  [{:keys [prfYear prfPrdOilNetMillSm3]}]
+  [{:keys [prfYear prfPrdOilNetMillSm3 prfPrdLiquidsNetMillMboed]}]
   (for [month (range 1 13)]
-    {:prfYear prfYear
-     :prfMonth month
-     :year (str prfYear)
-     :date (format "%d-%02d" prfYear month)
-     :sum prfPrdOilNetMillSm3
-     :prfPrdOilNetMillSm3 prfPrdOilNetMillSm3}))
+    {:prfYear                   prfYear
+     :prfMonth                  month
+     :year                      (str prfYear)
+     :date                      (format "%d-%02d" prfYear month)
+     :sum                       prfPrdOilNetMillSm3
+     :prfPrdOilNetMillSm3       prfPrdOilNetMillSm3
+     :prfPrdLiquidsNetMillMboed prfPrdLiquidsNetMillMboed}))
 
 (defn forecast-monthly [forecast]
   (->> forecast

@@ -12,7 +12,8 @@
             [clj-simple-chart.area-center-text :as act]
             [clojure.string :as string]
             [clojure.string :as str]
-            [clj-simple-chart.ncs.oilforecast.forecastdata :as forecastdata]))
+            [clj-simple-chart.ncs.oilforecast.forecastdata :as forecastdata]
+            [clj-simple-chart.line :as line]))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -20,7 +21,9 @@
 (def svg-width 900)
 (def svg-height 500)
 
-(def data production/by-date)
+(def data (->> production/by-date
+               (filter #(>= (:eofYear %) 2000))))
+
 (def buckets (vec (reverse (sort (keys production/empty-buckets)))))
 
 ;"#d62728",  //red
@@ -50,9 +53,9 @@
 
 (def sub-domain buckets)
 
-(def forecast (forecastdata/forecast-monthly forecastdata/current-forecast))
+(def forecast (forecastdata/forecast-monthly-eoy forecastdata/current-forecast))
 
-(def x-domain (date-range (:date (first data)) "2025-12"))
+(def x-domain (date-range (:date (first data)) "2022-06"))
 
 (def x-ticks (filter #(or (= % "1971-12")
                           (.endsWith % "5-12")
@@ -87,7 +90,6 @@
                 :font "Roboto Bold" :font-size 16 :margin-top 1}
                {:text feltmogning-ex-txt :font "Roboto Regular" :font-size 16 :margin-top 3}
 
-
                {:text "Oljeproduksjon, millionar fat/dag" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "12 månadar glidande gjennomsnitt" :margin-top 1 :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
@@ -107,7 +109,7 @@
          :orientation        :right
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          :tick-format        (fn [x] (str/replace (format "%.1f" x) "." ","))
-         :domain             [0 3.5]})
+         :domain             [0 3.75]})
 
 (def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
@@ -155,6 +157,8 @@
                    :text-anchor "middle"
                    :text        (string/replace (format "%.2f" (get opts :sum)) "." ",")})])
 
+(def forecast-color "black")
+
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
@@ -162,6 +166,13 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
      (clj-area/area c flat)
+     (line/line c {:p         :date
+                   :path      {:stroke forecast-color :stroke-opacity 0.7}
+                   :dot       true
+                   :dot-style {:fill forecast-color}
+                   :h         :prfPrdLiquidsNetMillMboed} forecast)
+     [:g {:transform (translate (xfn "2019-12") (yfn 1.6))}
+      (opentype/text {:text "OD Pronose 2016" :font "Roboto Black" :font-size 14 :text-anchor "middle"})]
      #_(act/area-center-text c last-text)
      [:g (map make-txt (filter #(some #{(:date %)}
                                       [;"1971-12"
@@ -176,29 +187,29 @@
                                        "2010-12"
                                        "2013-12"
                                        "2015-12"]) data))]
+     [:g (map make-txt (->> forecast (mapv #(assoc % :sum (:prfPrdLiquidsNetMillMboed %)))))]
      (axis/render-axis (:x c))]
-    (let [infotext (opentype/stack #_{:fill         "lightgray"
-                                      :fill-opacity 0.3
-                                      :margin       5}
-                     {}
-                     (flatten
-                       [{:text          "Nedtappingsgrad" :font "Roboto Black" :font-size 16
-                         :margin-bottom 2}
-                        (mapv (fn [k]
-                                {:text      (str (subs k 3) "%")
-                                 :font-size 16
-                                 :font      "Roboto Bold"
-                                 :rect      {:fill (get bucket-to-fill k)
-                                             :size nil}})
-                              (sort (keys production/empty-buckets)))
-                        #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
-      [:g {:transform (translate 0 #_(- (+ (:margin-left c) (:plot-width c))
-                                        (:width (meta infotext))
-                                        10)
-                                 (+ 0 (+ (:height (meta header)) (:margin-top c))))}
-       infotext
-       ]
-      )
+    (let [infotext (opentype/stack {:fill         "white"
+                                    :fill-opacity 0.75
+                                    :margin       5}
+                                   (flatten
+                                     [{:text          "Nedtappingsgrad" :font "Roboto Black" :font-size 16
+                                       :margin-bottom 2}
+                                      (mapv (fn [k]
+                                              {:text      (str (subs k 3) "%")
+                                               :font-size 16
+                                               :font      "Roboto Bold"
+                                               :rect      {:fill (get bucket-to-fill k)
+                                                           :size nil}})
+                                            (sort (keys production/empty-buckets)))
+                                      #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
+      [:g {:transform (translate (+ (:margin-left c) 15)
+                                 (+ (:height (meta header))
+                                    (:margin-top c)
+                                    (:plot-height c)
+                                    -15
+                                    (- (:height (meta infotext)))))}
+       infotext])
 
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
