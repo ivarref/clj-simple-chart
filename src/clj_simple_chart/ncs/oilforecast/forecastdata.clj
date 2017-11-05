@@ -48,10 +48,12 @@
 
            "2016"
            ; Sokkelåret 2016 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret-2016/Figurgrunnlag-Sokkelaret-2016.xlsx
-           {:prfPrdOilNetMillSm3       [93.88 88.05 83.30 91.27 98.90]
-            :prfPrdLiquidsNetMillMboed [1.98 1.88 1.80 1.92 2.04]}
-           ;:prfPrdGasNetBillSm3 [114.47 114.54 114.46 114.34 113.76]
-
+           {:prfPrdOilNetMillSm3        [93.88 88.05 83.30 91.27 98.90]
+            :prfPrdCondensateNetMillSm3 [1.83 2.37 2.61 2.30 2.22]
+            :prfPrdNGLNetMillSm3        [19.37 18.42 18.56 18.13 17.32]
+            :prfPrdLiquidsNetMillMboed  [1.98 1.88 1.80 1.92 2.04]
+            :prfPrdLiquidsNetMillSm3    [115.08 108.84 104.47 111.70 118.44]
+            :prfPrdGasNetBillSm3        [114.47 114.54 114.46 114.34 113.76]}
            })
 
 (defn process-prediction-year [[yr values]]
