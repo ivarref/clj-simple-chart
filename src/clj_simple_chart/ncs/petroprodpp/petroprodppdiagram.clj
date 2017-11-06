@@ -66,19 +66,19 @@
     (str (nth months (read-string (last parts)))
          " " (first parts))))
 
-(def feltmogning-ex-txt (str "Feltmogning: Prosent produsert av opprinneleg utvinnbart"
+(def feltmogning-ex-txt (str "Nedtappingsgrad: Prosent produsert av opprinneleg utvinnbart"
                              ;(:prfYear (first data)) "–" (:prfYear (last data))
 
                              ))
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text (str "Petroleumsproduksjon etter feltmogning") :font "Roboto Bold" :font-size 30}
-               {:text feltmogning-ex-txt :font "Roboto Bold" :font-size 16 :margin-top 1}
+              [{:text (str "Petroleumsproduksjon etter nedtappingsgrad") :font "Roboto Bold" :font-size 30}
                {:text (str "Produksjon per " (months-str (:date last-data)) ": "
                            (string/replace (format "%.1f" (get last-data :sum)) "." ",")
                            " mill. Sm³ oljeekvivalentar")
-                :font "Roboto Bold" :font-size 16 :margin-top 3}
+                :font "Roboto Bold" :font-size 16 :margin-top 1}
+               {:text feltmogning-ex-txt :font "Roboto Regular" :font-size 16 :margin-top 3}
 
                {:text "Millionar Sm³ oljeekvivalentar" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "12 månadar glidande sum" :margin-top 1 :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
@@ -173,7 +173,7 @@
                                       :margin       5}
                      {}
                      (flatten
-                       [{:text "Feltmogning" :font "Roboto Black" :font-size 16}
+                       [{:text "Nedtappingsgrad" :font "Roboto Black" :font-size 16}
                         (mapv (fn [k]
                                 {:text      (str (subs k 3) "%")
                                  :font-size 16
