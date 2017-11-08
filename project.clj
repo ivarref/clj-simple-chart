@@ -7,6 +7,7 @@
                  [hiccup "1.0.5"]
                  [org.testfx/openjfx-monocle "1.8.0_20"]
                  [commons-io/commons-io "2.5"]
+                 [org.apache.commons/commons-compress "1.15"]
                  [digest "1.4.5"]
                  [base64-clj "0.1.1"]
                  [org.mozilla/rhino "1.7.7.1"]
