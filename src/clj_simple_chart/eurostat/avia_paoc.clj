@@ -46,7 +46,7 @@
 (defn condense-row [row]
     (reduce (fn [o [k v]]
               (if (or (some #{k} regular-columns)
-                      (= k :2017Q1)
+                      ;(= k :2017Q1)
                       (= 4 (count (name k))))
                 (assoc o k v)
                 o))
@@ -59,6 +59,13 @@
                (mapv #(assoc % :schedule-time (get % (keyword "schedule\\time"))))
                (mapv #(dissoc % (keyword "schedule\\time")))
                (mapv condense-row)))
+
+(def norway (->> data
+                 (filter #(= "NO" (:geo %)))
+                 (filter #(and (= "PAS" (:unit %))
+                               (= "PAS_CRD" (:tra_meas %))
+                               (= "TOTAL" (:tra_cov %))
+                               (= "TOT" (:schedule-time %))))))
 
 (def geo-distinct (sort (distinct (mapv :geo data))))
 
