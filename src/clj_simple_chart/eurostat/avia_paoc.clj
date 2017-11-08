@@ -59,6 +59,12 @@
                (mapv #(dissoc % (keyword "schedule\\time")))
                (mapv condense-row)))
 
+(def geo-distinct (sort (distinct (mapv :geo data))))
+
 (csvmap/write-csv "data/eurostat/avia-paoc-yearly.csv"
                   {:columns (reverse (sort (keys (first data))))
                    :data data})
+
+(csvmap/write-csv "data/eurostat/NO-avia-paoc-yearly.csv"
+                  {:columns (reverse (sort (keys (first data))))
+                   :data (filter #(= "NO" (:geo %)) data)})
