@@ -44,13 +44,22 @@
           row))
 
 (defn condense-row [row]
-    (reduce (fn [o [k v]]
-              (if (or (some #{k} regular-columns)
-                      (= 4 (count (name k))))
-                (assoc o k v)
-                o))
-            {}
-            row))
+  (reduce (fn [o [k v]]
+            (if (or (some #{k} regular-columns)
+                    (= 4 (count (name k))))
+              (assoc o k v)
+              o))
+          {}
+          row))
+
+(defn months-only [row]
+  (reduce (fn [o [k v]]
+            (if (or (some #{k} regular-columns)
+                    (str/includes? (name k) "M"))
+              (assoc o k v)
+              o))
+          {}
+          row))
 
 (defn to-mill [row]
   (reduce (fn [o [k v]]
@@ -68,6 +77,17 @@
                (mapv #(dissoc % (keyword "schedule\\time")))
                (mapv condense-row)))
 
+(def monthly-data (->> (:data tsv)
+                       (mapv process-row)
+                       (mapv remove-whitespace)
+                       (mapv #(assoc % :schedule-time (get % (keyword "schedule\\time"))))
+                       (mapv #(dissoc % (keyword "schedule\\time")))
+                       (mapv months-only)
+                       (filter #(and (= "PAS" (:unit %))
+                                     (= "PAS_CRD" (:tra_meas %))
+                                     (= "TOTAL" (:tra_cov %))
+                                     (= "TOT" (:schedule-time %))))))
+
 (def norway (->> data
                  (filter #(= "NO" (:geo %)))
                  (filter #(and (= "PAS" (:unit %))
@@ -79,15 +99,19 @@
 
 (csvmap/write-csv "data/eurostat/avia-paoc-yearly.csv"
                   {:columns (reverse (sort (keys (first data))))
-                   :data data})
+                   :data    data})
 
 (csvmap/write-csv "data/eurostat/NO-avia-paoc-yearly.csv"
                   {:columns (reverse (sort (keys (first data))))
-                   :data (filter #(= "NO" (:geo %)) data)})
+                   :data    (filter #(= "NO" (:geo %)) data)})
 
 (csvmap/write-csv "data/eurostat/avia-paoc-yearly-pas-carried.csv"
                   {:columns (reverse (sort (keys (first data))))
-                   :data (filter #(and (= "PAS" (:unit %))
-                                       (= "PAS_CRD" (:tra_meas %))
-                                       (= "TOTAL" (:tra_cov %))
-                                       (= "TOT" (:schedule-time %))) data)})
+                   :data    (filter #(and (= "PAS" (:unit %))
+                                          (= "PAS_CRD" (:tra_meas %))
+                                          (= "TOTAL" (:tra_cov %))
+                                          (= "TOT" (:schedule-time %))) data)})
+
+(csvmap/write-csv "data/eurostat/avia-paoc-monthly-pas-carried.csv"
+                  {:columns (reverse (sort (keys (first monthly-data))))
+                   :data    monthly-data})
