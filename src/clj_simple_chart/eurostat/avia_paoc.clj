@@ -46,6 +46,7 @@
 (defn condense-row [row]
     (reduce (fn [o [k v]]
               (if (or (some #{k} regular-columns)
+                      (= k :2017Q1)
                       (= 4 (count (name k))))
                 (assoc o k v)
                 o))
