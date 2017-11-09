@@ -2,6 +2,7 @@
   (:require [clj-http.client :as client]
             [clojure.test :as test]
             [clj-simple-chart.csv.csvmap :as csvmap]
+            [clj-simple-chart.dateutils :as dateutils]
             [clojure.string :as str])
   (:import (org.apache.commons.compress.archivers ArchiveStreamFactory)
            (java.io ByteArrayInputStream ByteArrayOutputStream)
@@ -101,7 +102,7 @@
               o
               (conj o
                     (merge (into {} (mapv (fn [k] [k (get row k)]) regular-columns))
-                           {:date  (name k)
+                           {:date  (str/replace (name k) "M" "-")
                             :value v}))))
           []
           row))
@@ -112,6 +113,11 @@
                          (remove #(= ":" (:value %)))
                          (sort-by :date)
                          (vec)))
+
+(test/is (= (count (dateutils/date-range
+                     (:date (first norway-monthly))
+                     (:date (last norway-monthly))))
+            (count norway-monthly)))
 
 (def geo-distinct (sort (distinct (mapv :geo data))))
 
