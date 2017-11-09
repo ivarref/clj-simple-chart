@@ -10,7 +10,7 @@
             [clj-simple-chart.line :as line]
             [clj-simple-chart.dateutils :as dateutils]))
 
-(def data avia-paoc/norway-monthly-12mms)
+(def data avia-paoc/norway-monthly-12mms-yoy-5yr-avg)
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -26,7 +26,7 @@
 (def last-data (last data))
 
 (def fill
-  "#d62728" ; //red
+  "#d62728"                                                 ; //red
   ;"#ff7f0e", //orange
   ;"#8c564b", //brown
   ;"#1f77b4", //blue
@@ -38,6 +38,8 @@
   ;"#2ca02c", //green
   )
 
+(def yoy-fill "#1f77b4")
+
 (def header (opentype/stack
               {:width available-width}
               [{:text "Antall Luftpassasjerar, Noreg" :font "Roboto Bold" :font-size 30}
@@ -47,9 +49,10 @@
                            " millionar")
                 :font "Roboto Bold" :font-size 16 :margin-top 1}
 
-               {:text "Årleg vekst" :font "Roboto Bold" :font-size 16 :margin-top 10}
-               {:text "Antall luftpassasjerar, millionar" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:text "12 månadar glidande sum" :margin-top 1 :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
+               {:text "Årleg vekst" :font "Roboto Bold" :font-size 16 :margin-top 10 :fill yoy-fill :margin-bottom 2}
+               {:text "5 år glidande gjennomsnitt" :font "Roboto Bold" :font-size 16 :fill yoy-fill :margin-bottom 3}
+               {:text "Antall luftpassasjerar, millionar" :font "Roboto Bold" :font-size 16 :fill fill :valign :bottom :align :right}
+               {:text "12 månadar glidande sum" :margin-top 1 :font "Roboto Bold" :font-size 16 :fill fill :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
@@ -65,9 +68,16 @@
 (def yy {:type               :linear
          :orientation        :right
          :grid               true
-         :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
+         :axis-text-style-fn (fn [x] {:font "Roboto Bold" :fill fill})
          ;:tick-format        (fn [x] (str/replace (format "%.1f" x) "." ","))
          :domain             [0 40]})
+
+(def y2 {:type               :linear
+         :orientation        :left
+         :axis-text-style-fn (fn [x] {:font "Roboto Bold" :fill yoy-fill})
+         :tick-values        [-11 -8.25 -5.5 -2.75 0 2.75 5.5 8.25 11]
+         :tick-format        (fn [x] (str/replace (format "%.2f" x) "." ","))
+         :domain             [-11 11]})
 
 (def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
@@ -76,7 +86,8 @@
 (def c (chart/chart {:width  available-width
                      :height available-height
                      :x      xx
-                     :y      yy}))
+                     :y      yy
+                     :y2     y2}))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -84,31 +95,27 @@
     header
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
+     (axis/render-axis (:y2 c))
+     (line/line (assoc c :y (:y2 c))
+                {:h         :yoy
+                 :dot       false                           ;(fn [x] (str/ends-with? (:date x) "12"))
+                 :dot-style {:fill         yoy-fill
+                             :r            4.5
+                             :stroke       "black"
+                             :stroke-width 2.0}
+                 :path      {:stroke       yoy-fill
+                             :stroke-width 3.5}
+                 :p         :date} data)
      (line/line c {:h         :12mms-mill
                    :dot       (fn [x] (str/ends-with? (:date x) "12"))
-                   :dot-style {:fill fill
-                               :r 4.5
-                               :stroke "black"
+                   :dot-style {:fill         fill
+                               :r            4.5
+                               :stroke       "black"
                                :stroke-width 2.0}
                    :path      {:stroke       fill
                                :stroke-width 3.5}
                    :p         :date} data)
-     [:g #_(map make-txt (filter #(some #{(:date %)}
-                                        [;"1971-12"
-                                         "1975-12"
-                                         "1980-12"
-                                         "1985-12"
-                                         "1990-12"
-                                         "1995-12"
-                                         ;"2000-12"
-                                         "2001-12"
-                                         "2005-12"
-                                         "2010-12"
-                                         "2013-12"
-                                         "2015-12"]) data))]
      (axis/render-axis (:x c))]
-
-
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []

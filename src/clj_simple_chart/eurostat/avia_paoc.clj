@@ -127,7 +127,13 @@
                                    (mapv #(assoc % :prev (first (take-last 12 (take (inc (:idx %)) norway-monthly-12mms)))))
                                    (remove #(< (:idx %) (dec 12)))
                                    (mapv #(assoc % :yoy (double (* 100 (/ (:12mms %) (:12mms (:prev %)))))))
-                                   (mapv #(update % :yoy (fn [yoy] (- yoy 100))))))
+                                   (mapv #(update % :yoy (fn [yoy] (- yoy 100))))
+                                   (map-indexed (fn [idx x] (assoc x :idx idx)))))
+
+(def norway-monthly-12mms-yoy-5yr-avg
+  (->> norway-monthly-12mms-yoy
+       (mapv #(assoc % :5yoy (/ (apply + (mapv :yoy (take-last (* 12 5) (take (inc (:idx %)) norway-monthly-12mms-yoy)))) (* 12 5))))
+       (remove #(< (:idx %) (dec (* 12 5))))))
 
 (def eu28-monthly (->> monthly-data
                        (filter #(= "EU28" (:geo %)))
