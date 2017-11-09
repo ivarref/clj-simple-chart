@@ -122,6 +122,21 @@
                                (mapv #(assoc % :12mms-mill (/ (:12mms %) 1000000)))
                                (remove #(< (:idx %) (dec 12)))))
 
+(def eu28-monthly (->> monthly-data
+                       (filter #(= "EU28" (:geo %)))
+                       (mapcat explode-row)
+                       (remove #(= ":" (:value %)))
+                       (mapv #(update % :value read-string))
+                       (sort-by :date)
+                       (map-indexed (fn [idx x] (assoc x :idx idx)))
+                       (vec)))
+
+(def eu28-monthly-12mms (->> eu28-monthly
+                             (mapv #(assoc % :12mms
+                                             (apply + (mapv :value (take-last 12 (take (inc (:idx %)) eu28-monthly))))))
+                             (mapv #(assoc % :12mms-mill (/ (:12mms %) 1000000)))
+                             (remove #(< (:idx %) (dec 12)))))
+
 (test/is (= (count (dateutils/date-range
                      (:date (first norway-monthly))
                      (:date (last norway-monthly))))
@@ -151,4 +166,9 @@
 (csvmap/write-csv-format "data/eurostat/avia-paoc-norway-monthly-pas-carried.csv"
                          {:columns [:date :value :12mms-mill]
                           :data    norway-monthly-12mms
+                          :format  {:12mms-mill "%.1f"}})
+
+(csvmap/write-csv-format "data/eurostat/avia-paoc-eu28-monthly-pas-carried.csv"
+                         {:columns [:date :value :12mms-mill]
+                          :data    eu28-monthly-12mms
                           :format  {:12mms-mill "%.1f"}})
