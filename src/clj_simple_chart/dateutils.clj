@@ -2,6 +2,15 @@
   (:require [clojure.string :as string])
   (:import (java.time YearMonth)))
 
+(def months ["ignore"
+             "januar" "februar" "mars" "april" "mai"
+             "juni" "juli" "august" "september" "oktober" "november" "desember"])
+
+(defn months-str [v]
+  (let [parts (string/split v #"-0?")]
+    (str (nth months (read-string (last parts)))
+         " " (first parts))))
+
 (defn year-month [s]
    {:pre [(string? s)]}
    (let [parts (string/split s #"-0?")
