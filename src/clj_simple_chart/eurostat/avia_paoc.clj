@@ -120,7 +120,14 @@
                                (mapv #(assoc % :12mms
                                                (apply + (mapv :value (take-last 12 (take (inc (:idx %)) norway-monthly))))))
                                (mapv #(assoc % :12mms-mill (/ (:12mms %) 1000000)))
-                               (remove #(< (:idx %) (dec 12)))))
+                               (remove #(< (:idx %) (dec 12)))
+                               (map-indexed (fn [idx x] (assoc x :idx idx)))))
+
+(def norway-monthly-12mms-yoy (->> norway-monthly-12mms
+                                   (mapv #(assoc % :prev (first (take-last 12 (take (inc (:idx %)) norway-monthly-12mms)))))
+                                   (remove #(< (:idx %) (dec 12)))
+                                   (mapv #(assoc % :yoy (double (* 100 (/ (:12mms %) (:12mms (:prev %)))))))
+                                   (mapv #(update % :yoy (fn [yoy] (- yoy 100))))))
 
 (def eu28-monthly (->> monthly-data
                        (filter #(= "EU28" (:geo %)))
@@ -167,6 +174,19 @@
                          {:columns [:date :value :12mms-mill]
                           :data    norway-monthly-12mms
                           :format  {:12mms-mill "%.1f"}})
+
+(csvmap/write-csv-format "data/eurostat/avia-paoc-norway-monthly-yoy-eoy-pas-carried.csv"
+                         {:columns [:date :value :12mms-mill :yoy]
+                          :data    (filter #(or (str/ends-with? (:date %) "-12")
+                                                (= % (last norway-monthly-12mms-yoy))) norway-monthly-12mms-yoy)
+                          :format  {:12mms-mill "%.1f"
+                                    :yoy        "%.1f"}})
+
+(csvmap/write-csv-format "data/eurostat/avia-paoc-norway-monthly-yoy-pas-carried.csv"
+                         {:columns [:date :value :12mms-mill :yoy]
+                          :data    norway-monthly-12mms-yoy
+                          :format  {:12mms-mill "%.1f"
+                                    :yoy        "%.1f"}})
 
 (csvmap/write-csv-format "data/eurostat/avia-paoc-eu28-monthly-pas-carried.csv"
                          {:columns [:date :value :12mms-mill]
