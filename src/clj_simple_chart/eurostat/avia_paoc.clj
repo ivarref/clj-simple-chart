@@ -95,6 +95,24 @@
                                (= "TOTAL" (:tra_cov %))
                                (= "TOT" (:schedule-time %))))))
 
+(defn explode-row [row]
+  (reduce (fn [o [k v]]
+            (if (some #{k} regular-columns)
+              o
+              (conj o
+                    (merge (into {} (mapv (fn [k] [k (get row k)]) regular-columns))
+                           {:date  (name k)
+                            :value v}))))
+          []
+          row))
+
+(def norway-monthly (->> monthly-data
+                         (filter #(= "NO" (:geo %)))
+                         (mapcat explode-row)
+                         (remove #(= ":" (:value %)))
+                         (sort-by :date)
+                         (vec)))
+
 (def geo-distinct (sort (distinct (mapv :geo data))))
 
 (csvmap/write-csv "data/eurostat/avia-paoc-yearly.csv"
@@ -115,3 +133,7 @@
 (csvmap/write-csv "data/eurostat/avia-paoc-monthly-pas-carried.csv"
                   {:columns (reverse (sort (keys (first monthly-data))))
                    :data    monthly-data})
+
+(csvmap/write-csv "data/eurostat/avia-paoc-norway-monthly-pas-carried.csv"
+                  {:columns [:date :value]
+                   :data    norway-monthly})
