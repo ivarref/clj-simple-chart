@@ -10,7 +10,7 @@
             [clj-simple-chart.line :as line]
             [clj-simple-chart.dateutils :as dateutils]))
 
-(def data avia-paoc/norway-monthly-12mms-yoy-5yr-avg)
+(def data avia-paoc/norway-monthly-12mms)
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -47,10 +47,10 @@
                            "–" (dateutils/months-str (:date last-data)) ": "
                            (string/replace (format "%.1f" (double (get last-data :12mms-mill))) "." ",")
                            " millionar")
-                :font "Roboto Bold" :font-size 16 :margin-top 1}
+                :font "Roboto Bold" :font-size 16 :margin-top 1 :margin-bottom 10}
 
-               {:text "Årleg vekst" :font "Roboto Bold" :font-size 16 :margin-top 10 :fill yoy-fill :margin-bottom 2}
-               {:text "5 år glidande gjennomsnitt" :font "Roboto Bold" :font-size 16 :fill yoy-fill :margin-bottom 3}
+               ;{:text "Årleg vekst" :font "Roboto Bold" :font-size 16 :margin-top 10 :fill yoy-fill :margin-bottom 2}
+               ;{:text "5 år glidande gjennomsnitt" :font "Roboto Bold" :font-size 16 :fill yoy-fill :margin-bottom 3}
                {:text "Antall luftpassasjerar, millionar" :font "Roboto Bold" :font-size 16 :fill fill :valign :bottom :align :right}
                {:text "12 månadar glidande sum" :margin-top 1 :font "Roboto Bold" :font-size 16 :fill fill :valign :bottom :align :right}]))
 
@@ -87,7 +87,8 @@
                      :height available-height
                      :x      xx
                      :y      yy
-                     :y2     y2}))
+                     ;:y2     y2
+                     }))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -95,8 +96,8 @@
     header
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
-     (axis/render-axis (:y2 c))
-     (line/line (assoc c :y (:y2 c))
+     #_(axis/render-axis (:y2 c))
+     #_(line/line (assoc c :y (:y2 c))
                 {:h         :yoy
                  :dot       false                           ;(fn [x] (str/ends-with? (:date x) "12"))
                  :dot-style {:fill         yoy-fill
