@@ -111,8 +111,16 @@
                          (filter #(= "NO" (:geo %)))
                          (mapcat explode-row)
                          (remove #(= ":" (:value %)))
+                         (mapv #(update % :value read-string))
                          (sort-by :date)
+                         (map-indexed (fn [idx x] (assoc x :idx idx)))
                          (vec)))
+
+(def norway-monthly-12mms (->> norway-monthly
+                               (mapv #(assoc % :12mms
+                                               (apply + (mapv :value (take-last 12 (take (inc (:idx %)) norway-monthly))))))
+                               (mapv #(assoc % :12mms-mill (/ (:12mms %) 1000000)))
+                               (remove #(< (:idx %) (dec 12)))))
 
 (test/is (= (count (dateutils/date-range
                      (:date (first norway-monthly))
@@ -140,6 +148,7 @@
                   {:columns (reverse (sort (keys (first monthly-data))))
                    :data    monthly-data})
 
-(csvmap/write-csv "data/eurostat/avia-paoc-norway-monthly-pas-carried.csv"
-                  {:columns [:date :value]
-                   :data    norway-monthly})
+(csvmap/write-csv-format "data/eurostat/avia-paoc-norway-monthly-pas-carried.csv"
+                         {:columns [:date :value :12mms-mill]
+                          :data    norway-monthly-12mms
+                          :format  {:12mms-mill "%.1f"}})
