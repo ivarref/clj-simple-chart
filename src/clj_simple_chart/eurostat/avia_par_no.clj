@@ -25,4 +25,36 @@
                  (spit "data/eurostat/avia-par-no.tsv" tsv-str)
                  (csvmap/tsv-map tsv-str))))
 
+(def first-column-str "unit,tra_meas,airp_pr\\time")
 
+(def first-column (keyword first-column-str))
+
+(test/is (= first-column-str (name (first (:columns tsv)))))
+
+(defn process-row [row]
+  (reduce (fn [o [idx v]]
+            (assoc o (keyword v)
+                     (nth (str/split (get row first-column) #",") idx)))
+          (dissoc row first-column)
+          (map-indexed (fn [idx x] [idx x]) (str/split first-column-str #","))))
+
+(defn remove-whitespace [row]
+  (reduce (fn [o [k v]]
+            (assoc o (keyword (str/trim (name k))) (str/trim v)))
+          {}
+          row))
+
+(defonce data (->> (:data tsv)
+                   (map process-row)
+                   (map remove-whitespace)
+                   (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
+                   (map #(dissoc % (keyword "airp_pr\\time")))
+                   (vec)))
+
+(def pas-carried (->> data
+                      (filter #(and (= "PAS" (:unit %))
+                                    (= "PAS_CRD" (:tra_meas %))))))
+
+(csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
+                         {:columns (reverse (sort (keys (first pas-carried))))
+                          :data    pas-carried})
