@@ -44,17 +44,30 @@
           {}
           row))
 
-(defonce data (->> (:data tsv)
-                   (map process-row)
-                   (map remove-whitespace)
-                   (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
-                   (map #(dissoc % (keyword "airp_pr\\time")))
-                   (vec)))
+(def regular-columns [:unit :tra_meas :airp_pr])
+
+(defn condense-row [row]
+  (reduce (fn [o [k v]]
+            (if (or (some #{k} regular-columns)
+                    (= 4 (count (name k)))
+                    #_(str/includes? (name k) "Q"))
+              (assoc o k v)
+              o))
+          {}
+          row))
+
+(def data (->> (:data tsv)
+               (map process-row)
+               (map remove-whitespace)
+               (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
+               (map #(dissoc % (keyword "airp_pr\\time")))
+               (map condense-row)
+               (vec)))
 
 (def pas-carried (->> data
                       (filter #(and (= "PAS" (:unit %))
                                     (= "PAS_CRD" (:tra_meas %))))))
 
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
-                         {:columns (reverse (sort (keys (first pas-carried))))
-                          :data    pas-carried})
+                  {:columns (reverse (sort (keys (first pas-carried))))
+                   :data    pas-carried})
