@@ -84,6 +84,10 @@
                                      (= "PAS_CRD" (:tra_meas %))))
                        (vec)))
 
+(def oslo-trondheim (->> data-monthly
+                         (filter #(or (= "NO_ENGM_NO_ENVA" (:airp_pr %))
+                                      (= "NO_ENVA_NO_ENGM" (:airp_pr %))))))
+
 (def pas-carried (->> data
                       (filter #(and (= "PAS" (:unit %))
                                     (= "PAS_CRD" (:tra_meas %))))))
@@ -95,3 +99,7 @@
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-monthly.csv"
                   {:columns (reverse (sort (keys (first data-monthly))))
                    :data    data-monthly})
+
+(csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-monthly-oslo-trondheim.csv"
+                  {:columns (reverse (sort (keys (first data-monthly))))
+                   :data    oslo-trondheim})
