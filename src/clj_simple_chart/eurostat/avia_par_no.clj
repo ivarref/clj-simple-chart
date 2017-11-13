@@ -56,6 +56,16 @@
           {}
           row))
 
+(defn condense-row-monthly [row]
+  (reduce (fn [o [k v]]
+            (if (or (some #{k} regular-columns)
+                    #_(= 4 (count (name k)))
+                    (str/includes? (name k) "M"))
+              (assoc o k v)
+              o))
+          {}
+          row))
+
 (def data (->> (:data tsv)
                (map process-row)
                (map remove-whitespace)
@@ -64,6 +74,16 @@
                (map condense-row)
                (vec)))
 
+(def data-monthly (->> (:data tsv)
+                       (map process-row)
+                       (map remove-whitespace)
+                       (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
+                       (map #(dissoc % (keyword "airp_pr\\time")))
+                       (map condense-row-monthly)
+                       (filter #(and (= "PAS" (:unit %))
+                                     (= "PAS_CRD" (:tra_meas %))))
+                       (vec)))
+
 (def pas-carried (->> data
                       (filter #(and (= "PAS" (:unit %))
                                     (= "PAS_CRD" (:tra_meas %))))))
@@ -71,3 +91,7 @@
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
                   {:columns (reverse (sort (keys (first pas-carried))))
                    :data    pas-carried})
+
+(csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-monthly.csv"
+                  {:columns (reverse (sort (keys (first data-monthly))))
+                   :data    data-monthly})
