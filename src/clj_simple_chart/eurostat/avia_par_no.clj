@@ -94,7 +94,11 @@
 
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
                   {:columns (reverse (sort (keys (first pas-carried))))
-                   :data    pas-carried})
+                   :data    (reverse (sort-by (fn [x] (let [v (:2016 x)]
+                                                        (try (number? (read-string v))
+                                                             (read-string v)
+                                                             (catch Exception e
+                                                               0)))) pas-carried))})
 
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-monthly.csv"
                   {:columns (reverse (sort (keys (first data-monthly))))
