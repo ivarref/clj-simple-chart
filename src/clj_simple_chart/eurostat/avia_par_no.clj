@@ -106,6 +106,14 @@
                (map add-readable-from-to)
                (vec)))
 
+(def tra-meas-distinct (->> (:data tsv)
+                            (map process-row)
+                            (map remove-whitespace)
+                            (map :tra_meas)
+                            (distinct)
+                            (sort)
+                            (vec)))
+
 (def data-monthly (->> (:data tsv)
                        (map process-row)
                        (map remove-whitespace)

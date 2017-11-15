@@ -12,7 +12,9 @@
             [clojure.test :as test]))
 
 (def data-pre (->> datasource/data-monthly
-                   (filter #(= "NO_ENZV_NO_ENBR" (:airp_pr %)))
+                   ;(filter #(= "NO_ENCN_NO_ENGM" (:airp_pr %)))
+                   (filter #(and (= "Bergen" (:from %))
+                                 (= "Oslo" (:to %))))
                    (map-indexed (fn [idx x] (assoc x :idx idx)))
                    (vec)))
 
@@ -94,17 +96,6 @@
     header
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:y c))
-     #_(axis/render-axis (:y2 c))
-     #_(line/line (assoc c :y (:y2 c))
-                  {:h         :yoy
-                   :dot       false                         ;(fn [x] (str/ends-with? (:date x) "12"))
-                   :dot-style {:fill         yoy-fill
-                               :r            4.5
-                               :stroke       "black"
-                               :stroke-width 2.0}
-                   :path      {:stroke       yoy-fill
-                               :stroke-width 3.5}
-                   :p         :date} data)
      (line/line c {:h         :value
                    ;:dot       (fn [x] (str/ends-with? (:date x) "12"))
                    :dot-style {:fill         fill
