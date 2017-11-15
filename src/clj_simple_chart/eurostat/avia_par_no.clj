@@ -106,6 +106,11 @@
                (map add-readable-from-to)
                (vec)))
 
+(def missing-codes (->> data
+                        (map :to)
+                        (filter #(str/starts-with? % "NL_"))
+                        (distinct)))
+
 (def tra-meas-distinct (->> (:data tsv)
                             (map process-row)
                             (map remove-whitespace)

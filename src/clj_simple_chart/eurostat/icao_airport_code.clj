@@ -23,4 +23,13 @@
             "DE_EDDM" "München"
             "NO_ENML" "Molde"
             "NO_ENDU" "Bardufoss"
+            "UK_EGCC" "Manchester"
+            "UK_EGPD" "Edinburgh"
+            "UK_EGPH" "Edinburgh"
+            "UK_EGNT" "Newcastle"
+            "UK_EGBB" "Birmingham"
+            "UK_EGGP" "Liverpool"
+            "UK_EGPK" "Glasgow"
+            "NL_EHEH" "Eindhoven"
+
             })
