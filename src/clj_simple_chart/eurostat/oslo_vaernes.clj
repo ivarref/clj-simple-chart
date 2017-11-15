@@ -91,7 +91,7 @@
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          ;:tick-format        (fn [x] (str/replace (format "%.1f" x) "." ","))
-         :domain             [0 (Math/ceil (* 1.1 (apply max (map :value data))))]})
+         :domain             [0 6000 #_(Math/ceil (* 1.1 (apply max (map :value data))))]})
 
 
 (def available-height (- svg-height (+ (+ 3 marg)
