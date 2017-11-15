@@ -77,7 +77,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 4 :text "Kjelde: Eurostat (datasett avia_par_no, passengers carried)" :font "Roboto Regular" :font-size 14}
+              [{:margin-top 4 :text "Kjelde: Eurostat (avia_par_no, passengers carried). London inkluderer Heathrow, Gatwick og Stansted." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def xx {:type        :ordinal-linear
@@ -121,8 +121,8 @@
    ["København" "#1f77b4"]
    ["Stockholm" "#17becf"]
    ["Tromsø" "#e377c2"]
-   ["Bodø" "#9467bd"]
-   ["London" "#bcbd22"]
+   ["London" "#9467bd"]
+   ["Bodø" "#bcbd22"]
    ["Amsterdam" "#7f7f7f"]])
 
 (defn diagram []

@@ -45,7 +45,7 @@
           {}
           row))
 
-(def regular-columns [:unit :tra_meas :airp_pr :from :to])
+(def regular-columns [:unit :tra_meas :airp_pr :from :to :codes])
 
 (defn number-or-nil-for-num-column [k v]
   (if (some #{k} regular-columns)
