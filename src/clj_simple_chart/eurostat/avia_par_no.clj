@@ -55,6 +55,12 @@
            nil)
          (catch Exception e nil))))
 
+(defn from-code [x]
+  (str/join "_" (take 2 (str/split (:airp_pr x) #"_"))))
+
+(defn to-code [x]
+  (str/join "_" (take-last 2 (str/split (:airp_pr x) #"_"))))
+
 (defn condense-row-yearly [row]
   (reduce (fn [o [k v]]
             (if (or (some #{k} regular-columns)
@@ -63,6 +69,11 @@
               o))
           {}
           row))
+
+(defn add-readable-from-to [row]
+  (assoc row
+    :from (get airport-codes/codes (from-code row) (from-code row))
+    :to   (get airport-codes/codes (to-code row) (to-code row))))
 
 (defn condense-row-monthly [row]
   (reduce (fn [o [k v]]
@@ -74,6 +85,7 @@
           {}
           row))
 
+
 (def data (->> (:data tsv)
                (map process-row)
                (map remove-whitespace)
@@ -81,6 +93,7 @@
                (map #(dissoc % (keyword "airp_pr\\time")))
                (map condense-row-yearly)
                (filter #(and (= "PAS" (:unit %)) (= "PAS_CRD" (:tra_meas %))))
+               (map add-readable-from-to)
                (vec)))
 
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
