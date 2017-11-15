@@ -20,4 +20,7 @@
             "DE_EDDF" "Frankfurt"
             "NO_ENHD" "Haugesund"
             "DE_EDDB" "Berlin"
+            "DE_EDDM" "München"
+            "NO_ENML" "Molde"
+            "NO_ENDU" "Bardufoss"
             })
