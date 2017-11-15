@@ -12,7 +12,7 @@
             [clojure.test :as test]))
 
 (def data-pre (->> datasource/data-monthly
-                   (filter #(= "NO_ENGM_BE_EBBR" (:airp_pr %)))
+                   (filter #(= "NO_ENZV_NO_ENBR" (:airp_pr %)))
                    (map-indexed (fn [idx x] (assoc x :idx idx)))
                    (vec)))
 
@@ -52,11 +52,6 @@
                            (string/replace (format "%.0f" (double (get last-data :value))) "." ",")
                            " personar/dag")
                 :font "Roboto Bold" :font-size 16 :margin-top 1 :margin-bottom 10}
-               #_{:text (str "Per " (dateutils/months-str (:date (first (take-last 12 data))))
-                             "–" (dateutils/months-str (:date last-data)) ": "
-                             (string/replace (format "%.1f" (double (get last-data :12mms-mill))) "." ",")
-                             " millionar")
-                  :font "Roboto Bold" :font-size 16 :margin-top 1 :margin-bottom 10}
 
                ;{:text "Årleg vekst" :font "Roboto Bold" :font-size 16 :margin-top 10 :fill yoy-fill :margin-bottom 2}
                ;{:text "5 år glidande gjennomsnitt" :font "Roboto Bold" :font-size 16 :fill yoy-fill :margin-bottom 3}
@@ -65,7 +60,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 4 :text "Kjelde: Eurostat" :font "Roboto Regular" :font-size 14}
+              [{:margin-top 4 :text "Kjelde: Eurostat (datasett avia_par_no, passengers carried)" :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def xx {:type        :ordinal

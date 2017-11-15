@@ -15,4 +15,6 @@
             "NO_ENEV" "Harstad"
             "NO_ENCN" "Kristiansand"
             "US_KJFK" "New York"                            ;NO_ENGM_US_KJFK
+            "DE_EDDF" "Frankfurt"
+            "NO_ENHD" "Haugesund"
             })
