@@ -77,7 +77,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 4 :text "Kjelde: Eurostat (avia_par_no, passengers carried). London inkluderer Heathrow, Gatwick og Stansted." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 4 :text "Kjelde: Eurostat (avia_par_no, passengers carried). *London inkluderer Heathrow, Gatwick og Stansted." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def xx {:type        :ordinal-linear
@@ -114,6 +114,8 @@
 ;"#9467bd", //purple
 ;"#7f7f7f", //gray
 
+(def starify {"London" "*"})
+
 (def city-and-color
   [["Trondheim" "#2ca02c"]
    ["Bergen" "#d62728"]
@@ -148,7 +150,7 @@
                                      [{:text          "Rute" :font "Roboto Black" :font-size 16
                                        :margin-bottom 2}
                                       (mapv (fn [[city fill]]
-                                              {:text      (str "Oslo - " city)
+                                              {:text      (str "Oslo - " city (get starify city ""))
                                                :font-size 16
                                                :font      "Roboto Bold"
                                                :rect      {:fill fill
