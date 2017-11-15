@@ -11,4 +11,5 @@
             "NO_ENAL" "Ålesund lufthavn, Vigra"
             "UK_EGLL" "London Heathrow lufthavn"
             "NL_EHAM" "Amsterdam lufthavn, Schiphol"
+            "BE_EBBR" "Brussel lufthavn"
             })

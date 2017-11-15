@@ -45,7 +45,7 @@
           {}
           row))
 
-(def regular-columns [:unit :tra_meas :airp_pr])
+(def regular-columns [:unit :tra_meas :airp_pr :from :to])
 
 (defn number-or-nil-for-num-column [k v]
   (if (some #{k} regular-columns)
@@ -73,18 +73,28 @@
 (defn add-readable-from-to [row]
   (assoc row
     :from (get airport-codes/codes (from-code row) (from-code row))
-    :to   (get airport-codes/codes (to-code row) (to-code row))))
+    :to (get airport-codes/codes (to-code row) (to-code row))))
 
 (defn condense-row-monthly [row]
   (reduce (fn [o [k v]]
             (if (or (some #{k} regular-columns)
                     #_(= 4 (count (name k)))
                     (str/includes? (name k) "M"))
-              (assoc o k v)
+              (assoc o k (number-or-nil-for-num-column k v))
               o))
           {}
           row))
 
+(defn explode-row [row]
+  (reduce (fn [o [k v]]
+            (if (some #{k} regular-columns)
+              o
+              (conj o
+                    (merge (into {} (mapv (fn [k] [k (get row k)]) regular-columns))
+                           {:date  (str/replace (name k) "M" "-")
+                            :value v}))))
+          []
+          row))
 
 (def data (->> (:data tsv)
                (map process-row)
@@ -96,28 +106,23 @@
                (map add-readable-from-to)
                (vec)))
 
+(def data-monthly (->> (:data tsv)
+                       (map process-row)
+                       (map remove-whitespace)
+                       (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
+                       (map #(dissoc % (keyword "airp_pr\\time")))
+                       (map condense-row-monthly)
+                       (filter #(and (= "PAS" (:unit %)) (= "PAS_CRD" (:tra_meas %))))
+                       (map add-readable-from-to)
+                       (map explode-row)
+                       (flatten)
+                       (filter :value)
+                       (sort-by :date)
+                       (vec)))
+
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
                   {:columns (reverse (sort (keys (first data))))
                    :data    (reverse (sort-by #(:2016 %) data))})
-
-#_(def data-monthly (->> (:data tsv)
-                         (map process-row)
-                         (map remove-whitespace)
-                         (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
-                         (map #(dissoc % (keyword "airp_pr\\time")))
-                         (map condense-row-monthly)
-                         (filter #(and (= "PAS" (:unit %))
-                                       (= "PAS_CRD" (:tra_meas %))))
-                         (vec)))
-
-#_(def oslo-trondheim (->> data-monthly
-                           (filter #(or (= "NO_ENGM_NO_ENVA" (:airp_pr %))
-                                        (= "NO_ENVA_NO_ENGM" (:airp_pr %))))))
-
-#_(def pas-carried (->> data
-                        (filter #(and (= "PAS" (:unit %))
-                                      (= "PAS_CRD" (:tra_meas %))))))
-
 
 #_(csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-monthly.csv"
                     {:columns (reverse (sort (keys (first data-monthly))))
