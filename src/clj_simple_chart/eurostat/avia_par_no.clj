@@ -106,6 +106,27 @@
                (map add-readable-from-to)
                (vec)))
 
+(defn add-item [a b]
+  (reduce (fn [o [k v]]
+            (cond (number? v) (update o k #(+ (or % 0) v))
+                  (nil? v) (update o k #(or % nil))
+                  :else (assoc o k v))) a b))
+
+(defn condense-group [items]
+  (if (= 1 (count items))
+    (first items)
+    (assoc (reduce add-item (first items) (rest items))
+      :codes (vec (sort (distinct (map :airp_pr items)))))))
+
+(def data-grouped (->> data
+                       ;(filter #(= "London" (:to %)))
+                       ;(filter #(= "Oslo" (:from %)))
+                       (group-by (juxt :to :from))
+                       (vals)
+                       (mapv condense-group)
+                       (flatten)
+                       (vec)))
+
 (def missing-codes (->> data
                         (map :to)
                         (filter #(str/starts-with? % "NL_"))
@@ -136,6 +157,10 @@
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
                   {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data)))))))
                    :data    (reverse (sort-by #(:2016 %) data))})
+
+(csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-grouped.csv"
+                  {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))
+                   :data    (reverse (sort-by #(:2016 %) data-grouped))})
 
 #_(csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-monthly.csv"
                     {:columns (reverse (sort (keys (first data-monthly))))
