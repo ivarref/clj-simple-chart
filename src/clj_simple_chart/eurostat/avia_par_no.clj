@@ -114,7 +114,8 @@
 
 (defn condense-group [items]
   (if (= 1 (count items))
-    (first items)
+    (assoc (first items)
+      :codes [(:airp_pr (first items))])
     (assoc (reduce add-item (first items) (rest items))
       :codes (vec (sort (distinct (map :airp_pr items)))))))
 
