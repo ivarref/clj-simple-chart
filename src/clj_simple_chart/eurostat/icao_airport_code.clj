@@ -8,4 +8,7 @@
             "SE_ESSA" "Stockholm–Arlanda"
             "NO_ENTC" "Tromsø lufthavn, Langnes"
             "NO_ENBO" "Bodø lufthavn"
+            "NO_ENAL" "Ålesund lufthavn, Vigra"
+            "UK_EGLL" "London Heathrow lufthavn"
+            "NL_EHAM" "Amsterdam lufthavn, Schiphol"
             })
