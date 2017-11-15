@@ -121,7 +121,7 @@
                        (vec)))
 
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
-                  {:columns (reverse (sort (keys (first data))))
+                  {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data)))))))
                    :data    (reverse (sort-by #(:2016 %) data))})
 
 #_(csvmap/write-csv "data/eurostat/avia-par-no-pas-carried-monthly.csv"
