@@ -17,10 +17,34 @@
             "NO_ENEV" "Harstad"
             "NO_ENCN" "Kristiansand"
             "US_KJFK" "New York"                            ;NO_ENGM_US_KJFK
+
             "DE_EDDF" "Frankfurt"
-            "NO_ENHD" "Haugesund"
-            "DE_EDDB" "Berlin"
+            "DE_EDFH" "Frankfurt"                           ; Frankfurt-Hahn
+            "DE_EDDH" "Hamburg"
+            "DE_EDDL" "Düsseldorf"
+            "DE_EDDT" "Berlin"                              ; Berlin Tegel
+            "DE_EDDB" "Berlin"                              ; Berlin Schønefeld
+            "DE_EDDW" "Bremen"
             "DE_EDDM" "München"
+            "DE_EDJA" "Memmingen"
+            "DE_EDLV" "Weeze"                               ; https://en.wikipedia.org/wiki/Weeze_Airport
+
+            "NO_ENHD" "Haugesund"
+
+            "FI_EFHK" "Helsinki"
+
+            "FR_LFPG" "Paris"
+
+            "ES_LEAL" "Alicante"
+            "ES_GCLP" "Gran Canaria"
+            "ES_LEBL" "Barcelona"
+            "ES_LEMG" "Málaga"
+            "TH_VTBS" "Bangkok"
+
+            "IS_BIKF" "Reykjavík"
+
+            "NO_ENKR" "Kirkenes"
+
             "NO_ENML" "Molde"
             "NO_ENDU" "Bardufoss"
             "UK_EGCC" "Manchester"

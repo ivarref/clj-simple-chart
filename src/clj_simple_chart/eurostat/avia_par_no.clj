@@ -126,12 +126,17 @@
                        (vals)
                        (mapv condense-group)
                        (flatten)
+                       (filter #(= "Oslo" (:from %)))
                        (vec)))
 
-(def missing-codes (->> data
-                        (map :to)
-                        (filter #(str/starts-with? % "NL_"))
-                        (distinct)))
+(defn missing-cc [cc]
+  (->> data
+       (map :to)
+       (filter #(str/starts-with? % (str cc "_")))
+       (distinct)))
+
+(test/is (zero? (count (missing-cc "DE"))))
+(test/is (zero? (count (missing-cc "NL"))))
 
 (def tra-meas-distinct (->> (:data tsv)
                             (map process-row)
