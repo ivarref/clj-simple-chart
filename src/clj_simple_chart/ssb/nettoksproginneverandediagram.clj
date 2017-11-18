@@ -27,7 +27,7 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 28}
-               {:text "Prognoser frå Statsbudsjettet og røynda" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
+               {:text "Prognoser frå Statsbudsjettet og faktiske tall" :font "Roboto Bold" :font-size 16 :margin-top 2 :margin-bottom 10}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "Milliardar kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
@@ -85,7 +85,7 @@
                 data)
      [:g {:transform (translate 0 2)}
       (opentype/stack {}
-                      [{:text "Røynd netto kontantstraum" :rect {:fill green} :font "Roboto Bold"}
+                      [{:text "Faktisk netto kontantstraum" :rect {:fill green} :font "Roboto Bold"}
                        {:text "Prognose inneverande år" :circle {:r 4.5 :stroke-width 2 :fill orange} :path {:stroke orange} :font "Roboto Bold"}
                        {:text "Prognose komande år" :circle {:r 4.5 :stroke-width 2 :fill komande-fill} :path {:stroke komande-fill} :font "Roboto Bold"}])
       ]
