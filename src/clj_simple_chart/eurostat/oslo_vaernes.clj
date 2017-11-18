@@ -125,7 +125,8 @@
    ["Tromsø" "#e377c2"]
    ["London" "#9467bd"]
    ["Bodø" "#bcbd22"]
-   ["Amsterdam" "#7f7f7f"]])
+   ["Amsterdam" "#7f7f7f"]
+   #_["Ålesund" "#c7c7c7"]])
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -150,7 +151,7 @@
                                      [{:text          "Rute" :font "Roboto Black" :font-size 16
                                        :margin-bottom 2}
                                       (mapv (fn [[city fill]]
-                                              {:text      (str "Oslo - " city (get starify city ""))
+                                              {:text      (str "Oslo – " city (get starify city ""))
                                                :font-size 16
                                                :font      "Roboto Bold"
                                                :rect      {:fill fill
