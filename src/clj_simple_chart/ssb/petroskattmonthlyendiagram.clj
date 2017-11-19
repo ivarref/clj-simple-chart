@@ -82,7 +82,7 @@
 (def header (opentype/stack
               {:margin-top  5
                :margin-left marg}
-              [{:text "Paid petroleum tax in Norway" :font "Roboto Bold" :font-size 36}
+              [{:text "Norway's tax revenues from petroleum activities" :font "Roboto Bold" :font-size 36}
                {:text (str "Billion NOK, 12 months moving sum. " siste-verdi-str) :font "Roboto Black" :font-size 16}
                ;{:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 10}
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
