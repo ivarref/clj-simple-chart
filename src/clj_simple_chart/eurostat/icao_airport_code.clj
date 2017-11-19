@@ -5,7 +5,11 @@
             "NO_ENVA" "Trondheim"                           ; Værnes
             "NO_ENZV" "Stavanger"                           ; Sola
             "DK_EKCH" "København"
+            "DK_EKBI" "Billund"
+            "DK_EKAH" "Aarhus"
             "SE_ESSA" "Stockholm"                           ; Arlanda
+            "SE_ESKN" "Stockholm"                           ; Skavsta
+            "SE_ESGG" "Göteborg"
             "NO_ENTC" "Tromsø"                              ;  lufthavn, Langnes
             "NO_ENBO" "Bodø"                                ; lufthavn
             "NO_ENAL" "Ålesund"                             ;  lufthavn, Vigra

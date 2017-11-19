@@ -133,10 +133,14 @@
   (->> data
        (map :to)
        (filter #(str/starts-with? % (str cc "_")))
-       (distinct)))
+       (distinct)
+       (vec)))
 
-(test/is (zero? (count (missing-cc "DE"))))
-(test/is (zero? (count (missing-cc "NL"))))
+(test/is (= [] (missing-cc "SE")))
+(test/is (= [] (missing-cc "DK")))
+(test/is (= [] (missing-cc "DE")))
+(test/is (= [] (missing-cc "NL")))
+;(test/is (= [] (missing-cc "NO")))
 
 (def tra-meas-distinct (->> (:data tsv)
                             (map process-row)
