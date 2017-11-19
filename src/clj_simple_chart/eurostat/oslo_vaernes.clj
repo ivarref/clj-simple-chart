@@ -151,7 +151,7 @@
                                      [{:text          "Rute" :font "Roboto Black" :font-size 16
                                        :margin-bottom 2}
                                       (mapv (fn [[city fill]]
-                                              {:text      (str "Oslo – " city (get starify city ""))
+                                              {:text      (str "Oslo–" city (get starify city ""))
                                                :font-size 16
                                                :font      "Roboto Bold"
                                                :rect      {:fill fill
