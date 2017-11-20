@@ -5,7 +5,7 @@
 ;;; Human friendly source for table 07022:
 ;;; https://www.ssb.no/statistikkbanken/SelectVarVal/Define.asp?MainTable=InnbetSkatt2&KortNavnWeb=skatteregn&PLanguage=0&checked=true
 
-(ns clj-simple-chart.ssb.petroskatt
+(ns clj-simple-chart.ssb.petroskatt.petroskatt
   (:require [clojure.data.json :as json]
             [clojure.test :as test]
             [clj-http.client :as client]
@@ -160,7 +160,7 @@
                                                 (format "%.1f" (reduce (fn [o k] (+ o (get row (keyword k)))) 0 (take 2 skattart))))))))
 
 (csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms-sum.csv" {:columns (vec (flatten [:dato (keyword "Sum innbetalt petroleumsskatt")]))
-                                                             :data    twelve-mms-sum-mrd})
+                                                                 :data    twelve-mms-sum-mrd})
 
 
 (csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))

@@ -1,5 +1,5 @@
-(ns clj-simple-chart.ssb.petroskattdiagram
-  (:require [clj-simple-chart.ssb.petroskatt :as petroskatt]
+(ns clj-simple-chart.ssb.petroskatt.petroskattdiagram
+  (:require [clj-simple-chart.ssb.petroskatt.petroskatt :as petroskatt]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.axis.core :as axis]
@@ -32,8 +32,8 @@
          :tick-values x-ticks
          :tick-format (fn [x] (get (zipmap x-ticks x-ticks-str) x))
          :domain      x-domain
-         :sub-domain  [ordinaer saerskatt]
-         })
+         :sub-domain  [ordinaer saerskatt]})
+
 
 (def yy {:type        :linear
          :orientation :left

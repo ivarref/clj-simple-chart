@@ -2,8 +2,8 @@
 ;; https://www.ssb.no/skatteregn
 ;; Her står òg neste publiseringsdato (typisk midten av kvar månad).
 
-(ns clj-simple-chart.ssb.petroskattdiagrammonthly
-  (:require [clj-simple-chart.ssb.petroskatt :as petroskatt]
+(ns clj-simple-chart.ssb.petroskatt.petroskattdiagrammonthly
+  (:require [clj-simple-chart.ssb.petroskatt.petroskatt :as petroskatt]
             [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.chart :as chart]
@@ -92,8 +92,8 @@
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
                {:margin-top 16 :text "Oljepris, NOK/fat" :fill oil-fill :font "Roboto Black" :font-size 16}
-               {:text "12 månadar glidande gjennomsnitt, 6 månadar framskyvd" :fill oil-fill :font "Roboto Black" :font-size 14}
-               ]))
+               {:text "12 månadar glidande gjennomsnitt, 6 månadar framskyvd" :fill oil-fill :font "Roboto Black" :font-size 14}]))
+
 
 (def info-right
   [:g {:transform (translate (- svg-width marg) (- (:height (meta header)) 2))}
@@ -211,8 +211,8 @@
     #_detail
     (axis/render-axis (:x c))]
    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]
-   [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer2]
-   ])
+   [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer2]])
+
 
 (defn render-self []
   (core/render "./img/ssb-svg/petroskatt-mms.svg" "./img/ssb-png/petroskatt-mms.png" (diagram)))
