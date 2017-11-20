@@ -1,4 +1,4 @@
-(ns clj-simple-chart.ssb.nettokontantstraum
+(ns clj-simple-chart.ssb.nettokontantstraum.nettokontantstraum
   (:require [clojure.data.json :as json]
             [clojure.test :as test]
             [clj-simple-chart.ssb.nettokontantstraumprognose :as forecast]

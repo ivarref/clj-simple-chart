@@ -2,10 +2,10 @@
 ;; https://www.ssb.no/statsregn
 ;; Her står òg neste publiseringsdato (24. november 2017).
 
-(ns clj-simple-chart.ssb.nettokontantstraumdiagram
+(ns clj-simple-chart.ssb.nettokontantstraum.nettokontantstraumdiagram
   (:require [clj-simple-chart.core :as core]
             [clj-simple-chart.opentype :as opentype]
-            [clj-simple-chart.ssb.nettokontantstraum :as nettokontantstraum]
+            [clj-simple-chart.ssb.nettokontantstraum.nettokontantstraum :as nettokontantstraum]
             [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.chart :as chart]
@@ -55,8 +55,8 @@
 
 (def oil-price-fill
   ;"#8c6d31"
-  "#990099"
-  )
+  "#990099")
+
 
 (def fills {utbytte    orange
             netto-sdoe red
@@ -91,8 +91,8 @@
               {:width available-width}
               [{:margin-top 8 :text "Kjelder: SSB, Norges Bank, St. Louis Fed. *Statens Direkte Økonomiske Engasjement" :font "Roboto Regular" :font-size 14}
                ;{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font "Roboto Regular" :font-size 14}
-               {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}
-               ]))
+               {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
+
 
 (def xx {:type          :ordinal
          :orientation   :bottom
