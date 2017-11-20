@@ -72,7 +72,7 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Norway's government net cash flow from petroleum activities" :font "Roboto Bold" :font-size 30}
+              [{:text "Norwegian government's net cash flow from petroleum activities" :font "Roboto Bold" :font-size 30}
                {:text          (str "Billion 2017-NOK, 4 quarters moving sum. "
                                     "As of " (k->q (:dato last-data)) ": "
                                     (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
