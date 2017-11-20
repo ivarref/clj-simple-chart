@@ -82,13 +82,13 @@
 (def header (opentype/stack
               {:margin-top  5
                :margin-left marg}
-              [{:text "Norway's tax revenues from petroleum activities" :font "Roboto Bold" :font-size 36}
+              [{:text "Norwegian central government's tax revenues from petroleum activities" :font "Roboto Black" :font-size 27}
                {:text (str "Billion NOK, 12 months moving sum. " siste-verdi-str) :font "Roboto Black" :font-size 16}
                ;{:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 10}
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
                {:margin-top 16 :text "Oil price, NOK/barrel" :fill oil-fill :font "Roboto Black" :font-size 16}
-               {:text "12 months moving average, 6 months advanced" :fill oil-fill :font "Roboto Black" :font-size 14}]))
+               {:text "12 months moving average, 6 months expedited" :fill oil-fill :font "Roboto Black" :font-size 14}]))
 
 
 (def info-right
@@ -190,7 +190,6 @@
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    header
    info-right
-   ;[:g {:transform (core/translate 0 (+ (:height (meta header)) (:margin-top c)))} info-right]
    [:g {:transform (translate (+ marg (:margin-left c)) (+ (:height (meta header)) (:margin-top c)))}
     (axis/render-axis (:y c))
     (axis/render-axis (:y2 c))
@@ -208,7 +207,6 @@
     (axis/render-axis (:x c))]
    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer]
    [:g {:transform (translate 0 (+ (:height (meta header)) available-height))} footer2]])
-
 
 (defn render-self []
   (core/render "./img/ssb-svg/petroskatt-mms-en.svg" "./img/ssb-png/petroskatt-mms-en.png" (diagram)))
