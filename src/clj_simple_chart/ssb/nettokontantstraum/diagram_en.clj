@@ -72,19 +72,19 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Norwegian central government's net cash flow from petroleum activities" :font "Roboto Black" :font-size 27}
-               {:text          (str "Billion 2017-NOK, 4 quarters moving sum. "
-                                    "As of " (k->q (:dato last-data)) ": "
-                                    (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
-                                    " billion NOK")
+              [{:text "Net cash flow from petroleum activities, Norwegian Central Government" :font "Roboto Black" :font-size 27}
+               {:text          (str "2017 NOK billion, 4 quarters moving sum. "
+                                    "As of " (k->q (:dato last-data)) ": NOK "
+                                    (string/replace (format "%.1f" (get last-data netto-sum)) "." ".")
+                                    " billion")
                 :font          "Roboto Bold" :font-size 16
                 :margin-top    2
                 :margin-bottom 10}
-               {:text "Oil price, 2017-NOK/barrel" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
+               {:text "Oil price, 2017 NOK/barrel" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
                {:text "4 quarters moving average, 2 quarters expedited" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
 
                {:text "Net cash flow" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:text "Billion 2017-NOK" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
+               {:text "2017 NOK billion" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
