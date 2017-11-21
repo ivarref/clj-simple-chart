@@ -75,15 +75,15 @@
 (def last-data (last data))
 
 (def siste-verdi-str
-  (str "As of " (date-readable (:dato last-data)) ": "
-       (string/replace (format "%.1f" (:sum last-data)) "." ",")
-       " billion NOK"))
+  (str "As of " (date-readable (:dato last-data)) ": NOK "
+       (string/replace (format "%.1f" (:sum last-data)) "." ".")
+       " billion"))
 
 (def header (opentype/stack
               {:margin-top  5
                :margin-left marg}
-              [{:text "Norwegian central government's tax revenues from petroleum activities" :font "Roboto Black" :font-size 27}
-               {:text (str "Billion NOK, 12 months moving sum. " siste-verdi-str) :font "Roboto Black" :font-size 16}
+              [{:text "Tax revenues from petroleum activities, Norwegian Central Government" :font "Roboto Black" :font-size 27}
+               {:text (str "NOK billion, 12 months moving sum. " siste-verdi-str) :font "Roboto Black" :font-size 16}
                ;{:text siste-verdi-str :font-size 16 :font "Roboto Regular" :margin-bottom 10}
                #_{:text "Særskatt på utvinning av petroleum" :fill saerskatt-fill :font "Roboto Black" :font-size 16}
                #_{:text "Ordinær skatt på utvinning av petroleum" :fill ordinaer-fill :font "Roboto Black" :font-size 16}
@@ -94,7 +94,7 @@
 (def info-right
   [:g {:transform (translate (- svg-width marg) (- (:height (meta header)) 2))}
    (opentype/text
-     {:text        "Billion NOK"
+     {:text        "NOK billion"
       :text-anchor "end"
       :dy          "-2em"
       :fill        "black"
