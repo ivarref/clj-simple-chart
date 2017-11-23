@@ -91,6 +91,11 @@
                                                 (* (get one-usd-date-to-nok (:dato v)) (:usd v)))))
                {})))
 
+(def brent-4qma-to-usd
+  (->> brent-12-mma
+       (filter #(dato-to-kvartal (:dato %)))
+       (reduce (fn [o v] (assoc o (dato-to-kvartal (:dato v)) (:usd v)))
+               {})))
 
 ;; Goal: Add 4 kvartal glidande gjennomsnitt oljepris i 2016-NOK ...
 ;; YYYYK[1-4] => Oljepris (gj. føregåande 12 mnd) i 2016-kroner

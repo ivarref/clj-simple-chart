@@ -136,6 +136,7 @@
           x))
 
 (def four-quarters-moving-sum-adjusted-mrd (mapv produce-mrd-numeric four-quarters-moving-sum-adjusted))
+(def four-quarters-moving-sum-mrd (mapv produce-mrd-numeric four-quarters-moving-sum))
 
 (csv/write-csv "./data/11013/11013-mrd-4qms.csv"
                {:data    (mapv produce-mrd four-quarters-moving-sum)
