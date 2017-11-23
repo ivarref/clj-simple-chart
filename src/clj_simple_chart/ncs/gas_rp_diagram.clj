@@ -39,8 +39,8 @@
                              "#8c564b"                      ; brown
                              "#1f77b4"                      ; blue
                              "#e377c2"                      ; pink
-                             "#9467bd"                      ; purple
-                             ]))
+                             "#9467bd"]))                   ; purple
+
 
 (def sub-domain buckets)
 
