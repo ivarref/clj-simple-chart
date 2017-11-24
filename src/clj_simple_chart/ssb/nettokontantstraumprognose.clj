@@ -19,8 +19,8 @@
            "2015" [297.2 304.0] ; https://www.statsbudsjettet.no/Statsbudsjettet-2015/Satsinger/?pid=65153#hopp
            "2016" [217.8 204.1] ; https://www.statsbudsjettet.no/Statsbudsjettet-2016/Satsinger/?pid=69114#hopp
            "2017" [124.5 138.3] ; https://www.statsbudsjettet.no/Statsbudsjettet-2017/Satsinger/?pid=72986
-           "2018" [175.4 183.0] ; https://www.statsbudsjettet.no/Statsbudsjettet-2018/Satsinger/?pid=83808
-           })
+           "2018" [175.4 183.0]}) ; https://www.statsbudsjettet.no/Statsbudsjettet-2018/Satsinger/?pid=83808
+
 
 (def gul-bok (->> (keys data)
                   (mapv (fn [year] {:year                year
