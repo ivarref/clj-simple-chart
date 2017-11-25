@@ -1,3 +1,5 @@
+; International extra-EU air passenger transport by main airports
+; in each reporting country and partner world regions and countries (avia_paexac)
 (ns clj-simple-chart.eurostat.avia-paexac
   (:require [clj-http.client :as client]
             [clojure.test :as test]
@@ -49,4 +51,7 @@
 (defn rows []
   (->> (csv-data->maps (csv/read-csv tsv-string :separator \tab))
        (map process-row)
-       (map utils/remove-whitespace)))
+       (map utils/remove-whitespace)
+       (filter #(and (= "PAS" (:unit %)) (= "PAS_CRD" (:tra_meas %))))))
+
+(defonce data (vec (rows)))
