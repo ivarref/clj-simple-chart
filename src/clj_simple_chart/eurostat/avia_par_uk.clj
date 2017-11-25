@@ -1,0 +1,133 @@
+(ns clj-simple-chart.eurostat.avia-par-uk
+  (:require [clj-http.client :as client]
+    [clojure.test :as test]
+    [clj-simple-chart.csv.csvmap :as csvmap]
+    [clj-simple-chart.eurostat.avia-par-no :as avia-par-no]
+    [clj-simple-chart.dateutils :as dateutils]
+    [clj-simple-chart.eurostat.icao-airport-code :as airport-codes]
+    [clojure.string :as str])
+  (:import (org.apache.commons.compress.archivers ArchiveStreamFactory)
+    (java.io ByteArrayInputStream ByteArrayOutputStream)
+    (org.apache.commons.compress.compressors.gzip GzipCompressorInputStream)
+    (org.apache.commons.io IOUtils)
+    (java.nio.charset StandardCharsets)))
+
+(def url "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/AppLinkServices?lang=en&appId=bulkdownload&appUrl=http%3A%2F%2Fec.europa.eu%2Feurostat%2Festat-navtree-portlet-prod%2FBulkDownloadListing%3Ffile%3Ddata%2Favia_par_uk.tsv.gz")
+
+(defonce response (client/get url {:as :byte-array}))
+(test/is (= 200 (:status response)))
+
+(defonce body (:body response))
+
+(defonce tsv (let [input (GzipCompressorInputStream. (ByteArrayInputStream. (:body response)))
+                   output (ByteArrayOutputStream.)]
+               (IOUtils/copy input output)
+               (let [bytearray (.toByteArray output)
+                     tsv-str (String. bytearray StandardCharsets/UTF_8)]
+                 (spit "data/eurostat/avia-par-uk.tsv" tsv-str)
+                 (csvmap/tsv-map tsv-str))))
+
+(def first-column-str "unit,tra_meas,airp_pr\\time")
+
+(def first-column (keyword first-column-str))
+
+(test/is (= first-column-str (name (first (:columns tsv)))))
+
+(defn process-row [row]
+  (reduce (fn [o [idx v]]
+            (assoc o (keyword v)
+                     (nth (str/split (get row first-column) #",") idx)))
+          (dissoc row first-column)
+          (map-indexed (fn [idx x] [idx x]) (str/split first-column-str #","))))
+
+(defn remove-whitespace [row]
+  (reduce (fn [o [k v]]
+            (assoc o (keyword (str/trim (name k))) (str/trim v)))
+          {}
+          row))
+
+(def regular-columns [:unit :tra_meas :airp_pr :from :to :codes])
+
+(defn number-or-nil-for-num-column [k v]
+  (if (some #{k} regular-columns)
+    v
+    (try (if (number? (read-string v))
+           (read-string v)
+           nil)
+         (catch Exception e nil))))
+
+(defn from-code [x]
+  (str/join "_" (take 2 (str/split (:airp_pr x) #"_"))))
+
+(defn to-code [x]
+  (str/join "_" (take-last 2 (str/split (:airp_pr x) #"_"))))
+
+(defn condense-row-yearly [row]
+  (reduce (fn [o [k v]]
+            (if (or (some #{k} regular-columns)
+                    (= 4 (count (name k))))
+              (assoc o k (number-or-nil-for-num-column k v))
+              o))
+          {}
+          row))
+
+(defn add-readable-from-to [row]
+  (assoc row
+    :from (get airport-codes/codes (from-code row) (from-code row))
+    :to (get airport-codes/codes (to-code row) (to-code row))))
+
+(def data (->> (:data tsv)
+               (map process-row)
+               (map remove-whitespace)
+               (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
+               (map #(dissoc % (keyword "airp_pr\\time")))
+               (map condense-row-yearly)
+               (filter #(and (= "PAS" (:unit %)) (= "PAS_CRD" (:tra_meas %))))
+               (map add-readable-from-to)
+               (vec)))
+
+(def data-grouped (->> data
+                       ;(filter #(= "London" (:to %)))
+                       ;(filter #(= "Oslo" (:from %)))
+                       (group-by (juxt :to :from))
+                       (vals)
+                       (mapv avia-par-no/condense-group)
+                       (flatten)
+                       ;(filter #(= "London" (:from %)))
+                       (vec)))
+
+(defn missing-cc [cc]
+  (->> data
+       (map :to)
+       (filter #(str/starts-with? % (str cc "_")))
+       (distinct)
+       (vec)))
+
+;(test/is (= [] (missing-cc "UK")))
+(test/is (= [] (missing-cc "US")))
+
+(def data-monthly (->> (:data tsv)
+                       (map process-row)
+                       (map remove-whitespace)
+                       (map #(assoc % :airp_pr (get % (keyword "airp_pr\\time"))))
+                       (map #(dissoc % (keyword "airp_pr\\time")))
+                       (map avia-par-no/condense-row-monthly)
+                       (filter #(and (= "PAS" (:unit %)) (= "PAS_CRD" (:tra_meas %))))
+                       (map add-readable-from-to)
+                       (group-by (juxt :to :from))
+                       (vals)
+                       (mapv avia-par-no/condense-group)
+                       (flatten)
+                       (map avia-par-no/explode-row)
+                       (flatten)
+                       (filter :value)
+                       (sort-by :date)
+                       (vec)))
+
+(csvmap/write-csv "data/eurostat/avia-par-uk-pas-carried.csv"
+                  {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data)))))))
+                   :data    (reverse (sort-by #(:2016 %) data))})
+
+(csvmap/write-csv "data/eurostat/avia-par-uk-pas-carried-grouped.csv"
+                  {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))
+                   :data    (reverse (sort-by #(:2016 %) data-grouped))})
