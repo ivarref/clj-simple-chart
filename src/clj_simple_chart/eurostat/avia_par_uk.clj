@@ -101,6 +101,7 @@
        (map :to)
        (filter #(str/starts-with? % (str cc "_")))
        (distinct)
+       (sort)
        (vec)))
 
 ;(test/is (= [] (missing-cc "UK")))

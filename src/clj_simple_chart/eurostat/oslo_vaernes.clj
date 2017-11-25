@@ -11,8 +11,6 @@
             [clj-simple-chart.dateutils :as dateutils]
             [clojure.test :as test]))
 
-
-
 (defn mma [dat]
   (->> dat
        (map #(assoc % :prev-rows (take-last 12 (take (inc (:idx %)) dat))))
@@ -38,8 +36,6 @@
             (count data-pre)))
 
 (def data (do-mma "Oslo" "Trondheim"))
-
-(def oslo-bergen)
 
 (def marg 10)
 (def two-marg (* 2 marg))
