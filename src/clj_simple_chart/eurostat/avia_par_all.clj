@@ -132,6 +132,31 @@
                        (flatten)
                        (vec)))
 
+(defn explode-row [row]
+  (reduce (fn [o [k v]]
+            (if (some #{k} regular-columns)
+              o
+              (conj o
+                    (merge (into {} (mapv (fn [k] [k (get row k)]) regular-columns))
+                           {:date  (str/replace (name k) "M" "-")
+                            :date-int (read-string (str/replace (name k) "M" ""))
+                            :value v}))))
+          []
+          row))
+
+(def data-monthly (->> all
+                       (map condense-row-monthly)
+                       (group-by (juxt :to :from))
+                       (vals)
+                       (mapv condense-group)
+                       (flatten)
+                       (map explode-row)
+                       (flatten)
+                       (filter :value)
+                       (filter #(>= (:date-int %) 200401))
+                       (sort-by :date)
+                       (vec)))
+
 (csvmap/write-csv "data/eurostat/avia-par-NY-pas-carried.csv"
                   {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))
                    :data    (reverse (sort-by #(:2016 %) data-grouped))})

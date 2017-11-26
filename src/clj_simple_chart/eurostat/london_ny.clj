@@ -1,5 +1,5 @@
 (ns clj-simple-chart.eurostat.london-ny
-  (:require [clj-simple-chart.eurostat.avia-par-uk :as datasource]
+  (:require [clj-simple-chart.eurostat.avia-par-all :as datasource]
     [clj-simple-chart.opentype :as opentype]
     [clj-simple-chart.translate :refer [translate translate-y]]
     [clojure.string :as string]
@@ -25,7 +25,10 @@
             (map-indexed (fn [idx x] (assoc x :idx idx)))
             (vec))))
 
-(def data (do-mma "London" "New York"))
+(def data (do-mma "Amsterdam" "New York"))
+
+(test/is (= (count (dateutils/date-range (:date (first data)) (:date (last data))))
+            (count data)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -103,7 +106,16 @@
 (def starify {"London" "*"})
 
 (def city-and-color
-  [["London" "#2ca02c"]])
+  [["London" "#2ca02c"]
+   ["Paris" "#d62728"]
+   ["Madrid" "#ff7f0e"]
+   ["Frankfurt" "#1f77b4"]
+   ["Milan" "#17becf"]
+   ["Amsterdam" "#e377c2"]
+   ["Rome" "#9467bd"]
+   ["Dublin" "#bcbd22"]
+   ["Zurich" "#7f7f7f"]])
+
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
