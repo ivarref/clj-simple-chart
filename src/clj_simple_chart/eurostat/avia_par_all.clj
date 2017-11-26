@@ -98,10 +98,40 @@
           {}
           row))
 
+(defn condense-row-monthly [row]
+  (reduce (fn [o [k v]]
+            (if (or (some #{k} regular-columns)
+                    #_(= 4 (count (name k)))
+                    (str/includes? (name k) "M"))
+              (assoc o k (number-or-nil-for-num-column k v))
+              o))
+          {}
+          row))
+
+(defn add-item [a b]
+  (reduce (fn [o [k v]]
+            (cond (number? v) (update o k #(+ (or % 0) v))
+                  (nil? v) (update o k #(or % nil))
+                  :else (assoc o k v))) a b))
+
+(defn condense-group [items]
+  (if (= 1 (count items))
+    (assoc (first items)
+      :codes [(:airp_pr (first items))])
+    (assoc (reduce add-item (first items) (rest items))
+      :codes (vec (sort (distinct (map :airp_pr items)))))))
+
 (def data (->> all
                (map condense-row-yearly)
                (vec)))
 
+(def data-grouped (->> data
+                       (group-by (juxt :to :from))
+                       (vals)
+                       (mapv condense-group)
+                       (flatten)
+                       (vec)))
+
 (csvmap/write-csv "data/eurostat/avia-par-NY-pas-carried.csv"
-                  {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data)))))))
-                   :data    (reverse (sort-by #(:2016 %) data))})
+                  {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))
+                   :data    (reverse (sort-by #(:2016 %) data-grouped))})
