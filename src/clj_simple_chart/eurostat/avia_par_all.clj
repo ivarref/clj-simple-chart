@@ -4,7 +4,8 @@
             [clj-http.client :as client]
             [clojure.data.csv :as csv]
             [clojure.string :as str]
-            [clj-simple-chart.eurostat.icao-airport-code :as airport-codes])
+            [clj-simple-chart.eurostat.icao-airport-code :as airport-codes]
+            [clj-simple-chart.dateutils :as dateutils])
   (:import (java.nio.charset StandardCharsets)
            (org.apache.commons.io IOUtils)
            (java.io ByteArrayOutputStream ByteArrayInputStream)
@@ -46,10 +47,20 @@
 (defn to-code [x]
   (str/join "_" (take-last 2 (str/split (:airp_pr x) #"_"))))
 
+(defn to-cc [x]
+  (str/lower-case (nth (str/split (:airp_pr x) #"_") 2)))
+
 (defn add-readable-from-to [row]
   (assoc row
     :from (get airport-codes/codes (from-code row) (from-code row))
     :to (get airport-codes/codes (to-code row) (to-code row))))
+
+(def euro-cc ["be" "bg" "cz" "dk" "de" "ee"
+              "ie" "el" "es" "fr" "hr" "it"
+              "cy" "lv" "lt" "lu" "hu" "mt"
+              "nl" "at" "pl" "pt" "ro" "si"
+              "sk" "fi" "se" "uk" "is" "no"
+              "ch" "me" "mk" "tr"])
 
 (defn tsv-map [cc]
   (println "doing cc >" cc "<")
@@ -70,14 +81,13 @@
            (map #(dissoc % (keyword "airp_pr\\time")))
            (filter #(and (= "PAS" (:unit %)) (= "PAS_CRD" (:tra_meas %))))
            (map add-readable-from-to)
-           (filter #(= "New York" (:to %)))))))
+           (map #(assoc % :to (get {"Newark" "New York"
+                                    "Moscow" "Moskva"} (:to %) (:to %))))
+           (map #(assoc % :to_cc (to-cc %)))
+           (remove #(some #{(:to_cc %)} euro-cc))
+           #_(filter #(= "New York" (:to %)))))))
 
-(defonce all (mapcat tsv-map ["be" "bg" "cz" "dk" "de" "ee"
-                              "ie" "el" "es" "fr" "hr" "it"
-                              "cy" "lv" "lt" "lu" "hu" "mt"
-                              "nl" "at" "pl" "pt" "ro" "si"
-                              "sk" "fi" "se" "uk" "is" "no"
-                              "ch" "me" "mk" "tr"]))
+(defonce all (mapcat tsv-map euro-cc))
 
 (def regular-columns [:unit :tra_meas :airp_pr :from :to :codes])
 
@@ -126,7 +136,7 @@
                (vec)))
 
 (def data-grouped (->> data
-                       (group-by (juxt :to :from))
+                       (group-by (juxt :to))
                        (vals)
                        (mapv condense-group)
                        (flatten)
@@ -138,25 +148,51 @@
               o
               (conj o
                     (merge (into {} (mapv (fn [k] [k (get row k)]) regular-columns))
-                           {:date  (str/replace (name k) "M" "-")
+                           {:date     (str/replace (name k) "M" "-")
                             :date-int (read-string (str/replace (name k) "M" ""))
-                            :value v}))))
+                            :value    v}))))
           []
           row))
 
+(def top-ten-dests (->> data-grouped
+                        (sort-by #(:2016 %))
+                        (reverse)
+                        (take 10)
+                        (map :to)))
+
+(defn mma [dat]
+  (->> dat
+       (map #(assoc % :prev-rows (take-last 12 (take (inc (:idx %)) dat))))
+       (map #(assoc % :value (/ (apply + (map :value (:prev-rows %)))
+                                (dateutils/prev-12-months-num-days (:date %)))))
+       (filter #(= 12 (count (:prev-rows %))))))
+
+(defn do-mma [data]
+  (->> data
+       (sort-by :date)
+       (map-indexed (fn [idx x] (assoc x :idx idx)))
+       (mma)))
+
 (def data-monthly (->> all
                        (map condense-row-monthly)
-                       (group-by (juxt :to :from))
+                       (group-by (juxt :to))
                        (vals)
                        (mapv condense-group)
                        (flatten)
                        (map explode-row)
                        (flatten)
                        (filter :value)
-                       (filter #(>= (:date-int %) 200401))
+                       (filter #(number? (:value %)))
+                       (filter #(some #{(:to %)} top-ten-dests))
+                       (group-by :to)
+                       (vals)
+                       (map do-mma)
+                       (flatten)
                        (sort-by :date)
+                       (filter #(>= (:date-int %) 200312))
+                       (filter #(< (:date-int %) 201701))
                        (vec)))
 
-(csvmap/write-csv "data/eurostat/avia-par-NY-pas-carried.csv"
+(csvmap/write-csv "data/eurostat/avia-par-ex-eu-pas-carried.csv"
                   {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))
                    :data    (reverse (sort-by #(:2016 %) data-grouped))})

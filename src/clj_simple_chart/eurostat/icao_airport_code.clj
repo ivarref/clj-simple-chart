@@ -39,7 +39,8 @@
                  (filter #(= "London" (:municipality %)))))
 
 (def codes (merge parsed
-                  {"NO_ENGM" "Oslo"
+                  {"QA_OTHH" "Doha"
+                   "NO_ENGM" "Oslo"
                    "NO_ENBR" "Bergen"                              ; Flesland
                    "NO_ENVA" "Trondheim"                           ; Værnes
                    "NO_ENZV" "Stavanger"                           ; Sola

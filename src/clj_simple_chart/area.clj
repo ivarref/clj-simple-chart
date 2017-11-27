@@ -44,9 +44,18 @@
        (mapv #(sort-by :p %))))
 
 (defmethod area [:ordinal-linear :linear]
-  [{:keys [x y]} coll & [style-cb]]
+  [{:keys [x y p h c]} coll & [style-cb]]
   (let [xfn (partial point/center-point x)
         yfn (partial point/center-point y)
+        p (or p :p)
+        h (or h :h)
+        c (or c :c)
+        coll (->> coll
+                  (flatten)
+                  (mapv #(assoc % :p (p %)))
+                  (mapv #(assoc % :h (h %)))
+                  (mapv #(assoc % :c (c %)))
+                  (vec))
         point-str (fn [{:keys [p h h0]}] (str (xfn p) " " (yfn (+ h0 h))))
         point-str-h0 (fn [{:keys [p h0]}] (str (xfn p) " " (yfn h0)))
         stacked (stack x coll)
