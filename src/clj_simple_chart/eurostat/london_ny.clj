@@ -2,6 +2,7 @@
   (:require [clj-simple-chart.eurostat.avia-par-all :as datasource]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer [translate translate-y]]
+            [clj-simple-chart.area-center-text :as cat]
             [clj-simple-chart.area :as area]
             [clojure.string :as string]
             [clojure.string :as str]
@@ -33,12 +34,10 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Antall luftpassasjerar per dag"
-                #_(str "Antall luftpassasjerar, "
-                       (:from (first data))
-                       " - "
-                       (:to (first data)))
-                :font "Roboto Bold" :font-size 30}
+              [{:text "Topp ti destinasjonar utanfor Europa" :font "Roboto Bold" :font-size 30}
+               {:text "Med avreise frå Europa*" :font "Roboto Bold" :font-size 16
+                :margin-bottom 10}
+
                #_{:text (str "Per " (dateutils/months-str (:date (first (take-last 12 data))))
                              "–" (dateutils/months-str (:date last-data)) ": "
                              (string/replace (format "%.0f" (double (get last-data :value))) "." ",")
@@ -47,12 +46,17 @@
 
                ;{:text "Årleg vekst" :font "Roboto Bold" :font-size 16 :margin-top 10 :fill yoy-fill :margin-bottom 2}
                ;{:text "5 år glidande gjennomsnitt" :font "Roboto Bold" :font-size 16 :fill yoy-fill :margin-bottom 3}
-               {:text "Antall luftpassasjerar per dag" :font "Roboto Bold" :margin-top 10 :font-size 16 :valign :bottom :align :right}
+               {:text "Luftpassasjerar per dag, '000" :font "Roboto Bold" :margin-top 10 :font-size 16 :valign :bottom :align :right}
                {:text "12 månadar glidande gjennomsnitt" :margin-top 1 :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 4 :text "Kjelde: Eurostat (avia_par_*, passengers carried). *New York inkluderer New Jersey." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 4
+                :text (str "*Europa inkluderer EU28, kandidatlanda, Noreg, Island og Sveits.")
+                :font "Roboto Regular" :font-size 14}
+               {:margin-top 4
+                :text "Kjelde: Eurostat (avia_par_*, passengers carried). **Inkluderer New Jersey."
+                :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def color
@@ -80,7 +84,7 @@
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          ;:tick-format        (fn [x] (str/replace (format "%.1f" x) "." ","))
-         :domain             [0 250000 #_(Math/ceil (* 1.1 (apply max (map :value data))))]})
+         :domain             [0 250 #_(Math/ceil (* 1.1 (apply max (map :value data))))]})
 
 
 (def available-height (- svg-height (+ (+ 3 marg)
@@ -103,9 +107,7 @@
 ;"#9467bd", //purple
 ;"#7f7f7f", //gray
 
-(def starify {"London" "*"})
-
-
+(def starify {"New York" "**"})
 
 (def city-and-color
   (map-indexed (fn [idx x] [x (nth color idx)]) datasource/top-ten-dests))
@@ -118,12 +120,20 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
 
      (axis/render-axis (:y c))
-     (axis/render-axis (:y2 c))
 
      (concat [:g] (area/area (merge c {:h :value
                                        :c :to
                                        :p :date})
                              datasource/data-monthly))
+     (concat [:g] (cat/area-center-text c {:h :value
+                                           :c :to
+                                           :p :date}
+                             (->> datasource/data-monthly
+                                  (filter #(= (:date-int %) datasource/max-date))
+                                  (mapv #(assoc % :text {:text (format "%d" (Math/round (double (:value %))))
+                                                         :font "Roboto Bold"
+                                                         :fill "white"})))))
+     (axis/render-axis (:y2 c))
 
      (axis/render-axis (:x c))]
     (let [infotext (opentype/stack {:fill         "white"
@@ -133,7 +143,7 @@
                                      [{:text          "Destinasjon" :font "Roboto Black" :font-size 16
                                        :margin-bottom 2}
                                       (mapv (fn [[city fill]]
-                                              {:text      (str city)
+                                              {:text      (str city (get starify city ""))
                                                :font-size 16
                                                :font      "Roboto Bold"
                                                :rect      {:fill fill
@@ -149,4 +159,4 @@
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (core/render "./img/eurostat-svg/ny-ny.svg" "./img/eurostat-png/ny-ny.png" (diagram)))
+  (core/render "./img/eurostat-svg/extra-eu.svg" "./img/eurostat-png/extra-eu.png" (diagram)))

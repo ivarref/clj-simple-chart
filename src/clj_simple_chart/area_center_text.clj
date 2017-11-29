@@ -4,7 +4,6 @@
             [clj-simple-chart.translate :as translate]
             [clj-simple-chart.opentype :as opentype]))
 
-(defmulti area-center-text (fn [{:keys [x y]} data & args] [(:type x) (:type y)]))
 
 (defn- add-below [scale coll item]
   (let [below-sub-domain (take-while #(not= (:c item) %) (:sub-domain scale))
@@ -20,10 +19,22 @@
        (sort-by :p)
        (vec)))
 
-(defmethod area-center-text [:ordinal-linear :linear]
-  [{:keys [x y]} coll & [style-cb]]
+(defmulti area-center-text-inner (fn [{:keys [x y]} data & args] [(:type x) (:type y)]))
+(defmethod area-center-text-inner [:ordinal-linear :linear]
+  [{:keys [x y p h c text]} coll & [style-cb]]
   (let [xfn (partial point/center-point x)
         yfn (partial point/center-point y)
+        p (or p :p)
+        h (or h :h)
+        c (or c :c)
+        text (or text :text)
+        coll (->> coll
+                  (flatten)
+                  (mapv #(assoc % :p (p %)))
+                  (mapv #(assoc % :h (h %)))
+                  (mapv #(assoc % :c (c %)))
+                  (mapv #(assoc % :text (text %)))
+                  (vec))
         stacked (stack x coll)
         text-items (filter :text stacked)
         texts (mapv (fn [{:keys [p c h h0 text]}]
@@ -34,3 +45,6 @@
                          [:g (translate/translate-map woff hoff) txt])])
                     text-items)]
     (vec (concat [:g] texts))))
+
+(defn area-center-text [c config data]
+  (area-center-text-inner (merge c config) data))

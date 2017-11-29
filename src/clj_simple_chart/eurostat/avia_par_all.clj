@@ -164,7 +164,7 @@
   (->> dat
        (map #(assoc % :prev-rows (take-last 12 (take (inc (:idx %)) dat))))
        (map #(assoc % :value (/ (apply + (map :value (:prev-rows %)))
-                                (dateutils/prev-12-months-num-days (:date %)))))
+                                (* 1000 (dateutils/prev-12-months-num-days (:date %))))))
        (filter #(= 12 (count (:prev-rows %))))))
 
 (defn do-mma [data]
@@ -192,6 +192,10 @@
                        (filter #(>= (:date-int %) 200312))
                        (filter #(< (:date-int %) 201701))
                        (vec)))
+
+(def max-date (->> data-monthly
+                   (map :date-int)
+                   (apply max)))
 
 (csvmap/write-csv "data/eurostat/avia-par-ex-eu-pas-carried.csv"
                   {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))

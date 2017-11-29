@@ -159,20 +159,20 @@
                              :x2     (:x1 (meta txt))
                              :y1     (:y1 (meta txt))
                              :y2     (:y2 (meta txt))
-                             :stroke border-tight
-                             }]
+                             :stroke border-tight}]
+
                   [:line {:x1     (:x2 (meta txt))
                           :x2     (:x2 (meta txt))
                           :y1     (:y1 (meta txt))
                           :y2     (:y2 (meta txt))
-                          :stroke border-tight
-                          }]
+                          :stroke border-tight}]
+
                   [:line {:x1     (:x1 (meta txt))
                           :x2     (:x2 (meta txt))
                           :y1     (:y1 (meta txt))
                           :y2     (:y1 (meta txt))
-                          :stroke border-tight
-                          }]
+                          :stroke border-tight}]
+
                   [:line {:x1     (:x1 (meta txt))
                           :x2     (:x2 (meta txt))
                           :y1     (:y2 (meta txt))
@@ -239,8 +239,8 @@
                          font               "Roboto Regular"
                          spacing            ::none
                          border-tight       false
-                         min-height         nil}
-     } text]
+                         min-height         nil}}
+    text]
    {:pre [(some #{font} (keys font-name-to-font))
           (number? font-size)
           (number? x)
