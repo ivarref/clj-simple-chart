@@ -28,7 +28,6 @@
 (def x-ticks (filter #(.endsWith % "-12") x-domain))
 
 (def available-width (- svg-width (* 2 marg)))
-(def last-data (last data))
 
 (def fill "#d62728")
 
@@ -52,10 +51,10 @@
 (def footer (opentype/stack
               {:width available-width}
               [{:margin-top 4
-                :text (str "*Europa inkluderer EU28, kandidatlanda, Noreg, Island og Sveits.")
+                :text (str "*Europa inkluderer EU28, kandidatlanda, Noreg, Island og Sveits. **Inkluderer New Jersey.")
                 :font "Roboto Regular" :font-size 14}
                {:margin-top 4
-                :text "Kjelde: Eurostat (avia_par_*, passengers carried). **Inkluderer New Jersey."
+                :text "Kjelde: Eurostat (avia_par_*, passengers carried)."
                 :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
