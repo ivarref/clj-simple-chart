@@ -1,6 +1,4 @@
-# clj-simple-chart
-
-Utvalgte diagram.
+# Utvalgte diagram
 
 # Statens inntekter frå petroleumsverksemda
 
