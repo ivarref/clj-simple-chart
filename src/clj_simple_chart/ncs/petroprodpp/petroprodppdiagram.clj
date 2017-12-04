@@ -39,12 +39,12 @@
                                       "#1f77b4"             ; blue
                                       "#8c564b"             ; brown
                                       "#ff7f0e"             ; orange
-                                      "#d62728"             ; red
+                                      "#d62728"])))             ; red
 
                                       ;"#8c564b"                      ; brown
                                       ;"#17becf"                      ; cyan
                                       ;
-                                      ])))
+
 
 (def x-domain (map :date data))
 
@@ -66,10 +66,10 @@
     (str (nth months (read-string (last parts)))
          " " (first parts))))
 
-(def feltmogning-ex-txt (str "Nedtappingsgrad: Prosent produsert av opprinneleg utvinnbart"
+(def feltmogning-ex-txt (str "Nedtappingsgrad: Prosent produsert av opprinneleg utvinnbart"))
                              ;(:prfYear (first data)) "–" (:prfYear (last data))
 
-                             ))
+
 
 (def header (opentype/stack
               {:width available-width}
@@ -186,9 +186,9 @@
                                         (:width (meta infotext))
                                         10)
                                  (+ 0 (+ (:height (meta header)) (:margin-top c))))}
-       infotext
-       ]
-      )
+       infotext])
+
+
 
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
