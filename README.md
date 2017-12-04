@@ -2,13 +2,13 @@
 
 Utvalgte diagram.
 
-### Statens inntekter frå petroleumsverksemda
+# Statens inntekter frå petroleumsverksemda
 
 ![Netto kontantstraum](img/ssb-png/nettokontantstraum.png)
 
 ![Innbetalt petroleumsskatt](img/ssb-png/petroskatt-mms.png)
 
-### Norsk sokkel
+# Norsk sokkel
 
 ![Oljeproduksjon](img/ncs-png/liquids-pp.png)
 
@@ -16,7 +16,7 @@ Utvalgte diagram.
 
 ![Petroleumsproduksjon](img/ncs-png/petro-pp.png)
 
-### Flytrafikk
+# Flytrafikk
 
 ![Norsk flytrafikk](img/eurostat-png/norsk-flytrafikk.png)
 
