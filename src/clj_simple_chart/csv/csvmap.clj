@@ -64,6 +64,13 @@
                       (assoc o k (if (number? v) v (throw (ex-info "column contained non-number" {:column k :value v}))))
                       (assoc o k v))) {} x)) data))
 
+(defn read-number-or-throw-columns [columns data]
+  (mapv (fn [x]
+          (reduce (fn [o [k v]]
+                    (if (some #{k} columns)
+                      (assoc o k (if (number? (read-string v)) (read-string v) (throw (ex-info "column contained non-number" {:column k :value v}))))
+                      (assoc o k v))) {} x)) data))
+
 (defn drop-columns [columns data]
   (mapv (fn [x]
           (reduce (fn [o [k v]]
