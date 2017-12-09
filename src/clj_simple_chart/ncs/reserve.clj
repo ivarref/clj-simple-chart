@@ -47,9 +47,11 @@
 
 (def field-names (map :fldName data))
 
+(def field-names-all (vec (flatten [(map :fldName data)
+                                    ["SINDRE" "33/9-6 DELTA"]])))
+
 (defn get-reserve [field-name kind]
-  {:pre [(or (some #{field-name} field-names)
-             (some #{field-name} ["SINDRE" "33/9-6 DELTA"]))
+  {:pre [(some #{field-name} field-names-all)
          (some #{kind} [:fldRecoverableOE :fldRecoverableOil :fldRecoverableGas :fldRecoverableLiquids])]}
   (cond (not (some #{field-name} field-names))
         (let [prop (get {:fldRecoverableOE      :prfPrdOeNetMillSm3

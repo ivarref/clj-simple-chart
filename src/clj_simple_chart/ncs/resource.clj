@@ -60,4 +60,9 @@
 (test/is (= (count field-names) (count (distinct field-names))))
 
 (defn get-resource [field-name kind]
-  {:pre [(some #{kind} [:fldRecoverableOE :fldRecoverableGas :fldRecoverableLiquids])]})
+  "Returns nil if field-name is not found"
+  {:pre [(some #{kind} [:fldRecoverableOE :fldRecoverableGas :fldRecoverableLiquids])]}
+  (->> parsed
+       (filter #(= field-name (:fldName %)))
+       (first)
+       (#(get % kind))))

@@ -1,6 +1,8 @@
 (ns clj-simple-chart.ncs.discovery
   (:require [clj-simple-chart.csv.csvmap :as csv]
             [clj-http.client :as client]
+            [clj-simple-chart.ncs.resource :as resource]
+            [clj-simple-chart.ncs.reserve :as reserve]
             [clojure.test :as test]))
 
 (def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/discovery&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=81.191.112.135&CultureCode=en")
@@ -48,17 +50,28 @@
                  (distinct)
                  (vec))))
 
+(defn recoverable [{fld-name :fldName dsc-name :dscName} kind]
+  (if (and (some? fld-name) (some #{fld-name} reserve/field-names-all))
+      (reserve/get-reserve fld-name kind)
+      (resource/get-resource dsc-name kind)))
+
 (def parsed (->> data
                  (remove #(= "Included in other discovery" (:dscCurrentActivityStatus %)))
                  (map #(select-keys % [:dscName :fldName :dscDiscoveryYear :dscCurrentActivityStatus]))
                  (csv/read-number-or-throw-columns [:dscDiscoveryYear])
                  (map #(update % :fldName (fn [x] (if (empty? x) nil x))))
-                 (map #(assoc % :fldName (or (:fldName %) (:dscName %))))
-                 (map #(dissoc % :dscName))
-                 (group-by :fldName)
+                 (map #(update % :dscName (fn [x] (if (empty? x) nil x))))
+                 (map #(assoc % :name (or (:fldName %) (:dscName %))))
+                 (group-by :name)
                  (vals)
                  (map #(sort-by (fn [x] (:dscDiscoveryYear x)) %))
                  (map #(first %))
                  (flatten)
-                 (sort-by :fldName)
+                 (map #(assoc % :fldRecoverableLiquids (recoverable % :fldRecoverableLiquids)))
+                 (map #(assoc % :fldRecoverableGas (recoverable % :fldRecoverableGas)))
+                 (map #(dissoc % :fldName :dscName))
+                 (filter #(or (some? (:fldRecoverableLiquids %))
+                              (some? (:fldRecoverableGas %))))
+                 (csv/number-or-throw-columns [:fldRecoverableLiquids :fldRecoverableGas])
+                 (sort-by :name)
                  (vec)))
