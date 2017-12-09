@@ -88,6 +88,18 @@
                  (sort-by :name)
                  (vec)))
 
+(csv/write-csv-format "data/ncs/discovery-mboe.csv"
+                      {:columns [:name :year :status :fldRecoverableLiquids :fldRecoverableGas]
+                       :data (->> parsed
+                                  (map #(reduce (fn [o [k v]]
+                                                  (if (some #{k} [:fldRecoverableLiquids :fldRecoverableGas])
+                                                    (assoc o k (* 6.29 v))
+                                                    (assoc o k v)))
+                                                {}
+                                                %)))
+                       :format {:fldRecoverableLiquids "%.1f"
+                                :fldRecoverableGas "%.1f"}})
+
 
 (def start-year (->> parsed
                      (map :year)
