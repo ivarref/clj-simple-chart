@@ -37,8 +37,8 @@
              :shut-down-produced gray})
 
 (def text {:not-evaluated "Ikkje evaluert"
-           :likely "Utvinning sannsynlig"
-           :clarification "Under avklaring"
+           :likely "Utvinning truleg"
+           :clarification "Under avklåring"
            :pdo-approved "PUD*-godkjent"
            :remaining-reserves "Gjenverande reservar"
            :producing-produced "Produksjon frå felt i produksjon"
@@ -79,7 +79,12 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Gjenverande ressursar og historisk produksjon" :font "Roboto Bold" :font-size 30}]))
+              [{:text "Gjenverande ressursar og kumulativ produksjon" :font "Roboto Bold" :font-size 30
+                :margin-bottom 3}
+               {:text "Milliardar fat olje" :font "Roboto Bold" :font-size 16
+                :align :right
+                :margin-bottom 3
+                :valign :bottom}]))
 
 (def footer (opentype/stack
               {:width available-width}
