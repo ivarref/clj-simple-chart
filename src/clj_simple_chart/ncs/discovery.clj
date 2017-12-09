@@ -4,6 +4,7 @@
             [clojure.set :refer [rename-keys]]
             [clj-simple-chart.ncs.resource :as resource]
             [clj-simple-chart.ncs.reserve :as reserve]
+            [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
             [clojure.test :as test]))
 
 (def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/discovery&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=81.191.112.135&CultureCode=en")
@@ -87,6 +88,11 @@
                  (sort-by :name)
                  (vec)))
 
+
+(def start-year (->> parsed
+                     (map :year)
+                     (apply min)))
+
 (def producing-field-names (->> parsed
                                 (filter #(= :producing (:status %)))
                                 (map :name)
@@ -100,3 +106,18 @@
                                 (distinct)
                                 (sort)
                                 (vec)))
+
+(defn cumulative-original-recoverable-by-status
+  [status year kind]
+  {:pre [(some #{kind} [:fldRecoverableLiquids :fldRecoverableGas])
+         (some #{status} (vals status-map))]}
+  (->> parsed
+       (filter #(= status (:status %)))
+       (filter #(<= (:year %) year))
+       (map kind)
+       (reduce + 0)
+       (double)))
+
+(test/is (< (cumulative-original-recoverable-by-status :producing 2000 :fldRecoverableLiquids)
+            (cumulative-original-recoverable-by-status :producing 2010 :fldRecoverableLiquids)))
+
