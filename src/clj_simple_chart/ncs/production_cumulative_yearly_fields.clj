@@ -56,13 +56,19 @@
   [fields year kind]
   {:pre [(every? #(some #{%} field-names) fields)
          (pos? year)
-         (some #{kind} [:prfPrdLiquidsNetMillSm3 :prfPrdGasNetBillSm3])]}
-  (->> parsed
-       (filter #(<= (:prfYear %) year))
-       (filter #(some #{(:prfInformationCarrier %)} fields))
-       (map kind)
-       (reduce + 0)
-       (double)))
+         (some #{kind} [:prfPrdLiquidsNetMillSm3 :prfPrdGasNetBillSm3 :liquids :gas])]}
+  (cond (= kind :liquids)
+        (recur fields year :prfPrdLiquidsNetMillSm3)
+
+        (= kind :gas)
+        (recur fields year :prfPrdGasNetBillSm3)
+
+        :else (->> parsed
+                   (filter #(<= (:prfYear %) year))
+                   (filter #(some #{(:prfInformationCarrier %)} fields))
+                   (map kind)
+                   (reduce + 0)
+                   (double))))
 
 (test/is (< (cumulative-production ["STATFJORD"] 1990 :prfPrdLiquidsNetMillSm3)
             (cumulative-production ["STATFJORD"] 2000 :prfPrdLiquidsNetMillSm3)))

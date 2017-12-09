@@ -52,22 +52,22 @@
                  (distinct)
                  (vec))))
 
-(def status-map {"Approved for production" :pdo-approved
-                 "Producing" :producing
-                 "Production in clarification phase" :clarification
+(def status-map {"Approved for production"            :pdo-approved
+                 "Producing"                          :producing
+                 "Production in clarification phase"  :clarification
                  "Production likely, but unclarified" :likely
-                 "Production not evaluated" :not-evaluated
-                 "Shut down" :shut-down})
+                 "Production not evaluated"           :not-evaluated
+                 "Shut down"                          :shut-down})
 
 (defn recoverable [{fld-name :fldName dsc-name :dscName} kind]
   (if (and (some? fld-name) (some #{fld-name} reserve/field-names-all))
-      (reserve/get-reserve fld-name kind)
-      (resource/get-resource dsc-name kind)))
+    (reserve/get-reserve fld-name kind)
+    (resource/get-resource dsc-name kind)))
 
 (def parsed (->> data
                  (remove #(= "Included in other discovery" (:dscCurrentActivityStatus %)))
                  (map #(rename-keys % {:dscCurrentActivityStatus :status
-                                       :dscDiscoveryYear :year}))
+                                       :dscDiscoveryYear         :year}))
                  (map #(update % :status status-map))
                  (map #(select-keys % [:dscName :fldName :year :status]))
                  (csv/read-number-or-throw-columns [:year])
@@ -93,9 +93,12 @@
                      (map :year)
                      (apply min)))
 
+(def stop-year production/stop-year)
+
 (def producing-field-names (->> parsed
                                 (filter #(= :producing (:status %)))
                                 (map :name)
+                                (remove #(= "TAMBAR ØST" %))
                                 (distinct)
                                 (sort)
                                 (vec)))
@@ -107,17 +110,47 @@
                                 (sort)
                                 (vec)))
 
+(def missing-field-production
+  (->> parsed
+       (filter #(some #{(:status %)} [:producing :shut-down]))
+       (map :name)
+       (distinct)
+       (remove #(some #{%} production/field-names))
+       (sort)
+       (vec)))
+
+(test/is (= ["TAMBAR ØST"] missing-field-production))
+
 (defn cumulative-original-recoverable-by-status
   [status year kind]
-  {:pre [(some #{kind} [:fldRecoverableLiquids :fldRecoverableGas])
+  {:pre [(some #{kind} [:fldRecoverableLiquids :fldRecoverableGas :liquids :gas])
          (some #{status} (vals status-map))]}
-  (->> parsed
-       (filter #(= status (:status %)))
-       (filter #(<= (:year %) year))
-       (map kind)
-       (reduce + 0)
-       (double)))
+  (cond (= :liquids kind)
+        (recur status year :fldRecoverableLiquids)
+
+        (= :gas kind)
+        (recur status year :fldRecoverableGas)
+
+        :else
+        (->> parsed
+             (filter #(= status (:status %)))
+             (filter #(>= year (:year %)))
+             (map kind)
+             (reduce + 0)
+             (double))))
 
 (test/is (< (cumulative-original-recoverable-by-status :producing 2000 :fldRecoverableLiquids)
             (cumulative-original-recoverable-by-status :producing 2010 :fldRecoverableLiquids)))
 
+(defn produce-row-year [year kind]
+  (assoc {}
+    :year year
+    :shut-down-produced (production/cumulative-production shut-down-field-names year kind)
+    :producing-produced (production/cumulative-production producing-field-names year kind)
+    :remaining-reserves (- (+ (cumulative-original-recoverable-by-status :producing year kind)
+                              (cumulative-original-recoverable-by-status :shut-down year kind))
+                           (production/cumulative-production production/field-names year kind))
+    :pdo-approved (cumulative-original-recoverable-by-status :pdo-approved year kind)
+    :clarification (cumulative-original-recoverable-by-status :clarification year kind)
+    :likely (cumulative-original-recoverable-by-status :likely year kind)
+    :not-evaluated (cumulative-original-recoverable-by-status :not-evaluated year kind)))
