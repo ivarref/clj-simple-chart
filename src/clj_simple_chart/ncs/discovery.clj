@@ -1,6 +1,7 @@
 (ns clj-simple-chart.ncs.discovery
   (:require [clj-simple-chart.csv.csvmap :as csv]
             [clj-http.client :as client]
+            [clojure.set :refer [rename-keys]]
             [clj-simple-chart.ncs.resource :as resource]
             [clj-simple-chart.ncs.reserve :as reserve]
             [clojure.test :as test]))
@@ -50,6 +51,13 @@
                  (distinct)
                  (vec))))
 
+(def status-map {"Approved for production" :pdo-approved
+                 "Producing" :producing
+                 "Production in clarification phase" :clarification
+                 "Production likely, but unclarified" :likely
+                 "Production not evaluated" :not-evaluated
+                 "Shut down" :shut-down})
+
 (defn recoverable [{fld-name :fldName dsc-name :dscName} kind]
   (if (and (some? fld-name) (some #{fld-name} reserve/field-names-all))
       (reserve/get-reserve fld-name kind)
@@ -57,14 +65,17 @@
 
 (def parsed (->> data
                  (remove #(= "Included in other discovery" (:dscCurrentActivityStatus %)))
-                 (map #(select-keys % [:dscName :fldName :dscDiscoveryYear :dscCurrentActivityStatus]))
-                 (csv/read-number-or-throw-columns [:dscDiscoveryYear])
+                 (map #(rename-keys % {:dscCurrentActivityStatus :status
+                                       :dscDiscoveryYear :year}))
+                 (map #(update % :status status-map))
+                 (map #(select-keys % [:dscName :fldName :year :status]))
+                 (csv/read-number-or-throw-columns [:year])
                  (map #(update % :fldName (fn [x] (if (empty? x) nil x))))
                  (map #(update % :dscName (fn [x] (if (empty? x) nil x))))
                  (map #(assoc % :name (or (:fldName %) (:dscName %))))
                  (group-by :name)
                  (vals)
-                 (map #(sort-by (fn [x] (:dscDiscoveryYear x)) %))
+                 (map #(sort-by (fn [x] (:year x)) %))
                  (map #(first %))
                  (flatten)
                  (map #(assoc % :fldRecoverableLiquids (recoverable % :fldRecoverableLiquids)))
@@ -75,3 +86,17 @@
                  (csv/number-or-throw-columns [:fldRecoverableLiquids :fldRecoverableGas])
                  (sort-by :name)
                  (vec)))
+
+(def producing-field-names (->> parsed
+                                (filter #(= :producing (:status %)))
+                                (map :name)
+                                (distinct)
+                                (sort)
+                                (vec)))
+
+(def shut-down-field-names (->> parsed
+                                (filter #(= :shut-down (:status %)))
+                                (map :name)
+                                (distinct)
+                                (sort)
+                                (vec)))
