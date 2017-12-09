@@ -154,6 +154,23 @@
     :likely (cumulative-original-recoverable-by-status :likely year kind)
     :not-evaluated (cumulative-original-recoverable-by-status :not-evaluated year kind)))
 
+(def number-columns [:shut-down-produced :producing-produced
+                     :remaining-reserves :pdo-approved :clarification
+                     :likely :not-evaluated])
+
 (def flat-data
   (for [yr (range start-year (inc stop-year))]
     (produce-row-year yr :liquids)))
+
+(defn explode-row [row]
+  (reduce (fn [o k]
+            (conj o {:year (:year row)
+                     :c k
+                     :value (get row k)}))
+          [] number-columns))
+
+(def exploded-data
+  (->> flat-data
+       (mapcat explode-row)
+       (sort-by :year)
+       (vec)))
