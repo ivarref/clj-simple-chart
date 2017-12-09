@@ -100,6 +100,53 @@
                        :format {:fldRecoverableLiquids "%.1f"
                                 :fldRecoverableGas "%.1f"}})
 
+(csv/write-csv-format "data/ncs/discovery-pdo-approved-mboe.csv"
+                      {:columns [:name :year :fldRecoverableLiquids :fldRecoverableGas]
+                       :data (->> parsed
+                                  (filter #(= :pdo-approved (:status %)))
+                                  (map #(reduce (fn [o [k v]]
+                                                  (if (some #{k} [:fldRecoverableLiquids :fldRecoverableGas])
+                                                    (assoc o k (* 6.29 v))
+                                                    (assoc o k v)))
+                                                {}
+                                                %))
+                                  (sort-by :fldRecoverableLiquids)
+                                  (reverse)
+                                  (vec))
+                       :format {:fldRecoverableLiquids "%.1f"
+                                :fldRecoverableGas "%.1f"}})
+
+(csv/write-csv-format "data/ncs/discovery-clarification-mboe.csv"
+                      {:columns [:name :year :fldRecoverableLiquids :fldRecoverableGas]
+                       :data (->> parsed
+                                  (filter #(= :clarification (:status %)))
+                                  (map #(reduce (fn [o [k v]]
+                                                  (if (some #{k} [:fldRecoverableLiquids :fldRecoverableGas])
+                                                    (assoc o k (* 6.29 v))
+                                                    (assoc o k v)))
+                                                {}
+                                                %))
+                                  (sort-by :fldRecoverableLiquids)
+                                  (reverse)
+                                  (vec))
+                       :format {:fldRecoverableLiquids "%.1f"
+                                :fldRecoverableGas "%.1f"}})
+
+(csv/write-csv-format "data/ncs/discovery-likely-mboe.csv"
+                      {:columns [:name :year :fldRecoverableLiquids :fldRecoverableGas]
+                       :data (->> parsed
+                                  (filter #(= :likely (:status %)))
+                                  (map #(reduce (fn [o [k v]]
+                                                  (if (some #{k} [:fldRecoverableLiquids :fldRecoverableGas])
+                                                    (assoc o k (* 6.29 v))
+                                                    (assoc o k v)))
+                                                {}
+                                                %))
+                                  (sort-by :fldRecoverableLiquids)
+                                  (reverse)
+                                  (vec))
+                       :format {:fldRecoverableLiquids "%.1f"
+                                :fldRecoverableGas "%.1f"}})
 
 (def start-year (->> parsed
                      (map :year)
