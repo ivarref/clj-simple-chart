@@ -51,13 +51,13 @@
           :else (throw (Exception. "Sorry! Diff is still >0.1, but search is exhausted!")))))
 
 (defn- chart-inner [{width  :width
-                    height :height
-                    x      :x
-                    y      :y
-                    y2     :y2
-                    x2     :x2
-                    :or    {y2 nil
-                            x2 nil}}]
+                     height :height
+                     x      :x
+                     y      :y
+                     y2     :y2
+                     x2     :x2
+                     :or    {y2 nil
+                             x2 nil}}]
   (let [max-margins (solve-margins width height (margins {}) [x y x2 y2] 10)
 
         max-right (Math/ceil (:margin-right max-margins))

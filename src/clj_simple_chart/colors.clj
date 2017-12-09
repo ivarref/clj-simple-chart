@@ -2,6 +2,7 @@
 
 ; http://bl.ocks.org/aaizemberg/78bd3dade9593896a59d
 
+(def gray "#7f7f7f")
 (def blue "rgb(31, 119, 180)")
 (def hydro-blue "rgb(51, 102, 255)")
 (def orange "rgb(255, 127, 14)")

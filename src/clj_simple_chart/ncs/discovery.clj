@@ -169,8 +169,9 @@
                      :value (get row k)}))
           [] number-columns))
 
-(def exploded-data
+(def exploded-data-liquids-gboe
   (->> flat-data
        (mapcat explode-row)
+       (map #(update % :value (fn [v] (double (/ (* 6.29 v) 1000)))))
        (sort-by :year)
        (vec)))

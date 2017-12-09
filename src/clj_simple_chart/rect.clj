@@ -166,6 +166,9 @@
         (fn? fill)
         fill
 
+        (map? fill)
+        (fn [x] (get fill (:c x) "yellow"))
+
         :else nil))
 
 (defn- h-fn [h item]
