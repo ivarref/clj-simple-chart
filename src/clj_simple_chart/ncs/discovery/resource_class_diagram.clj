@@ -31,15 +31,18 @@
 (def colors {:not-evaluated      hydro-blue
              :likely             brown
              :clarification      orange
-             :pdo-approved       red ;"#fd8d3c"
+             :pdo-approved       red;ø"#A700A7"
              :remaining-reserves "#109618"                  ; hard green
-             :producing-produced light-green
+             :producing-produced "#64c466"
              :shut-down-produced gray})
 
-
-
-
-
+(def text {:not-evaluated "Ikkje evaluert"
+           :likely "Utvinning sannsynlig"
+           :clarification "Under avklaring"
+           :pdo-approved "PUD*-godkjent"
+           :remaining-reserves "Gjenverande reservar"
+           :producing-produced "Produksjon frå felt i produksjon"
+           :shut-down-produced "Produksjon frå nedstengde felt"})
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -76,11 +79,11 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Funn, felt og produksjon av olje på norsk sokkel" :font "Roboto Bold" :font-size 30}]))
+              [{:text "Gjenverande ressursar og historisk produksjon" :font "Roboto Bold" :font-size 30}]))
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelde: Oljedirektoratet" :font "Roboto Regular" :font-size 14}
+              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 
@@ -101,6 +104,18 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:x c))
      (axis/render-axis (:y c))
+     [:g {:transform (translate 10 15)}
+      (opentype/stack {:widht available-width
+                       :fill "whitesmoke"
+                       :fill-opacity 0.7
+                       :margin 5}
+                      (vec (flatten [{:text "Ressurstype" :font "Roboto Bold" :font-size 14}
+                                     (map (fn [col]
+                                            {:text (get text col)
+                                             :font "Roboto Regular"
+                                             :font-size 14
+                                             :rect {:fill (get colors col)}})
+                                          (reverse number-columns))])))]
      (bars c {:p :year :h :value :fill colors} data)]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
