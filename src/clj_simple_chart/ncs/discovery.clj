@@ -154,3 +154,26 @@
     :clarification (cumulative-original-recoverable-by-status :clarification year kind)
     :likely (cumulative-original-recoverable-by-status :likely year kind)
     :not-evaluated (cumulative-original-recoverable-by-status :not-evaluated year kind)))
+
+(def flat-data
+  (for [yr (range start-year (inc stop-year))]
+    (produce-row-year yr :liquids)))
+
+(def number-columns [:shut-down-produced :producing-produced
+                     :remaining-reserves :pdo-approved :clarification
+                     :likely :not-evaluated])
+
+(csv/write-csv-format "data/ncs/produced-reserves-liquids-gb.csv"
+                      {:columns [:year :shut-down-produced :producing-produced
+                                 :remaining-reserves :pdo-approved :clarification
+                                 :likely :not-evaluated]
+                       :data (->> flat-data
+                                  (map #(reduce (fn [o [k v]]
+                                                  (if (some #{k} number-columns)
+                                                    (assoc o k (double (/ (* 6.29 v) 1000)))
+                                                    (assoc o k v)))
+                                                {}
+                                                %))
+                                  (sort-by :year)
+                                  (reverse))
+                       :format (zipmap number-columns (repeat "%.1f"))})
