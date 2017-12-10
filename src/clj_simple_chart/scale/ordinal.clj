@@ -1,5 +1,4 @@
-(ns clj-simple-chart.scale.ordinal
-  (:require [clojure.spec :as s]))
+(ns clj-simple-chart.scale.ordinal)
 
 ; based on
 ; https://github.com/d3/d3-scale/blob/master/src/band.js

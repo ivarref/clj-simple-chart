@@ -1,5 +1,4 @@
-(ns clj-simple-chart.scale.linear
-  (:require [clojure.spec :as s]))
+(ns clj-simple-chart.scale.linear)
 
 ;;; TODO: This is just "common sense" code --- is there some edge cases?
 ;;; How does d3 do it?

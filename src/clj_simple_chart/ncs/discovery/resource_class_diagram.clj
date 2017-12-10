@@ -41,8 +41,8 @@
            :clarification "Under avklåring"
            :pdo-approved "PUD*-godkjent"
            :remaining-reserves "Gjenverande reservar"
-           :producing-produced "Produksjon frå felt i produksjon"
-           :shut-down-produced "Produksjon frå nedstengde felt"})
+           :producing-produced "Kumulativ produksjon frå felt i drift"
+           :shut-down-produced "Kumulativ produksjon frå nedstengde felt"})
 
 (def marg 10)
 (def two-marg (* 2 marg))

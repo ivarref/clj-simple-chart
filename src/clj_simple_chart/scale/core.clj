@@ -1,5 +1,5 @@
 (ns clj-simple-chart.scale.core
-  (:require [clojure.spec :as s]
+  (:require [clojure.spec.alpha :as s]
             [clj-simple-chart.scale.ordinal :as ordinal]
             [clj-simple-chart.scale.linear :as linear]
             [clj-simple-chart.scale.ordinal-linear :as ordinal-linear]))
