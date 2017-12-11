@@ -37,10 +37,10 @@
                      {:text "Def" :font "Roboto Bold" :font-size font-size :rect {:fill "green" :size rect-size}}
                      {:text "Ghi" :font "Roboto Bold" :font-size font-size :rect {:fill "orange" :size rect-size}}
                      {:text "Ijk" :font "Roboto Bold" :font-size font-size :rect {:fill "cyan" :size rect-size}}
-                     {:text "OMLLLLL" :font "Roboto Bold" :font-size font-size :rect {:fill "yellow" :size rect-size}}
-                     ])
+                     {:text "OMLLLLL" :font "Roboto Bold" :font-size font-size :rect {:fill "yellow" :size rect-size}}])]])
 
-    ]])
+
+
 
 (defn render-self []
   (render "./img/demo/meh.png" "./img/demo/meh.svg" (diagram)))

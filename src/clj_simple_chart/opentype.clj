@@ -348,16 +348,35 @@
         with-baseline (mapv #(assoc % :min-height max-height-for-rects) with-baseline)
         with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
         with-path (map (fn [x] (assoc x :path (text x))) with-idx)
+        with-right (->> with-path
+                        (map (fn [x] (update x :right #(or % {:text ""}))))
+                        (map (fn [x] (update x :right #(merge (dissoc x :rect :right) %))))
+                        (mapv #(assoc % :right-path (text (:right %)))))
+        right-text (->> with-idx
+                        (filter :right)
+                        (map #(merge (dissoc % :rect) (:right %)))
+                        (map #(dissoc % :right))
+                        (map #(assoc % :path (text %))))
         paths (map :path with-path)
         metas (map meta paths)
-        max-width (apply max (map :width metas))
+        max-width-left (apply max (map :width metas))
+        total-width (->> with-right
+                         (map #(+ (-> % :path (meta) :width)
+                                  (let [right-w (-> % :right-path (meta) :width)]
+                                    (if (pos? right-w)
+                                      (+ right-w (* 0.4 (:font-size %)))
+                                      0))))
+                         (reduce max 0))
+        max-width-right (reduce max 0 (map (comp :width meta :path) right-text))
         y-offset (map #(let [h-with-margin (+ 4 (:height %))]
                          (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
         y-offset (map-indexed (fn [idx yoff] (+ yoff (get (nth texts-with-spacing idx) :margin-bottom 0))) y-offset)
         height (reduce + y-offset)]
     (with-meta
-      [:g (map (partial stack-text alignment max-width y-offset) with-path)]
-      {:height height :width max-width})))
+      [:g (map (partial stack-text alignment max-width-left y-offset) with-path)
+       [:g {:transform (translate total-width 0)}
+        (map (partial stack-text :right max-width-left y-offset) right-text)]]
+      {:height height :width total-width})))
 
 (defn- add-translation [width height [alignment group]]
   (cond (= [:top :left] alignment) group
