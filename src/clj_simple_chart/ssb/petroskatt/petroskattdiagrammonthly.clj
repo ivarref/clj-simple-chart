@@ -123,7 +123,7 @@
               {:margin-left   marg
                :margin-top    8
                :margin-bottom 3}
-              [{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font-size 14}]))
+              [{:text "Kjelder: SSB (Skatterekneskap), Norges Bank, St. Louis Fed" :font-size 14}]))
 
 (def footer2 (opentype/text
                {:text               "Diagram © Refsdal.Ivar@gmail.com"
