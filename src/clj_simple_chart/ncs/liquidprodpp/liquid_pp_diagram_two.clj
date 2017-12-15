@@ -36,8 +36,9 @@
                             (reverse [
 
                                       "#2ca02c"             ;green
-                                      "#9467bd"             ; purple
+
                                       "#e377c2"             ; pink
+                                      "#9467bd"             ; purple
                                       "#17becf"             ; cyan
                                       "#1f77b4"             ; blue
 

@@ -32,12 +32,13 @@
 
 (defn bucket-fn [{:keys [prfInformationCarrier percentage-produced]}]
   (cond
-    (< percentage-produced 75) "0- 0–75"
-    (< percentage-produced 80) "1- 75–80"
-    (< percentage-produced 85) "2- 80–85"
-    (< percentage-produced 90) "3- 85–90"
-    (< percentage-produced 95) "4- 90–95"
-    :else "5- 95–100"))
+    (< percentage-produced 50) "0- 0–50"
+    (< percentage-produced 75) "1- 50–75"
+    (< percentage-produced 80) "2- 75–80"
+    (< percentage-produced 85) "3- 80–85"
+    (< percentage-produced 90) "4- 85–90"
+    (< percentage-produced 95) "5- 90–95"
+    :else "6- 95–100"))
 
 (defn produce-cumulative
   [production]
