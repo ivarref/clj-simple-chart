@@ -22,27 +22,30 @@
                      :producing-produced
                      :remaining-reserves
                      :pdo-approved
+                     :decided-for-production
                      :clarification
                      :likely
                      :not-evaluated])
 
 (def light-green "#74c476")
 (def light-green-two "#31a354")
-(def colors {:not-evaluated      hydro-blue
-             :likely             brown
-             :clarification      orange
-             :pdo-approved       red;ø"#A700A7"
-             :remaining-reserves "#109618"                  ; hard green
-             :producing-produced "#64c466"
-             :shut-down-produced gray})
+(def colors {:not-evaluated          hydro-blue
+             :likely                 brown
+             :clarification          "#ffaa00"
+             :decided-for-production orange
+             :pdo-approved           red                    ;ø"#A700A7"
+             :remaining-reserves     "#109618"              ; hard green
+             :producing-produced     "#64c466"
+             :shut-down-produced     gray})
 
-(def text {:not-evaluated "Ikkje evaluert"
-           :likely "Utvinning truleg"
-           :clarification "Under avklåring"
-           :pdo-approved "PUD*-godkjent"
-           :remaining-reserves "Gjenverande reservar"
-           :producing-produced "Kumulativ produksjon frå felt i drift"
-           :shut-down-produced "Kumulativ produksjon frå nedstengde felt"})
+(def text {:not-evaluated          "Ikkje evaluert"
+           :likely                 "Utvinning truleg"
+           :clarification          "Under avklåring"
+           :decided-for-production "Besluttet for utvinning"
+           :pdo-approved           "PUD*-godkjent"
+           :remaining-reserves     "Gjenverande reservar"
+           :producing-produced     "Kumulativ produksjon frå felt i drift"
+           :shut-down-produced     "Kumulativ produksjon frå nedstengde felt"})
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -79,12 +82,12 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Gjenverande ressursar og kumulativ produksjon" :font "Roboto Bold" :font-size 30
+              [{:text          "Gjenverande ressursar og kumulativ produksjon" :font "Roboto Bold" :font-size 30
                 :margin-bottom 3}
-               {:text "Milliardar fat olje" :font "Roboto Bold" :font-size 16
-                :align :right
+               {:text          "Milliardar fat olje" :font "Roboto Bold" :font-size 16
+                :align         :right
                 :margin-bottom 3
-                :valign :bottom}]))
+                :valign        :bottom}]))
 
 (def footer (opentype/stack
               {:width available-width}
@@ -109,20 +112,21 @@
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:x c))
      (axis/render-axis (:y c))
+     (bars c {:p :year :h :value :fill colors} data)
      [:g {:transform (translate 10 15)}
-      (opentype/stack {:widht available-width
-                       :fill "whitesmoke"
+      (opentype/stack {:widht        available-width
+                       :fill         "whitesmoke"
                        :fill-opacity 0.7
-                       :margin 5}
+                       :margin       5}
                       (vec (flatten [{:text "Ressurstype" :font "Roboto Bold" :font-size 14}
                                      (map (fn [col]
-                                            {:text (get text col)
-                                             :font "Roboto Regular"
+                                            {:text      (get text col)
+                                             :font      "Roboto Regular"
                                              :font-size 14
-                                             :rect {:fill (get colors col)}})
-                                          (reverse number-columns))])))]
-     (bars c {:p :year :h :value :fill colors} data)]
+                                             :rect      {:fill (get colors col)}})
+                                          (reverse number-columns))])))]]
+
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (core/render "./img/ncs-svg/discovery-overview.svg" "./img/ncs-png/nettokontantstraum.png" (diagram)))
+  (core/render "./img/ncs-svg/discovery-overview.svg" "./img/ncs-png/discovery-overview.png" (diagram)))

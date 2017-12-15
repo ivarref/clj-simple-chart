@@ -38,14 +38,15 @@
              :DatesyncNPD]
             columns))
 
-(test/is (= ["Approved for production"
-             "Included in other discovery"
-             "Producing"
-             "Production in clarification phase"
-             "Production is unlikely"
-             "Production likely, but unclarified"
-             "Production not evaluated"
-             "Shut down"]
+(test/is (= (vec (sort ["Approved for production"
+                        "Decided for production"
+                        "Included in other discovery"
+                        "Producing"
+                        "Production in clarification phase"
+                        "Production is unlikely"
+                        "Production likely, but unclarified"
+                        "Production not evaluated"
+                        "Shut down"]))
             (->> data
                  (map :dscCurrentActivityStatus)
                  (sort)
@@ -53,6 +54,7 @@
                  (vec))))
 
 (def status-map {"Approved for production"            :pdo-approved
+                 "Decided for production"             :decided-for-production
                  "Producing"                          :producing
                  "Production in clarification phase"  :clarification
                  "Production likely, but unclarified" :likely
