@@ -95,7 +95,7 @@
                                  :fldRecoverableGas     "%.1f"}})
 
 (def number-columns [:shut-down-produced :producing-produced
-                     :remaining-reserves :pdo-approved :clarification
+                     :remaining-reserves :pdo-approved :decided-for-production :clarification
                      :likely :not-evaluated])
 
 (csv/write-csv-format "data/ncs/discovery/produced-reserves-liquids-gb.csv"
