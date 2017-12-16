@@ -19,20 +19,16 @@
     (opentype/stack {:fill "#ccc"
                      :fill-opacity 0.7
                      :margin 5}
-                    [
-                     {:text "My great heading" :font "Roboto Black" :font-size font-size}
-                     {:text "It's great" :font "Roboto Black" :font-size 16}
-                     {:text "\"It's really great\", -Maja" :font "Roboto Black" :font-size 16}
-
-                     {:text "Abc" :font "Roboto Bold" :font-size font-size :rect {:fill "red" :size rect-size}
+                    [{:text "Abc" :font "Roboto Bold" :font-size font-size :rect {:fill "red" :size rect-size}
                       :right {:text "123"}}
 
                      {:text "Def" :font "Roboto Bold" :font-size font-size :rect {:fill "green" :size rect-size}
                       :right {:text "999"}}
 
                      {:text "Ghi" :font "Roboto Bold" :font-size font-size :rect {:fill "orange" :size rect-size}}
-                     {:text "Ijk" :font "Roboto Bold" :font-size font-size :rect {:fill "cyan" :size rect-size}}
-                     {:text "OMG" :font "Roboto Bold" :font-size font-size :rect {:fill "yellow" :size rect-size}
+                     {:text "Ip,k" :font "Roboto Bold" :font-size font-size :rect {:fill "cyan" :size rect-size}
+                      :right {:text "1234"}}
+                     {:text "Oq,MG" :font "Roboto Bold" :font-size font-size :rect {:fill "yellow" :size rect-size}
                       :right {:text "1234"}}])]])
 
 (defn render-self []

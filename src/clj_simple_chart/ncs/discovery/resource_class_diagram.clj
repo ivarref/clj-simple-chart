@@ -9,12 +9,20 @@
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.rect :refer [bars]]
             [clj-simple-chart.point :as point]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.string :as str]))
 
 (def data datasource/exploded-data-liquids-gboe)
 
+(def max-year (apply max (map :year data)))
+
+(def cat-to-value-last-year (->> data
+                                 (filter #(= (:year %) max-year))
+                                 (map (juxt :c :value))
+                                 (into {})))
+
 (def max-y-axis (->> data
-                     (filter #(= (:year %) (apply max (map :year data))))
+                     (filter #(= (:year %) max-year))
                      (map :value)
                      (reduce + 0.0)))
 
@@ -41,11 +49,11 @@
 (def text {:not-evaluated          "Ikkje evaluert"
            :likely                 "Utvinning truleg"
            :clarification          "Under avklåring"
-           :decided-for-production "Besluttet for utvinning"
+           :decided-for-production "Vedteke for utvinning"
            :pdo-approved           "PUD*-godkjent"
            :remaining-reserves     "Gjenverande reservar"
            :producing-produced     "Kumulativ produksjon frå felt i drift"
-           :shut-down-produced     "Kumulativ Produksjon frå nedstengde felt"})
+           :shut-down-produced     "Kumulativ produksjon frå nedstengde felt"})
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -91,7 +99,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift. **Kumulativ." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 
@@ -118,14 +126,17 @@
                        :fill         "whitesmoke"
                        :fill-opacity 0.8
                        :margin       5}
-                      (vec (flatten [{:text "Ressurstype" :font "Roboto Black" :font-size 16}
+                      (vec (flatten [{:text "Ressurskategori" :font "Roboto Black" :font-size 16
+                                      :right {:text "Mrd. fat olje"}}
                                      (map (fn [col]
                                             {:text      (get text col)
                                              :font      "Roboto Regular"
                                              :font-size 16
-                                             :right {:text "asdf"}
+                                             :right     {:text (str/replace (format "%.1f" (get cat-to-value-last-year col)) "." ",")}
                                              :rect      {:fill (get colors col)}})
-                                          (reverse number-columns))])))]]
+                                          (reverse number-columns))
+                                     {:text "Totalt" :font "Roboto Regular" :font-size 16
+                                      :right {:text (str/replace (format "%.1f" (reduce + 0 (vals cat-to-value-last-year))) "." ",")}}])))]]
 
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
