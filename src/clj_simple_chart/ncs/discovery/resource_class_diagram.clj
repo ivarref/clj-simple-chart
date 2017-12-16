@@ -45,7 +45,7 @@
            :pdo-approved           "PUD*-godkjent"
            :remaining-reserves     "Gjenverande reservar"
            :producing-produced     "Kumulativ produksjon frå felt i drift"
-           :shut-down-produced     "Kumulativ produksjon frå nedstengde felt"})
+           :shut-down-produced     "Kumulativ Produksjon frå nedstengde felt"})
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -91,7 +91,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift. **Kumulativ." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 
@@ -116,13 +116,14 @@
      [:g {:transform (translate 10 15)}
       (opentype/stack {:widht        available-width
                        :fill         "whitesmoke"
-                       :fill-opacity 0.7
+                       :fill-opacity 0.8
                        :margin       5}
-                      (vec (flatten [{:text "Ressurstype" :font "Roboto Bold" :font-size 14}
+                      (vec (flatten [{:text "Ressurstype" :font "Roboto Black" :font-size 16}
                                      (map (fn [col]
                                             {:text      (get text col)
                                              :font      "Roboto Regular"
-                                             :font-size 14
+                                             :font-size 16
+                                             :right {:text "asdf"}
                                              :rect      {:fill (get colors col)}})
                                           (reverse number-columns))])))]]
 

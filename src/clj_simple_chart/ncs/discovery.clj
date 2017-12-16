@@ -152,12 +152,14 @@
                               (cumulative-original-recoverable-by-status :shut-down year kind))
                            (production/cumulative-production production/field-names year kind))
     :pdo-approved (cumulative-original-recoverable-by-status :pdo-approved year kind)
+    :decided-for-production (cumulative-original-recoverable-by-status :decided-for-production year kind)
     :clarification (cumulative-original-recoverable-by-status :clarification year kind)
     :likely (cumulative-original-recoverable-by-status :likely year kind)
     :not-evaluated (cumulative-original-recoverable-by-status :not-evaluated year kind)))
 
 (def number-columns [:shut-down-produced :producing-produced
                      :remaining-reserves :pdo-approved :clarification
+                     :decided-for-production
                      :likely :not-evaluated])
 
 (def flat-data

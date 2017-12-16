@@ -12,25 +12,21 @@ name,year,status,fldRecoverableLiquids,fldRecoverableGas
 2/4-21 (King Lear),2012,:likely,41.0,57.6
 2/5-3 (Sørøst Tor),1972,:likely,19.5,5.5
 24/9-10 S (Caterpillar),2011,:likely,7.4,0.6
-25/1-11 R (Storklakken),2010,:likely,9.8,0.9
 25/11-27,2013,:likely,27.4,0.0
 25/2-10 S (Frigg-GammaDelta),1986,:clarification,60.6,14.6
 25/2-18 S (Langfjellet),2016,:not-evaluated,41.9,7.1
 25/2-5 LILLE FRØY,1976,:likely,19.6,7.2
-25/4-3 (Gekko),1974,:likely,3.8,18.2
 25/5-9 (Trell),2014,:likely,13.4,0.0
 25/8-4 (D-struktur),1992,:likely,52.5,0.0
 26/10-1 (Zulu Øst),2015,:not-evaluated,0.0,15.7
 30/11-8 S (Krafla),2011,:likely,130.6,111.5
 30/5-3 S (Corvus),2009,:likely,2.8,34.5
-30/9-28 S,2016,:likely,1.6,7.5
 31/7-1 (Brasse),2016,:likely,47.1,15.3
 34/11-2 S (Nøkken),1996,:likely,12.3,32.9
 34/12-1 (Afrodite),2008,:likely,9.7,58.0
 34/4-11 (Beta),2010,:clarification,25.0,2.0
 34/6-2 S (Garantiana),2012,:clarification,69.8,0.8
 35/10-2,1996,:not-evaluated,3.5,17.6
-35/11-17 (F-Vest),2014,:likely,2.9,0.0
 35/11-18 (Syrah),2015,:not-evaluated,6.1,1.8
 35/12-2 (Grosbeak),2009,:not-evaluated,30.2,4.4
 35/2-1 (Peon),2005,:likely,0.0,122.9
@@ -57,7 +53,6 @@ name,year,status,fldRecoverableLiquids,fldRecoverableGas
 6607/12-2 S (Alve Nord),2011,:likely,13.5,30.6
 6705/10-1 (Asterix),2009,:clarification,1.9,108.0
 6706/11-2 (Gymir),2015,:not-evaluated,0.0,12.6
-6706/12-2 (Snefrid Nord),2015,:pdo-approved,0.1,31.3
 6706/12-3 (Roald Rygg),2015,:not-evaluated,0.0,15.1
 6706/6-1 (Hvitveis),2003,:not-evaluated,0.0,47.2
 6707/10-3 S (Ivory),2014,:not-evaluated,0.0,32.1
@@ -66,7 +61,7 @@ name,year,status,fldRecoverableLiquids,fldRecoverableGas
 7121/5-2 (Snøhvit Beta),1986,:not-evaluated,1.9,15.7
 7122/6-1 (Tornerose),1987,:clarification,1.1,23.2
 7220/11-1 (Alta),2014,:likely,166.1,61.0
-7220/8-1 JOHAN CASTBERG,2011,:clarification,554.1,68.6
+7220/8-1 JOHAN CASTBERG,2011,:decided-for-production,554.1,68.6
 7324/8-1 (Wisting),2013,:likely,355.3,0.0
 AASTA HANSTEEN,1997,:pdo-approved,5.7,286.2
 ALBUSKJELL,1972,:shut-down,52.8,97.5
