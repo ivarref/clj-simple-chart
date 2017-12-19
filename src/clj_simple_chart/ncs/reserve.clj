@@ -50,8 +50,13 @@
 (def field-names-all (vec (flatten [(map :fldName data)
                                     ["SINDRE" "33/9-6 DELTA"]])))
 
+(def banned-fields ["TAMBAR ØST"])
+
+(def expand-field-map {"TAMBAR" ["TAMBAR" "TAMBAR ØST"]})
+
 (defn get-reserve [field-name kind]
   {:pre [(some #{field-name} field-names-all)
+         (not (some #{field-name} banned-fields))
          (some #{kind} [:fldRecoverableOE :fldRecoverableOil :fldRecoverableGas :fldRecoverableLiquids])]}
   (cond (not (some #{field-name} field-names))
         (let [prop (get {:fldRecoverableOE      :prfPrdOeNetMillSm3
@@ -65,9 +70,10 @@
                (reduce + 0)
                (double)))
         :else
-        (-> (filter #(= (:fldName %) field-name) data-parsed)
-            first
-            (get kind))))
+        (->> data-parsed
+             (filter #(some #{(:fldName %)} (get expand-field-map field-name [field-name])))
+             (map kind)
+             (reduce + 0))))
 
 (test/is (not (some #{"SINDRE"} field-names)))
 (test/is (not (some #{"33/9-6 DELTA"} field-names)))
