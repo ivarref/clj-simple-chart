@@ -2,7 +2,8 @@
   (:require [base64-clj.core :as base64]
             [clojure.core.async :as async]
             [clojure.string :as string]
-            [clj-simple-chart.translate :refer [translate]])
+            [clj-simple-chart.translate :refer [translate]]
+            [clojure.string :as str])
   (:import (org.mozilla.javascript Context NativeObject)
            (org.apache.commons.io FileUtils)
            (java.io File FileReader BufferedInputStream FileInputStream InputStreamReader)
@@ -323,10 +324,16 @@
        [:g (map (partial stack-downwards-text y-offset) with-path)]]
       {:height (+ margin-top height margin-bottom)})))
 
-(defn- stack-text [alignment max-width y-offset {path :path idx :idx}]
+(defn- stack-text [alignment max-width y-offset {path :path reverse-start :reverse-start idx :idx}]
   (cond
     (= alignment :left) [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path]
-    (= alignment :right) [:g {:transform (translate (- (:x2 (meta path))) (reduce + (take idx y-offset)))} path]
+    (= alignment :right) [:g {:transform (translate
+                                           (if (nil? reverse-start)
+                                             (-  (:x2 (meta path)))
+                                             (Math/floor (- (or (:x2 (meta reverse-start)) 0)
+                                                            max-width
+                                                            (:x2 (meta path)))))
+                                           (reduce + (take idx y-offset)))} path]
     :else (throw (Exception. (str "Unknown alignment >" alignment "<")))))
 
 (defn- text-stack
@@ -359,6 +366,7 @@
                         (map #(merge (dissoc % :rect) (:right %)))
                         (map #(dissoc % :right))
                         (map #(dissoc % :alignment-baseline))
+                        (map #(assoc % :reverse-start (text (update % :text (fn [x] (str (first (reverse x))))))))
                         (map #(assoc % :path (text (assoc % :dy (let [{y1 :y1 y2 :y2} (-> % :no-baseline (meta))]
                                                                   (Math/abs y1)))))))
         paths (map :path with-path)
@@ -371,15 +379,15 @@
                                       (+ right-w (* 0.4 (:font-size %)))
                                       0))))
                          (reduce max 0))
-        max-width-right (reduce max 0 (map (comp :width meta :path) right-text))
+        max-width-right-char (reduce max 0 (remove nil? (map (comp :width meta :reverse-start) right-text)))
         y-offset (map #(let [h-with-margin (+ 4 (:height %))]
                          (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
         y-offset (map-indexed (fn [idx yoff] (+ yoff (get (nth texts-with-spacing idx) :margin-bottom 0))) y-offset)
         height (Math/ceil (- (reduce + 0 y-offset) 0))]
     (with-meta
       [:g (map (partial stack-text alignment max-width-left y-offset) with-path)
-       [:g {:transform (translate total-width 0)}
-        (map (partial stack-text :right max-width-left y-offset) right-text)]]
+       [:g {:transform (translate (Math/ceil total-width) 0)}
+        (map (partial stack-text :right (Math/floor max-width-right-char) y-offset) right-text)]]
       {:height height :width total-width})))
 
 (defn- add-translation [width height [alignment group]]

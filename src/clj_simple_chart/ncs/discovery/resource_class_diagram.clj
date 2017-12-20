@@ -134,7 +134,7 @@
                                              :right     {:text (str/replace (format "%.1f" (get cat-to-value-last-year col)) "." ",")}
                                              :rect      {:fill (get colors col)}})
                                           (reverse number-columns))
-                                     {:text "Totalt" :font "Roboto Regular" :font-size 16
+                                     {:text "Totalt" :font "Roboto Bold" :font-size 16
                                       :right {:text (str/replace (format "%.1f" (reduce + 0 (vals cat-to-value-last-year))) "." ",")}}])))]]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
