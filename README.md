@@ -14,6 +14,8 @@
 
 ![Petroleumsproduksjon](img/ncs-png/petro-pp.png)
 
+![Gjenverande ressursar og kumulativ produksjon](img/ncs-png/discovery-overview.png)
+
 # Flytrafikk
 
 ![Norsk flytrafikk](img/eurostat-png/norsk-flytrafikk.png)
