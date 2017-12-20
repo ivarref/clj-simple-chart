@@ -1,7 +1,4 @@
 name,year,fldRecoverableLiquids,fldRecoverableGas
-25/2-18 S (Langfjellet),2016,41.9,7.1
-35/12-2 (Grosbeak),2009,30.2,4.4
-36/7-4 (Cara),2016,22.0,24.8
 6406/12-4 S (Boomerang),2015,20.1,1.9
 6407/2-5 S (Nona),2009,18.7,8.2
 16/2-3 (Ragnarock),2007,18.2,2.5
@@ -10,8 +7,6 @@ name,year,fldRecoverableLiquids,fldRecoverableGas
 2/4-17 TJALVE,1992,3.7,5.3
 6406/9-1 LINNORM,2005,3.6,153.2
 35/10-2,1996,3.5,17.6
-6407/2-6 S (Flyndretind),2010,3.1,12.0
-7121/5-2 (Snøhvit Beta),1986,1.9,15.7
 6407/7-9 S,2016,1.3,1.5
 16/2-5,2009,1.3,12.0
 6407/7-9 A,2016,0.3,1.2
@@ -19,4 +14,3 @@ name,year,fldRecoverableLiquids,fldRecoverableGas
 6706/6-1 (Hvitveis),2003,0.0,47.2
 6706/12-3 (Roald Rygg),2015,0.0,15.1
 6706/11-2 (Gymir),2015,0.0,12.6
-26/10-1 (Zulu Øst),2015,0.0,15.7
