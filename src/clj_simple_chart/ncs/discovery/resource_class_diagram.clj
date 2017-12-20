@@ -102,7 +102,6 @@
               [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
-
 (def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
                                        (:height (meta footer)))))
@@ -137,7 +136,6 @@
                                           (reverse number-columns))
                                      {:text "Totalt" :font "Roboto Regular" :font-size 16
                                       :right {:text (str/replace (format "%.1f" (reduce + 0 (vals cat-to-value-last-year))) "." ",")}}])))]]
-
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []

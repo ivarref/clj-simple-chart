@@ -375,7 +375,7 @@
         y-offset (map #(let [h-with-margin (+ 4 (:height %))]
                          (Math/min h-with-margin (+ 0 (:font-size %)))) metas)
         y-offset (map-indexed (fn [idx yoff] (+ yoff (get (nth texts-with-spacing idx) :margin-bottom 0))) y-offset)
-        height (- (reduce + 0 y-offset) 2)]
+        height (Math/ceil (- (reduce + 0 y-offset) 0))]
     (with-meta
       [:g (map (partial stack-text alignment max-width-left y-offset) with-path)
        [:g {:transform (translate total-width 0)}

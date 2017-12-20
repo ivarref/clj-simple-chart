@@ -81,6 +81,7 @@
                  (map #(sort-by (fn [x] (:year x)) %))
                  (map #(first %))
                  (flatten)
+                 (remove #(= "TAMBAR ØST" (:name %)))
                  (map #(assoc % :fldRecoverableLiquids (recoverable % :fldRecoverableLiquids)))
                  (map #(assoc % :fldRecoverableGas (recoverable % :fldRecoverableGas)))
                  (map #(dissoc % :fldName :dscName))
@@ -99,7 +100,6 @@
 (def producing-field-names (->> parsed
                                 (filter #(= :producing (:status %)))
                                 (map :name)
-                                (remove #(= "TAMBAR ØST" %))
                                 (distinct)
                                 (sort)
                                 (vec)))
@@ -120,7 +120,7 @@
        (sort)
        (vec)))
 
-(test/is (= ["TAMBAR ØST"] missing-field-production))
+(test/is (= ["MARIA"] missing-field-production))
 
 (defn cumulative-original-recoverable-by-status
   [status year kind]
@@ -147,7 +147,7 @@
   (assoc {}
     :year year
     :shut-down-produced (production/cumulative-production shut-down-field-names year kind)
-    :producing-produced (production/cumulative-production producing-field-names year kind)
+    :producing-produced (production/cumulative-production production/field-names year kind)
     :remaining-reserves (- (+ (cumulative-original-recoverable-by-status :producing year kind)
                               (cumulative-original-recoverable-by-status :shut-down year kind))
                            (production/cumulative-production production/field-names year kind))
