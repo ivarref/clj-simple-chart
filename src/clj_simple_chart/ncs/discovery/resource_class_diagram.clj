@@ -51,7 +51,7 @@
            :clarification          "Under avklåring"
            :decided-for-production "Vedteke for utvinning"
            :pdo-approved           "PUD*-godkjent"
-           :remaining-reserves     "Gjenverande reservar"
+           :remaining-reserves     "Gjenverande reservar, felt i drift"
            :producing-produced     "Kumulativ produksjon frå felt i drift"
            :shut-down-produced     "Kumulativ produksjon frå nedstengde felt"})
 
