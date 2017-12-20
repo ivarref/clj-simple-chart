@@ -27,9 +27,9 @@
 
                      {:text "Ghi" :font "Roboto Bold" :font-size font-size :rect {:fill "orange" :size rect-size}}
                      {:text "Ip,k" :font "Roboto Bold" :font-size font-size :rect {:fill "cyan" :size rect-size}
-                      :right {:text "1234"}}
+                      :right {:text "oo"}}
                      {:text "Oq,MG" :font "Roboto Bold" :font-size font-size :rect {:fill "yellow" :size rect-size}
-                      :right {:text "1234"}}])]])
+                      :right {:text "oo"}}])]])
 
 (defn render-self []
   (render "./img/demo/meh.png" "./img/demo/meh.svg" (diagram)))

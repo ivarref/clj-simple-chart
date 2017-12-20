@@ -347,16 +347,20 @@
                                   (Math/ceil))
         with-baseline (mapv #(assoc % :min-height max-height-for-rects) with-baseline)
         with-idx (map-indexed (fn [idx x] (assoc x :idx idx)) with-baseline)
-        with-path (map #(assoc % :path (text %)) with-idx)
+        with-path (->> with-idx
+                       (map #(assoc % :path (text %)))
+                       (map #(assoc % :no-baseline (text (dissoc % :alignment-baseline)))))
         with-right (->> with-path
                         (map (fn [x] (update x :right #(or % {:text ""}))))
                         (map (fn [x] (update x :right #(merge (dissoc x :right) %))))
                         (mapv #(assoc % :right-path (text (:right %)))))
-        right-text (->> with-idx
+        right-text (->> with-path
                         (filter :right)
                         (map #(merge (dissoc % :rect) (:right %)))
                         (map #(dissoc % :right))
-                        (map #(assoc % :path (text %))))
+                        (map #(dissoc % :alignment-baseline))
+                        (map #(assoc % :path (text (assoc % :dy (let [{y1 :y1 y2 :y2} (-> % :no-baseline (meta))]
+                                                                  (Math/abs y1)))))))
         paths (map :path with-path)
         metas (map meta paths)
         max-width-left (apply max (map :width metas))
