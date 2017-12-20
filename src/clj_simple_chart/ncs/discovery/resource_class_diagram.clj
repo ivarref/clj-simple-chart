@@ -99,7 +99,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift. \"Olje\" inkluderer råolje, kondensat og NGL." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
