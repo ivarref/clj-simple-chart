@@ -29,8 +29,14 @@
                    (filter #(str/starts-with? (:prfPrdNGLNetMillSm3 %) "("))))
 (test/is (= 1 (count bad-data)))
 
+(defn parens-to-negative [v]
+  (if (str/starts-with? v "(")
+    (str "-" (str/replace v #"\(|\)" ""))
+    v))
+
 (def parsed (->> data
-                 (map #(update % :prfPrdNGLNetMillSm3 (fn [v] (str/replace v #"\(|\)" "")))) ; what is this..?
+                 (map #(update % :prfPrdNGLNetMillSm3 parens-to-negative))
+                 (map #(update % :prfPrdOilNetMillSm3 parens-to-negative))
                  (csv/read-number-or-throw-columns [:prfYear
                                                     :prfPrdOilNetMillSm3
                                                     :prfPrdGasNetBillSm3
