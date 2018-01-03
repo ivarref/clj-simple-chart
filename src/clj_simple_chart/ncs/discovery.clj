@@ -153,6 +153,10 @@
   (for [yr (range start-year (inc stop-year))]
     (produce-row-year yr :liquids)))
 
+(def flat-data-gas
+  (for [yr (range start-year (inc stop-year))]
+    (produce-row-year yr :gas)))
+
 (defn explode-row [row]
   (reduce (fn [o k]
             (conj o {:year  (:year row)
@@ -162,6 +166,13 @@
 
 (def exploded-data-liquids-gboe
   (->> flat-data
+       (mapcat explode-row)
+       (map #(update % :value (fn [v] (double (/ (* 6.29 v) 1000)))))
+       (sort-by :year)
+       (vec)))
+
+(def exploded-data-gas-gboe
+  (->> flat-data-gas
        (mapcat explode-row)
        (map #(update % :value (fn [v] (double (/ (* 6.29 v) 1000)))))
        (sort-by :year)
