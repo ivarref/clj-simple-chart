@@ -16,42 +16,29 @@
 (def columns (:columns raw))
 (def data (:data raw))
 
-(test/is (= [:dscName
-             :cmpLongName
-             :dscCurrentActivityStatus
-             :dscHcType
-             :wlbName
-             :nmaName
-             :fldName
-             :dscDateFromInclInField
-             :dscDiscoveryYear
-             :dscResInclInDiscoveryName
-             :dscOwnerKind
-             :dscOwnerName
-             :dscNpdidDiscovery
-             :fldNpdidField
-             :wlbNpdidWellbore
-             :dscFactPageUrl
-             :dscFactMapUrl
-             :dscDateUpdated
-             :dscDateUpdatedMax
+(test/is (= [:dscName :cmpLongName :dscCurrentActivityStatus :dscHcType
+             :wlbName :nmaName :fldName :dscDateFromInclInField
+             :dscDiscoveryYear :dscResInclInDiscoveryName :dscOwnerKind
+             :dscOwnerName :dscNpdidDiscovery :fldNpdidField :wlbNpdidWellbore
+             :dscFactPageUrl :dscFactMapUrl :dscDateUpdated :dscDateUpdatedMax
              :DatesyncNPD]
             columns))
 
-(test/is (= (vec (sort ["Approved for production"
-                        "Decided for production"
-                        "Included in other discovery"
-                        "Producing"
-                        "Production in clarification phase"
-                        "Production is unlikely"
-                        "Production likely, but unclarified"
-                        "Production not evaluated"
-                        "Shut down"]))
-            (->> data
-                 (map :dscCurrentActivityStatus)
-                 (sort)
-                 (distinct)
-                 (vec))))
+(def valid-activity-types (vec (sort ["Approved for production"
+                                      "Decided for production"
+                                      "Included in other discovery"
+                                      "Producing"
+                                      "Production in clarification phase"
+                                      "Production is unlikely"
+                                      "Production likely, but unclarified"
+                                      "Production not evaluated"
+                                      "Shut down"])))
+
+(test/is (every?
+           (fn [item] (some #{item} valid-activity-types))
+           (->> data
+                (map :dscCurrentActivityStatus)
+                (vec))))
 
 (def status-map {"Approved for production"            :pdo-approved
                  "Decided for production"             :decided-for-production
@@ -168,8 +155,8 @@
 
 (defn explode-row [row]
   (reduce (fn [o k]
-            (conj o {:year (:year row)
-                     :c k
+            (conj o {:year  (:year row)
+                     :c     k
                      :value (get row k)}))
           [] number-columns))
 
