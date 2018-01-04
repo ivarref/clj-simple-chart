@@ -65,12 +65,15 @@
   [fields year kind]
   {:pre [(every? #(some #{%} field-names) fields)
          (pos? year)
-         (some #{kind} [:prfPrdLiquidsNetMillSm3 :prfPrdGasNetBillSm3 :liquids :gas])]}
+         (some #{kind} [:prfPrdLiquidsNetMillSm3 :prfPrdGasNetBillSm3 :prfPrdOeNetMillSm3 :liquids :gas :petroleum])]}
   (cond (= kind :liquids)
         (recur fields year :prfPrdLiquidsNetMillSm3)
 
         (= kind :gas)
         (recur fields year :prfPrdGasNetBillSm3)
+
+        (= kind :petroleum)
+        (recur fields year :prfPrdOeNetMillSm3)
 
         :else (->> parsed
                    (filter #(<= (:prfYear %) year))
@@ -80,13 +83,13 @@
                    (double))))
 
 (test/is (= (Math/round 4650.93)
-            ; This value 4650.93 from
+            ; This value 4650.93 is from
             ; Sokkelåret 2016 Excel Sheet Figur 2-1
             ; Summing column I (without forecast)
             (Math/round (cumulative-production field-names 2016 :liquids))))
 
 (test/is (= (Math/round 2193.00)
-            ; This value 2193.00 (2188.14) from
+            ; This value 2193.00 (2188.14) is from
             ; Sokkelåret 2016 Excel Sheet Figur 2-1
             ; Summing column G (without forecast)
             (Math/round (cumulative-production field-names 2016 :gas))))

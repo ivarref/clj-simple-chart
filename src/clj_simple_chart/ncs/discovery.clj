@@ -71,11 +71,12 @@
                  (flatten)
                  (remove #(= "TAMBAR ØST" (:name %)))
                  (map #(assoc % :fldRecoverableLiquids (recoverable % :fldRecoverableLiquids)))
+                 (map #(assoc % :fldRecoverableOE (recoverable % :fldRecoverableOE)))
                  (map #(assoc % :fldRecoverableGas (recoverable % :fldRecoverableGas)))
                  (map #(dissoc % :fldName :dscName))
                  (filter #(or (some? (:fldRecoverableLiquids %))
                               (some? (:fldRecoverableGas %))))
-                 (csv/number-or-throw-columns [:fldRecoverableLiquids :fldRecoverableGas])
+                 (csv/number-or-throw-columns [:fldRecoverableLiquids :fldRecoverableGas :fldRecoverableOE])
                  (sort-by :name)
                  (vec)))
 
@@ -113,13 +114,16 @@
 
 (defn cumulative-original-recoverable-by-status
   [status year kind]
-  {:pre [(some #{kind} [:fldRecoverableLiquids :fldRecoverableGas :liquids :gas])
+  {:pre [(some #{kind} [:fldRecoverableLiquids :fldRecoverableGas :fldRecoverableOE :liquids :gas :petroleum])
          (some #{status} (vals status-map))]}
   (cond (= :liquids kind)
         (recur status year :fldRecoverableLiquids)
 
         (= :gas kind)
         (recur status year :fldRecoverableGas)
+
+        (= :petroleum kind)
+        (recur status year :fldRecoverableOE)
 
         :else
         (->> parsed
@@ -154,6 +158,10 @@
 (def flat-data
   (for [yr (range start-year (inc stop-year))]
     (produce-row-year yr :liquids)))
+
+(def flat-data-petroleum
+  (for [yr (range start-year (inc stop-year))]
+    (produce-row-year yr :petroleum)))
 
 (def flat-data-gas
   (for [yr (range start-year (inc stop-year))]
