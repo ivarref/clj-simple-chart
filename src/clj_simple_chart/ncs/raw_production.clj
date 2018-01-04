@@ -123,6 +123,12 @@
                (mapv #(dissoc % :prev-months))
                (vec)))
 
+(def max-complete-year (->> data
+                            (filter #(= 12 (:prfMonth %)))
+                            (sort-by :date-int)
+                            (last)
+                            (:prfYear)))
+
 (def frigg-last-dates (->> data
                            (filter #(= "FRIGG" (:prfInformationCarrier %)))
                            (mapv :date)
