@@ -72,8 +72,8 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   (vec (distinct (flatten [(first x-domain)
-                                                 (range 1970 2017 5)
-                                                 (last x-domain)])))
+                                                 (range 1970 2017 5)])))
+                                                 ;(last x-domain)])))
          :tick-format   (fn [x] (cond (= x 1967) "67"
                                       (= x 2017) "17"
                                       :else x))
@@ -90,7 +90,7 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text          "Gjenverande ressursar og kumulativ produksjon" :font "Roboto Bold" :font-size 30
+              [{:text          "Kumulativ oljeproduksjon og gjenverande ressursar" :font "Roboto Bold" :font-size 30
                 :margin-bottom 3}
                {:text          "Milliardar fat olje" :font "Roboto Bold" :font-size 16
                 :align         :right
