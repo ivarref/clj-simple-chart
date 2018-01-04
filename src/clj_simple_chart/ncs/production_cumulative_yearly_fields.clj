@@ -56,7 +56,10 @@
                     (map :prfYear)
                     (apply max)))
 
-(def field-names (map :prfInformationCarrier parsed))
+(def field-names (->> (map :prfInformationCarrier parsed)
+                      (distinct)
+                      (sort)
+                      (vec)))
 
 (defn cumulative-production
   [fields year kind]
@@ -75,6 +78,18 @@
                    (map kind)
                    (reduce + 0)
                    (double))))
+
+(test/is (= (Math/round 4650.93)
+            ; This value 4650.93 from
+            ; Sokkelåret 2016 Excel Sheet Figur 2-1
+            ; Summing column I (without forecast)
+            (Math/round (cumulative-production field-names 2016 :liquids))))
+
+(test/is (= (Math/round 2193.00)
+            ; This value 2193.00 (2188.14) from
+            ; Sokkelåret 2016 Excel Sheet Figur 2-1
+            ; Summing column G (without forecast)
+            (Math/round (cumulative-production field-names 2016 :gas))))
 
 (test/is (< (cumulative-production ["STATFJORD"] 1990 :prfPrdLiquidsNetMillSm3)
             (cumulative-production ["STATFJORD"] 2000 :prfPrdLiquidsNetMillSm3)))
