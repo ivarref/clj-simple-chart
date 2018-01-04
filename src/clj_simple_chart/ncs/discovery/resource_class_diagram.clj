@@ -1,5 +1,6 @@
 (ns clj-simple-chart.ncs.discovery.resource-class-diagram
   (:require [clj-simple-chart.ncs.discovery :as datasource]
+            [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.colors :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -50,7 +51,7 @@
            :likely                 "Utvinning truleg"
            :clarification          "Under avklåring"
            :decided-for-production "Vedteke for utvinning"
-           :pdo-approved           "PUD*-godkjent"
+           :pdo-approved           "PUD**-godkjent"
            :remaining-reserves     "Gjenverande reservar, felt i drift"
            :producing-produced     "Kumulativ produksjon frå felt i drift"
            :shut-down-produced     "Kumulativ produksjon frå nedstengde felt"})
@@ -73,7 +74,7 @@
          :orientation   :bottom
          :tick-values   (vec (distinct (flatten [(first x-domain)
                                                  (range 1970 2017 5)])))
-                                                 ;(last x-domain)])))
+         ;(last x-domain)])))
          :tick-format   (fn [x] (cond (= x 1967) "67"
                                       (= x 2017) "17"
                                       :else x))
@@ -90,8 +91,12 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text          "Kumulativ oljeproduksjon og gjenverande ressursar" :font "Roboto Bold" :font-size 30
-                :margin-bottom 3}
+              [{:text "Kumulativ oljeproduksjon og gjenverande ressursar" :font "Roboto Bold" :font-size 30}
+               {:text (str "Årleg produksjon for " datasource/stop-year ": "
+                           (let [v (production/yearly-production production/field-names datasource/stop-year :liquids)]
+                             (str/replace (format "%.2f" (* 6.29e-3 v)) "." ","))
+                           " milliardar fat olje")
+                      :font "Roboto Bold" :font-size 16 :margin-bottom 3}
                {:text          "Milliardar fat olje" :font "Roboto Bold" :font-size 16
                 :align         :right
                 :margin-bottom 3
@@ -99,7 +104,8 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift. \"Olje\" inkluderer råolje, kondensat og NGL." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 5 :text "*Betinga ressursar i funn, Utvinning ikkje evaluert (RK 7A) og Ikkje oppdaga ressursar er utelatt." :font "Roboto Regular" :font-size 14}
+               {:margin-top 2 :text "Kjelde: ODs Faktasider. **Plan for Utvikling og Drift. \"Olje\" inkluderer råolje, kondensat og NGL." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
@@ -125,7 +131,7 @@
                        :fill         "whitesmoke"
                        :fill-opacity 0.8
                        :margin       5}
-                      (vec (flatten [{:text "Ressurskategori" :font "Roboto Black" :font-size 16
+                      (vec (flatten [{:text  "Ressurskategori*" :font "Roboto Black" :font-size 16
                                       :right {:text "Mrd. fat olje"}}
                                      (map (fn [col]
                                             {:text      (get text col)
@@ -134,7 +140,7 @@
                                              :right     {:text (str/replace (format "%.1f" (get cat-to-value-last-year col)) "." ",")}
                                              :rect      {:fill (get colors col)}})
                                           (reverse number-columns))
-                                     {:text "Totalt" :font "Roboto Bold" :font-size 16
+                                     {:text  "Totalt" :font "Roboto Bold" :font-size 16
                                       :right {:text (str/replace (format "%.1f" (reduce + 0 (vals cat-to-value-last-year))) "." ",")}}])))]]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
