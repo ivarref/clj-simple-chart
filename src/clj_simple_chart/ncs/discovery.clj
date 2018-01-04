@@ -5,7 +5,7 @@
             [clj-simple-chart.ncs.resource :as resource]
             [clj-simple-chart.ncs.reserve :as reserve]
             [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
-            [clj-simple-chart.ncs.raw-production :refer [max-complete-year]]
+            [clj-simple-chart.ncs.raw-production :as raw-production]
             [clojure.test :as test]))
 
 (def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/discovery&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=81.191.112.135&CultureCode=en")
@@ -84,7 +84,8 @@
                      (map :year)
                      (apply min)))
 
-(def stop-year max-complete-year)
+(def stop-year 2017)
+(def max-complete-year raw-production/max-complete-year)
 
 (def producing-field-names (->> parsed
                                 (filter #(= :producing (:status %)))

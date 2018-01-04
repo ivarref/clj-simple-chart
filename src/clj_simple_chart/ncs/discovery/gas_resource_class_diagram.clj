@@ -72,8 +72,8 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   (vec (distinct (flatten [(first x-domain)
-                                                 (range 1970 2017 5)
-                                                 (last x-domain)])))
+                                                 (range 1970 2017 5)])))
+                                                 ;(last x-domain)])))
          :tick-format   (fn [x] (cond (= x 1967) "67"
                                       (= x 2017) "17"
                                       :else x))
@@ -91,12 +91,14 @@
 (def header (opentype/stack
               {:width available-width}
               [
-               ;{:text "Norsk Gass" :font "Roboto Black" :font-size 30 :margin-bottom 3}
-               {:text "Norsk gass: Gjenverande ressursar og kumulativ produksjon" :font "Roboto Bold" :font-size 22 :margin-bottom 1}
+               {:text "Kumulativ gassproduksjon og gjenverande ressursar" :font "Roboto Black" :font-size 30 :margin-bottom 3}
+               {:text (str "Produksjon per " max-year ": ")
+                :font "Roboto Bold" :font-size 16 :margin-bottom 1}
                {:text          "Milliardar fat oljeekvivalentar" :font "Roboto Bold" :font-size 16
                 :align         :right
-                :margin-bottom 1
-                :valign        :bottom}]))
+                :valign        :bottom
+                :margin-bottom 1}]))
+
 
 (def footer (opentype/stack
               {:width available-width}
@@ -127,7 +129,7 @@
                        :fill-opacity 0.8
                        :margin       5}
                       (vec (flatten [{:text  "Ressurskategori" :font "Roboto Black" :font-size 16
-                                      :right {:text "Mrd. fat oljeekv."}}
+                                      :right {:text "Mrd. fat oljeekvivalentar"}}
                                      (map (fn [col]
                                             {:text      (get text col)
                                              :font      "Roboto Regular"
