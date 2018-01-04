@@ -61,6 +61,27 @@
                       (sort)
                       (vec)))
 
+(defn yearly-production
+  [fields year kind]
+  {:pre [(every? #(some #{%} field-names) fields)
+         (pos? year)
+         (some #{kind} [:prfPrdLiquidsNetMillSm3 :prfPrdGasNetBillSm3 :prfPrdOeNetMillSm3 :liquids :gas :petroleum])]}
+  (cond (= kind :liquids)
+        (recur fields year :prfPrdLiquidsNetMillSm3)
+
+        (= kind :gas)
+        (recur fields year :prfPrdGasNetBillSm3)
+
+        (= kind :petroleum)
+        (recur fields year :prfPrdOeNetMillSm3)
+
+        :else (->> parsed
+                   (filter #(= (:prfYear %) year))
+                   (filter #(some #{(:prfInformationCarrier %)} fields))
+                   (map kind)
+                   (reduce + 0)
+                   (double))))
+
 (defn cumulative-production
   [fields year kind]
   {:pre [(every? #(some #{%} field-names) fields)
