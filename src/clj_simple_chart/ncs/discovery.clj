@@ -84,7 +84,7 @@
                      (map :year)
                      (apply min)))
 
-(def stop-year 2017) ;max-complete-year)
+(def stop-year max-complete-year)
 
 (def producing-field-names (->> parsed
                                 (filter #(= :producing (:status %)))
@@ -167,6 +167,28 @@
   (for [yr (range start-year (inc stop-year))]
     (produce-row-year yr :gas)))
 
+; http://www.npd.no/no/Tema/Ressursregnskap-og-analyser/Temaartikler/Ressursregnskap/2016/
+; Totalt olje 7308,3
+; Totalt NGL 337,3
+; Totalt Kondensat 264,4
+;
+(def oil-resources-but-not-undiscovered-gb (* 6.29e-3 (- (+ 7308.3 337.3 264.4)
+                                                         (+ 1285.0 120.0
+                                                            145
+                                                            367 14.3 3.4)))) ; 37.5
+
+(def data-factpages-oil (-> (last flat-data)
+                            (dissoc :year)
+                            (vals)
+                            ((fn [x] (* 6.29e-3 (reduce + 0 x)))))) ; 37.49
+
+(def data-factpages-gas (-> (last flat-data-gas)
+                            (dissoc :year)
+                            (vals)
+                            ((fn [x] (* 1 (reduce + 0 x)))))) ; 4279
+; (- 6070.2 1465 60 299.5) => 4245.7
+; Minus Ikkje oppdaga ressursar,	Utvinning ikkje evaluert (RK 7A) og Betinga ressursar i funn
+
 (defn explode-row [row]
   (reduce (fn [o k]
             (conj o {:year  (:year row)
@@ -177,13 +199,13 @@
 (def exploded-data-liquids-gboe
   (->> flat-data
        (mapcat explode-row)
-       (map #(update % :value (fn [v] (double (/ (* 6.29 v) 1000)))))
+       (map #(update % :value (fn [v] (double (* 6.29e-3 v)))))
        (sort-by :year)
        (vec)))
 
 (def exploded-data-gas-gboe
   (->> flat-data-gas
        (mapcat explode-row)
-       (map #(update % :value (fn [v] (double (/ (* 6.29 v) 1000)))))
+       (map #(update % :value (fn [v] (double (* 6.29e-3 v)))))
        (sort-by :year)
        (vec)))
