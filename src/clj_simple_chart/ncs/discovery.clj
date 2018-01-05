@@ -210,3 +210,10 @@
        (map #(update % :value (fn [v] (double (* 6.29e-3 v)))))
        (sort-by :year)
        (vec)))
+
+(def exploded-data-petroleum-gboe
+  (->> flat-data-petroleum
+       (mapcat explode-row)
+       (map #(update % :value (fn [v] (double (* 6.29e-3 v)))))
+       (sort-by :year)
+       (vec)))

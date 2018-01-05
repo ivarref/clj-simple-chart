@@ -18,6 +18,8 @@
 
 ![Gass - Gjenverande ressursar og kumulativ produksjon](img/ncs-png/discovery-overview-gas.png)
 
+![Petroleum - Gjenverande ressursar og kumulativ produksjon](img/ncs-png/discovery-overview-petroleum.png)
+
 # Flytrafikk
 
 ![Norsk flytrafikk](img/eurostat-png/norsk-flytrafikk.png)
