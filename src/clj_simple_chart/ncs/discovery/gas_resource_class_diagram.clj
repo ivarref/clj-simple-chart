@@ -1,5 +1,6 @@
 (ns clj-simple-chart.ncs.discovery.gas-resource-class-diagram
   (:require [clj-simple-chart.ncs.discovery :as datasource]
+            [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.colors :refer :all]
             [clj-simple-chart.opentype :as opentype]
@@ -41,16 +42,16 @@
              :likely                 brown
              :clarification          "#ffaa00"
              :decided-for-production orange
-             :pdo-approved           red                    ;ø"#A700A7"
-             :remaining-reserves     "#109618"              ; hard green
-             :producing-produced     "#64c466"
+             :pdo-approved           "#109618"              ; hard green
+             :remaining-reserves     red
+             :producing-produced     "#eA6F6F"
              :shut-down-produced     gray})
 
 (def text {:not-evaluated          "Ikkje evaluert"
            :likely                 "Utvinning truleg"
            :clarification          "Under avklåring"
            :decided-for-production "Vedteke for utvinning"
-           :pdo-approved           "PUD*-godkjent"
+           :pdo-approved           "PUD**-godkjent"
            :remaining-reserves     "Gjenverande reservar, felt i drift"
            :producing-produced     "Kumulativ produksjon frå felt i drift"
            :shut-down-produced     "Kumulativ produksjon frå nedstengde felt"})
@@ -73,7 +74,7 @@
          :orientation   :bottom
          :tick-values   (vec (distinct (flatten [(first x-domain)
                                                  (range 1970 2017 5)])))
-                                                 ;(last x-domain)])))
+         ;(last x-domain)])))
          :tick-format   (fn [x] (cond (= x 1967) "67"
                                       (= x 2017) "17"
                                       :else x))
@@ -91,8 +92,11 @@
 (def header (opentype/stack
               {:width available-width}
               [
-               {:text "Kumulativ gassproduksjon og gjenverande ressursar" :font "Roboto Black" :font-size 30 :margin-bottom 3}
-               {:text (str "Produksjon per " max-year ": ")
+               {:text "Kumulativ gassproduksjon og gjenverande ressursar" :font "Roboto Bold" :font-size 30 :margin-bottom 3}
+               {:text (str "Årleg produksjon " datasource/max-complete-year ": "
+                           (let [v (production/yearly-production production/field-names datasource/max-complete-year :gas)]
+                             (str/replace (format "%.2f" (* 6.29e-3 v)) "." ","))
+                           " milliardar fat oljeekvivalentar")
                 :font "Roboto Bold" :font-size 16 :margin-bottom 1}
                {:text          "Milliardar fat oljeekvivalentar" :font "Roboto Bold" :font-size 16
                 :align         :right
@@ -102,7 +106,8 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelde: Oljedirektoratet. *Plan for Utvikling og Drift." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 5 :text "*Betinga ressursar i funn, Utvinning ikkje evaluert (RK 7A) og Ikkje oppdaga ressursar er utelatt." :font "Roboto Regular" :font-size 14}
+               {:margin-top 2 :text "Kjelde: Oljedirektoratet Faktasider. **Plan for Utvikling og Drift." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
@@ -128,7 +133,7 @@
                        :fill         "whitesmoke"
                        :fill-opacity 0.8
                        :margin       5}
-                      (vec (flatten [{:text  "Ressurskategori" :font "Roboto Black" :font-size 16
+                      (vec (flatten [{:text  "Ressurskategori*" :font "Roboto Black" :font-size 16
                                       :right {:text "Mrd. fat oljeekvivalentar"}}
                                      (map (fn [col]
                                             {:text      (get text col)

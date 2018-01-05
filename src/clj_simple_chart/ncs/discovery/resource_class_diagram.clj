@@ -73,8 +73,8 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   (vec (distinct (flatten [(first x-domain)
-                                                 (range 1970 2017 5)
-                                                 (last x-domain)])))
+                                                 (range 1970 2017 5)])))
+                                                 ;(last x-domain)])))
          :tick-format   (fn [x] (cond (= x 1967) "67"
                                       (= x 2017) "17"
                                       :else x))
@@ -92,7 +92,7 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Kumulativ oljeproduksjon og gjenverande ressursar" :font "Roboto Bold" :font-size 30}
-               {:text (str "Årleg produksjon for " datasource/max-complete-year ": "
+               {:text (str "Årleg produksjon " datasource/max-complete-year ": "
                            (let [v (production/yearly-production production/field-names datasource/max-complete-year :liquids)]
                              (str/replace (format "%.2f" (* 6.29e-3 v)) "." ","))
                            " milliardar fat olje")

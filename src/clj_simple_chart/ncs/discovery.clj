@@ -84,7 +84,7 @@
                      (map :year)
                      (apply min)))
 
-(def stop-year 2017)
+(def stop-year raw-production/max-complete-year)
 (def max-complete-year raw-production/max-complete-year)
 
 (def producing-field-names (->> parsed

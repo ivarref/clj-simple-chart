@@ -14,7 +14,9 @@
 
 ![Petroleumsproduksjon](img/ncs-png/petro-pp.png)
 
-![Gjenverande ressursar og kumulativ produksjon](img/ncs-png/discovery-overview.png)
+![Olje - Gjenverande ressursar og kumulativ produksjon](img/ncs-png/discovery-overview.png)
+
+![Gass - Gjenverande ressursar og kumulativ produksjon](img/ncs-png/discovery-overview-gas.png)
 
 # Flytrafikk
 
