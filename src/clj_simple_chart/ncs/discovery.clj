@@ -190,6 +190,13 @@
 ; (- 6070.2 1465 60 299.5) => 4245.7
 ; Minus Ikkje oppdaga ressursar,	Utvinning ikkje evaluert (RK 7A) og Betinga ressursar i funn
 
+(def data-factpages-petro (-> (last flat-data-petroleum)
+                              (dissoc :year)
+                              (vals)
+                              ((fn [x] (* 1 (reduce + 0 x)))))) ; 10517
+                              ; OD value:(- 14283 (+ 2870 205 697.5))
+                              ; => 10510.5))
+
 (defn explode-row [row]
   (reduce (fn [o k]
             (conj o {:year  (:year row)
