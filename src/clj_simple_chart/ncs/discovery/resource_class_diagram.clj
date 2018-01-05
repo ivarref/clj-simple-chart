@@ -91,7 +91,7 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Kumulativ oljeproduksjon og gjenverande ressursar" :font "Roboto Bold" :font-size 30}
+              [{:text "Gjenverande oljeressursar og kumulativ produksjon" :font "Roboto Bold" :font-size 30}
                {:text (str "Årleg produksjon " datasource/max-complete-year ": "
                            (let [v (production/yearly-production production/field-names datasource/max-complete-year :liquids)]
                              (str/replace (format "%.2f" (* 6.29e-3 v)) "." ","))
