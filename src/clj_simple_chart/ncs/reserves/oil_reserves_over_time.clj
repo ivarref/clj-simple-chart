@@ -17,27 +17,20 @@
 
 (def max-year (apply max (map :year data)))
 
-(def colors {"EKOFISK"        blue
-             "STATFJORD"      red
-             "VALHALL"        orange
-             "GULLFAKS"       "#ffaa00"
-             "SNORRE"         "#9467bd"
-             "TROLL"          green
-             "OSEBERG"        cyan
-             "ÅSGARD"         hydro-blue
-             "HEIDRUN"        "#bcbd22"
-             "OTHERS"         "#969696" ;""#7f7f7f"
-             "JOHAN SVERDRUP" dark-purple
-             "JOHAN CASTBERG" pink})
-
-;{:not-evaluated          hydro-blue
-; :likely                 brown
-; :clarification          "#ffaa00"
-; :decided-for-production orange
-; :pdo-approved           "#109618"              ; hard green
-; :remaining-reserves     red
-; :producing-produced     "#eA6F6F"
-; :shut-down-produced     gray}
+(def colors {"EKOFISK"           blue
+             "STATFJORD"         red
+             "VALHALL"           orange
+             "GULLFAKS"          "#ffaa00"
+             "SNORRE"            "#9467bd"
+             "TROLL"             green
+             "OSEBERG"           cyan
+             "ÅSGARD"            hydro-blue
+             "HEIDRUN"           "#bcbd22"
+             "OTHERS_PRE_1990"   "#969696"                  ;""#7f7f7f"
+             "OTHERS_POSTE_1990" "#B6b6b6"
+             "OTHERS_POSTE_2000" "rgb(231, 186, 82)"
+             "JOHAN SVERDRUP"    dark-purple
+             "JOHAN CASTBERG"    pink})
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -97,20 +90,23 @@
                      :x      xx
                      :y      yy}))
 
-(def txt {"OTHERS"         (str "Alle andre "
-                                (count datasource/reserve-field-names)
-                                " felt")
-          "JOHAN CASTBERG" "Johan Castberg"
-          "JOHAN SVERDRUP" "Johan Sverdrup"
-          "HEIDRUN"        "Heidrun"
-          "ÅSGARD"         "Åsgard"
-          "OSEBERG"        "Oseberg"
-          "TROLL"          "Troll"
-          "SNORRE"         "Snorre"
-          "GULLFAKS"       "Gullfaks"
-          "VALHALL"        "Valhall"
-          "STATFJORD"      "Statfjord"
-          "EKOFISK"        "Ekofisk"})
+(def txt {"OTHERS"            (str "Alle andre "
+                                   (count datasource/reserve-field-names)
+                                   " felt")
+          "OTHERS_PRE_1990"   (str "Andre felt funne før 1990")
+          "OTHERS_POSTE_1990" (str "Andre felt funne 1990-2000")
+          "OTHERS_POSTE_2000" (str "Andre felt funne f.o.m. 2000")
+          "JOHAN CASTBERG"    "Johan Castberg"
+          "JOHAN SVERDRUP"    "Johan Sverdrup"
+          "HEIDRUN"           "Heidrun"
+          "ÅSGARD"            "Åsgard"
+          "OSEBERG"           "Oseberg"
+          "TROLL"             "Troll"
+          "SNORRE"            "Snorre"
+          "GULLFAKS"          "Gullfaks"
+          "VALHALL"           "Valhall"
+          "STATFJORD"         "Statfjord"
+          "EKOFISK"           "Ekofisk"})
 
 (def cat-to-value-last-year (->> data
                                  (filter #(= (:year %) max-year))

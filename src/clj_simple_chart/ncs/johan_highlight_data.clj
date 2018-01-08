@@ -39,9 +39,27 @@
              "JOHAN CASTBERG"]))
 
 (def other-fields (->> reserves
-                       (remove #(some #{(:name %)} top-11-players-names))))
+                       (remove #(some #{(:name %)} top-11-players-names))
+                       (sort-by :name)))
 
-(def other-field-names (mapv :name other-fields))
+(def pre-1990 (->> other-fields
+                   (filter #(< (:year %) 1990))
+                   (sort-by :name)
+                   (mapv :name)))
+
+(def post-1990 (->> other-fields
+                    (filter #(>= (:year %) 1990))
+                    (filter #(< (:year %) 2000))
+                    (sort-by :name)
+                    (mapv :name)))
+
+(def post-2000 (->> other-fields
+                    (filter #(>= (:year %) 2000))
+                    (sort-by :name)
+                    (mapv :name)))
+
+;(test/is (some #{"GOLIAT"} post-1990))
+(test/is (some #{"VEST EKOFISK"} pre-1990))
 
 (def top-fields (->> reserves
                      (filter #(some #{(:name %)} top-11-players-names))))
@@ -55,11 +73,15 @@
            "OSEBERG"
            "ÅSGARD"
            "HEIDRUN"
-           "OTHERS"
+           "OTHERS_PRE_1990"
+           "OTHERS_POSTE_1990"
+           "OTHERS_POSTE_2000"
            "JOHAN SVERDRUP"
            "JOHAN CASTBERG"])
 
-(def override-default {"OTHERS" other-field-names})
+(def override-default {"OTHERS_PRE_1990"   pre-1990
+                       "OTHERS_POSTE_1990" post-1990
+                       "OTHERS_POSTE_2000" post-2000})
 
 (def cat-name-and-flds (mapv (fn [f] [f (get override-default f [f])])
                              cats))
