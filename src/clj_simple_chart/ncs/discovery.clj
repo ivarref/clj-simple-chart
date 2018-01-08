@@ -105,37 +105,6 @@
                                 (sort)
                                 (vec)))
 
-; decided for production
-; pdo approved
-; producing and shut-down
-(def reserve-type [:pdo-approved :decided-for-production :producing :shut-down])
-(def reserve-field-names (->> parsed
-                              (filter #(some #{(:status %)} reserve-type))
-                              (map :name)
-                              (distinct)
-                              (sort)
-                              (vec)))
-
-(def top-11-players (conj (->> parsed
-                            (filter #(some #{(:name %)} reserve-field-names))
-                            (sort-by :fldRecoverableLiquids)
-                            (take-last 10)
-                            (sort-by :year)
-                            (mapv :name))
-                          "JOHAN CASTBERG"))
-
-(test/is (= top-11-players
-            ["EKOFISK"
-             "STATFJORD"
-             "VALHALL"
-             "GULLFAKS"
-             "SNORRE"
-             "TROLL"
-             "OSEBERG"
-             "ÅSGARD"
-             "HEIDRUN"
-             "JOHAN SVERDRUP"
-             "JOHAN CASTBERG"]))
 
 (def missing-field-production
   (->> parsed
