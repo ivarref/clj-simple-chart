@@ -116,13 +116,26 @@
                               (sort)
                               (vec)))
 
-(def top-11-players (->> parsed
-                         (filter #(some #{(:name %)} reserve-field-names))
-                         (sort-by :fldRecoverableLiquids)
-                         (take-last 10)
-                         (sort-by :year)
-                         (mapv :name)))
+(def top-11-players (conj (->> parsed
+                            (filter #(some #{(:name %)} reserve-field-names))
+                            (sort-by :fldRecoverableLiquids)
+                            (take-last 10)
+                            (sort-by :year)
+                            (mapv :name))
+                          "JOHAN CASTBERG"))
 
+(test/is (= top-11-players
+            ["EKOFISK"
+             "STATFJORD"
+             "VALHALL"
+             "GULLFAKS"
+             "SNORRE"
+             "TROLL"
+             "OSEBERG"
+             "ÅSGARD"
+             "HEIDRUN"
+             "JOHAN SVERDRUP"
+             "JOHAN CASTBERG"]))
 
 (def missing-field-production
   (->> parsed
