@@ -61,7 +61,6 @@ name,year,status,fldRecoverableLiquids,fldRecoverableGas
 7121/5-2 (Snøhvit Beta),1986,:likely,1.9,15.7
 7122/6-1 (Tornerose),1987,:clarification,1.1,23.2
 7220/11-1 (Alta),2014,:clarification,166.1,61.0
-7220/8-1 JOHAN CASTBERG,2011,:decided-for-production,554.1,68.6
 7324/8-1 (Wisting),2013,:likely,355.3,0.0
 AASTA HANSTEEN,1997,:pdo-approved,5.7,286.2
 ALBUSKJELL,1972,:shut-down,52.8,97.5
@@ -110,6 +109,7 @@ HYME,2009,:producing,21.4,5.7
 ISLAY,2008,:producing,0.0,0.6
 IVAR AASEN,2008,:producing,152.2,27.7
 JETTE,2009,:shut-down,2.5,0.0
+JOHAN CASTBERG,2011,:decided-for-production,554.1,68.6
 JOHAN SVERDRUP,2010,:pdo-approved,1799.6,54.1
 JOTUN,1994,:shut-down,145.3,5.7
 KNARR,2008,:producing,65.4,1.9

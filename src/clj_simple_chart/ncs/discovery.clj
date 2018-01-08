@@ -54,6 +54,8 @@
     (reserve/get-reserve fld-name kind)
     (resource/get-resource dsc-name kind)))
 
+(def rename-field {"7220/8-1 JOHAN CASTBERG" "JOHAN CASTBERG"})
+
 (def parsed (->> data
                  (remove #(= "Included in other discovery" (:dscCurrentActivityStatus %)))
                  (map #(rename-keys % {:dscCurrentActivityStatus :status
@@ -64,6 +66,7 @@
                  (map #(update % :fldName (fn [x] (if (empty? x) nil x))))
                  (map #(update % :dscName (fn [x] (if (empty? x) nil x))))
                  (map #(assoc % :name (or (:fldName %) (:dscName %))))
+                 (map #(update % :name (fn [x] (get rename-field x x))))
                  (group-by :name)
                  (vals)
                  (map #(sort-by (fn [x] (:year x)) %))
@@ -101,6 +104,25 @@
                                 (distinct)
                                 (sort)
                                 (vec)))
+
+; decided for production
+; pdo approved
+; producing and shut-down
+(def reserve-type [:pdo-approved :decided-for-production :producing :shut-down])
+(def reserve-field-names (->> parsed
+                              (filter #(some #{(:status %)} reserve-type))
+                              (map :name)
+                              (distinct)
+                              (sort)
+                              (vec)))
+
+(def top-11-players (->> parsed
+                         (filter #(some #{(:name %)} reserve-field-names))
+                         (sort-by :fldRecoverableLiquids)
+                         (take-last 10)
+                         (sort-by :year)
+                         (mapv :name)))
+
 
 (def missing-field-production
   (->> parsed
@@ -194,8 +216,8 @@
                               (dissoc :year)
                               (vals)
                               ((fn [x] (* 1 (reduce + 0 x)))))) ; 10517
-                              ; OD value:(- 14283 (+ 2870 205 697.5))
-                              ; => 10510.5))
+; OD value:(- 14283 (+ 2870 205 697.5))
+; => 10510.5))
 
 (defn explode-row [row]
   (reduce (fn [o k]
