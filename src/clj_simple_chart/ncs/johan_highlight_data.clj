@@ -82,6 +82,20 @@
     (reduce (fn [o [v flds]] (assoc o v (remaining-at-time flds yr :liquids)))
             {"YEAR" yr} cat-name-and-flds)))
 
+(defn explode-row [row]
+  (reduce (fn [o k]
+            (conj o {:year  (get row "YEAR")
+                     :c     k
+                     :value (get row k)}))
+          [] (mapv first cat-name-and-flds)))
+
+(def exploded-data-liquids-gboe
+  (->> flat-data-liquids
+       (mapcat explode-row)
+       (map #(update % :value (fn [v] (double (* 6.29e-3 v)))))
+       (sort-by :year)
+       (vec)))
+
 (csv/write-csv-format "data/ncs/discovery/johan-highlight.csv"
                       {:columns (vec (cons "YEAR" (mapv first cat-name-and-flds)))
                        :data    flat-data-liquids
