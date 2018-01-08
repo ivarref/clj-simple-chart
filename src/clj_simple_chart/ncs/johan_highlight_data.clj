@@ -1,7 +1,8 @@
 (ns clj-simple-chart.ncs.johan-highlight-data
   (:require [clj-simple-chart.ncs.discovery :as discovery]
             [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
-            [clojure.test :as test]))
+            [clojure.test :as test]
+            [clj-simple-chart.csv.csvmap :as csv]))
 
 ; decided for production
 ; pdo approved
@@ -45,6 +46,24 @@
 (def top-fields (->> reserves
                      (filter #(some #{(:name %)} top-11-players-names))))
 
+(def cats ["EKOFISK"
+           "STATFJORD"
+           "VALHALL"
+           "GULLFAKS"
+           "SNORRE"
+           "TROLL"
+           "OSEBERG"
+           "ÅSGARD"
+           "HEIDRUN"
+           "OTHERS"
+           "JOHAN SVERDRUP"
+           "JOHAN CASTBERG"])
+
+(def override-default {"OTHERS" other-field-names})
+
+(def cat-name-and-flds (mapv (fn [f] [f (get override-default f [f])])
+                             cats))
+
 (defn remaining-at-time [flds year kind]
   (let [original-recoverable (->> reserves
                                   (filter #(some #{(:name %)} flds))
@@ -58,3 +77,12 @@
                                                    kind)]
     (- original-recoverable produced)))
 
+(def flat-data-liquids
+  (for [yr (range discovery/start-year (inc discovery/stop-year))]
+    (reduce (fn [o [v flds]] (assoc o v (remaining-at-time flds yr :liquids)))
+            {"YEAR" yr} cat-name-and-flds)))
+
+(csv/write-csv-format "data/ncs/discovery/johan-highlight.csv"
+                      {:columns (vec (cons "YEAR" (mapv first cat-name-and-flds)))
+                       :data    flat-data-liquids
+                       :format  (reduce (fn [o [k v]] (assoc o k "%.1f")) {} cat-name-and-flds)})
