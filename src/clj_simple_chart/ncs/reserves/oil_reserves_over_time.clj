@@ -94,7 +94,7 @@
                                    (count datasource/reserve-field-names)
                                    " felt")
           "OTHERS_PRE_1990"   (str "Andre felt funne før 1990")
-          "OTHERS_POSTE_1990" (str "Andre felt funne 1990-2000")
+          "OTHERS_POSTE_1990" (str "Andre felt funne 1990–2000")
           "OTHERS_POSTE_2000" (str "Andre felt funne f.o.m. 2000")
           "JOHAN CASTBERG"    "Johan Castberg"
           "JOHAN SVERDRUP"    "Johan Sverdrup"
