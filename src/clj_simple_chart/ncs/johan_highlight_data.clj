@@ -7,39 +7,22 @@
 ; pdo approved
 ; producing and shut-down
 (def reserve-type [:pdo-approved :decided-for-production :producing :shut-down])
-(def reserve-field-names (->> discovery/parsed
-                              (filter #(some #{(:status %)} reserve-type))
+
+(def reserves (->> discovery/parsed
+                   (filter #(some #{(:status %)} reserve-type))))
+
+(def reserve-field-names (->> reserves
                               (map :name)
                               (distinct)
                               (sort)
                               (vec)))
 
-(def top-11-players-names (conj (->> discovery/parsed
-                                     (filter #(some #{(:name %)} reserve-field-names))
+(def top-11-players-names (conj (->> reserves
                                      (sort-by :fldRecoverableLiquids)
                                      (take-last 10)
                                      (sort-by :year)
                                      (mapv :name))
                                 "JOHAN CASTBERG"))
-
-(def other-fields (->> discovery/parsed
-                       (remove #(some #{(:name %)} top-11-players-names))))
-
-(def top-fields (->> discovery/parsed
-                     (filter #(some #{(:name %)} top-11-players-names))))
-
-(defn remaining-at-time [flds year kind]
-  (let [original-recoverable (->> discovery/parsed
-                                  (filter #(some #{(:name %)} flds))
-                                  (filter #(>= year (:year %)))
-                                  (map (get {:liquids   :fldRecoverableLiquids
-                                             :gas       :fldRecoverableGas
-                                             :petroleum :fldRecoverableOE} kind))
-                                  (reduce + 0))
-        produced (production/cumulative-production (filter #(some #{%} production/field-names) flds)
-                                                   year
-                                                   kind)]
-    (- original-recoverable produced)))
 
 (test/is (= top-11-players-names
             ["EKOFISK"
@@ -53,3 +36,25 @@
              "HEIDRUN"
              "JOHAN SVERDRUP"
              "JOHAN CASTBERG"]))
+
+(def other-fields (->> reserves
+                       (remove #(some #{(:name %)} top-11-players-names))))
+
+(def other-field-names (mapv :name other-fields))
+
+(def top-fields (->> reserves
+                     (filter #(some #{(:name %)} top-11-players-names))))
+
+(defn remaining-at-time [flds year kind]
+  (let [original-recoverable (->> reserves
+                                  (filter #(some #{(:name %)} flds))
+                                  (filter #(>= year (:year %)))
+                                  (map (get {:liquids   :fldRecoverableLiquids
+                                             :gas       :fldRecoverableGas
+                                             :petroleum :fldRecoverableOE} kind))
+                                  (reduce + 0))
+        produced (production/cumulative-production (filter #(some #{%} production/field-names) flds)
+                                                   year
+                                                   kind)]
+    (- original-recoverable produced)))
+
