@@ -27,7 +27,7 @@
              "ÅSGARD"            hydro-blue
              "HEIDRUN"           "#bcbd22"
              "OTHERS_PRE_1990"   "#969696"                  ;""#7f7f7f"
-             "OTHERS_POSTE_1990" "#B6b6b6"
+             "OTHERS_POSTE_1990" "#a1d99b"                  ;"#B6b6b6"
              "OTHERS_POSTE_2000" "rgb(231, 186, 82)"
              "JOHAN SVERDRUP"    dark-purple
              "JOHAN CASTBERG"    pink})
@@ -78,7 +78,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 5 :text "Kjelde: OD. *Inkluderer ressursklassane 1, 2 og 3. \"Olje\" inkluderer råolje, kondensat og NGL." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 5 :text "Kjelde: OD. *Inkluderer ressursklassane 0, 1, 2 og 3. \"Olje\" inkluderer råolje, kondensat og NGL." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
