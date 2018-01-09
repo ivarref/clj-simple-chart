@@ -20,6 +20,8 @@
 
 ![Petroleum - Gjenverande ressursar og kumulativ produksjon](img/ncs-png/discovery-overview-petroleum.png)
 
+![Olje - Gjenverande reservar](img/ncs-png/remaining-reserves-oil.png)
+
 # Flytrafikk
 
 ![Norsk flytrafikk](img/eurostat-png/norsk-flytrafikk.png)
