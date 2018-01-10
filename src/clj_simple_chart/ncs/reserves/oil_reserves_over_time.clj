@@ -78,7 +78,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 5 :text "Kjelde: OD. *Inkluderer ressursklassane 0, 1, 2 og 3. \"Olje\" inkluderer råolje, kondensat og NGL." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 5 :text "Kjelde: OD. *Inkluderer ressursklassane 1, 2 og 3. \"Olje\" inkluderer råolje, kondensat og NGL." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
