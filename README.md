@@ -22,6 +22,10 @@
 
 ![Olje - Gjenverande reservar](img/ncs-png/remaining-reserves-oil.png)
 
+![Gass - Gjenverande reservar](img/ncs-png/remaining-reserves-gas.png)
+
+![Petroleum - Gjenverande reservar](img/ncs-png/remaining-reserves-petroleum.png)
+
 # Flytrafikk
 
 ![Norsk flytrafikk](img/eurostat-png/norsk-flytrafikk.png)

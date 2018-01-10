@@ -124,7 +124,7 @@
      [:g {:transform (translate 10 15)}
       (opentype/stack {:widht        available-width
                        :fill         "whitesmoke"
-                       :fill-opacity 0.8
+                       :fill-opacity 0.6
                        :margin       5}
                       (vec (flatten [{:text "Felt" :font "Roboto Black" :font-size 16}
                                      ;:right {:text "Mrd. fat olje"}}

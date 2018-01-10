@@ -1,5 +1,5 @@
-(ns clj-simple-chart.ncs.reserves.petroleum-reserves-over-time
-  (:require [clj-simple-chart.ncs.johan-highlight-data-petroleum :as datasource]
+(ns clj-simple-chart.ncs.reserves.gas-reserves-over-time
+  (:require [clj-simple-chart.ncs.gas-remaining-reserves :as datasource]
             [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.colors :refer :all]
@@ -13,24 +13,24 @@
             [clojure.string :as string]
             [clojure.string :as str]))
 
-(def data datasource/exploded-data-petroleum-gboe)
+(def data datasource/exploded-data-gas-gboe)
 
 (def max-year (apply max (map :year data)))
 
 (def colors {"EKOFISK"           blue
-             "STATFJORD"         red
-             "GULLFAKS"          orange
-             "SNORRE"            "#ffaa00"
+             "FRIGG"             red
+             "SLEIPNER VEST"     orange
+             "GULLFAKS SØR"      "#ffaa00"
              "OSEBERG"           "#9467bd"
              "TROLL"             green
              "ÅSGARD"            cyan
              "SNØHVIT"           hydro-blue
-             "ORMEN LANGE"       "#bcbd22"
+             "KVITEBJØRN"        "#bcbd22"
+             "ORMEN LANGE"       pink
              "OTHERS_PRE_1990"   "#969696"                  ;""#7f7f7f"
              "OTHERS_POSTE_1990" "#a1d99b"                  ;"#B6b6b6"
              "OTHERS_POSTE_2000" "rgb(231, 186, 82)"
-             "JOHAN SVERDRUP"    dark-purple
-             "JOHAN CASTBERG"    pink})
+             })
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -65,12 +65,12 @@
          :orientation        :right
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain             [0 50]})
+         :domain             [0 22]})
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Gjenverande petroleumsreservar* over tid" :font "Roboto Bold" :font-size 30}
-               {:text "Dei ti største petroleumsfelta, Johan Castberg og alle andre felt" :font "Roboto Bold" :font-size 16}
+              [{:text "Gjenverande gassreservar* over tid" :font "Roboto Bold" :font-size 30}
+               {:text "Dei ti største gassfelta og alle andre felt" :font "Roboto Bold" :font-size 16}
                {:text          "Milliardar fat oljeekvivalentar" :font "Roboto Bold" :font-size 16
                 :align         :right
                 :margin-bottom 3
@@ -78,7 +78,7 @@
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 5 :text "Kjelde: OD. *Inkluderer ressursklassane 1, 2 og 3. \"Petroleum\" inkluderer råolje, gass, kondensat og NGL." :font "Roboto Regular" :font-size 14}
+              [{:margin-top 5 :text "Kjelde: OD. *Inkluderer ressursklassane 1, 2 og 3." :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
@@ -108,7 +108,11 @@
           "GULLFAKS"          "Gullfaks"
           "VALHALL"           "Valhall"
           "STATFJORD"         "Statfjord"
-          "EKOFISK"           "Ekofisk"})
+          "EKOFISK"           "Ekofisk"
+          "FRIGG"             "Frigg"
+          "SLEIPNER VEST"     "Sleipner Vest"
+          "GULLFAKS SØR"      "Gullfaks Sør"
+          "KVITEBJØRN"        "Kvitebjørn"})
 
 (def cat-to-value-last-year (->> data
                                  (filter #(= (:year %) max-year))
@@ -141,4 +145,4 @@
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (core/render "./img/ncs-svg/remaining-reserves-petroleum.svg" "./img/ncs-png/remaining-reserves-petroleum.png" (diagram)))
+  (core/render "./img/ncs-svg/remaining-reserves-gas.svg" "./img/ncs-png/remaining-reserves-gas.png" (diagram)))
