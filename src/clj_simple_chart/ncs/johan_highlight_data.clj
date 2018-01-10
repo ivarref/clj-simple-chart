@@ -19,7 +19,7 @@
                               (vec)))
 
 (def top-11-players-names (conj (->> reserves
-                                     (sort-by :fldRecoverableLiquids)
+                                     (sort-by :liquids)
                                      (take-last 10)
                                      (sort-by :year)
                                      (mapv :name))
@@ -90,9 +90,7 @@
   (let [original-recoverable (->> reserves
                                   (filter #(some #{(:name %)} flds))
                                   (filter #(>= year (:year %)))
-                                  (map (get {:liquids   :fldRecoverableLiquids
-                                             :gas       :fldRecoverableGas
-                                             :petroleum :fldRecoverableOE} kind))
+                                  (map kind)
                                   (reduce + 0))
         produced (production/cumulative-production (filter #(some #{%} production/field-names) flds)
                                                    year

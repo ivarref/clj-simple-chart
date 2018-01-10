@@ -80,6 +80,9 @@
                  (filter #(or (some? (:fldRecoverableLiquids %))
                               (some? (:fldRecoverableGas %))))
                  (csv/number-or-throw-columns [:fldRecoverableLiquids :fldRecoverableGas :fldRecoverableOE])
+                 (map #(assoc % :liquids (:fldRecoverableLiquids %)))
+                 (map #(assoc % :petroleum (:fldRecoverableOE %)))
+                 (map #(assoc % :gas (:fldRecoverableGas %)))
                  (sort-by :name)
                  (vec)))
 
