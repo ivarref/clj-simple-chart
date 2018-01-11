@@ -106,6 +106,13 @@
                (map add-readable-from-to)
                (vec)))
 
+(def max-year (->>
+                (sort (keys (first data)))
+                (remove #(some #{%} regular-columns))
+                (last)
+                (name)
+                (read-string)))
+
 (defn add-item [a b]
   (reduce (fn [o [k v]]
             (cond (number? v) (update o k #(+ (or % 0) v))

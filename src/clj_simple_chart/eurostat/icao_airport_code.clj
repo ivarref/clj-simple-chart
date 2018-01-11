@@ -88,6 +88,7 @@
                    "IS_BIKF" "Reykjavík"
 
                    "NO_ENKR" "Kirkenes"
+                   "NO_ENRY" "Rygge"
 
                    "NO_ENML" "Molde"
                    "NO_ENDU" "Bardufoss"
