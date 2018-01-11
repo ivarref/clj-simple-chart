@@ -26,11 +26,26 @@
              "OSEBERG"           cyan
              "ÅSGARD"            hydro-blue
              "HEIDRUN"           "#bcbd22"
-             "OTHERS_PRE_1990"   "#969696"                  ;""#7f7f7f"
-             "OTHERS_POSTE_1990" "#a1d99b"                  ;"#B6b6b6"
+             "OTHERS_PRE_1990"   "#969696"
+             "OTHERS_POSTE_1990" "#a1d99b"
              "OTHERS_POSTE_2000" "rgb(231, 186, 82)"
              "JOHAN SVERDRUP"    dark-purple
              "JOHAN CASTBERG"    pink})
+
+(def txt {"OTHERS_PRE_1990"   (str "Andre felt funne før 1990")
+          "OTHERS_POSTE_1990" (str "Andre felt funne 1990–2000")
+          "OTHERS_POSTE_2000" (str "Andre felt funne f.o.m. 2000")
+          "JOHAN CASTBERG"    "Johan Castberg"
+          "JOHAN SVERDRUP"    "Johan Sverdrup"
+          "HEIDRUN"           "Heidrun"
+          "ÅSGARD"            "Åsgard"
+          "OSEBERG"           "Oseberg"
+          "TROLL"             "Troll"
+          "SNORRE"            "Snorre"
+          "GULLFAKS"          "Gullfaks"
+          "VALHALL"           "Valhall"
+          "STATFJORD"         "Statfjord"
+          "EKOFISK"           "Ekofisk"})
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -52,7 +67,6 @@
          :orientation   :bottom
          :tick-values   (vec (distinct (flatten [(first x-domain)
                                                  (range 1970 2017 5)])))
-         ;(last x-domain)])))
          :tick-format   (fn [x] (cond (= x 1967) "67"
                                       (= x 2017) "17"
                                       :else x))
@@ -90,29 +104,6 @@
                      :x      xx
                      :y      yy}))
 
-(def txt {"OTHERS"            (str "Alle andre "
-                                   (count datasource/reserve-field-names)
-                                   " felt")
-          "OTHERS_PRE_1990"   (str "Andre felt funne før 1990")
-          "OTHERS_POSTE_1990" (str "Andre felt funne 1990–2000")
-          "OTHERS_POSTE_2000" (str "Andre felt funne f.o.m. 2000")
-          "JOHAN CASTBERG"    "Johan Castberg"
-          "JOHAN SVERDRUP"    "Johan Sverdrup"
-          "HEIDRUN"           "Heidrun"
-          "ÅSGARD"            "Åsgard"
-          "OSEBERG"           "Oseberg"
-          "TROLL"             "Troll"
-          "SNORRE"            "Snorre"
-          "GULLFAKS"          "Gullfaks"
-          "VALHALL"           "Valhall"
-          "STATFJORD"         "Statfjord"
-          "EKOFISK"           "Ekofisk"})
-
-(def cat-to-value-last-year (->> data
-                                 (filter #(= (:year %) max-year))
-                                 (map (juxt :c :value))
-                                 (into {})))
-
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
@@ -127,15 +118,12 @@
                        :fill-opacity 0.6
                        :margin       5}
                       (vec (flatten [{:text "Felt" :font "Roboto Black" :font-size 16}
-                                     ;:right {:text "Mrd. fat olje"}}
                                      (map (fn [col]
                                             {:text      (get txt col col)
                                              :font      "Roboto Regular"
                                              :font-size 16
-                                             ;:right     {:text (str/replace (format "%.1f" (get cat-to-value-last-year col)) "." ",")}
                                              :rect      {:fill (get colors col)}})
                                           (reverse columns))])))]]
-    ;{:text  "Totalt" :font "Roboto Bold" :font-size 16 :right {:text (str/replace (format "%.1f" (reduce + 0 (vals cat-to-value-last-year))) "." ",")}}])))]]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
