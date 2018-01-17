@@ -89,6 +89,21 @@
 
 (defonce all (mapcat tsv-map euro-cc))
 
+(def max-year (->> all
+                   (mapcat keys)
+                   (map name)
+                   (filter #(= 4 (count %)))
+                   (distinct)
+                   (filter #(re-matches #"^\d+$" %))
+                   (sort)
+                   (last)
+                   (read-string)))
+
+(def max-year-kw (keyword (str max-year)))
+
+(test/is (= 2016 max-year))
+
+
 (def regular-columns [:unit :tra_meas :airp_pr :from :to :codes])
 
 (defn number-or-nil-for-num-column [k v]
@@ -155,7 +170,7 @@
           row))
 
 (def top-ten-dests (->> data-grouped
-                        (sort-by #(:2016 %))
+                        (sort-by max-year-kw)
                         (reverse)
                         (take 10)
                         (map :to)))
@@ -190,7 +205,7 @@
                        (flatten)
                        (sort-by :date)
                        (filter #(>= (:date-int %) 200312))
-                       (filter #(< (:date-int %) 201701))
+                       (filter #(<= (:date-int %) (+ 12 (* max-year 100))))
                        (vec)))
 
 (def max-date (->> data-monthly
@@ -199,4 +214,4 @@
 
 (csvmap/write-csv "data/eurostat/avia-par-ex-eu-pas-carried.csv"
                   {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))
-                   :data    (reverse (sort-by #(:2016 %) data-grouped))})
+                   :data    (reverse (sort-by max-year-kw data-grouped))})
