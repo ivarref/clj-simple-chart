@@ -113,6 +113,8 @@
                 (name)
                 (read-string)))
 
+(test/is (= 2016 max-year))
+
 (defn add-item [a b]
   (reduce (fn [o [k v]]
             (cond (number? v) (update o k #(+ (or % 0) v))
