@@ -89,15 +89,18 @@
 
 (defonce all (mapcat tsv-map euro-cc))
 
-(def max-year (->> all
-                   (mapcat keys)
-                   (map name)
-                   (filter #(= 4 (count %)))
-                   (distinct)
-                   (filter #(re-matches #"^\d+$" %))
-                   (sort)
-                   (last)
-                   (read-string)))
+(def distinct-years (->> all
+                         (mapcat keys)
+                         (map name)
+                         (filter #(= 4 (count %)))
+                         (distinct)
+                         (filter #(re-matches #"^\d+$" %))
+                         (sort)
+                         (map read-string)
+                         (reverse)
+                         (vec)))
+
+(def max-year (apply max distinct-years))
 
 (def max-year-kw (keyword (str max-year)))
 
@@ -213,5 +216,7 @@
                    (apply max)))
 
 (csvmap/write-csv "data/eurostat/avia-par-ex-eu-pas-carried.csv"
-                  {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data-grouped)))))))
+                  {:columns (vec (distinct (concat [:unit :tra_meas :to]
+                                                   (mapv (comp keyword str) distinct-years)
+                                                   [:codes])))
                    :data    (reverse (sort-by max-year-kw data-grouped))})
