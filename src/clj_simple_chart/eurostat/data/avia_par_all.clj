@@ -1,10 +1,10 @@
-(ns clj-simple-chart.eurostat.avia-par-all
+(ns clj-simple-chart.eurostat.data.avia-par-all
   (:require [clj-simple-chart.csv.csvmap :as csvmap]
             [clojure.test :as test]
             [clj-http.client :as client]
             [clojure.data.csv :as csv]
             [clojure.string :as str]
-            [clj-simple-chart.eurostat.icao-airport-code :as airport-codes]
+            [clj-simple-chart.eurostat.data.icao-airport-code :as airport-codes]
             [clj-simple-chart.dateutils :as dateutils])
   (:import (java.nio.charset StandardCharsets)
            (org.apache.commons.io IOUtils)

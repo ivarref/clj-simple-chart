@@ -1,5 +1,5 @@
-(ns clj-simple-chart.eurostat.london-ny
-  (:require [clj-simple-chart.eurostat.avia-par-all :as datasource]
+(ns clj-simple-chart.eurostat.charts.london-ny
+  (:require [clj-simple-chart.eurostat.data.avia-par-all :as datasource]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.area-center-text :as cat]

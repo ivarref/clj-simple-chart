@@ -1,9 +1,9 @@
-(ns clj-simple-chart.eurostat.avia-par-no
+(ns clj-simple-chart.eurostat.data.avia-par-no
   (:require [clj-http.client :as client]
             [clojure.test :as test]
             [clj-simple-chart.csv.csvmap :as csvmap]
             [clj-simple-chart.dateutils :as dateutils]
-            [clj-simple-chart.eurostat.icao-airport-code :as airport-codes]
+            [clj-simple-chart.eurostat.data.icao-airport-code :as airport-codes]
             [clojure.string :as str])
   (:import (org.apache.commons.compress.archivers ArchiveStreamFactory)
            (java.io ByteArrayInputStream ByteArrayOutputStream)

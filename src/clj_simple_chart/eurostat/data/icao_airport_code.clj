@@ -1,4 +1,4 @@
-(ns clj-simple-chart.eurostat.icao-airport-code
+(ns clj-simple-chart.eurostat.data.icao-airport-code
   (:require [clj-http.client :as client]
             [clj-simple-chart.csv.csvmap :as csvmap]
             [clojure.test :as test]))

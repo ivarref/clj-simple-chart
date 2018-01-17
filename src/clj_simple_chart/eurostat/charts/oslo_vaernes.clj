@@ -1,5 +1,5 @@
-(ns clj-simple-chart.eurostat.oslo-vaernes
-  (:require [clj-simple-chart.eurostat.avia-par-no :as datasource]
+(ns clj-simple-chart.eurostat.charts.oslo-vaernes
+  (:require [clj-simple-chart.eurostat.data.avia-par-no :as datasource]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clojure.string :as string]
