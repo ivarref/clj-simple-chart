@@ -19,11 +19,11 @@
   {:pre [(some #{code} (codes table))]}
   (let [v (variable table code)
         m (zipmap (:valueTexts v) (:values v))]
-    (assert (some #{valueText} (keys m)) (str "Must be one of: " (vec (sort (keys m)))))
+    (assert (some #{valueText} (keys m)) (str "Must be one of: " (vec (sort (keys m))) ", was: \"" valueText "\""))
     (get m valueText)))
 
 (defn filter-values [table code valueTexts]
-  (assert (some #{code} (codes table)) (str "Code must be one of: " (vec (codes table)) ", was " code))
+  (assert (some #{code} (codes table)) (str "Code must be one of: " (vec (codes table)) ", was: \"" code "\""))
   (cond (= "*" (first valueTexts))
         {:code code :selection {:filter "all" :values ["*"]}}
         :else {:code code :selection {:filter "item" :values (mapv (partial valueText->value table code) valueTexts)}}))
@@ -41,9 +41,9 @@
   (doseq [code (codes table)]
     (assert (some #{code} (map :code query-vector)) (str "Code " code " must be present in query vector!")))
   (let [query {:query query-vector :response {:format "csv"}}
-        resp (client/post (str "http://data.ssb.no/api/v0/no/table/" table) {:form-params query
+        resp (client/post (str "http://data.ssb.no/api/v0/no/table/" table) {:form-params  query
                                                                              :content-type :json
-                                                                             :as :byte-array})]
+                                                                             :as           :byte-array})]
     (assert (= "text/csv; charset=Windows-1252" (get-in resp [:headers "Content-Type"])))
     (let [body-str (String. (:body resp) "Windows-1252")]
       (csv/csv-map body-str))))
