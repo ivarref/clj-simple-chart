@@ -21,6 +21,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-08,21 Svalbard,..,..,170.0
 2008-08,23 Kontinentalsokkelen,53958.1,90207.7,146366.2
 2008-08,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2008-08,50 Trøndelag,0.0,0.0,0.0
 2008-09,01 Østfold,0.0,0.0,18284.3
 2008-09,02 Akershus,0.0,0.0,54061.0
 2008-09,03 Oslo,0.0,0.0,83615.2
@@ -43,6 +44,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-09,21 Svalbard,..,..,174.1
 2008-09,23 Kontinentalsokkelen,53959.6,90210.3,146876.6
 2008-09,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2008-09,50 Trøndelag,0.0,0.0,0.0
 2008-10,01 Østfold,0.0,0.0,17885.0
 2008-10,02 Akershus,0.0,0.0,54108.3
 2008-10,03 Oslo,0.0,0.0,86428.2
@@ -65,6 +67,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-10,21 Svalbard,..,..,174.4
 2008-10,23 Kontinentalsokkelen,73026.6,122635.1,198427.6
 2008-10,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2008-10,50 Trøndelag,0.0,0.0,0.0
 2008-11,01 Østfold,0.0,0.0,22032.3
 2008-11,02 Akershus,0.0,0.0,65903.5
 2008-11,03 Oslo,0.0,0.0,104789.7
@@ -87,6 +90,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-11,21 Svalbard,..,..,180.0
 2008-11,23 Kontinentalsokkelen,72999.5,122588.9,198847.4
 2008-11,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2008-11,50 Trøndelag,0.0,0.0,0.0
 2008-12,01 Østfold,0.0,0.0,22323.1
 2008-12,02 Akershus,0.0,0.0,67171.4
 2008-12,03 Oslo,0.0,0.0,106141.0
@@ -109,6 +113,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-12,21 Svalbard,..,..,188.7
 2008-12,23 Kontinentalsokkelen,88715.1,150693.1,242781.9
 2008-12,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2008-12,50 Trøndelag,0.0,0.0,0.0
 2009-01,01 Østfold,0.0,0.0,2623.0
 2009-01,02 Akershus,0.0,0.0,7960.5
 2009-01,03 Oslo,0.0,0.0,12668.0
@@ -131,6 +136,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-01,21 Svalbard,..,..,21.2
 2009-01,23 Kontinentalsokkelen,5.9,10.0,498.6
 2009-01,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-01,50 Trøndelag,0.0,0.0,0.0
 2009-02,01 Østfold,0.0,0.0,3662.6
 2009-02,02 Akershus,0.0,0.0,11233.3
 2009-02,03 Oslo,0.0,0.0,19864.6
@@ -153,6 +159,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-02,21 Svalbard,..,..,86.5
 2009-02,23 Kontinentalsokkelen,13021.4,22140.6,35937.7
 2009-02,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-02,50 Trøndelag,0.0,0.0,0.0
 2009-03,01 Østfold,0.0,0.0,6986.9
 2009-03,02 Akershus,0.0,0.0,21111.1
 2009-03,03 Oslo,0.0,0.0,34291.1
@@ -175,6 +182,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-03,21 Svalbard,..,..,89.4
 2009-03,23 Kontinentalsokkelen,13025.7,22174.8,36405.8
 2009-03,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-03,50 Trøndelag,0.0,0.0,0.0
 2009-04,01 Østfold,0.0,0.0,8240.7
 2009-04,02 Akershus,0.0,0.0,24942.9
 2009-04,03 Oslo,0.0,0.0,42569.5
@@ -197,6 +205,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-04,21 Svalbard,..,..,106.3
 2009-04,23 Kontinentalsokkelen,25950.5,44153.6,71541.4
 2009-04,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-04,50 Trøndelag,0.0,0.0,0.0
 2009-05,01 Østfold,0.0,0.0,11895.9
 2009-05,02 Akershus,0.0,0.0,36496.8
 2009-05,03 Oslo,0.0,0.0,60184.3
@@ -219,6 +228,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-05,21 Svalbard,..,..,107.8
 2009-05,23 Kontinentalsokkelen,25866.0,44070.5,71898.3
 2009-05,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-05,50 Trøndelag,0.0,0.0,0.0
 2009-06,01 Østfold,0.0,0.0,12077.0
 2009-06,02 Akershus,0.0,0.0,37094.3
 2009-06,03 Oslo,0.0,0.0,61413.0
@@ -241,6 +251,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-06,21 Svalbard,..,..,108.3
 2009-06,23 Kontinentalsokkelen,37013.6,63187.9,102223.5
 2009-06,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-06,50 Trøndelag,0.0,0.0,0.0
 2009-07,01 Østfold,0.0,0.0,14904.8
 2009-07,02 Akershus,0.0,0.0,44603.3
 2009-07,03 Oslo,0.0,0.0,72841.8
@@ -263,6 +274,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-07,21 Svalbard,..,..,166.0
 2009-07,23 Kontinentalsokkelen,35753.7,61344.6,99591.4
 2009-07,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-07,50 Trøndelag,0.0,0.0,0.0
 2009-08,01 Østfold,0.0,0.0,15063.3
 2009-08,02 Akershus,0.0,0.0,45092.2
 2009-08,03 Oslo,0.0,0.0,73560.2
@@ -285,6 +297,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-08,21 Svalbard,..,..,170.1
 2009-08,23 Kontinentalsokkelen,45715.3,77366.9,125666.2
 2009-08,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-08,50 Trøndelag,0.0,0.0,0.0
 2009-09,01 Østfold,0.0,0.0,18471.6
 2009-09,02 Akershus,0.0,0.0,54581.3
 2009-09,03 Oslo,0.0,0.0,87534.5
@@ -307,6 +320,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-09,21 Svalbard,0.0,0.0,171.4
 2009-09,23 Kontinentalsokkelen,44743.6,76094.8,123907.9
 2009-09,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-09,50 Trøndelag,0.0,0.0,0.0
 2009-10,01 Østfold,0.0,0.0,18149.4
 2009-10,02 Akershus,0.0,0.0,53533.6
 2009-10,03 Oslo,0.0,0.0,84026.6
@@ -329,6 +343,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-10,21 Svalbard,0.0,0.0,174.5
 2009-10,23 Kontinentalsokkelen,54455.7,91871.1,149517.6
 2009-10,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-10,50 Trøndelag,0.0,0.0,0.0
 2009-11,01 Østfold,0.0,0.0,22208.4
 2009-11,02 Akershus,0.0,0.0,65493.9
 2009-11,03 Oslo,0.0,0.0,104205.1
@@ -351,6 +366,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-11,21 Svalbard,0.0,0.0,586.9
 2009-11,23 Kontinentalsokkelen,54162.6,92192.2,150167.9
 2009-11,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-11,50 Trøndelag,0.0,0.0,0.0
 2009-12,01 Østfold,0.0,0.0,22471.1
 2009-12,02 Akershus,0.0,0.0,66309.8
 2009-12,03 Oslo,0.0,0.0,105573.7
@@ -373,6 +389,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-12,21 Svalbard,0.0,0.0,595.8
 2009-12,23 Kontinentalsokkelen,61500.6,103733.3,169078.1
 2009-12,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2009-12,50 Trøndelag,0.0,0.0,0.0
 2010-01,01 Østfold,0.0,0.0,2816.1
 2010-01,02 Akershus,0.0,0.0,8072.5
 2010-01,03 Oslo,0.0,0.0,12304.0
@@ -395,6 +412,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-01,21 Svalbard,0.0,0.0,22.6
 2010-01,23 Kontinentalsokkelen,12.7,20.4,508.5
 2010-01,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2010-01,50 Trøndelag,0.0,0.0,0.0
 2010-02,01 Østfold,0.0,0.0,3557.6
 2010-02,02 Akershus,0.0,0.0,10870.5
 2010-02,03 Oslo,0.0,0.0,19189.8
@@ -417,6 +435,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-02,21 Svalbard,0.0,0.0,204.3
 2010-02,23 Kontinentalsokkelen,8160.9,13125.8,22003.4
 2010-02,24 Kildeskatt på pensjon,0.0,0.0,0.0
+2010-02,50 Trøndelag,0.0,0.0,0.0
 2010-03,01 Østfold,0.0,0.0,7059.6
 2010-03,02 Akershus,0.0,0.0,20918.9
 2010-03,03 Oslo,0.0,0.0,32843.1
@@ -439,6 +458,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-03,21 Svalbard,0.0,0.0,206.3
 2010-03,23 Kontinentalsokkelen,8155.6,13120.2,22437.5
 2010-03,24 Kildeskatt på pensjon,0.0,0.0,62.4
+2010-03,50 Trøndelag,0.0,0.0,0.0
 2010-04,01 Østfold,0.0,0.0,7910.3
 2010-04,02 Akershus,0.0,0.0,23828.0
 2010-04,03 Oslo,0.0,0.0,39497.9
@@ -461,6 +481,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-04,21 Svalbard,0.0,0.0,266.5
 2010-04,23 Kontinentalsokkelen,17467.8,28098.2,47018.9
 2010-04,24 Kildeskatt på pensjon,0.0,0.0,62.4
+2010-04,50 Trøndelag,0.0,0.0,0.0
 2010-05,01 Østfold,0.0,0.0,11876.5
 2010-05,02 Akershus,0.0,0.0,38208.6
 2010-05,03 Oslo,0.0,0.0,68033.1
@@ -483,6 +504,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-05,21 Svalbard,0.0,0.0,291.1
 2010-05,23 Kontinentalsokkelen,17440.6,28054.3,47405.4
 2010-05,24 Kildeskatt på pensjon,0.0,0.0,122.6
+2010-05,50 Trøndelag,0.0,0.0,0.0
 2010-06,01 Østfold,0.0,0.0,12074.9
 2010-06,02 Akershus,0.0,0.0,38894.1
 2010-06,03 Oslo,0.0,0.0,68565.9
@@ -505,6 +527,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-06,21 Svalbard,0.0,0.0,296.5
 2010-06,23 Kontinentalsokkelen,25594.2,41168.5,68816.7
 2010-06,24 Kildeskatt på pensjon,0.0,0.0,120.8
+2010-06,50 Trøndelag,0.0,0.0,0.0
 2010-07,01 Østfold,0.0,0.0,14881.4
 2010-07,02 Akershus,0.0,0.0,46851.4
 2010-07,03 Oslo,0.0,0.0,80830.8
@@ -527,6 +550,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-07,21 Svalbard,0.0,0.0,337.1
 2010-07,23 Kontinentalsokkelen,25829.9,41563.7,69924.5
 2010-07,24 Kildeskatt på pensjon,0.0,0.0,179.9
+2010-07,50 Trøndelag,0.0,0.0,0.0
 2010-08,01 Østfold,0.0,0.0,15055.0
 2010-08,02 Akershus,0.0,0.0,47272.1
 2010-08,03 Oslo,0.0,0.0,81336.5
@@ -549,6 +573,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-08,21 Svalbard,0.0,0.0,353.3
 2010-08,23 Kontinentalsokkelen,37023.8,59916.9,99535.8
 2010-08,24 Kildeskatt på pensjon,0.0,0.0,178.4
+2010-08,50 Trøndelag,0.0,0.0,0.0
 2010-09,01 Østfold,0.0,0.0,18630.1
 2010-09,02 Akershus,0.0,0.0,57303.8
 2010-09,03 Oslo,0.0,0.0,95904.8
@@ -571,6 +596,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-09,21 Svalbard,0.0,0.0,354.9
 2010-09,23 Kontinentalsokkelen,37059.8,59976.5,100137.2
 2010-09,24 Kildeskatt på pensjon,0.0,0.0,240.7
+2010-09,50 Trøndelag,0.0,0.0,0.0
 2010-10,01 Østfold,0.0,0.0,18283.8
 2010-10,02 Akershus,0.0,0.0,56171.3
 2010-10,03 Oslo,0.0,0.0,92909.1
@@ -593,6 +619,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-10,21 Svalbard,0.0,0.0,347.1
 2010-10,23 Kontinentalsokkelen,48252.9,78328.4,129797.4
 2010-10,24 Kildeskatt på pensjon,0.0,0.0,239.8
+2010-10,50 Trøndelag,0.0,0.0,0.0
 2010-11,01 Østfold,0.0,0.0,22603.8
 2010-11,02 Akershus,0.0,0.0,69338.8
 2010-11,03 Oslo,0.0,0.0,112735.4
@@ -615,6 +642,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-11,21 Svalbard,0.0,0.0,394.4
 2010-11,23 Kontinentalsokkelen,48274.7,78364.0,130461.2
 2010-11,24 Kildeskatt på pensjon,0.0,0.0,302.1
+2010-11,50 Trøndelag,0.0,0.0,0.0
 2010-12,01 Østfold,0.0,0.0,22835.8
 2010-12,02 Akershus,0.0,0.0,70046.5
 2010-12,03 Oslo,0.0,0.0,114465.5
@@ -637,6 +665,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2010-12,21 Svalbard,0.0,0.0,398.1
 2010-12,23 Kontinentalsokkelen,59249.2,96360.1,159474.8
 2010-12,24 Kildeskatt på pensjon,0.0,0.0,301.2
+2010-12,50 Trøndelag,0.0,0.0,0.0
 2011-01,01 Østfold,0.0,0.0,3000.9
 2011-01,02 Akershus,0.0,0.0,8627.5
 2011-01,03 Oslo,0.0,0.0,13696.3
@@ -659,6 +688,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-01,21 Svalbard,0.0,0.0,57.3
 2011-01,23 Kontinentalsokkelen,21.7,35.6,516.6
 2011-01,24 Kildeskatt på pensjon,0.0,0.0,62.2
+2011-01,50 Trøndelag,0.0,0.0,0.0
 2011-02,01 Østfold,0.0,0.0,3801.1
 2011-02,02 Akershus,0.0,0.0,12349.8
 2011-02,03 Oslo,0.0,0.0,23045.4
@@ -681,6 +711,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-02,21 Svalbard,0.0,0.0,152.9
 2011-02,23 Kontinentalsokkelen,10909.8,17887.6,29614.4
 2011-02,24 Kildeskatt på pensjon,0.0,0.0,62.1
+2011-02,50 Trøndelag,0.0,0.0,0.0
 2011-03,01 Østfold,0.0,0.0,7473.3
 2011-03,02 Akershus,0.0,0.0,23120.3
 2011-03,03 Oslo,0.0,0.0,38834.5
@@ -703,6 +734,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-03,21 Svalbard,0.0,0.0,154.7
 2011-03,23 Kontinentalsokkelen,11009.4,18057.9,30315.2
 2011-03,24 Kildeskatt på pensjon,0.0,0.0,127.9
+2011-03,50 Trøndelag,0.0,0.0,0.0
 2011-04,01 Østfold,0.0,0.0,8229.3
 2011-04,02 Akershus,0.0,0.0,27334.3
 2011-04,03 Oslo,0.0,0.0,48435.3
@@ -725,6 +757,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-04,21 Svalbard,0.0,0.0,223.6
 2011-04,23 Kontinentalsokkelen,22201.1,36413.6,60122.7
 2011-04,24 Kildeskatt på pensjon,0.0,0.0,127.9
+2011-04,50 Trøndelag,0.0,0.0,0.0
 2011-05,01 Østfold,0.0,0.0,12535.0
 2011-05,02 Akershus,0.0,0.0,41476.6
 2011-05,03 Oslo,0.0,0.0,70958.1
@@ -747,6 +780,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-05,21 Svalbard,0.0,0.0,283.8
 2011-05,23 Kontinentalsokkelen,22201.1,36413.6,60653.4
 2011-05,24 Kildeskatt på pensjon,0.0,0.0,83.4
+2011-05,50 Trøndelag,0.0,0.0,0.0
 2011-06,01 Østfold,0.0,0.0,12653.1
 2011-06,02 Akershus,0.0,0.0,42051.6
 2011-06,03 Oslo,0.0,0.0,71809.5
@@ -769,6 +803,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-06,21 Svalbard,0.0,0.0,284.2
 2011-06,23 Kontinentalsokkelen,33108.3,54296.7,89583.2
 2011-06,24 Kildeskatt på pensjon,0.0,0.0,141.7
+2011-06,50 Trøndelag,0.0,0.0,0.0
 2011-07,01 Østfold,0.0,0.0,15586.7
 2011-07,02 Akershus,0.0,0.0,50634.4
 2011-07,03 Oslo,0.0,0.0,84733.4
@@ -791,6 +826,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-07,21 Svalbard,0.0,0.0,332.6
 2011-07,23 Kontinentalsokkelen,33020.2,54153.5,89844.2
 2011-07,24 Kildeskatt på pensjon,0.0,0.0,205.8
+2011-07,50 Trøndelag,0.0,0.0,0.0
 2011-08,01 Østfold,0.0,0.0,15754.7
 2011-08,02 Akershus,0.0,0.0,51086.9
 2011-08,03 Oslo,0.0,0.0,86128.1
@@ -813,6 +849,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-08,21 Svalbard,0.0,0.0,346.6
 2011-08,23 Kontinentalsokkelen,48052.1,78780.1,129582.4
 2011-08,24 Kildeskatt på pensjon,0.0,0.0,205.9
+2011-08,50 Trøndelag,0.0,0.0,0.0
 2011-09,01 Østfold,0.0,0.0,19555.0
 2011-09,02 Akershus,0.0,0.0,61915.1
 2011-09,03 Oslo,0.0,0.0,101667.9
@@ -835,6 +872,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-09,21 Svalbard,0.0,0.0,349.3
 2011-09,23 Kontinentalsokkelen,48811.4,80023.8,132105.4
 2011-09,24 Kildeskatt på pensjon,0.0,0.0,274.1
+2011-09,50 Trøndelag,0.0,0.0,0.0
 2011-10,01 Østfold,0.0,0.0,19321.7
 2011-10,02 Akershus,0.0,0.0,61523.9
 2011-10,03 Oslo,0.0,0.0,100287.3
@@ -857,6 +895,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-10,21 Svalbard,0.0,0.0,349.8
 2011-10,23 Kontinentalsokkelen,63389.2,103901.8,170735.2
 2011-10,24 Kildeskatt på pensjon,0.0,0.0,318.7
+2011-10,50 Trøndelag,0.0,0.0,0.0
 2011-11,01 Østfold,0.0,0.0,23883.1
 2011-11,02 Akershus,0.0,0.0,75591.6
 2011-11,03 Oslo,0.0,0.0,125062.9
@@ -879,6 +918,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-11,21 Svalbard,0.0,0.0,860.9
 2011-11,23 Kontinentalsokkelen,63595.1,103695.9,171491.7
 2011-11,24 Kildeskatt på pensjon,0.0,0.0,402.0
+2011-11,50 Trøndelag,0.0,0.0,0.0
 2011-12,01 Østfold,0.0,0.0,24143.2
 2011-12,02 Akershus,0.0,0.0,76449.3
 2011-12,03 Oslo,0.0,0.0,126472.8
@@ -901,6 +941,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2011-12,21 Svalbard,0.0,0.0,863.3
 2011-12,23 Kontinentalsokkelen,78243.3,127693.3,210336.3
 2011-12,24 Kildeskatt på pensjon,0.0,0.0,400.9
+2011-12,50 Trøndelag,0.0,0.0,0.0
 2012-01,01 Østfold,0.0,0.0,3116.0
 2012-01,02 Akershus,0.0,0.0,9094.9
 2012-01,03 Oslo,0.0,0.0,14157.7
@@ -923,6 +964,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-01,21 Svalbard,0.0,0.0,62.9
 2012-01,23 Kontinentalsokkelen,28.5,46.7,692.1
 2012-01,24 Kildeskatt på pensjon,0.0,0.0,63.8
+2012-01,50 Trøndelag,0.0,0.0,0.0
 2012-02,01 Østfold,0.0,0.0,4035.7
 2012-02,02 Akershus,0.0,0.0,12796.9
 2012-02,03 Oslo,0.0,0.0,23343.8
@@ -945,6 +987,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-02,21 Svalbard,0.0,0.0,87.2
 2012-02,23 Kontinentalsokkelen,13922.7,22817.9,37631.1
 2012-02,24 Kildeskatt på pensjon,0.0,0.0,63.5
+2012-02,50 Trøndelag,0.0,0.0,0.0
 2012-03,01 Østfold,0.0,0.0,7955.5
 2012-03,02 Akershus,0.0,0.0,24418.2
 2012-03,03 Oslo,0.0,0.0,40080.2
@@ -967,6 +1010,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-03,21 Svalbard,0.0,0.0,225.2
 2012-03,23 Kontinentalsokkelen,14153.7,23196.3,38898.1
 2012-03,24 Kildeskatt på pensjon,0.0,0.0,130.8
+2012-03,50 Trøndelag,0.0,0.0,0.0
 2012-04,01 Østfold,0.0,0.0,8670.3
 2012-04,02 Akershus,0.0,0.0,28733.9
 2012-04,03 Oslo,0.0,0.0,49360.9
@@ -989,6 +1033,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-04,21 Svalbard,0.0,0.0,278.4
 2012-04,23 Kontinentalsokkelen,27712.7,45406.0,75059.8
 2012-04,24 Kildeskatt på pensjon,0.0,0.0,130.4
+2012-04,50 Trøndelag,0.0,0.0,0.0
 2012-05,01 Østfold,0.0,0.0,13045.4
 2012-05,02 Akershus,0.0,0.0,44881.0
 2012-05,03 Oslo,0.0,0.0,71403.2
@@ -1011,6 +1056,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-05,21 Svalbard,0.0,0.0,413.7
 2012-05,23 Kontinentalsokkelen,27732.7,45438.6,75749.0
 2012-05,24 Kildeskatt på pensjon,0.0,0.0,126.2
+2012-05,50 Trøndelag,0.0,0.0,0.0
 2012-06,01 Østfold,0.0,0.0,13242.4
 2012-06,02 Akershus,0.0,0.0,45459.4
 2012-06,03 Oslo,0.0,0.0,72058.8
@@ -1033,6 +1079,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-06,21 Svalbard,0.0,0.0,414.2
 2012-06,23 Kontinentalsokkelen,41450.6,67916.5,112014.1
 2012-06,24 Kildeskatt på pensjon,0.0,0.0,125.8
+2012-06,50 Trøndelag,0.0,0.0,0.0
 2012-07,01 Østfold,0.0,0.0,16381.8
 2012-07,02 Akershus,0.0,0.0,54666.3
 2012-07,03 Oslo,0.0,0.0,85731.3
@@ -1055,6 +1102,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-07,21 Svalbard,0.0,0.0,484.7
 2012-07,23 Kontinentalsokkelen,41692.5,68322.8,113382.2
 2012-07,24 Kildeskatt på pensjon,0.0,0.0,211.2
+2012-07,50 Trøndelag,0.0,0.0,0.0
 2012-08,01 Østfold,0.0,0.0,16667.1
 2012-08,02 Akershus,0.0,0.0,55374.7
 2012-08,03 Oslo,0.0,0.0,87044.5
@@ -1077,6 +1125,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-08,21 Svalbard,0.0,0.0,478.9
 2012-08,23 Kontinentalsokkelen,56641.5,93430.0,153488.3
 2012-08,24 Kildeskatt på pensjon,0.0,0.0,212.5
+2012-08,50 Trøndelag,0.0,0.0,0.0
 2012-09,01 Østfold,0.0,0.0,20685.8
 2012-09,02 Akershus,0.0,0.0,67055.4
 2012-09,03 Oslo,0.0,0.0,103767.5
@@ -1099,6 +1148,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-09,21 Svalbard,0.0,0.0,480.8
 2012-09,23 Kontinentalsokkelen,56631.8,93404.2,154149.4
 2012-09,24 Kildeskatt på pensjon,0.0,0.0,280.6
+2012-09,50 Trøndelag,0.0,0.0,0.0
 2012-10,01 Østfold,0.0,0.0,20605.6
 2012-10,02 Akershus,0.0,0.0,66837.8
 2012-10,03 Oslo,0.0,0.0,101317.9
@@ -1121,6 +1171,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-10,21 Svalbard,0.0,0.0,471.7
 2012-10,23 Kontinentalsokkelen,71951.6,119134.5,195325.3
 2012-10,24 Kildeskatt på pensjon,0.0,0.0,339.3
+2012-10,50 Trøndelag,0.0,0.0,0.0
 2012-11,01 Østfold,0.0,0.0,25205.9
 2012-11,02 Akershus,0.0,0.0,80962.9
 2012-11,03 Oslo,0.0,0.0,122579.1
@@ -1143,6 +1194,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-11,21 Svalbard,0.0,0.0,510.3
 2012-11,23 Kontinentalsokkelen,71964.8,119588.3,196699.4
 2012-11,24 Kildeskatt på pensjon,0.0,0.0,415.4
+2012-11,50 Trøndelag,0.0,0.0,0.0
 2012-12,01 Østfold,0.0,0.0,25356.3
 2012-12,02 Akershus,0.0,0.0,81520.5
 2012-12,03 Oslo,0.0,0.0,123614.8
@@ -1165,6 +1217,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2012-12,21 Svalbard,0.0,0.0,595.2
 2012-12,23 Kontinentalsokkelen,85803.0,142867.9,233934.5
 2012-12,24 Kildeskatt på pensjon,0.0,0.0,416.4
+2012-12,50 Trøndelag,0.0,0.0,0.0
 2013-01,01 Østfold,0.0,0.0,3372.2
 2013-01,02 Akershus,0.0,0.0,9776.8
 2013-01,03 Oslo,0.0,0.0,14838.1
@@ -1187,6 +1240,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-01,21 Svalbard,0.0,0.0,66.0
 2013-01,23 Kontinentalsokkelen,23.9,40.1,864.8
 2013-01,24 Kildeskatt på pensjon,0.0,0.0,65.8
+2013-01,50 Trøndelag,0.0,0.0,0.0
 2013-02,01 Østfold,0.0,0.0,4212.1
 2013-02,02 Akershus,0.0,0.0,14362.2
 2013-02,03 Oslo,0.0,0.0,23423.9
@@ -1209,6 +1263,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-02,21 Svalbard,0.0,0.0,84.7
 2013-02,23 Kontinentalsokkelen,13248.0,22250.5,36563.0
 2013-02,24 Kildeskatt på pensjon,0.0,0.0,65.7
+2013-02,50 Trøndelag,0.0,0.0,0.0
 2013-03,01 Østfold,0.0,0.0,8287.8
 2013-03,02 Akershus,0.0,0.0,26708.7
 2013-03,03 Oslo,0.0,0.0,40835.0
@@ -1231,6 +1286,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-03,21 Svalbard,0.0,0.0,87.2
 2013-03,23 Kontinentalsokkelen,13272.4,22292.0,37290.8
 2013-03,24 Kildeskatt på pensjon,0.0,0.0,136.1
+2013-03,50 Trøndelag,0.0,0.0,0.0
 2013-04,01 Østfold,0.0,0.0,9143.2
 2013-04,02 Akershus,0.0,0.0,31338.3
 2013-04,03 Oslo,0.0,0.0,49193.2
@@ -1253,6 +1309,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-04,21 Svalbard,0.0,0.0,100.6
 2013-04,23 Kontinentalsokkelen,31395.6,52730.2,86171.0
 2013-04,24 Kildeskatt på pensjon,0.0,0.0,135.5
+2013-04,50 Trøndelag,0.0,0.0,0.0
 2013-05,01 Østfold,0.0,0.0,13976.7
 2013-05,02 Akershus,0.0,0.0,46789.8
 2013-05,03 Oslo,0.0,0.0,75571.3
@@ -1275,6 +1332,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-05,21 Svalbard,0.0,0.0,103.5
 2013-05,23 Kontinentalsokkelen,31325.8,52607.2,86680.0
 2013-05,24 Kildeskatt på pensjon,0.0,0.0,195.3
+2013-05,50 Trøndelag,0.0,0.0,0.0
 2013-06,01 Østfold,0.0,0.0,14097.5
 2013-06,02 Akershus,0.0,0.0,47490.3
 2013-06,03 Oslo,0.0,0.0,77603.5
@@ -1297,6 +1355,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-06,21 Svalbard,0.0,0.0,103.4
 2013-06,23 Kontinentalsokkelen,44391.2,74550.9,121792.9
 2013-06,24 Kildeskatt på pensjon,0.0,0.0,195.4
+2013-06,50 Trøndelag,0.0,0.0,0.0
 2013-07,01 Østfold,0.0,0.0,17435.7
 2013-07,02 Akershus,0.0,0.0,56909.9
 2013-07,03 Oslo,0.0,0.0,92890.4
@@ -1319,6 +1378,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-07,21 Svalbard,0.0,0.0,172.8
 2013-07,23 Kontinentalsokkelen,44517.5,74755.1,122917.9
 2013-07,24 Kildeskatt på pensjon,0.0,0.0,265.2
+2013-07,50 Trøndelag,0.0,0.0,0.0
 2013-08,01 Østfold,0.0,0.0,17692.5
 2013-08,02 Akershus,0.0,0.0,57624.0
 2013-08,03 Oslo,0.0,0.0,93948.7
@@ -1341,6 +1401,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-08,21 Svalbard,0.0,0.0,175.0
 2013-08,23 Kontinentalsokkelen,56325.1,93833.1,153883.5
 2013-08,24 Kildeskatt på pensjon,0.0,0.0,266.0
+2013-08,50 Trøndelag,0.0,0.0,0.0
 2013-09,01 Østfold,0.0,0.0,21954.1
 2013-09,02 Akershus,0.0,0.0,70029.6
 2013-09,03 Oslo,0.0,0.0,111727.9
@@ -1363,6 +1424,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-09,21 Svalbard,0.0,0.0,176.7
 2013-09,23 Kontinentalsokkelen,56321.3,93828.8,154648.9
 2013-09,24 Kildeskatt på pensjon,0.0,0.0,341.7
+2013-09,50 Trøndelag,0.0,0.0,0.0
 2013-10,01 Østfold,0.0,0.0,21867.2
 2013-10,02 Akershus,0.0,0.0,70083.0
 2013-10,03 Oslo,0.0,0.0,111884.1
@@ -1385,6 +1447,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-10,21 Svalbard,0.0,0.0,180.2
 2013-10,23 Kontinentalsokkelen,68647.7,113745.0,187135.4
 2013-10,24 Kildeskatt på pensjon,0.0,0.0,370.5
+2013-10,50 Trøndelag,0.0,0.0,0.0
 2013-11,01 Østfold,0.0,0.0,26774.3
 2013-11,02 Akershus,0.0,0.0,84759.6
 2013-11,03 Oslo,0.0,0.0,135798.1
@@ -1407,6 +1470,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-11,21 Svalbard,0.0,0.0,214.6
 2013-11,23 Kontinentalsokkelen,68994.1,114155.4,188870.4
 2013-11,24 Kildeskatt på pensjon,0.0,0.0,461.1
+2013-11,50 Trøndelag,0.0,0.0,0.0
 2013-12,01 Østfold,0.0,0.0,26928.0
 2013-12,02 Akershus,0.0,0.0,85436.1
 2013-12,03 Oslo,0.0,0.0,136631.1
@@ -1429,6 +1493,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2013-12,21 Svalbard,0.0,0.0,217.4
 2013-12,23 Kontinentalsokkelen,76118.1,125385.7,207290.9
 2013-12,24 Kildeskatt på pensjon,0.0,0.0,464.0
+2013-12,50 Trøndelag,0.0,0.0,0.0
 2014-01,01 Østfold,0.0,0.0,3432.7
 2014-01,02 Akershus,0.0,0.0,10187.1
 2014-01,03 Oslo,0.0,0.0,15491.4
@@ -1451,6 +1516,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-01,21 Svalbard,0.0,0.0,44.4
 2014-01,23 Kontinentalsokkelen,202.4,327.4,1380.2
 2014-01,24 Kildeskatt på pensjon,0.0,0.0,71.7
+2014-01,50 Trøndelag,0.0,0.0,0.0
 2014-02,01 Østfold,0.0,0.0,4355.0
 2014-02,02 Akershus,0.0,0.0,13372.5
 2014-02,03 Oslo,0.0,0.0,28680.1
@@ -1473,6 +1539,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-02,21 Svalbard,0.0,0.0,87.4
 2014-02,23 Kontinentalsokkelen,11891.6,19214.0,32229.6
 2014-02,24 Kildeskatt på pensjon,0.0,0.0,71.5
+2014-02,50 Trøndelag,0.0,0.0,0.0
 2014-03,01 Østfold,0.0,0.0,8583.6
 2014-03,02 Akershus,0.0,0.0,26211.1
 2014-03,03 Oslo,0.0,0.0,47880.1
@@ -1495,6 +1562,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-03,21 Svalbard,0.0,0.0,89.9
 2014-03,23 Kontinentalsokkelen,11812.1,19080.0,32848.1
 2014-03,24 Kildeskatt på pensjon,0.0,0.0,145.2
+2014-03,50 Trøndelag,0.0,0.0,0.0
 2014-04,01 Østfold,0.0,0.0,9420.3
 2014-04,02 Akershus,0.0,0.0,29372.9
 2014-04,03 Oslo,0.0,0.0,56638.0
@@ -1517,6 +1585,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-04,21 Svalbard,0.0,0.0,109.2
 2014-04,23 Kontinentalsokkelen,24237.8,39157.1,65632.4
 2014-04,24 Kildeskatt på pensjon,0.0,0.0,144.5
+2014-04,50 Trøndelag,0.0,0.0,0.0
 2014-05,01 Østfold,0.0,0.0,14167.5
 2014-05,02 Akershus,0.0,0.0,44998.7
 2014-05,03 Oslo,0.0,0.0,78289.0
@@ -1539,6 +1608,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-05,21 Svalbard,0.0,0.0,112.7
 2014-05,23 Kontinentalsokkelen,24682.2,39875.1,67494.2
 2014-05,24 Kildeskatt på pensjon,0.0,0.0,190.3
+2014-05,50 Trøndelag,0.0,0.0,0.0
 2014-06,01 Østfold,0.0,0.0,14363.4
 2014-06,02 Akershus,0.0,0.0,45647.6
 2014-06,03 Oslo,0.0,0.0,79853.5
@@ -1561,6 +1631,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-06,21 Svalbard,0.0,0.0,-1151.5
 2014-06,23 Kontinentalsokkelen,36136.3,58382.1,97470.5
 2014-06,24 Kildeskatt på pensjon,0.0,0.0,191.5
+2014-06,50 Trøndelag,0.0,0.0,0.0
 2014-07,01 Østfold,0.0,0.0,17790.5
 2014-07,02 Akershus,0.0,0.0,55913.3
 2014-07,03 Oslo,0.0,0.0,95544.0
@@ -1583,6 +1654,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-07,21 Svalbard,0.0,0.0,-1081.9
 2014-07,23 Kontinentalsokkelen,36174.8,58446.1,98318.7
 2014-07,24 Kildeskatt på pensjon,0.0,0.0,265.7
+2014-07,50 Trøndelag,0.0,0.0,0.0
 2014-08,01 Østfold,0.0,0.0,18001.7
 2014-08,02 Akershus,0.0,0.0,56652.2
 2014-08,03 Oslo,0.0,0.0,96645.7
@@ -1605,6 +1677,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-08,21 Svalbard,0.0,0.0,-1076.3
 2014-08,23 Kontinentalsokkelen,46502.1,75634.1,125900.0
 2014-08,24 Kildeskatt på pensjon,0.0,0.0,265.1
+2014-08,50 Trøndelag,0.0,0.0,0.0
 2014-09,01 Østfold,0.0,0.0,22348.3
 2014-09,02 Akershus,0.0,0.0,69470.4
 2014-09,03 Oslo,0.0,0.0,114869.1
@@ -1627,6 +1700,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-09,21 Svalbard,0.0,0.0,-1073.2
 2014-09,23 Kontinentalsokkelen,46540.5,75698.0,126800.3
 2014-09,24 Kildeskatt på pensjon,0.0,0.0,341.2
+2014-09,50 Trøndelag,0.0,0.0,0.0
 2014-10,01 Østfold,0.0,0.0,22300.9
 2014-10,02 Akershus,0.0,0.0,69073.9
 2014-10,03 Oslo,0.0,0.0,112180.2
@@ -1649,6 +1723,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-10,21 Svalbard,0.0,0.0,-1075.4
 2014-10,23 Kontinentalsokkelen,56979.1,93071.3,154832.7
 2014-10,24 Kildeskatt på pensjon,0.0,0.0,368.7
+2014-10,50 Trøndelag,0.0,0.0,0.0
 2014-11,01 Østfold,0.0,0.0,27236.8
 2014-11,02 Akershus,0.0,0.0,84201.5
 2014-11,03 Oslo,0.0,0.0,135391.9
@@ -1671,6 +1746,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-11,21 Svalbard,0.0,0.0,-1034.0
 2014-11,23 Kontinentalsokkelen,56788.2,93364.3,155967.7
 2014-11,24 Kildeskatt på pensjon,0.0,0.0,458.4
+2014-11,50 Trøndelag,0.0,0.0,0.0
 2014-12,01 Østfold,0.0,0.0,27380.9
 2014-12,02 Akershus,0.0,0.0,84723.4
 2014-12,03 Oslo,0.0,0.0,136377.2
@@ -1693,6 +1769,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2014-12,21 Svalbard,0.0,0.0,-1030.1
 2014-12,23 Kontinentalsokkelen,64212.4,105837.4,175999.6
 2014-12,24 Kildeskatt på pensjon,0.0,0.0,460.3
+2014-12,50 Trøndelag,0.0,0.0,0.0
 2015-01,01 Østfold,0.0,0.0,3527.5
 2015-01,02 Akershus,0.0,0.0,10486.8
 2015-01,03 Oslo,0.0,0.0,15679.2
@@ -1715,6 +1792,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-01,21 Svalbard,0.0,0.0,64.2
 2015-01,23 Kontinentalsokkelen,615.4,1024.2,2472.2
 2015-01,24 Kildeskatt på pensjon,0.0,0.0,73.8
+2015-01,50 Trøndelag,0.0,0.0,0.0
 2015-02,01 Østfold,0.0,0.0,4382.5
 2015-02,02 Akershus,0.0,0.0,13747.0
 2015-02,03 Oslo,0.0,0.0,25264.9
@@ -1737,6 +1815,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-02,21 Svalbard,0.0,0.0,96.5
 2015-02,23 Kontinentalsokkelen,8804.7,14653.4,24647.2
 2015-02,24 Kildeskatt på pensjon,0.0,0.0,73.2
+2015-02,50 Trøndelag,0.0,0.0,0.0
 2015-03,01 Østfold,0.0,0.0,8886.4
 2015-03,02 Akershus,0.0,0.0,27103.5
 2015-03,03 Oslo,0.0,0.0,44217.3
@@ -1759,6 +1838,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-03,21 Svalbard,0.0,0.0,105.7
 2015-03,23 Kontinentalsokkelen,8658.4,14428.1,24670.1
 2015-03,24 Kildeskatt på pensjon,0.0,0.0,148.4
+2015-03,50 Trøndelag,0.0,0.0,0.0
 2015-04,01 Østfold,0.0,0.0,9703.2
 2015-04,02 Akershus,0.0,0.0,30397.6
 2015-04,03 Oslo,0.0,0.0,54240.1
@@ -1781,6 +1861,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-04,21 Svalbard,0.0,0.0,125.7
 2015-04,23 Kontinentalsokkelen,17464.3,29083.6,48226.2
 2015-04,24 Kildeskatt på pensjon,0.0,0.0,141.1
+2015-04,50 Trøndelag,0.0,0.0,0.0
 2015-05,01 Østfold,0.0,0.0,14667.8
 2015-05,02 Akershus,0.0,0.0,46026.4
 2015-05,03 Oslo,0.0,0.0,78504.1
@@ -1803,6 +1884,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-05,21 Svalbard,0.0,0.0,147.9
 2015-05,23 Kontinentalsokkelen,17235.1,28710.4,48199.5
 2015-05,24 Kildeskatt på pensjon,0.0,0.0,192.7
+2015-05,50 Trøndelag,0.0,0.0,0.0
 2015-06,01 Østfold,0.0,0.0,14957.5
 2015-06,02 Akershus,0.0,0.0,46897.6
 2015-06,03 Oslo,0.0,0.0,80050.2
@@ -1825,6 +1907,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-06,21 Svalbard,0.0,0.0,148.4
 2015-06,23 Kontinentalsokkelen,26058.2,43394.8,71545.8
 2015-06,24 Kildeskatt på pensjon,0.0,0.0,191.9
+2015-06,50 Trøndelag,0.0,0.0,0.0
 2015-07,01 Østfold,0.0,0.0,18554.0
 2015-07,02 Akershus,0.0,0.0,57372.5
 2015-07,03 Oslo,0.0,0.0,96905.4
@@ -1847,6 +1930,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-07,21 Svalbard,0.0,0.0,198.3
 2015-07,23 Kontinentalsokkelen,26344.6,43842.1,72826.9
 2015-07,24 Kildeskatt på pensjon,0.0,0.0,267.2
+2015-07,50 Trøndelag,0.0,0.0,0.0
 2015-08,01 Østfold,0.0,0.0,18873.5
 2015-08,02 Akershus,0.0,0.0,58344.0
 2015-08,03 Oslo,0.0,0.0,98183.6
@@ -1869,6 +1953,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-08,21 Svalbard,0.0,0.0,202.8
 2015-08,23 Kontinentalsokkelen,32854.9,54016.8,89419.4
 2015-08,24 Kildeskatt på pensjon,0.0,0.0,266.3
+2015-08,50 Trøndelag,0.0,0.0,0.0
 2015-09,01 Østfold,0.0,0.0,23627.6
 2015-09,02 Akershus,0.0,0.0,72154.4
 2015-09,03 Oslo,0.0,0.0,117703.4
@@ -1891,6 +1976,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-09,21 Svalbard,0.0,0.0,212.3
 2015-09,23 Kontinentalsokkelen,32854.9,54016.8,89998.0
 2015-09,24 Kildeskatt på pensjon,0.0,0.0,337.7
+2015-09,50 Trøndelag,0.0,0.0,0.0
 2015-10,01 Østfold,0.0,0.0,23550.0
 2015-10,02 Akershus,0.0,0.0,71743.1
 2015-10,03 Oslo,0.0,0.0,115862.3
@@ -1913,6 +1999,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-10,21 Svalbard,0.0,0.0,216.0
 2015-10,23 Kontinentalsokkelen,39711.1,64732.5,107623.0
 2015-10,24 Kildeskatt på pensjon,0.0,0.0,365.0
+2015-10,50 Trøndelag,0.0,0.0,0.0
 2015-11,01 Østfold,0.0,0.0,28919.6
 2015-11,02 Akershus,0.0,0.0,87496.6
 2015-11,03 Oslo,0.0,0.0,139914.9
@@ -1935,6 +2022,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-11,21 Svalbard,0.0,0.0,262.8
 2015-11,23 Kontinentalsokkelen,39711.1,64732.5,108355.8
 2015-11,24 Kildeskatt på pensjon,0.0,0.0,459.9
+2015-11,50 Trøndelag,0.0,0.0,0.0
 2015-12,01 Østfold,0.0,0.0,29167.3
 2015-12,02 Akershus,0.0,0.0,88708.1
 2015-12,03 Oslo,0.0,0.0,141315.2
@@ -1957,6 +2045,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2015-12,21 Svalbard,0.0,0.0,272.6
 2015-12,23 Kontinentalsokkelen,39476.7,64195.8,107656.2
 2015-12,24 Kildeskatt på pensjon,0.0,0.0,291.7
+2015-12,50 Trøndelag,0.0,0.0,0.0
 2016-01,01 Østfold,0.0,0.0,3702.8
 2016-01,02 Akershus,0.0,0.0,10842.0
 2016-01,03 Oslo,0.0,0.0,16040.3
@@ -1979,6 +2068,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-01,21 Svalbard,0.0,0.0,34.9
 2016-01,23 Kontinentalsokkelen,-4.1,-6.3,617.5
 2016-01,24 Kildeskatt på pensjon,0.0,0.0,107.2
+2016-01,50 Trøndelag,0.0,0.0,0.0
 2016-02,01 Østfold,0.0,0.0,4619.6
 2016-02,02 Akershus,0.0,0.0,13827.9
 2016-02,03 Oslo,0.0,0.0,25487.1
@@ -2001,6 +2091,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-02,21 Svalbard,0.0,0.0,71.7
 2016-02,23 Kontinentalsokkelen,4429.7,6922.9,12215.0
 2016-02,24 Kildeskatt på pensjon,0.0,0.0,243.9
+2016-02,50 Trøndelag,0.0,0.0,0.0
 2016-03,01 Østfold,0.0,0.0,9287.6
 2016-03,02 Akershus,0.0,0.0,27749.9
 2016-03,03 Oslo,0.0,0.0,44986.1
@@ -2023,6 +2114,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-03,21 Svalbard,0.0,0.0,83.6
 2016-03,23 Kontinentalsokkelen,4406.4,6880.3,12697.5
 2016-03,24 Kildeskatt på pensjon,0.0,0.0,319.9
+2016-03,50 Trøndelag,0.0,0.0,0.0
 2016-04,01 Østfold,0.0,0.0,10220.5
 2016-04,02 Akershus,0.0,0.0,30971.6
 2016-04,03 Oslo,0.0,0.0,53562.4
@@ -2045,6 +2137,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-04,21 Svalbard,0.0,0.0,105.1
 2016-04,23 Kontinentalsokkelen,8806.6,13757.2,24116.5
 2016-04,24 Kildeskatt på pensjon,0.0,0.0,319.4
+2016-04,50 Trøndelag,0.0,0.0,0.0
 2016-05,01 Østfold,0.0,0.0,15729.1
 2016-05,02 Akershus,0.0,0.0,48319.2
 2016-05,03 Oslo,0.0,0.0,79762.7
@@ -2067,6 +2160,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-05,21 Svalbard,0.0,0.0,117.1
 2016-05,23 Kontinentalsokkelen,8819.1,13777.8,24750.7
 2016-05,24 Kildeskatt på pensjon,0.0,0.0,398.0
+2016-05,50 Trøndelag,0.0,0.0,0.0
 2016-06,01 Østfold,0.0,0.0,15924.0
 2016-06,02 Akershus,0.0,0.0,48914.3
 2016-06,03 Oslo,0.0,0.0,80855.8
@@ -2089,6 +2183,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-06,21 Svalbard,0.0,0.0,113.5
 2016-06,23 Kontinentalsokkelen,13296.8,20782.7,36064.8
 2016-06,24 Kildeskatt på pensjon,0.0,0.0,398.1
+2016-06,50 Trøndelag,0.0,0.0,0.0
 2016-07,01 Østfold,0.0,0.0,19622.7
 2016-07,02 Akershus,0.0,0.0,59784.8
 2016-07,03 Oslo,0.0,0.0,97392.5
@@ -2111,6 +2206,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-07,21 Svalbard,0.0,0.0,146.9
 2016-07,23 Kontinentalsokkelen,13058.1,20394.3,36113.8
 2016-07,24 Kildeskatt på pensjon,0.0,0.0,479.3
+2016-07,50 Trøndelag,0.0,0.0,0.0
 2016-08,01 Østfold,0.0,0.0,20050.9
 2016-08,02 Akershus,0.0,0.0,61163.1
 2016-08,03 Oslo,0.0,0.0,99283.8
@@ -2133,6 +2229,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-08,21 Svalbard,0.0,0.0,165.5
 2016-08,23 Kontinentalsokkelen,16331.7,25715.2,44714.5
 2016-08,24 Kildeskatt på pensjon,0.0,0.0,479.4
+2016-08,50 Trøndelag,0.0,0.0,0.0
 2016-09,01 Østfold,0.0,0.0,24976.6
 2016-09,02 Akershus,0.0,0.0,75694.1
 2016-09,03 Oslo,0.0,0.0,119818.7
@@ -2155,6 +2252,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-09,21 Svalbard,0.0,0.0,170.5
 2016-09,23 Kontinentalsokkelen,16610.5,26169.1,45974.6
 2016-09,24 Kildeskatt på pensjon,0.0,0.0,560.2
+2016-09,50 Trøndelag,0.0,0.0,0.0
 2016-10,01 Østfold,0.0,0.0,24832.9
 2016-10,02 Akershus,0.0,0.0,75584.7
 2016-10,03 Oslo,0.0,0.0,118940.7
@@ -2177,6 +2275,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-10,21 Svalbard,0.0,0.0,174.0
 2016-10,23 Kontinentalsokkelen,19862.1,30823.7,54047.4
 2016-10,24 Kildeskatt på pensjon,0.0,0.0,565.5
+2016-10,50 Trøndelag,0.0,0.0,0.0
 2016-11,01 Østfold,0.0,0.0,30556.9
 2016-11,02 Akershus,0.0,0.0,92544.9
 2016-11,03 Oslo,0.0,0.0,145782.9
@@ -2199,6 +2298,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-11,21 Svalbard,0.0,0.0,258.6
 2016-11,23 Kontinentalsokkelen,13074.4,20235.0,38056.0
 2016-11,24 Kildeskatt på pensjon,0.0,0.0,681.8
+2016-11,50 Trøndelag,0.0,0.0,0.0
 2016-12,01 Østfold,0.0,0.0,30727.1
 2016-12,02 Akershus,0.0,0.0,93184.1
 2016-12,03 Oslo,0.0,0.0,146821.4
@@ -2221,6 +2321,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2016-12,21 Svalbard,0.0,0.0,264.6
 2016-12,23 Kontinentalsokkelen,16034.2,25058.5,45848.1
 2016-12,24 Kildeskatt på pensjon,0.0,0.0,683.5
+2016-12,50 Trøndelag,0.0,0.0,0.0
 2017-01,01 Østfold,0.0,0.0,3879.0
 2017-01,02 Akershus,0.0,0.0,11810.4
 2017-01,03 Oslo,0.0,0.0,17190.0
@@ -2243,6 +2344,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-01,21 Svalbard,0.0,0.0,42.1
 2017-01,23 Kontinentalsokkelen,0.0,0.0,692.5
 2017-01,24 Kildeskatt på pensjon,0.0,0.0,83.3
+2017-01,50 Trøndelag,0.0,0.0,0.0
 2017-02,01 Østfold,0.0,0.0,4762.0
 2017-02,02 Akershus,0.0,0.0,14771.2
 2017-02,03 Oslo,0.0,0.0,27021.8
@@ -2265,6 +2367,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-02,21 Svalbard,0.0,0.0,75.3
 2017-02,23 Kontinentalsokkelen,3188.0,5181.4,9135.9
 2017-02,24 Kildeskatt på pensjon,0.0,0.0,83.0
+2017-02,50 Trøndelag,0.0,0.0,0.0
 2017-03,01 Østfold,0.0,0.0,9668.2
 2017-03,02 Akershus,0.0,0.0,29428.3
 2017-03,03 Oslo,0.0,0.0,47846.1
@@ -2287,6 +2390,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-03,21 Svalbard,0.0,0.0,98.6
 2017-03,23 Kontinentalsokkelen,3505.1,5696.7,10351.3
 2017-03,24 Kildeskatt på pensjon,0.0,0.0,168.4
+2017-03,50 Trøndelag,0.0,0.0,0.0
 2017-04,01 Østfold,0.0,0.0,10654.7
 2017-04,02 Akershus,0.0,0.0,32630.1
 2017-04,03 Oslo,0.0,0.0,58356.6
@@ -2309,6 +2413,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-04,21 Svalbard,0.0,0.0,130.8
 2017-04,23 Kontinentalsokkelen,6806.6,11060.1,19128.2
 2017-04,24 Kildeskatt på pensjon,0.0,0.0,169.1
+2017-04,50 Trøndelag,0.0,0.0,0.0
 2017-05,01 Østfold,0.0,0.0,16147.1
 2017-05,02 Akershus,0.0,0.0,50029.5
 2017-05,03 Oslo,0.0,0.0,94787.2
@@ -2331,6 +2436,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-05,21 Svalbard,0.0,0.0,156.8
 2017-05,23 Kontinentalsokkelen,6804.5,11054.1,19613.9
 2017-05,24 Kildeskatt på pensjon,0.0,0.0,253.7
+2017-05,50 Trøndelag,0.0,0.0,0.0
 2017-06,01 Østfold,0.0,0.0,16327.6
 2017-06,02 Akershus,0.0,0.0,50913.9
 2017-06,03 Oslo,0.0,0.0,96901.9
@@ -2353,6 +2459,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-06,21 Svalbard,0.0,0.0,157.8
 2017-06,23 Kontinentalsokkelen,9863.4,16009.3,27580.3
 2017-06,24 Kildeskatt på pensjon,0.0,0.0,254.0
+2017-06,50 Trøndelag,0.0,0.0,0.0
 2017-07,01 Østfold,0.0,0.0,20182.6
 2017-07,02 Akershus,0.0,0.0,62096.5
 2017-07,03 Oslo,0.0,0.0,113421.0
@@ -2375,6 +2482,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-07,21 Svalbard,0.0,0.0,186.7
 2017-07,23 Kontinentalsokkelen,9008.8,14620.3,25664.0
 2017-07,24 Kildeskatt på pensjon,0.0,0.0,336.4
+2017-07,50 Trøndelag,0.0,0.0,0.0
 2017-08,01 Østfold,0.0,0.0,20612.1
 2017-08,02 Akershus,0.0,0.0,63324.2
 2017-08,03 Oslo,0.0,0.0,115168.7
@@ -2397,6 +2505,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-08,21 Svalbard,0.0,0.0,188.6
 2017-08,23 Kontinentalsokkelen,14791.2,24728.0,41525.5
 2017-08,24 Kildeskatt på pensjon,0.0,0.0,335.8
+2017-08,50 Trøndelag,0.0,0.0,0.0
 2017-09,01 Østfold,0.0,0.0,25695.4
 2017-09,02 Akershus,0.0,0.0,78339.2
 2017-09,03 Oslo,0.0,0.0,136633.3
@@ -2419,6 +2528,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-09,21 Svalbard,0.0,0.0,223.0
 2017-09,23 Kontinentalsokkelen,15431.7,25815.1,43678.3
 2017-09,24 Kildeskatt på pensjon,0.0,0.0,420.1
+2017-09,50 Trøndelag,0.0,0.0,0.0
 2017-10,01 Østfold,0.0,0.0,25609.6
 2017-10,02 Akershus,0.0,0.0,77982.9
 2017-10,03 Oslo,0.0,0.0,134523.5
@@ -2441,6 +2551,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-10,21 Svalbard,0.0,0.0,220.3
 2017-10,23 Kontinentalsokkelen,20606.7,35789.6,58807.0
 2017-10,24 Kildeskatt på pensjon,0.0,0.0,425.9
+2017-10,50 Trøndelag,0.0,0.0,0.0
 2017-11,01 Østfold,0.0,0.0,31542.1
 2017-11,02 Akershus,0.0,0.0,97234.8
 2017-11,03 Oslo,0.0,0.0,164228.4
@@ -2463,6 +2574,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-11,21 Svalbard,0.0,0.0,291.0
 2017-11,23 Kontinentalsokkelen,18166.0,31695.6,52818.3
 2017-11,24 Kildeskatt på pensjon,0.0,0.0,545.9
+2017-11,50 Trøndelag,0.0,0.0,0.0
 2017-12,01 Østfold,0.0,0.0,31720.2
 2017-12,02 Akershus,0.0,0.0,98595.4
 2017-12,03 Oslo,0.0,0.0,165565.0
@@ -2485,3 +2597,4 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2017-12,21 Svalbard,0.0,0.0,299.0
 2017-12,23 Kontinentalsokkelen,23688.1,41361.0,68024.5
 2017-12,24 Kildeskatt på pensjon,0.0,0.0,546.1
+2017-12,50 Trøndelag,0.0,0.0,0.0
