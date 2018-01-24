@@ -1,5 +1,6 @@
 (ns clj-simple-chart.ssb.data.ssb-fetch
   (:require [clj-http.client :as client]
+            [clojure.set :as set]
             [clj-simple-chart.csv.csvmap :as csv]))
 
 (def get-memo (memoize client/get))
@@ -51,12 +52,57 @@
 (defn pull-map [table m]
   (pull table (map->query-vector table m)))
 
+(def pull-map-cached (memoize pull-map))
+
+(defn row-with-time->generic-row [table]
+  (let [v (:valueTexts (variable table "ContentsCode"))
+        all-tid (:valueTexts (variable 11174 "Tid"))]
+    (->> (for [prefix v tid all-tid]
+           [(keyword (str prefix " " tid))
+            (keyword prefix)])
+         (into {}))))
+
+(defn row-with-time->tid [table]
+  (let [v (:valueTexts (variable table "ContentsCode"))
+        all-tid (:valueTexts (variable 11174 "Tid"))]
+    (->> (for [prefix v tid all-tid]
+           [(keyword (str prefix " " tid))
+            tid])
+         (into {}))))
+
+(defn difference [a b]
+  (set/difference (into #{} a) (into #{} b)))
+
+(defn parse-pulled [table pulled]
+  (let [explode-cols-map (row-with-time->generic-row table)
+        tid-map (row-with-time->tid table)
+        explode-cols-cols (keys explode-cols-map)
+        regular-cols (difference (:columns pulled) explode-cols-cols)
+        explode-row (fn [row]
+                      (reduce (fn [o [k v]]
+                                (cond (some #{k} regular-cols) o
+                                      (some #{k} explode-cols-cols)
+                                      (let [new-item (-> (select-keys row regular-cols)
+                                                         (assoc (get explode-cols-map k) v)
+                                                         (assoc :Tid (get tid-map k)))]
+                                        (conj o new-item))
+                                      :else (throw (ex-info (str "Unexpected column") {:column k}))))
+                              [] row))]
+    (->> (:data pulled)
+         (mapcat explode-row)
+         (vec))))
+
+(defn pull-parse [table query-map]
+  (parse-pulled table (pull-map-cached table query-map)))
+
 (def qq {"ContentsCode"  "Salg"
          "Region"        "Hele landet"
          "PetroleumProd" ["Autodiesel" "Bilbensin"]
          "Kjopegrupper"  "Alle kjøpegrupper"
          "Tid"           "*"})
 
-(def data (pull-map 11174 qq))
+;(def data (pull-map-cached 11174 qq))
 
-(csv/write-csv "data/ssb/11174.csv" {:columns (:columns data) :data (:data data)})
+(def parsed (pull-parse 11174 qq))
+
+;(csv/write-csv "data/ssb/11174.csv" {:columns (:columns data) :data (:data data)})
