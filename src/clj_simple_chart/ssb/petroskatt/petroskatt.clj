@@ -1,4 +1,4 @@
-;;; To be honest I find this spectacularly difficult to fetch this data ...
+;;; To be honest I find this somewhat difficult to fetch this data ...
 ;;; But that's how it goes ... for now.
 ;;; I'm open to improvements! ==> refsdal.ivar@gmail.com
 
@@ -6,73 +6,26 @@
 ;;; https://www.ssb.no/statistikkbanken/SelectVarVal/Define.asp?MainTable=InnbetSkatt2&KortNavnWeb=skatteregn&PLanguage=0&checked=true
 
 (ns clj-simple-chart.ssb.petroskatt.petroskatt
-  (:require [clojure.data.json :as json]
-            [clojure.test :as test]
+  (:require [clojure.test :as test]
             [clj-http.client :as client]
-            [clojure.pprint :refer [pprint]]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clojure.string :as string]))
-
-(def url "http://data.ssb.no/api/v0/no/table/07022")
-(defonce metadata (client/get url))
-(test/is (= 200 (:status metadata)))
-(def metadata-body (json/read-str (:body metadata) :key-fn keyword))
-(def variables-readable (mapv keyword (mapv :text (:variables metadata-body))))
-(test/is (= [:region :skatteart :statistikkvariabel :måned] variables-readable))
-
-(def variables (:variables metadata-body))
-(defn show-variable [{code       :code
-                      text       :text
-                      codes      :values
-                      codesTexts :valueTexts}]
-  (let [reverse-lookup (zipmap codesTexts codes)
-        sorted-codesTexts (sort codesTexts)]
-    (doall (map (fn [txt]
-                  (println txt "" (get reverse-lookup txt)))
-                sorted-codesTexts)))
-  ::empty)
-
-(defn get-code-for-variable [variable readable]
-  {:pre [(some #{variable} variables-readable)]}
-  (let [v (first (filter #(= (name variable) (:text %)) variables))
-        codes (:values v)
-        codesTexts (:valueTexts v)
-        reverse-lookup (zipmap codesTexts codes)]
-    (if (= ::none (get reverse-lookup readable ::none))
-      (throw (Exception. (str "Could not find " readable " for variable " variable)))
-      (get reverse-lookup readable ::none))))
+            [clojure.string :as string]
+            [clj-simple-chart.ssb.data.ssb-fetch :as sf]
+            [clojure.set :as set]
+            [clojure.string :as str]))
 
 (def skattart ["Ordinær skatt på utvinning av petroleum"
                "Særskatt på utvinning av petroleum"
                "Skatteinngang i alt"])
 
-(def qq [{:code "Region" :selection {:filter "all" :values ["*"]}}
-         {:code "Skatteart" :selection {:filter "item" :values (mapv (partial get-code-for-variable :skatteart) skattart)}}
-         {:code "ContentsCode" :selection {:filter "item" :values [(get-code-for-variable :statistikkvariabel "Skatt")]}}
-         {:code "Tid" :selection {:filter "all" :values ["*"]}}])
+(def q {"Region"       "*"
+        "Skatteart"    skattart
+        "ContentsCode" "Skatt"
+        "Tid"          "*"})
 
-(def q {:query qq :response {:format "csv"}})
-
-(defonce response (client/post url {:form-params q :content-type :json :as :byte-array}))
-(test/is (= 200 (:status response)))
-(test/is (= "text/csv; charset=Windows-1252" (get (:headers response) "Content-Type")))
-(def resp (String. (:body response) "Windows-1252"))
-(def parsed (csv/csv-map resp))
-(def data (:data parsed))
-(def columns (:columns parsed))
-(def variable-columns (remove #(.startsWith (name %) "Skatt ") columns))
-(def data-columns (filter #(.startsWith (name %) "Skatt ") columns))
-(test/is (= '(:region :skatteart) variable-columns))
-
-(defn process-row [{region    :region
-                    skatteart :skatteart
-                    :as       row}]
-  (reduce (fn [o v]
-            (conj o {:region    region
-                     :skatteart skatteart
-                     :dato      (string/replace (subs (name v) 6) "M" "-")
-                     :value     (get row v)})) [] data-columns))
-(def all-data (flatten (mapv process-row data)))
+(def all-data (->> (sf/pull-parse-cached "07022" q)
+                   (map #(set/rename-keys % {:Skatt :value :Tid :dato}))
+                   (map #(update % :dato (fn [d] (str/replace d "M" "-"))))))
 
 (def flat-data (filter #(re-matches #"^\d{2} .*?$" (:region %)) all-data))
 
