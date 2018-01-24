@@ -56,7 +56,7 @@
 
 (defn row-with-time->generic-row [table]
   (let [v (:valueTexts (variable table "ContentsCode"))
-        all-tid (:valueTexts (variable 11174 "Tid"))]
+        all-tid (:valueTexts (variable table "Tid"))]
     (->> (for [prefix v tid all-tid]
            [(keyword (str prefix " " tid))
             (keyword prefix)])
@@ -64,7 +64,7 @@
 
 (defn row-with-time->tid [table]
   (let [v (:valueTexts (variable table "ContentsCode"))
-        all-tid (:valueTexts (variable 11174 "Tid"))]
+        all-tid (:valueTexts (variable table "Tid"))]
     (->> (for [prefix v tid all-tid]
            [(keyword (str prefix " " tid))
             tid])
@@ -94,6 +94,8 @@
 
 (defn pull-parse [table query-map]
   (parse-pulled table (pull-map-cached table query-map)))
+
+(def pull-parse-cached (memoize pull-parse))
 
 (def qq {"ContentsCode"  "Salg"
          "Region"        "Hele landet"
