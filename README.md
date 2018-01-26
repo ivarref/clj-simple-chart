@@ -8,7 +8,7 @@
 
 # Norsk sokkel
 
-![Oljeproduksjon](img/ncs-png/liquids-pp.png)
+![Oljeproduksjon](img/ncs-png/liquids-pp-two.png)
 
 ![Gassproduksjon](img/ncs-png/gas-rp.png)
 
