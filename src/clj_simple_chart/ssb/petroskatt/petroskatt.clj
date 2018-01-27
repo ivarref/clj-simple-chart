@@ -23,7 +23,9 @@
         "ContentsCode" "Skatt"
         "Tid"          "*"})
 
-(def all-data (->> (ssb/fetch 7022 q)
+(test/is (= [:region :skatt :skatteart] (:columns (ssb/fetch 7022 q))))
+
+(def all-data (->> (:data (ssb/fetch 7022 q))
                    (map #(set/rename-keys % {:skatt :value}))))
 
 (def flat-data (filter #(re-matches #"^\d{2} .*?$" (:region %)) all-data))
