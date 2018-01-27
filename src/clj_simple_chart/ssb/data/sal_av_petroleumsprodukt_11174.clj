@@ -60,6 +60,27 @@
               (when (= (count indexes) n)
                 items)))))
 
+(defn- cc-inner
+  [rows accum n]
+  {:pre [(vector? accum)]}
+  (cond (empty? rows) (if (= n (count accum)) [accum] [])
+        (= n (count accum)) (lazy-seq (cons accum
+                                            (cc-inner (rest rows)
+                                                      (conj (vec (drop 1 accum)) (first rows))
+                                                      n)))
+        :else (recur (rest rows)
+                     (conj accum (first rows))
+                     n)))
+
+(defn cc [rows n]
+  {:pre [(pos-int? n)
+         (not (map? rows))]}
+  (cc-inner rows [] n))
+
+(test/is (= '([:a] [:b] [:c] [:d] [:e]) (cc [:a :b :c :d :e] 1)))
+(test/is (= '([:a :b] [:b :c] [:c :d] [:d :e]) (cc [:a :b :c :d :e] 2)))
+(test/is (= '([:a :b :c] [:b :c :d] [:c :d :e]) (cc [:a :b :c :d :e] 3)))
+
 (test/is (= '((:a) (:b) (:c) (:d) (:e)) (chunks [:a :b :c :d :e] 1)))
 (test/is (= '((:a :b) (:b :c) (:c :d) (:d :e)) (chunks [:a :b :c :d :e] 2)))
 (test/is (= '((:a :b :c) (:b :c :d) (:c :d :e)) (chunks [:a :b :c :d :e] 3)))
