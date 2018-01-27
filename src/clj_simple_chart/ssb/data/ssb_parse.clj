@@ -41,6 +41,8 @@
                                         (conj o new-item))
                                       :else (throw (ex-info (str "Unexpected column") {:column k}))))
                               [] row))]
-    (->> (:data pulled)
-         (mapcat explode-row)
-         (vec))))
+    {:data    (->> (:data pulled)
+                   (mapcat explode-row)
+                   (vec))
+     :columns (vec (sort (concat regular-cols (vec (distinct (vals (row-with-time->generic-row table)))))))}))
+
