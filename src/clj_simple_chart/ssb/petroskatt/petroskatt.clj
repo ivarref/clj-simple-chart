@@ -10,7 +10,7 @@
             [clj-http.client :as client]
             [clj-simple-chart.csv.csvmap :as csv]
             [clojure.string :as string]
-            [clj-simple-chart.ssb.data.ssb-fetch :as sf]
+            [clj-simple-chart.ssb.data.ssb-api :as ssb]
             [clojure.set :as set]
             [clojure.string :as str]))
 
@@ -23,9 +23,8 @@
         "ContentsCode" "Skatt"
         "Tid"          "*"})
 
-(def all-data (->> (sf/pull-parse-cached "07022" q)
-                   (map #(set/rename-keys % {:Skatt :value :Tid :dato}))
-                   (map #(update % :dato (fn [d] (str/replace d "M" "-"))))))
+(def all-data (->> (ssb/fetch 7022 q)
+                   (map #(set/rename-keys % {:skatt :value}))))
 
 (def flat-data (filter #(re-matches #"^\d{2} .*?$" (:region %)) all-data))
 
@@ -38,7 +37,7 @@
     (reduce (fn [o k]
               (assoc o (keyword k)
                        (reduce + 0 (filter number?
-                                           (map read-string (map :value (filter #(= k (:skatteart %)) x))))))) {} ks)))
+                                           (map :value (filter #(= k (:skatteart %)) x)))))) {} ks)))
 
 (defn contract-row [x]
   (merge {:dato (:dato (first x))}
