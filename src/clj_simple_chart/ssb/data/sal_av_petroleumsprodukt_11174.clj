@@ -36,54 +36,27 @@
        (map #(reduce merge {} %))
        (sort-by column)))
 
-(defn prev-indexes [idx n]
-  {:pre [(not (neg? idx)) (pos-int? n)]}
-  (vec (remove neg? (range (inc (- idx n))
-                           (inc idx)))))
-
-(test/is (= [0] (prev-indexes 0 1)))
-(test/is (= [1] (prev-indexes 1 1)))
-(test/is (= [2] (prev-indexes 2 1)))
-
-(test/is (= [0] (prev-indexes 0 3)))
-(test/is (= [0 1] (prev-indexes 1 3)))
-(test/is (= [0 1 2] (prev-indexes 2 3)))
-(test/is (= [1 2 3] (prev-indexes 3 3)))
-(test/is (= [2 3 4] (prev-indexes 4 3)))
-
-(defn chunks [rows n]
-  {:pre (indexed? rows)}
-  (remove nil?
-          (for [i (range 0 (count rows))]
-            (let [indexes (prev-indexes i n)
-                  items (map #(nth rows %) indexes)]
-              (when (= (count indexes) n)
-                items)))))
-
-(defn- cc-inner
+(defn- chunks-inner
   [rows accum n]
   {:pre [(vector? accum)]}
   (cond (empty? rows) (if (= n (count accum)) [accum] [])
         (= n (count accum)) (lazy-seq (cons accum
-                                            (cc-inner (rest rows)
-                                                      (conj (vec (drop 1 accum)) (first rows))
-                                                      n)))
+                                            (chunks-inner (rest rows)
+                                                          (conj (vec (drop 1 accum)) (first rows))
+                                                          n)))
         :else (recur (rest rows)
                      (conj accum (first rows))
                      n)))
 
-(defn cc [rows n]
-  {:pre [(pos-int? n)
-         (not (map? rows))]}
-  (cc-inner rows [] n))
+(defn chunks [rows n]
+  {:pre [(not (map? rows))
+         (coll? rows)
+         (pos-int? n)]}
+  (chunks-inner rows [] n))
 
-(test/is (= '([:a] [:b] [:c] [:d] [:e]) (cc [:a :b :c :d :e] 1)))
-(test/is (= '([:a :b] [:b :c] [:c :d] [:d :e]) (cc [:a :b :c :d :e] 2)))
-(test/is (= '([:a :b :c] [:b :c :d] [:c :d :e]) (cc [:a :b :c :d :e] 3)))
-
-(test/is (= '((:a) (:b) (:c) (:d) (:e)) (chunks [:a :b :c :d :e] 1)))
-(test/is (= '((:a :b) (:b :c) (:c :d) (:d :e)) (chunks [:a :b :c :d :e] 2)))
-(test/is (= '((:a :b :c) (:b :c :d) (:c :d :e)) (chunks [:a :b :c :d :e] 3)))
+(test/is (= '([:a] [:b] [:c] [:d] [:e]) (chunks [:a :b :c :d :e] 1)))
+(test/is (= '([:a :b] [:b :c] [:c :d] [:d :e]) (chunks [:a :b :c :d :e] 2)))
+(test/is (= '([:a :b :c] [:b :c :d] [:c :d :e]) (chunks [:a :b :c :d :e] 3)))
 
 (def data (->> (:data raw-data)
                (map #(dissoc % :kjøpegruppe))
