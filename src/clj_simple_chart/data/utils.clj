@@ -51,3 +51,17 @@
 
 (defn flat->12-mms [rows]
   (map chunks/chunk->moving-sum (chunks/rolling-chunks rows 12)))
+
+(defn drop-columns [columns data]
+  (mapv (fn [x]
+          (reduce (fn [o [k v]]
+                    (if (some #{k} columns)
+                      o
+                      (assoc o k v))) {} x)) data))
+
+(defn keep-columns [columns data]
+  (mapv (fn [x]
+          (reduce (fn [o [k v]]
+                    (if (not (some #{k} columns))
+                      o
+                      (assoc o k v))) {} x)) data))

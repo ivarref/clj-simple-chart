@@ -22,6 +22,9 @@
                (map #(dissoc % :region))
                (csv/number-or-throw-columns [:salg])
                (column-value->column :petroleumsprodukt)
-               (contract-by-column :dato)))
+               (contract-by-column :dato)
+               (add-sum-column)
+               (flat->12-mms)
+               (relative-to-all-time-high)))
 
-(test/is (= "2010-01" (:dato (first data))))
+(test/is (= "2010-12" (:dato (first data))))
