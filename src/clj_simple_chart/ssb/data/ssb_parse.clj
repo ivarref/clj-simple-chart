@@ -43,6 +43,7 @@
                               [] row))]
     {:data    (->> (:data pulled)
                    (mapcat explode-row)
+                   (sort-by :dato)
                    (vec))
      :columns (vec (sort (concat regular-cols (vec (distinct (vals (row-with-time->generic-row table)))))))}))
 
