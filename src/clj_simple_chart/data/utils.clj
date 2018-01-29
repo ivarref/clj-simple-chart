@@ -65,3 +65,15 @@
                     (if (not (some #{k} columns))
                       o
                       (assoc o k v))) {} x)) data))
+
+(defn yoy-change [rows]
+  (map-indexed (fn [idx x]
+                 (reduce (fn [o [k v]]
+                           (cond (number? v) (assoc o k (- v (get (nth rows idx) k)))
+                                 :else (assoc o k v)))
+                         {} x))
+               (rest rows)))
+
+(test/is (= (yoy-change [{:year "2000" :v 10}
+                         {:year "2001" :v 15}])
+            [{:year "2001" :v 5}]))
