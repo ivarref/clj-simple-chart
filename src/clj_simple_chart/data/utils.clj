@@ -1,5 +1,6 @@
 (ns clj-simple-chart.data.utils
   (:require [clojure.string :as str]
+            [clj-simple-chart.data.chunks :as chunks]
             [clojure.test :as test]))
 
 (defn- column-value->column-inner [column row]
@@ -27,24 +28,26 @@
        (map #(reduce merge {} %))
        (sort-by column)))
 
-(defn- rolling-chunks-inner
-  [rows acc n]
-  {:pre [(vector? acc)]}
-  (cond (empty? rows) (if (= n (count acc)) [acc] [])
-        (= n (count acc)) (lazy-seq (cons acc
-                                            (rolling-chunks-inner (rest rows)
-                                                                  (conj (vec (drop 1 acc)) (first rows))
-                                                                  n)))
-        :else (recur (rest rows)
-                     (conj acc (first rows))
-                     n)))
+(defn add-sum-column [rows]
+  (map #(assoc % :sum (reduce + 0 (filter number? (vals %)))) rows))
 
-(defn rolling-chunks [rows n]
-  {:pre [(not (map? rows))
-         (coll? rows)
-         (pos-int? n)]}
-  (rolling-chunks-inner rows [] n))
+(defn relative-to-all-time-high [rows]
+  (let [max-map (into {} (map (fn [[k v]]
+                                (cond (number? v)
+                                      [k (apply max (map k rows))]
+                                      :else [k v]))
+                              (first rows)))]
+    (map #(reduce (fn [o [k v]]
+                    (cond (number? v) (assoc o k (double (* 100 (/ v (get max-map k)))))
+                          :else (assoc o k v)))
+                  {} %)
+         rows)))
 
-(test/is (= '([:a] [:b] [:c] [:d] [:e]) (rolling-chunks [:a :b :c :d :e] 1)))
-(test/is (= '([:a :b] [:b :c] [:c :d] [:d :e]) (rolling-chunks [:a :b :c :d :e] 2)))
-(test/is (= '([:a :b :c] [:b :c :d] [:c :d :e]) (rolling-chunks [:a :b :c :d :e] 3)))
+(test/is (= (relative-to-all-time-high [{:v 100} {:v 200}])
+            [{:v 50.0} {:v 100.0}]))
+
+(defn flat->12-mma [rows]
+  (map chunks/chunk->moving-average (chunks/rolling-chunks rows 12)))
+
+(defn flat->12-mms [rows]
+  (map chunks/chunk->moving-sum (chunks/rolling-chunks rows 12)))
