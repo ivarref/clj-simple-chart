@@ -40,9 +40,17 @@
                                                          (assoc :dato (get tid-map k)))]
                                         (conj o new-item))
                                       :else (throw (ex-info (str "Unexpected column") {:column k}))))
-                              [] row))]
+                              [] row))
+        symbol-dot-to-nil (fn [row]
+                            (reduce (fn [o [k v]]
+                                      (if (or (= v (symbol ".")) (= v (symbol "..")))
+                                        (assoc o k nil)
+                                        (assoc o k v)))
+                                    {}
+                                    row))]
     {:data    (->> (:data pulled)
                    (mapcat explode-row)
+                   (map symbol-dot-to-nil)
                    (sort-by :dato)
                    (vec))
      :columns (vec (sort (concat regular-cols (vec (distinct (vals (row-with-time->generic-row table)))))))}))

@@ -1,10 +1,11 @@
 (ns clj-simple-chart.ssb.data.ssb-pull
   (:require [clj-http.client :as client]
             [clj-simple-chart.ssb.data.ssb-core :as ssb]
-            [clj-simple-chart.csv.csvmap :as csv]))
+            [clj-simple-chart.csv.csvmap :as csv]
+            [clojure.string :as str]))
 
 (defn- filter-values [table code valueTexts]
-  (assert (some #{code} (ssb/codes table)) (str "Code must be one of: " (vec (ssb/codes table)) ", was: \"" code "\""))
+  (assert (some #{code} (ssb/codes table)) (str "Code must be one of:\n" (str/join "\n" (sort (ssb/codes table))) "\nwas: \"" code "\""))
   (cond (= "*" (first valueTexts))
         {:code code :selection {:filter "all" :values ["*"]}}
         :else {:code code :selection {:filter "item" :values (mapv (partial ssb/valueText->value table code) valueTexts)}}))
@@ -12,9 +13,9 @@
 (defn- map->query-vector [table m]
   {:pre [(map? m)]}
   (let [mm (reduce (fn [o [k v]]
-                     (if (string? v)
-                       (assoc o k [v])
-                       (assoc o k v)))
+                     (cond (string? v) (assoc o k [v])
+                           (keyword? v) (assoc o k [(name v)])
+                           :else (assoc o k v)))
                    {}
                    m)]
     (mapv (fn [[k v]] (filter-values table k v)) mm)))

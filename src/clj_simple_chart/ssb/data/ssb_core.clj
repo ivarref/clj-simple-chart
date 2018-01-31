@@ -1,7 +1,8 @@
 (ns clj-simple-chart.ssb.data.ssb-core
   (:require [clj-http.client :as client]
             [clojure.set :as set]
-            [clj-simple-chart.csv.csvmap :as csv]))
+            [clj-simple-chart.csv.csvmap :as csv]
+            [clojure.string :as str]))
 
 (def get-memo (memoize client/get))
 
@@ -25,5 +26,5 @@
   {:pre [(some #{code} (codes table))]}
   (let [v (variable table code)
         m (zipmap (:valueTexts v) (:values v))]
-    (assert (some #{valueText} (keys m)) (str "Must be one of: " (vec (sort (keys m))) ", was: \"" valueText "\""))
+    (assert (some #{valueText} (keys m)) (str "Must be one of: \n" (str/join "\n" (vec (sort (keys m)))) "\nwas: \"" valueText "\""))
     (get m valueText)))

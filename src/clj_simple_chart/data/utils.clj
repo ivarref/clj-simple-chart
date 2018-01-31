@@ -77,3 +77,18 @@
 (test/is (= (yoy-change [{:year "2000" :v 10}
                          {:year "2001" :v 15}])
             [{:year "2001" :v 5}]))
+
+(defn keep-nil [row]
+  (reduce (fn [o [k v]]
+            (or o (nil? k) (nil? v)))
+          false
+          row))
+
+(test/is (true? (keep-nil {:v 123 :a nil :b 999})))
+(test/is (false? (keep-nil {:v 123 :a 333 :b 999})))
+
+(defn keep-nils [rows]
+  (filter keep-nil rows))
+
+(defn remove-nils [rows]
+  (remove keep-nil rows))
