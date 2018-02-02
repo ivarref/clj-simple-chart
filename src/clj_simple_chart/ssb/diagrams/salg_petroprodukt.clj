@@ -33,7 +33,8 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Sal av petroleumsprodukt" :font "Roboto Bold" :font-size 30}]))
+              [{:text "Sal av petroleumsprodukt" :font "Roboto Bold" :font-size 30}
+               {:text "Millionar liter" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header)))))
