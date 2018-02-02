@@ -181,7 +181,7 @@
         (fn? h)
         [(assoc item :h (h item))]
 
-        (and (vector? h) (every? vector? h))
+        (and (vector? h) (every? vector? h)) ; so h is like [[:property :fill]]
         (mapv #(assoc item :h ((first %) item)
                            :fill (second %)
                            :c (first %)) h)

@@ -23,8 +23,6 @@
                (csv/number-or-throw-columns [:salg])
                (column-value->column :petroleumsprodukt)
                (contract-by-column :dato)
-               (add-sum-column)
-               (flat->12-mms)
-               (relative-to-all-time-high)))
+               (flat->12-mms)))
 
 (test/is (= "2010-12" (:dato (first data))))
