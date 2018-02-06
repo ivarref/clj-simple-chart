@@ -23,7 +23,7 @@
         "ContentsCode" "Skatt"
         "Tid"          "*"})
 
-(test/is (= [:ContentsCode :Region :Skatteart :dato] (vec (sort (keys (first (ssb/fetch 7022 q)))))))
+(test/is (= [:ContentsCode :ContentsCodeCategory :Region :Skatteart :Tid] (vec (sort (keys (first (ssb/fetch 7022 q)))))))
 
 (def all-data (->> (ssb/fetch 7022 q)
                    (map #(set/rename-keys % {:ContentsCode :value}))))
@@ -31,7 +31,7 @@
 (def flat-data (filter #(re-matches #"^\d{2} .*?$" (:Region %)) all-data))
 
 ;;; Start summed data
-(def grouped (vals (group-by :dato flat-data)))
+(def grouped (vals (group-by :Tid flat-data)))
 
 (defn sum-over-region [x]
   (let [g (group-by :Skatteart x)
@@ -42,24 +42,24 @@
                                            (map :value (filter #(= k (:Skatteart %)) x)))))) {} ks)))
 
 (defn contract-row [x]
-  (merge {:dato (:dato (first x))}
+  (merge {:Tid (:Tid (first x))}
          (sum-over-region x)))
 
 (def output-rows-numeric (->> (mapv contract-row grouped)
-                              (sort-by :dato)))
+                              (sort-by :Tid)))
 
 (defn rows-round-str [rows]
   (mapv (fn [row]
           (reduce (fn [o k] (update o k #(format "%.1f" %))) row
                   (mapv keyword skattart))) rows))
 
-(csv/write-csv "data/7022/7022-summed.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-summed.csv" {:columns (vec (flatten [:Tid (mapv keyword skattart)]))
                                             :data    (rows-round-str output-rows-numeric)})
 
 ;;; Start de-aggregated summed data
 (defn deagg-row [all-data idx x]
   (cond (= idx 0) nil
-        (.endsWith (:dato x) "-01") x
+        (.endsWith (:Tid x) "-01") x
         :else (merge x
                      (reduce (fn [o p]
                                (assoc o p (- (get x p)
@@ -70,7 +70,7 @@
                      (map-indexed (fn [idx x] (deagg-row output-rows-numeric idx x)))
                      (remove nil?)))
 
-(csv/write-csv "data/7022/7022-deagg-summed.csv" {:columns (vec (flatten [:dato (mapv keyword (take 2 skattart))]))
+(csv/write-csv "data/7022/7022-deagg-summed.csv" {:columns (vec (flatten [:Tid (mapv keyword (take 2 skattart))]))
                                                   :data    (rows-round-str deagg-rows)})
 
 ;;; Start 12-mma de-agg summed data
@@ -86,7 +86,7 @@
                      (mapv (partial twelve-mma-contract-row (mapv keyword skattart)))
                      (map #(dissoc % :prev-rows))))
 
-(csv/write-csv "data/7022/7022-deagg-summed-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-deagg-summed-12-mms.csv" {:columns (vec (flatten [:Tid (mapv keyword skattart)]))
                                                          :data    (rows-round-str twelve-mma)})
 
 (def twelve-mma-mrd-monthly (->> deagg-rows
@@ -97,7 +97,7 @@
                                                            (assoc o k (/ (get o k) (* 12 1000)))) row (map keyword skattart))))
                                  (map #(dissoc % :prev-rows))))
 
-(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mma.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mma.csv" {:columns (vec (flatten [:Tid (mapv keyword skattart)]))
                                                              :data    (rows-round-str twelve-mma-mrd-monthly)})
 
 (def twelve-mms-mrd (->> deagg-rows
@@ -113,30 +113,30 @@
                                      (assoc row (keyword "Sum innbetalt petroleumsskatt")
                                                 (format "%.1f" (reduce (fn [o k] (+ o (get row (keyword k)))) 0 (take 2 skattart))))))))
 
-(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms-sum.csv" {:columns (vec (flatten [:dato (keyword "Sum innbetalt petroleumsskatt")]))
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms-sum.csv" {:columns (vec (flatten [:Tid (keyword "Sum innbetalt petroleumsskatt")]))
                                                                  :data    twelve-mms-sum-mrd})
 
 
-(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-12-mms.csv" {:columns (vec (flatten [:Tid (mapv keyword skattart)]))
                                                              :data    (rows-round-str twelve-mms-mrd)})
 
-(def twelve-mma-mrd-yearly-ytd (filter #(or (= (:dato %) (:dato (last twelve-mms-mrd))) (.endsWith (:dato %) "-12")) twelve-mms-mrd))
+(def twelve-mma-mrd-yearly-ytd (filter #(or (= (:Tid %) (:Tid (last twelve-mms-mrd))) (.endsWith (:Tid %) "-12")) twelve-mms-mrd))
 
-(csv/write-csv "data/7022/7022-deagg-summed-mrd-yearly-ytd.csv" {:columns (vec (flatten [:dato (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-deagg-summed-mrd-yearly-ytd.csv" {:columns (vec (flatten [:Tid (mapv keyword skattart)]))
                                                                  :data    (rows-round-str twelve-mma-mrd-yearly-ytd)})
 
 
 ;;; Start grouped by region
-(def grouped-by-region (vals (group-by (fn [x] (str (:Region x) (:dato x))) flat-data)))
+(def grouped-by-region (vals (group-by (fn [x] (str (:Region x) (:Tid x))) flat-data)))
 
 (defn contract-row-region [x]
-  (merge {:dato   (:dato (first x))
+  (merge {:Tid   (:Tid (first x))
           :Region (:Region (first x))}
          (zipmap (map keyword (map :Skatteart x)) (map :value x))))
 
 (def output-rows-by-region (->> (mapv contract-row-region grouped-by-region)
                                 (sort-by :Region)
-                                (sort-by :dato)))
+                                (sort-by :Tid)))
 
-(csv/write-csv "data/7022/7022-by-region.csv" {:columns (vec (flatten [:dato :Region (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-by-region.csv" {:columns (vec (flatten [:Tid :Region (mapv keyword skattart)]))
                                                :data    output-rows-by-region})

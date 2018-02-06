@@ -39,15 +39,15 @@
     (format "%04d-%02d" (.getYear six-m-future) (.getMonthValue six-m-future))))
 
 (def data (->> petroskatt/twelve-mms-mrd
-               (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
+               (mapv #(assoc % :year (read-string (subs (:Tid %) 0 4))))
                (mapv #(assoc % :sum (+ (get % ordinaer) (get % saerskatt))))
-               (mapv #(assoc % :oilprice (get oil-date-to-nok (six-months-ago (:dato %)) ::none)))))
+               (mapv #(assoc % :oilprice (get oil-date-to-nok (six-months-ago (:Tid %)) ::none)))))
 
 (test/is (= 0 (count (filter #(= ::none (:oilprice %)) data))))
 
-(def x-domain (vec (sort (distinct (flatten [(map :dato data)
+(def x-domain (vec (sort (distinct (flatten [(map :Tid data)
                                              #_(->> data
-                                                    (mapv :dato)
+                                                    (mapv :Tid)
                                                     (mapv six-months-future))])))))
 
 (def svg-width 900)
@@ -79,7 +79,7 @@
 (def last-data (last data))
 
 (def siste-verdi-str
-  (str "Per " (date-readable (:dato last-data)) ": "
+  (str "Per " (date-readable (:Tid last-data)) ": "
        (string/replace (format "%.1f" (:sum last-data)) "." ",")
        " mrd. NOK"))
 
@@ -133,7 +133,7 @@
                 :text-anchor        "end" :font-size 14}))
 
 (def x-ticks (filter #(.endsWith % "-01") x-domain))
-(def end-of-year-data (filter #(.endsWith (:dato %) "-12") data))
+(def end-of-year-data (filter #(.endsWith (:Tid %) "-12") data))
 
 (def xx {:type          :ordinal
          :orientation   :bottom
@@ -177,10 +177,10 @@
 (def bars (rect/scaled-rect (:x c) (:y c)))
 
 (defn make-rect [opts]
-  [{:p (:dato opts) :c ordinaer :h (get opts ordinaer) :fill ordinaer-fill}
-   {:p (:dato opts) :c saerskatt :h (get opts saerskatt) :fill saerskatt-fill}])
+  [{:p (:Tid opts) :c ordinaer :h (get opts ordinaer) :fill ordinaer-fill}
+   {:p (:Tid opts) :c saerskatt :h (get opts saerskatt) :fill saerskatt-fill}])
 
-(defn make-txt [{dato :dato year :year summ :sum}]
+(defn make-txt [{dato :Tid year :year summ :sum}]
   [:g {:transform (translate (xfn dato) (yfn summ))}
    [:circle {:r 2}]
    [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
