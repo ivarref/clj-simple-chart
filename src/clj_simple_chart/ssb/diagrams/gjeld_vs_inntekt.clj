@@ -35,7 +35,7 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Utvikling i gjeld og inntekt" :font "Roboto Bold" :font-size 30}
-               {:text "1990 = 100" :font "Roboto Bold" :font-size 16}
+               {:text "1999 = 100" :font "Roboto Bold" :font-size 16}
                {:text "Prosent" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
