@@ -44,6 +44,17 @@
                    path)]
      (vec (cons :g svg-dots))]))
 
+(defn- multi-line-inner
+  [{:keys [x y p h path dot dot-style] :as config} coll]
+  (cond (vector? h)
+        [:g (for [[key color] h]
+                 (line-inner (-> config
+                                 (dissoc :h)
+                                 (update :path (fn [p] (merge p {:stroke color}))))
+                             (->> coll
+                                  (map #(assoc % :h (get % key))))))]
+        :else (line-inner config coll)))
+
 (defmulti line (fn [{:keys [x y]} config data] [(:type x) (:type y)]))
-(defmethod line [:ordinal :linear] [c config data] (line-inner (merge c config) data))
-(defmethod line [:ordinal-linear :linear] [c config data] (line-inner (merge c config) data))
+(defmethod line [:ordinal :linear] [c config data] (multi-line-inner (merge c config) data))
+(defmethod line [:ordinal-linear :linear] [c config data] (multi-line-inner (merge c config) data))
