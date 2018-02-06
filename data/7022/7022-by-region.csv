@@ -1,4 +1,4 @@
-dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av petroleum,Skatteinngang i alt
+dato,Region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av petroleum,Skatteinngang i alt
 2008-08,01 Østfold,0.0,0.0,15022.4
 2008-08,02 Akershus,0.0,0.0,45006.6
 2008-08,03 Oslo,0.0,0.0,72663.9
@@ -18,7 +18,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-08,18 Nordland,0.0,0.0,10796.2
 2008-08,19 Troms - Romsa,0.0,0.0,7138.0
 2008-08,20 Finnmark - Finnmárku,0.0,0.0,2479.2
-2008-08,21 Svalbard,..,..,170.0
+2008-08,21 Svalbard,,,170.0
 2008-08,23 Kontinentalsokkelen,53958.1,90207.7,146366.2
 2008-08,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2008-08,50 Trøndelag,0.0,0.0,0.0
@@ -41,7 +41,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-09,18 Nordland,0.0,0.0,13341.7
 2008-09,19 Troms - Romsa,0.0,0.0,8864.8
 2008-09,20 Finnmark - Finnmárku,0.0,0.0,3067.0
-2008-09,21 Svalbard,..,..,174.1
+2008-09,21 Svalbard,,,174.1
 2008-09,23 Kontinentalsokkelen,53959.6,90210.3,146876.6
 2008-09,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2008-09,50 Trøndelag,0.0,0.0,0.0
@@ -64,7 +64,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-10,18 Nordland,0.0,0.0,13132.1
 2008-10,19 Troms - Romsa,0.0,0.0,8646.9
 2008-10,20 Finnmark - Finnmárku,0.0,0.0,3065.4
-2008-10,21 Svalbard,..,..,174.4
+2008-10,21 Svalbard,,,174.4
 2008-10,23 Kontinentalsokkelen,73026.6,122635.1,198427.6
 2008-10,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2008-10,50 Trøndelag,0.0,0.0,0.0
@@ -87,7 +87,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-11,18 Nordland,0.0,0.0,16434.4
 2008-11,19 Troms - Romsa,0.0,0.0,10763.2
 2008-11,20 Finnmark - Finnmárku,0.0,0.0,3788.0
-2008-11,21 Svalbard,..,..,180.0
+2008-11,21 Svalbard,,,180.0
 2008-11,23 Kontinentalsokkelen,72999.5,122588.9,198847.4
 2008-11,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2008-11,50 Trøndelag,0.0,0.0,0.0
@@ -110,7 +110,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2008-12,18 Nordland,0.0,0.0,16744.8
 2008-12,19 Troms - Romsa,0.0,0.0,10927.6
 2008-12,20 Finnmark - Finnmárku,0.0,0.0,3857.9
-2008-12,21 Svalbard,..,..,188.7
+2008-12,21 Svalbard,,,188.7
 2008-12,23 Kontinentalsokkelen,88715.1,150693.1,242781.9
 2008-12,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2008-12,50 Trøndelag,0.0,0.0,0.0
@@ -133,7 +133,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-01,18 Nordland,0.0,0.0,2105.3
 2009-01,19 Troms - Romsa,0.0,0.0,1410.6
 2009-01,20 Finnmark - Finnmárku,0.0,0.0,525.9
-2009-01,21 Svalbard,..,..,21.2
+2009-01,21 Svalbard,,,21.2
 2009-01,23 Kontinentalsokkelen,5.9,10.0,498.6
 2009-01,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-01,50 Trøndelag,0.0,0.0,0.0
@@ -156,7 +156,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-02,18 Nordland,0.0,0.0,3033.0
 2009-02,19 Troms - Romsa,0.0,0.0,1844.4
 2009-02,20 Finnmark - Finnmárku,0.0,0.0,677.4
-2009-02,21 Svalbard,..,..,86.5
+2009-02,21 Svalbard,,,86.5
 2009-02,23 Kontinentalsokkelen,13021.4,22140.6,35937.7
 2009-02,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-02,50 Trøndelag,0.0,0.0,0.0
@@ -179,7 +179,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-03,18 Nordland,0.0,0.0,5408.0
 2009-03,19 Troms - Romsa,0.0,0.0,3634.2
 2009-03,20 Finnmark - Finnmárku,0.0,0.0,1263.1
-2009-03,21 Svalbard,..,..,89.4
+2009-03,21 Svalbard,,,89.4
 2009-03,23 Kontinentalsokkelen,13025.7,22174.8,36405.8
 2009-03,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-03,50 Trøndelag,0.0,0.0,0.0
@@ -202,7 +202,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-04,18 Nordland,0.0,0.0,6471.5
 2009-04,19 Troms - Romsa,0.0,0.0,4077.5
 2009-04,20 Finnmark - Finnmárku,0.0,0.0,1465.5
-2009-04,21 Svalbard,..,..,106.3
+2009-04,21 Svalbard,,,106.3
 2009-04,23 Kontinentalsokkelen,25950.5,44153.6,71541.4
 2009-04,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-04,50 Trøndelag,0.0,0.0,0.0
@@ -225,7 +225,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-05,18 Nordland,0.0,0.0,9393.6
 2009-05,19 Troms - Romsa,0.0,0.0,5985.5
 2009-05,20 Finnmark - Finnmárku,0.0,0.0,2122.1
-2009-05,21 Svalbard,..,..,107.8
+2009-05,21 Svalbard,,,107.8
 2009-05,23 Kontinentalsokkelen,25866.0,44070.5,71898.3
 2009-05,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-05,50 Trøndelag,0.0,0.0,0.0
@@ -248,7 +248,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-06,18 Nordland,0.0,0.0,9478.3
 2009-06,19 Troms - Romsa,0.0,0.0,6054.7
 2009-06,20 Finnmark - Finnmárku,0.0,0.0,2137.9
-2009-06,21 Svalbard,..,..,108.3
+2009-06,21 Svalbard,,,108.3
 2009-06,23 Kontinentalsokkelen,37013.6,63187.9,102223.5
 2009-06,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-06,50 Trøndelag,0.0,0.0,0.0
@@ -271,7 +271,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-07,18 Nordland,0.0,0.0,11466.5
 2009-07,19 Troms - Romsa,0.0,0.0,7447.5
 2009-07,20 Finnmark - Finnmárku,0.0,0.0,2601.8
-2009-07,21 Svalbard,..,..,166.0
+2009-07,21 Svalbard,,,166.0
 2009-07,23 Kontinentalsokkelen,35753.7,61344.6,99591.4
 2009-07,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-07,50 Trøndelag,0.0,0.0,0.0
@@ -294,7 +294,7 @@ dato,region,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av
 2009-08,18 Nordland,0.0,0.0,11565.3
 2009-08,19 Troms - Romsa,0.0,0.0,7511.8
 2009-08,20 Finnmark - Finnmárku,0.0,0.0,2632.5
-2009-08,21 Svalbard,..,..,170.1
+2009-08,21 Svalbard,,,170.1
 2009-08,23 Kontinentalsokkelen,45715.3,77366.9,125666.2
 2009-08,24 Kildeskatt på pensjon,0.0,0.0,0.0
 2009-08,50 Trøndelag,0.0,0.0,0.0
