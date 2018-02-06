@@ -6,10 +6,9 @@
 (defn- row-with-time->generic-row [table]
   (let [v (:valueTexts (ssb/variable table "ContentsCode"))
         all-tid (:valueTexts (ssb/variable table "Tid"))]
-    (->> (for [prefix v tid all-tid]
-           [(keyword (str prefix " " tid))
-            (keyword (str/lower-case prefix))])
-         (into {}))))
+    (into {} (for [prefix v tid all-tid]
+               [(keyword (str prefix " " tid))
+                :ContentsCode])))) ; TODO handle case of multiple ContentsCodes...
 
 (defn- tid->dato [tid]
   (cond (str/includes? tid "M") (str/replace tid "M" "-")
@@ -25,6 +24,11 @@
 
 (defn- difference [a b]
   (set/difference (into #{} a) (into #{} b)))
+
+(defn text->code-map [table]
+  (let [vars (:variables (ssb/get-meta table))]
+    (zipmap (map (comp keyword :text) vars)
+            (map (comp keyword :code) vars))))
 
 (defn pulled->parsed [table pulled]
   (let [explode-cols-map (row-with-time->generic-row table)
@@ -48,10 +52,9 @@
                                         (assoc o k v)))
                                     {}
                                     row))]
-    {:data    (->> (:data pulled)
-                   (mapcat explode-row)
-                   (map symbol-dot-to-nil)
-                   (sort-by :dato)
-                   (vec))
-     :columns (vec (sort (concat regular-cols (vec (distinct (vals (row-with-time->generic-row table)))))))}))
-
+    (->> (:data pulled)
+         (mapcat explode-row)
+         (map symbol-dot-to-nil)
+         (map #(set/rename-keys % (text->code-map table)))
+         (sort-by :dato)
+         (vec))))

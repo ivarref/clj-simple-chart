@@ -1,5 +1,6 @@
 (ns clj-simple-chart.ssb.data.ssb-api
-  (:require [clj-simple-chart.ssb.data.ssb-pull :as pull]
+  (:require [clj-simple-chart.ssb.data.ssb-core :as core]
+            [clj-simple-chart.ssb.data.ssb-pull :as pull]
             [clj-simple-chart.ssb.data.ssb-parse :as parse]))
 
 (defn- fetch-inner [table qq]

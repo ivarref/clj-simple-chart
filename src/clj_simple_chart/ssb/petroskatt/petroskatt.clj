@@ -23,23 +23,23 @@
         "ContentsCode" "Skatt"
         "Tid"          "*"})
 
-(test/is (= [:region :skatt :skatteart] (:columns (ssb/fetch 7022 q))))
+(test/is (= [:ContentsCode :Region :Skatteart :dato] (vec (sort (keys (first (ssb/fetch 7022 q)))))))
 
-(def all-data (->> (:data (ssb/fetch 7022 q))
-                   (map #(set/rename-keys % {:skatt :value}))))
+(def all-data (->> (ssb/fetch 7022 q)
+                   (map #(set/rename-keys % {:ContentsCode :value}))))
 
-(def flat-data (filter #(re-matches #"^\d{2} .*?$" (:region %)) all-data))
+(def flat-data (filter #(re-matches #"^\d{2} .*?$" (:Region %)) all-data))
 
 ;;; Start summed data
 (def grouped (vals (group-by :dato flat-data)))
 
 (defn sum-over-region [x]
-  (let [g (group-by :skatteart x)
+  (let [g (group-by :Skatteart x)
         ks (keys g)]
     (reduce (fn [o k]
               (assoc o (keyword k)
                        (reduce + 0 (filter number?
-                                           (map :value (filter #(= k (:skatteart %)) x)))))) {} ks)))
+                                           (map :value (filter #(= k (:Skatteart %)) x)))))) {} ks)))
 
 (defn contract-row [x]
   (merge {:dato (:dato (first x))}
@@ -127,16 +127,16 @@
 
 
 ;;; Start grouped by region
-(def grouped-by-region (vals (group-by (fn [x] (str (:region x) (:dato x))) flat-data)))
+(def grouped-by-region (vals (group-by (fn [x] (str (:Region x) (:dato x))) flat-data)))
 
 (defn contract-row-region [x]
   (merge {:dato   (:dato (first x))
-          :region (:region (first x))}
-         (zipmap (map keyword (map :skatteart x)) (map :value x))))
+          :Region (:Region (first x))}
+         (zipmap (map keyword (map :Skatteart x)) (map :value x))))
 
 (def output-rows-by-region (->> (mapv contract-row-region grouped-by-region)
-                                (sort-by :region)
+                                (sort-by :Region)
                                 (sort-by :dato)))
 
-(csv/write-csv "data/7022/7022-by-region.csv" {:columns (vec (flatten [:dato :region (mapv keyword skattart)]))
+(csv/write-csv "data/7022/7022-by-region.csv" {:columns (vec (flatten [:dato :Region (mapv keyword skattart)]))
                                                :data    output-rows-by-region})
