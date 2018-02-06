@@ -11,9 +11,9 @@
         "ContentsCode"  "Personbiler"
         "Tid"           "*"})
 
-(def data (->> (ssb/fetch 7849 q)
-               (:data)
-               (drop-columns [:region (keyword "type kjøring")])
-               (column-value->column :drivstofftype)
-               (contract-by-column :dato)
-               (yoy-change)))
+(def data (->> (ssb/fetch 7849 q)))
+               ;(:data)
+               ;(drop-columns [:region (keyword "type kjøring")])
+               ;(column-value->column :drivstofftype)
+               ;(contract-by-column :dato)
+               ;(yoy-change)))

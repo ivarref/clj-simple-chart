@@ -8,7 +8,14 @@
         all-tid (:valueTexts (ssb/variable table "Tid"))]
     (into {} (for [prefix v tid all-tid]
                [(keyword (str prefix " " tid))
-                :ContentsCode])))) ; TODO handle case of multiple ContentsCodes...
+                :ContentsCode]))))
+
+(defn- row-with-time->category [table]
+  (let [v (:valueTexts (ssb/variable table "ContentsCode"))
+        all-tid (:valueTexts (ssb/variable table "Tid"))]
+    (into {} (for [prefix v tid all-tid]
+               [(keyword (str prefix " " tid))
+                prefix]))))
 
 (defn- tid->dato [tid]
   (cond (str/includes? tid "M") (str/replace tid "M" "-")
@@ -17,10 +24,9 @@
 (defn- row-with-time->tid [table]
   (let [v (:valueTexts (ssb/variable table "ContentsCode"))
         all-tid (:valueTexts (ssb/variable table "Tid"))]
-    (->> (for [prefix v tid all-tid]
-           [(keyword (str prefix " " tid))
-            (tid->dato tid)])
-         (into {}))))
+    (into {} (for [prefix v tid all-tid]
+               [(keyword (str prefix " " tid))
+                (tid->dato tid)]))))
 
 (defn- difference [a b]
   (set/difference (into #{} a) (into #{} b)))
@@ -33,6 +39,7 @@
 (defn pulled->parsed [table pulled]
   (let [explode-cols-map (row-with-time->generic-row table)
         tid-map (row-with-time->tid table)
+        category-map (row-with-time->category table)
         explode-cols-cols (keys explode-cols-map)
         regular-cols (difference (:columns pulled) explode-cols-cols)
         explode-row (fn [row]
@@ -41,7 +48,8 @@
                                       (some #{k} explode-cols-cols)
                                       (let [new-item (-> (select-keys row regular-cols)
                                                          (assoc (get explode-cols-map k) (read-string v))
-                                                         (assoc :dato (get tid-map k)))]
+                                                         (assoc :Tid (get tid-map k))
+                                                         (assoc :ContentsCodeCategory (get category-map k)))]
                                         (conj o new-item))
                                       :else (throw (ex-info (str "Unexpected column") {:column k}))))
                               [] row))
@@ -56,5 +64,5 @@
          (mapcat explode-row)
          (map symbol-dot-to-nil)
          (map #(set/rename-keys % (text->code-map table)))
-         (sort-by :dato)
+         (sort-by :Tid)
          (vec))))

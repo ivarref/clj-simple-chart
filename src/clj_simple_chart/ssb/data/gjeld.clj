@@ -4,13 +4,11 @@
             [clojure.set :as set]
             [clojure.string :as str]))
 
-(def q {"Valuta" "I alt"
-        "Lantaker2" "Husholdninger mv."
+(def q {"Valuta"       "I alt"
+        "Lantaker2"    "Husholdninger mv."
         "ContentsCode" "Transaksjoner, tolvmånedersvekst (prosent)"
-        "Tid" "*"})
+        "Tid"          "*"})
 
 (def data (->> (ssb/fetch 11599 q)
-               (:data)
-               (map #(set/rename-keys % {(keyword "transaksjoner, tolvmånedersvekst (prosent)") :prosent}))
                (remove-nils)
-               (filter #(str/ends-with? (:dato %) "-12"))))
+               (filter #(str/ends-with? (:Tid %) "-12"))))
