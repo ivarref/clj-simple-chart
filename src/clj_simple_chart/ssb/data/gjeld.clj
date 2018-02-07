@@ -5,23 +5,22 @@
             [clojure.set :as set]
             [clojure.string :as str]))
 
-(def q {"Valuta"       "I alt"
-        "Lantaker2"    "Husholdninger mv."
-        "ContentsCode" "Transaksjoner, tolvmånedersvekst (prosent)"
-        "Tid"          "*"})
+(def q {:Valuta                          "I alt"
+        :Lantaker2                       "Husholdninger mv."
+        [:ContentsCode :as :gjeldsvekst] "Transaksjoner, tolvmånedersvekst (prosent)"
+        [:Tid :as :tid]                  "*"})
 
 (def data (->> (ssb/fetch 11599 q)
                (remove-nils)
-               (keep-columns [:Tid :ContentsCode])
-               (filter #(str/ends-with? (:Tid %) "-12"))
-               (map #(set/rename-keys % {:ContentsCode :gjeldsvekst}))
-               (map #(update % :Tid (fn [x] (subs x 0 4))))
-               (map #(assoc % :lonnsvekst (get lonnsvekst/data (read-string (:Tid %)))))
+               (keep-columns [:tid :gjeldsvekst])
+               (filter #(str/ends-with? (:tid %) "-12"))
+               (map #(update % :tid (fn [x] (subs x 0 4))))
+               (map #(assoc % :lonnsvekst (get lonnsvekst/data (read-string (:tid %)))))
                (remove-nils)))
 
 (def cumulative (reductions (fn [o v]
                               (-> o
-                                  (assoc :Tid (:Tid v))
+                                  (assoc :tid (:tid v))
                                   (update :gjeldsvekst #(* % (+ 1.0 (/ (:gjeldsvekst v) 100))))
                                   (update :lonnsvekst #(* % (+ 1.0 (/ (:lonnsvekst v) 100))))))
-                            {:Tid "1999" :gjeldsvekst 100 :lonnsvekst 100} data))
+                            {:tid "1999" :gjeldsvekst 100 :lonnsvekst 100} data))

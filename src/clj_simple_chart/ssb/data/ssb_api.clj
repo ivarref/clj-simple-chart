@@ -5,12 +5,12 @@
 
 (defn- fetch-inner [table qq]
   (->> (pull/pull table qq)
-       (parse/pulled->parsed table)))
+       (parse/pulled->parsed table qq)))
 
 (def fetch (memoize fetch-inner))
 
-(defn- dev [] (fetch-inner 11174 {"ContentsCode"  "Salg"
-                                  "Region"        "Hele landet"
-                                  "PetroleumProd" ["Autodiesel" "Bilbensin"]
-                                  "Kjopegrupper"  "Alle kjøpegrupper"
-                                  "Tid"           "*"}))
+(defn- dev [] (fetch-inner 11174 {:ContentsCode         "Salg"
+                                  [:Region :as :region] "Hele landet"
+                                  :PetroleumProd        ["Autodiesel" "Bilbensin"]
+                                  :Kjopegrupper         "Alle kjøpegrupper"
+                                  :Tid                  "*"}))

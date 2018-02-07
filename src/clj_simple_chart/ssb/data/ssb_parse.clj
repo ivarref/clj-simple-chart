@@ -36,10 +36,19 @@
     (zipmap (map (comp keyword :text) vars)
             (map (comp keyword :code) vars))))
 
-(defn pulled->parsed [table pulled]
+(defn rename-columns-map [query-map]
+  (reduce (fn [o [k v]]
+            (cond (vector? k)
+                  (assoc o (first k) (last k))
+                  :else o))
+          {}
+          query-map))
+
+(defn pulled->parsed [table query-map pulled]
   (let [explode-cols-map (row-with-time->generic-row table)
         tid-map (row-with-time->tid table)
         category-map (row-with-time->category table)
+        rename-map (rename-columns-map query-map)
         explode-cols-cols (keys explode-cols-map)
         regular-cols (difference (:columns pulled) explode-cols-cols)
         explode-row (fn [row]
@@ -65,4 +74,5 @@
          (map symbol-dot-to-nil)
          (map #(set/rename-keys % (text->code-map table)))
          (sort-by :Tid)
+         (map #(set/rename-keys % rename-map))
          (vec))))

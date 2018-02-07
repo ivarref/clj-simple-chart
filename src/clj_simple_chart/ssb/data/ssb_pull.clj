@@ -13,12 +13,24 @@
 (defn- map->query-vector [table m]
   {:pre [(map? m)]}
   (let [mm (reduce (fn [o [k v]]
-                     (cond (string? v) (assoc o k [v])
-                           (keyword? v) (assoc o k [(name v)])
-                           :else (assoc o k v)))
+                     (let [value (cond (string? v) [v]
+                                       (keyword? v) [(name v)]
+                                       :else v)
+                           key (cond (string? k) k
+                                     (vector? k) (-> k (first) (name))
+                                     (keyword? k) (name k))]
+                       (assoc o key value)))
                    {}
                    m)]
     (mapv (fn [[k v]] (filter-values table k v)) mm)))
+
+(def ^:private q2 {:ContentsCode   "Salg"
+                   "Region"        "Hele landet"
+                   "PetroleumProd" ["Autodiesel" "Bilbensin"]
+                   "Kjopegrupper"  "Alle kjøpegrupper"
+                   "Tid"           "*"})
+
+(defn- dev [] (map->query-vector 11174 q2))
 
 (defn- pull-inner [table query-vector]
   {:pre [(vector? query-vector)]}
