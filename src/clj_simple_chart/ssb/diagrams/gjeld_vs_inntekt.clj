@@ -35,25 +35,36 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Utvikling i gjeld og inntekt" :font "Roboto Bold" :font-size 30}
-               {:text "1999 = 100" :font "Roboto Bold" :font-size 16}
-               {:text "Prosent" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
+               {:rect {:fill red} :text "Husholdningers gjeld" :font "Roboto Bold" :font-size 16 :margin-top 3}
+               {:rect {:fill green} :text "Gjennomsnittlig lønn" :font "Roboto Bold" :font-size 16}
+               {:text "1999 = 100" :font "Roboto Bold" :font-size 15 :margin-top 3}]))
+
+(def footer (opentype/stack
+              {:width available-width :margin-top 6}
+              [{:text "Kjelde: SSB (Tabell 11599 og personleg kommunikasjon)" :font-size 14}
+               {:text "Diagram © Refsdal.Ivar@gmail.com" :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
-                                       (:height (meta header)))))
+                                       (:height (meta header))
+                                       (:height (meta footer)))))
 
 (def c (chart/chart {:width  available-width
                      :height available-height
                      :x      xx
-                     :y      yy}))
+                     :y      yy
+                     :y2     (assoc yy :orientation :left)}))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
     header
+    [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
      (axis/render-axis (:x c))
      (axis/render-axis (:y c))
+     (axis/render-axis (:y2 c))
      (line c {:p :Tid :h [[:gjeldsvekst red] [:lonnsvekst green]]} data)]]])
+
 
 (defn render-self []
   (core/render "tmp.svg" "tmp.png" (diagram)))
