@@ -36,7 +36,7 @@
               {:width available-width}
               [{:text "Utvikling i gjeld og inntekt" :font "Roboto Bold" :font-size 30}
                {:rect {:fill red} :text "Husholdningers gjeld" :font "Roboto Bold" :font-size 16 :margin-top 3}
-               {:rect {:fill green} :text "Gjennomsnittlig lønn" :font "Roboto Bold" :font-size 16}
+               {:rect {:fill green} :text "Gjennomsnittlig lønn" :font "Roboto Bold" :font-size 16 :margin-top 3}
                {:text "1999 = 100" :font "Roboto Bold" :font-size 15 :margin-top 3}]))
 
 (def footer (opentype/stack
@@ -52,7 +52,9 @@
                      :height available-height
                      :x      xx
                      :y      yy
-                     :y2     (assoc yy :orientation :left)}))
+                     :y2     (-> yy
+                                 (dissoc :grid)
+                                 (assoc :orientation :left))}))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
@@ -67,4 +69,4 @@
 
 
 (defn render-self []
-  (core/render "tmp.svg" "tmp.png" (diagram)))
+  (core/render "img/ssb-svg/gjeld-vs-inntekt.svg" "img/ssb-png/gjeld-vs-inntekt.png" (diagram)))
