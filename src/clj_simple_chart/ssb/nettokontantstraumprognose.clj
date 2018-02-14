@@ -1,7 +1,6 @@
 (ns clj-simple-chart.ssb.nettokontantstraumprognose)
 
-(def data {
-           "2000" [47.596 85.120] ; https://www.regjeringen.no/contentassets/d4c7e71774cd4e688a3093d2f5aebc3f/no/pdfa/stp199920000001guldddpdfa.pdf
+(def data {"2000" [47.596 85.120] ; https://www.regjeringen.no/contentassets/d4c7e71774cd4e688a3093d2f5aebc3f/no/pdfa/stp199920000001guldddpdfa.pdf
            "2001" [160.152 188.980] ; https://www.regjeringen.no/contentassets/2bf8764f7e1246e58ad7633b02ea5e6f/no/pdfa/stp200020010001guldddpdfa.pdf
            "2002" [244.852 205.470] ; https://www.statsbudsjettet.no/Upload/Statsbudsjett_2002/dokumenter/pdf/gulbok.pdf
            "2003" [169.587 172.755] ; https://www.statsbudsjettet.no/Upload/Statsbudsjett_2003/dokumenter/pdf/gulbok.pdf
