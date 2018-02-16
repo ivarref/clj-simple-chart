@@ -66,7 +66,7 @@
      (axis/render-axis (:y c))
      (axis/render-axis (:y2 c))
      (line c {:p :tid :h [[:gjeldsvekst red] [:lonnsvekst green]]} data)]]])
-;;;
+;;;asdfasdf
 
 (defn render-self []
   (core/render "img/ssb-svg/gjeld-vs-inntekt.svg" "img/ssb-png/gjeld-vs-inntekt.png" (diagram)))
