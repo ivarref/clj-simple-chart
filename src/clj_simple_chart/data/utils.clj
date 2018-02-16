@@ -92,3 +92,7 @@
 
 (defn remove-nils [rows]
   (remove keep-nil rows))
+
+(defn numbers->avg [numbers]
+  (/ (reduce + 0 numbers)
+     (count numbers)))

@@ -4,9 +4,11 @@
             [clj-simple-chart.ssb.nettokontantstraumprognose :as forecast]
             [clj-http.client :as client]
             [clojure.pprint :refer [pprint]]
+            [clj-simple-chart.data.utils :as utils]
             [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.ssb.kpi :as kpi]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.string :as str]))
 
 (def url "http://data.ssb.no/api/v0/no/table/11013")
 (def qq [{:code "ContentsCode" :selection {:filter "all" :values ["*"]}}
@@ -145,3 +147,13 @@
 (csv/write-csv "./data/11013/11013-mrd-4qms-2017-NOK.csv"
                {:data    (mapv produce-mrd four-quarters-moving-sum-adjusted)
                 :columns actual-columns})
+
+(def trygve (->> (filter #(and (str/ends-with? (:dato %) "K4")
+                               (<= 2000 (:year %))
+                               (<= (:year %) 2015)) four-quarters-moving-sum-adjusted-mrd)
+                 (map #(dissoc % :year))
+                 (utils/keep-columns [:dato (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet")])
+                 (utils/add-sum-column)
+                 (utils/keep-columns [:dato :sum])
+                 (map :sum)
+                 (utils/numbers->avg)))

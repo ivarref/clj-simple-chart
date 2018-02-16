@@ -6,7 +6,8 @@
             [clj-simple-chart.ncs.reserve :as reserve]
             [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
             [clj-simple-chart.ncs.raw-production :as raw-production]
-            [clojure.test :as test]))
+            [clojure.test :as test]
+            [clj-simple-chart.data.utils :as utils]))
 
 (def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/discovery&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=81.191.112.135&CultureCode=en")
 (defonce raw (-> url
@@ -104,6 +105,7 @@
 (def shut-down-field-names (->> parsed
                                 (filter #(= :shut-down (:status %)))
                                 (map :name)
+                                (remove #(= "TROLL BRENT B" %))
                                 (distinct)
                                 (sort)
                                 (vec)))
@@ -118,7 +120,7 @@
        (sort)
        (vec)))
 
-(test/is (= ["MARIA"] missing-field-production))
+(test/is (= (vec (sort ["MARIA" "TROLL BRENT B"])) missing-field-production))
 
 (defn cumulative-original-recoverable-by-status
   [status year kind]
@@ -231,3 +233,17 @@
        (map #(update % :value (fn [v] (double (* 6.29e-3 v)))))
        (sort-by :year)
        (vec)))
+
+(def tr-99 (->> (filter #(= 1999 (:year %)) flat-data-petroleum)
+                (utils/drop-columns [:year])
+                (utils/add-sum-column)
+                (map #(* (:sum %) 6.29e-3))
+                (first)))
+
+(def tr-2016 (->> (filter #(= 2016 (:year %)) flat-data-petroleum)
+                  (utils/drop-columns [:year])
+                  (utils/add-sum-column)
+                  (map #(* (:sum %) 6.29e-3))
+                  (first)))
+
+(def growth-2000->2016 (- tr-2016 tr-99))
