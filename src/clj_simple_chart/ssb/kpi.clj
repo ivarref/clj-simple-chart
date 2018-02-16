@@ -74,8 +74,7 @@
                     (vals)
                     (mapv (fn [x] {:dato (:year-quarter (first x))
                                    :kpi  (/ (reduce + 0 (mapv (comp read-string :kpi) x))
-                                            (count x))
-                                   }))
+                                            (count x))}))
                     (sort-by :dato)
                     (vec)))
 
