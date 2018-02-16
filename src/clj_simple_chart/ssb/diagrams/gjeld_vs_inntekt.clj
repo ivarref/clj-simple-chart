@@ -21,8 +21,8 @@
 
 (def xx {:type          :ordinal-linear
          :orientation   :bottom
-         :tick-values   (map :Tid data)
-         :domain        (map :Tid data)
+         :tick-values   (map :tid data)
+         :domain        (map :tid data)
          :padding-inner 0.1
          :padding-outer 0.1})
 
@@ -65,7 +65,7 @@
      (axis/render-axis (:x c))
      (axis/render-axis (:y c))
      (axis/render-axis (:y2 c))
-     (line c {:p :Tid :h [[:gjeldsvekst red] [:lonnsvekst green]]} data)]]])
+     (line c {:p :tid :h [[:gjeldsvekst red] [:lonnsvekst green]]} data)]]])
 
 
 (defn render-self []
