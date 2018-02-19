@@ -85,6 +85,7 @@
 
 (def header (opentype/stack
               {:margin-top  5
+               :width (- svg-width (* 2 marg))
                :margin-left marg}
               [{:text "Innbetalt petroleumsskatt" :font "Roboto Bold" :font-size 36}
                {:text (str "Milliardar NOK, 12 månadar glidande sum. " siste-verdi-str) :font "Roboto Black" :font-size 16}

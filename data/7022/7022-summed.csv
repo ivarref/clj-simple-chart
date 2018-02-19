@@ -1,4 +1,4 @@
-dato,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av petroleum,Skatteinngang i alt
+Tid,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av petroleum,Skatteinngang i alt
 2008-08,53958.1,90207.7,486603.2
 2008-09,53959.6,90210.3,556528.0
 2008-10,73026.6,122635.1,608359.7
@@ -112,3 +112,4 @@ dato,Ordinær skatt på utvinning av petroleum,Særskatt på utvinning av petrol
 2017-10,20606.7,35789.6,657827.9
 2017-11,18166.0,31695.6,790509.2
 2017-12,23688.1,41361.0,811216.1
+2018-01,-16.5,-26.6,90881.6
