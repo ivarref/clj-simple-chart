@@ -113,8 +113,7 @@
      (axis/render-axis (:y c))
      (bars c {:p :year :h :value :fill colors} data)
      [:g {:transform (translate 10 15)}
-      (opentype/stack {:widht        available-width
-                       :fill         "whitesmoke"
+      (opentype/stack {:fill         "whitesmoke"
                        :fill-opacity 0.6
                        :margin       5}
                       (vec (flatten [{:text "Felt" :font "Roboto Black" :font-size 16}

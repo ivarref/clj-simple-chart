@@ -444,7 +444,7 @@
               :or           {margin       nil margin-left nil margin-right nil margin-top nil margin-bottom nil
                              fill         nil
                              fill-opacity 1}} txts]
-  (assert (number? width) ":width must be number")
+  ;(assert (number? width) ":width must be number")
   (cond margin
         (recur (assoc config :margin nil
                              :margin-left (or margin-left margin)
