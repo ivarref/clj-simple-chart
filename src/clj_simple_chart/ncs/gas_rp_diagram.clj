@@ -159,7 +159,7 @@
                                        "2015-12"]) data))]
      (axis/render-axis (:x c))]
     [:g {:transform (translate 0 (+ 0 (+ (:height (meta header)) (:margin-top c))))}
-     (opentype/stack {}
+     (opentype/stack {:width available-width}
                      (flatten
                        [{:text "R/P-kategori" :font "Roboto Black" :font-size 16}
                         (mapv (fn [k]
