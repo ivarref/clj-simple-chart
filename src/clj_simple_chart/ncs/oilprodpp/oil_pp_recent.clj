@@ -41,9 +41,9 @@
 
                                       "#8c564b"             ; brown
                                       "#ff7f0e"             ; orange
-                                      "#d62728"             ; red
+                                      "#d62728"])))             ; red
                                       ;"#9467bd"                      ; purple
-                                      ])))
+
 
 (def sub-domain buckets)
 
@@ -67,10 +67,10 @@
     (str (nth months (read-string (last parts)))
          " " (first parts))))
 
-(def feltmogning-ex-txt (str "Feltmogning: Prosent produsert av opprinneleg utvinnbart"
+(def feltmogning-ex-txt (str "Feltmogning: Prosent produsert av opprinneleg utvinnbart"))
                              ;(:prfYear (first data)) "–" (:prfYear (last data))
 
-                             ))
+
 
 (def header (opentype/stack
               {:width available-width}
@@ -165,41 +165,41 @@
                        :text        (string/replace (format fmt (get opts :sum)) "." ",")})])))
 
 
-  (defn diagram []
-    [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
-     [:g {:transform (translate marg marg)}
-      header
-      [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
-       (axis/render-axis (:y c))
-       (clj-area/area c flat)
-       #_(act/area-center-text c last-text)
-       [:g (map make-txt (filter #(some #{(:date %)} (mapv (fn [x] (str x "-12")) (range 2000 2017))) data))]
-       (axis/render-axis (:x c))]
-      (let [offset-xy 20
-            infotext (opentype/stack {:fill         "lightgray"
-                                      :fill-opacity 0.3
-                                      :margin       5}
-                                     ;{}
-                                     (flatten
-                                       [{:text "Feltmogningskategori" :font "Roboto Black" :font-size 16}
-                                        (mapv (fn [k]
-                                                {:text      (str (subs k 3) "%")
-                                                 :font-size 16
-                                                 :font      "Roboto Bold"
-                                                 :rect      {:fill (get bucket-to-fill k)
-                                                             :size nil}})
-                                              (sort (keys production/empty-buckets)))
-                                        #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
-        [:g {:transform (translate (- (+ (:margin-left c) (:plot-width c))
-                                      (:width (meta infotext))
-                                      offset-xy)
-                                   (+ offset-xy (+ (:height (meta header)) (:margin-top c))))}
-         infotext
-         ]
-        )
+(defn diagram []
+  [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
+   [:g {:transform (translate marg marg)}
+    header
+    [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
+     (axis/render-axis (:y c))
+     (clj-area/area c flat)
+     #_(act/area-center-text c last-text)
+     [:g (map make-txt (filter #(some #{(:date %)} (mapv (fn [x] (str x "-12")) (range 2000 2018))) data))]
+     (axis/render-axis (:x c))]
+    (let [offset-xy 20
+          infotext (opentype/stack {:fill         "lightgray"
+                                    :fill-opacity 0.3
+                                    :margin       5}
+                                   ;{}
+                                   (flatten
+                                     [{:text "Feltmogningskategori" :font "Roboto Black" :font-size 16}
+                                      (mapv (fn [k]
+                                              {:text      (str (subs k 3) "%")
+                                               :font-size 16
+                                               :font      "Roboto Bold"
+                                               :rect      {:fill (get bucket-to-fill k)
+                                                           :size nil}})
+                                            (sort (keys production/empty-buckets)))
+                                      #_{:text "Siste tall for kategori i kvitt" :font "Roboto Regular" :font-size 14}]))]
+      [:g {:transform (translate (- (+ (:margin-left c) (:plot-width c))
+                                    (:width (meta infotext))
+                                    offset-xy)
+                                 (+ offset-xy (+ (:height (meta header)) (:margin-top c))))}
+       infotext])
 
-      [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
-  (defn render-self []
-    (core/render "./img/ncs-svg/oil-pp-recent.svg" "./img/ncs-png/oil-pp-recent.png" (diagram)))
+
+    [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
+
+(defn render-self []
+  (core/render "./img/ncs-svg/oil-pp-recent.svg" "./img/ncs-png/oil-pp-recent.png" (diagram)))
 

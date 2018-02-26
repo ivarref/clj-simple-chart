@@ -173,7 +173,7 @@
                                        "2005-12"
                                        "2010-12"
                                        "2013-12"
-                                       "2015-12"]) data))]
+                                       "2016-12"]) data))]
      (axis/render-axis (:x c))]
     (let [infotext (opentype/stack #_{:fill         "lightgray"
                                       :fill-opacity 0.3
