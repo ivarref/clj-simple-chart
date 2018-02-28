@@ -133,13 +133,13 @@
                 :dx                 (- svg-width marg)
                 :text-anchor        "end" :font-size 14}))
 
-(def x-ticks (filter #(.endsWith % "-01") x-domain))
+(def x-ticks (filter #(.endsWith % "-12") x-domain))
 (def end-of-year-data (filter #(.endsWith (:Tid %) "-12") data))
 
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   x-ticks
-         :tick-format   (fn [x] (str "Jan " (subs x 0 4)))
+         :tick-format   (fn [x] (str (subs x 0 4)))
          :domain        x-domain
          :sub-domain    [ordinaer saerskatt]
          :padding-inner 0.1
@@ -185,7 +185,7 @@
   [:g {:transform (translate (xfn dato) (yfn summ))}
    [:circle {:r 2}]
    [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
-   (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
+   (opentype/text {:font "Roboto Regular" :dy "-.71em" :text-anchor "middle" :text (str "" year "")})
    (opentype/text {:dy          "-1.71em"
                    :font        "Roboto Bold"
                    :text-anchor "middle"
