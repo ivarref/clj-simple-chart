@@ -48,7 +48,7 @@
 (def field-names (map :fldName data))
 
 (def field-names-all (vec (flatten [(map :fldName data)
-                                    ["SINDRE" "33/9-6 DELTA"]])))
+                                    ["33/9-6 DELTA"]])))
 
 (def banned-fields ["TAMBAR ØST"])
 
@@ -75,7 +75,7 @@
              (map kind)
              (reduce + 0))))
 
-(test/is (not (some #{"SINDRE"} field-names)))
+(test/is (some #{"SINDRE"} field-names))
 (test/is (not (some #{"33/9-6 DELTA"} field-names)))
 
 (test/is (= 8.6 (get-reserve "JOHAN SVERDRUP" :fldRecoverableGas)))
