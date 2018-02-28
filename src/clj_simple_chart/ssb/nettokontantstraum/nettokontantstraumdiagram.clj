@@ -192,7 +192,7 @@
   [:g {:transform (translate (xfn dato) (yfn (get opts netto-sum)))}
    [:circle {:r 2}]
    [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
-   (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "(" year ")")})
+   (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "" year "")})
    (opentype/text {:dy          "-1.71em"
                    :font        "Roboto Bold"
                    :text-anchor "middle"
