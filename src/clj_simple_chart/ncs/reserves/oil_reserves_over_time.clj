@@ -79,7 +79,7 @@
          :orientation        :right
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain             [0 26]})
+         :domain             [0 28]})
 
 (def header (opentype/stack
               {:width available-width}
