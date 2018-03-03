@@ -120,7 +120,7 @@
        (sort)
        (vec)))
 
-(test/is (= (vec (sort ["MARIA" "TROLL BRENT B"])) missing-field-production))
+(test/is (= (vec (sort ["MARIA"])) missing-field-production))
 
 (defn cumulative-original-recoverable-by-status
   [status year kind]
