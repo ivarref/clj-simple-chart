@@ -20,6 +20,8 @@
                  [cheshire "5.7.1"]
                  [org.eclipse.jetty/jetty-util "9.4.5.v20170502"]
                  [clj-time "0.13.0"]
+                 [org.apache.xmlgraphics/batik-rasterizer "1.9.1"]
+                 [org.apache.xmlgraphics/batik-codec "1.9.1"]
                  [com.vdurmont/emoji-java "3.2.0"]
                  [hickory/hickory "0.7.1"]]
   :aot [clj-simple-chart.jfx]
