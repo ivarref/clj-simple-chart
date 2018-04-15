@@ -7,12 +7,15 @@
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.ssb.nettokontantstraum.nettokontantstraum :as nettokontantstraum]
             [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
+            [clj-simple-chart.ssb.oljekorrigert-overskudd :as underskudd]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
-            [clojure.string :as string]))
+            [clj-simple-chart.line :as line]
+            [clojure.string :as string]
+            [clojure.string :as str]))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -30,6 +33,8 @@
 
 (def data (->> nettokontantstraum/four-quarters-moving-sum-adjusted-mrd
                (filter #(>= (:year %) 1996))
+               (drop-while #(not (str/ends-with? (:dato %) "K4")))
+               (map #(assoc % :underskudd (get underskudd/underskudd-2017-nok (:year %))))
                (mapv #(assoc % :oilprice
                                (get brentoilprice/brent-4qma-to-2017-nok (prev-quarter (prev-quarter (:dato %))) ::none)))))
 
@@ -97,11 +102,12 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   x-ticks
-         :tick-format   (fn [x] (cond (= x (first x-ticks)) x
-                                      (= x (last x-ticks)) x
+         :tick-format   (fn [x] (cond (= x "1996K4") (subs x 0 4)
+                                      (= x "2017K4") (subs x 0 4)
                                       (.endsWith x "05K4") (subs x 0 4)
                                       (.endsWith x "00K4") (subs x 0 4)
                                       (.endsWith x "10K4") (subs x 0 4)
+                                      (.endsWith x "15K4") (subs x 0 4)
                                       :else (subs x 2 4)))
          :domain        x-domain
          :sub-domain    sub-domain
@@ -144,12 +150,12 @@
 (def info
   (opentype/stack
     {:width (:plot-width c)}
-    (mapv (fn [x] {:text      (get translate-info x (name x))
+    (mapv (fn [x] {:text       (get translate-info x (name x))
                    ;:rect {:fill (get fills x)}
                    :margin-top (if (= x avgift) 2 0)
-                   :fill      (get fills x)
-                   :font      "Roboto Black"
-                   :font-size 15})
+                   :fill       (get fills x)
+                   :font       "Roboto Black"
+                   :font-size  15})
           (reverse sub-domain))))
 
 (def x (:x c))
@@ -169,7 +175,7 @@
           :h    (get opts k)})
        fills))
 
-(def txt-for-years [1996
+(def txt-for-years [1997
                     1998
                     2000
                     2002
@@ -239,6 +245,21 @@
      (axis/render-axis (:y2 c))
      [:g (bars (mapv make-rect data))]
      [:g (add-oil-price-line)]
+     [:g (line/line c {:p    :dato
+                       :h :underskudd
+                       :dot true
+                       :dot-style {:fill "yellow"
+                                   :r 4
+                                   :stroke-width 2
+                                   :stroke "black"}
+                       :path {:stroke "black"
+                              :stroke-width 5}}
+                    (filter #(str/ends-with? (:dato %) "K4") data))]
+     [:g (line/line c {:p    :dato
+                       :h :underskudd
+                       :path {:stroke "yellow"
+                              :stroke-width 1.2}}
+                    (filter #(str/ends-with? (:dato %) "K4") data))]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
      [:g {:transform (translate 30 (+ 2 (yfn 500)))} info]]

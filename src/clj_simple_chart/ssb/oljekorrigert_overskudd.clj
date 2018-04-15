@@ -1,4 +1,5 @@
-(ns clj-simple-chart.ssb.oljekorrigert-overskudd)
+(ns clj-simple-chart.ssb.oljekorrigert-overskudd
+  (:require [clj-simple-chart.ssb.kpi :as kpi]))
 
 (def data {1996 -22.730                                     ; https://www.statsbudsjettet.no/Upload/Statsbudsjett_2002/dokumenter/pdf/gulbok.pdf s.195
            1997 -20.067                                     ; https://www.statsbudsjettet.no/Upload/Statsbudsjett_2003/dokumenter/pdf/gulbok.pdf s.192
@@ -22,3 +23,8 @@
            2015 -185.3                                      ; https://www.statsbudsjettet.no/Statsbudsjettet-2017/Satsinger/?pid=72986
            2016 -208.4                                      ; https://www.statsbudsjettet.no/Statsbudsjettet-2018/Satsinger/?pid=83808
            2017 -232.4})                                    ; https://www.statsbudsjettet.no/Statsbudsjettet-2018/Satsinger/?pid=83808
+
+(def underskudd-2017-nok
+  (->> data
+       (map (fn [[k v]] [k (Math/abs (kpi/to-2017-nok (str k "K4") v))]))
+       (into {})))
