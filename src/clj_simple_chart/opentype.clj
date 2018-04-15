@@ -191,7 +191,7 @@
                             :stroke-width (or (:stroke-width rect) "1px")
                             :fill-opacity (or (:fill-opacity rect) 1.0)}])
         circle-elem (when circle
-                      [:g
+                      [:g {:transform (translate (get circle :x-offset 0) 0)}
                        [:path {:d            (str "M 0," (dec (Math/floor (* 0.5 (or min-height 0.0))))
                                                   " H " font-size)
                                :stroke       (or (:stroke path) "black")
@@ -202,9 +202,9 @@
                                  :stroke-width (or (:stroke-width circle) 1)
                                  :stroke       (or (:stroke circle) "black")
                                  :fill         (or (:fill circle) "red")}]])
-        text-margin (or (:margin rect) (Math/ceil (* 0.2 font-size)))
-        text-offset (+ rect-size text-margin)
-        text-offset (if (or rect circle) text-offset 0)
+        text-offset (cond rect (+ rect-size (or (:margin rect) (Math/ceil (* 0.2 font-size))))
+                          circle 0
+                          :else 0)
         path [:g rectangle circle-elem [:g {:transform (translate text-offset 0)} font-path border]]]
     (with-meta path (update metadata :width #(+ % text-offset)))))
 
@@ -329,7 +329,7 @@
     (= alignment :left) [:g {:transform (translate (- (:x1 (meta path))) (reduce + (take idx y-offset)))} path]
     (= alignment :right) [:g {:transform (translate
                                            (if (nil? reverse-start)
-                                             (-  (:x2 (meta path)))
+                                             (- (:x2 (meta path)))
                                              (Math/floor (- (or (:x2 (meta reverse-start)) 0)
                                                             max-width
                                                             (:x2 (meta path)))))
