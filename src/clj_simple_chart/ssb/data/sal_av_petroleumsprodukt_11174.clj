@@ -17,7 +17,8 @@
 
 (def data (->> raw-data
                (map #(dissoc % :kjøpegruppe))
-               (map #(dissoc % :region))
+               (map #(dissoc % :ContentsCodeCategory))
+               (map #(dissoc % :Region))
                (csv/number-or-throw-columns [:salg])
                (column-value->column :petroleumsprodukt)
                (contract-by-column :dato)
