@@ -9,15 +9,13 @@
 ;
 ; https://www.ssb.no/statbank/table/11174?rxid=49a52ff4-5d3c-4264-aa49-95134312070d
 
-(def raw-data (ssb/fetch 11174 {"ContentsCode"  "Salg"
-                                "Region"        "Hele landet"
-                                "PetroleumProd" ["Autodiesel" "Bilbensin"]
-                                "Kjopegrupper"  "Alle kjøpegrupper"
-                                "Tid"           "*"}))
+(def raw-data (ssb/fetch 11174 {[:ContentsCode :as :salg]               "Salg"
+                                "Region"                                "Hele landet"
+                                [:PetroleumProd :as :petroleumsprodukt] ["Autodiesel" "Bilbensin"]
+                                [:Kjopegrupper :as :kjøpegruppe]        "Alle kjøpegrupper"
+                                [:Tid :as :dato]                        "*"}))
 
-(test/is (= [:kjøpegruppe :petroleumsprodukt :region :salg] (:columns raw-data)))
-
-(def data (->> (:data raw-data)
+(def data (->> raw-data
                (map #(dissoc % :kjøpegruppe))
                (map #(dissoc % :region))
                (csv/number-or-throw-columns [:salg])
@@ -26,3 +24,4 @@
                (flat->12-mms)))
 
 (test/is (= "2010-12" (:dato (first data))))
+(test/is (= "2018-03" (:dato (last data))))
