@@ -78,6 +78,6 @@
 (test/is (some #{"SINDRE"} field-names))
 (test/is (not (some #{"33/9-6 DELTA"} field-names)))
 
-(test/is (= 8.6 (get-reserve "JOHAN SVERDRUP" :fldRecoverableGas)))
-(test/is (= 282.3 (get-reserve "JOHAN SVERDRUP" :fldRecoverableOil)))
-(test/is (= 286.1 (get-reserve "JOHAN SVERDRUP" :fldRecoverableLiquids)))
+(test/is (= 9.13 (get-reserve "JOHAN SVERDRUP" :fldRecoverableGas)))
+(test/is (= 299.67 (get-reserve "JOHAN SVERDRUP" :fldRecoverableOil)))
+(test/is (= 303.68 (get-reserve "JOHAN SVERDRUP" :fldRecoverableLiquids)))
