@@ -24,5 +24,7 @@
                (contract-by-column :dato)
                (flat->12-mms)))
 
+;(def data-relative (relative-to-all-time-high data))
+
 (test/is (= "2010-12" (:dato (first data))))
-(test/is (= "2018-03" (:dato (last data))))
+(test/is (= "2018-04" (:dato (last data))))
