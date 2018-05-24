@@ -31,6 +31,25 @@
 (defn add-sum-column [rows]
   (map #(assoc % :sum (reduce + 0 (filter number? (vals %)))) rows))
 
+(defn add-relative-share [rows]
+  (for [row rows]
+    (let [sum (reduce + 0 (filter number? (vals row)))]
+      (reduce (fn [o [k v]]
+                (if (number? v)
+                  (assoc o k (Math/round (double (* 100 (/ v sum)))))
+                  (assoc o k v)))
+              {}
+              row))))
+
+(defn div-by [number rows]
+  (for [row rows]
+    (reduce (fn [o [k v]]
+              (if (number? v)
+                (assoc o k (Math/round (double (/ v number))))
+                (assoc o k v)))
+            {}
+            row)))
+
 (defn relative-to-all-time-high [rows]
   (let [max-map (into {} (map (fn [[k v]]
                                 (cond (number? v)

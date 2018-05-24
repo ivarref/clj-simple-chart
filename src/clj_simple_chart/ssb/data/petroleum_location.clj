@@ -15,7 +15,7 @@
   (->> (ssb/fetch 11174 {[:ContentsCode :as :salg]               "Salg"
                          "Region"                                location
                          [:PetroleumProd :as :petroleumsprodukt] ["Autodiesel" "Bilbensin"]
-                         [:Kjopegrupper :as :kjøpegruppe]        "Alle kjøpegrupper"
+                         [:Kjopegrupper :as :kjøpegruppe]        "Transport"
                          [:Tid :as :dato]                        "*"})
        (map #(dissoc % :kjøpegruppe))
        (map #(dissoc % :ContentsCodeCategory))
