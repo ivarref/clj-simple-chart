@@ -20,10 +20,12 @@
                ;(map #(update % :dato (fn [d] (str d "-12"))))
                (column-value->column :drivstoff)
                (contract-by-column :dato)
-               (div-by 1000)))
-               ;(add-sum-column)))
+               (div-by 1000)
+               ;(map #(assoc % :el-hybrid (+ (:elektrisk %) (:annet %))))
+               ;(drop-columns [:elektrisk :annet])
+               (add-sum-column)
                ;(add-relative-share)))
-               ;(yoy-change)))
+               (yoy-change)))
 
 (def fossil (->> (ssb/fetch 7849
                             {"Region" "Oslo"
@@ -36,8 +38,10 @@
                  (map #(update % :drivstoff (fn [d] (get drivstoff-translate d d))))
                  (column-value->column :drivstoff)
                  (contract-by-column :dato)
-                 (add-sum-column)))
+                 (add-sum-column)
                  ;(yoy-change)
+                 (drop-while #(not= "2013" (:dato %)))))
+                 ;(map :sum) (reduce + 0)))
                  ;(keep-columns [:dato :sum])))
 
 ;(yoy-change)))
