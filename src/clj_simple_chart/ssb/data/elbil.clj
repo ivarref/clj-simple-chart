@@ -39,9 +39,8 @@
                  (column-value->column :drivstoff)
                  (contract-by-column :dato)
                  (add-sum-column)
-                 ;(yoy-change)
-                 (drop-while #(not= "2013" (:dato %)))))
-                 ;(map :sum) (reduce + 0)))
+                 (yoy-change)
+                 (drop-while #(not= "2013" (:dato %))) (map :sum) (reduce + 0)))
                  ;(keep-columns [:dato :sum])))
 
 ;(yoy-change)))
