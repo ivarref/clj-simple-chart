@@ -90,7 +90,7 @@
 (def yy {:type               :linear
          :orientation        :right
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain             [0 130]})
+         :domain             [0 140]})
 
 (def available-height (- svg-height (+ (+ 4 marg)
                                        (:height (meta header))
@@ -156,7 +156,8 @@
                                        "2005-12"
                                        "2010-12"
                                        ;"2013-12"
-                                       "2015-12"]) data))]
+                                       "2015-12"
+                                       "2017-12"]) data))]
      (axis/render-axis (:x c))]
     [:g {:transform (translate 0 (+ 0 (+ (:height (meta header)) (:margin-top c))))}
      (opentype/stack {:width available-width}
