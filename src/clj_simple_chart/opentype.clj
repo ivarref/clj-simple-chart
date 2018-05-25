@@ -440,9 +440,15 @@
               margin-right  :margin-right
               margin-bottom :margin-bottom
               margin-top    :margin-top
+              x             :x
+              y             :y
+              grow-upwards  :grow-upwards
               :as           config
               :or           {margin       nil margin-left nil margin-right nil margin-top nil margin-bottom nil
                              fill         nil
+                             x            0
+                             y            0
+                             grow-upwards nil
                              fill-opacity 1}} txts]
   ;(assert (number? width) ":width must be number")
   (cond margin
@@ -451,4 +457,10 @@
                              :margin-right (or margin-right margin)
                              :margin-bottom (or margin-bottom margin)
                              :margin-top (or margin-top margin)) txts)
-        :else (stack-inner config txts)))
+        :else (let [elem (stack-inner config txts)
+                    yy (+ y
+                          (if (number? grow-upwards)
+                            (* -1 (+ (:height (meta elem)) grow-upwards))
+                            0))]
+                (with-meta [:g {:transform (translate x yy)} elem]
+                           (meta elem)))))

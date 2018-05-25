@@ -35,14 +35,13 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Registrerte køyretøy etter drivstofftype" :font "Roboto Bold" :font-size 30}
+              [{:margin-bottom 20 :text "Registrerte køyretøy etter drivstofftype" :font "Roboto Bold" :font-size 30}
                {:margin-bottom 3 :text "Antall køyretøy, '000" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 6
-                :text       "Kjelde: SSB tabell 07849" :font "Roboto Regular" :font-size 14}
+              [{:margin-top 6 :text "Kjelde: SSB tabell 07849" :font "Roboto Regular" :font-size 14}
                {:text "Diagram: refsdal.ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
 (def available-height (- svg-height (+ (+ 3 marg)
@@ -55,9 +54,9 @@
                      :y      yy}))
 
 (def prop->color
-  [[:bensin dark-purple "Bensin"]
-   [:diesel blue "Diesel"]
-   [:annet brown "Annet"]
+  [[:bensin brown "Bensin"]
+   [:diesel red "Diesel"]
+   [:annet orange "Annet"]
    [:elektrisk green "Elektrisk"]])
 
 (defn diagram []
@@ -65,16 +64,18 @@
    [:g {:transform (translate marg marg)}
     header
     [:g {:transform (translate (:margin-left c) (+ (:height (meta header)) (:margin-top c)))}
-     (bars c {:p :dato :h prop->color} data)
-     [:g {:transform (translate 10 (:plot-height c))}
-      (opentype/stack {:fill "whitesmoke" :fill-opacity 0.8 :margin 5
-                       :grow-upwards true}
-                      (into [{:text "Drivstofftype" :font "Roboto Bold" :font-size 18}]
-                            (for [[kind col txt] (reverse prop->color)]
-                              {:rect {:fill col}
-                               :text txt :font "Roboto Regular" :font-size 18})))]
      (axis/render-axis (:x c))
-     (axis/render-axis (:y c))]
+     (axis/render-axis (:y c))
+     (bars c {:p :dato :h prop->color} data)
+     (opentype/stack {:fill         "whitesmoke"
+                      :fill-opacity 0.95
+                      :margin       8
+                      :y            (:plot-height c)
+                      :x            15
+                      :grow-upwards 15}
+                     (into [{:text "Drivstofftype" :font "Roboto Bold" :font-size 18}]
+                           (for [[_ col txt] (reverse prop->color)]
+                             {:rect {:fill col} :text txt :font "Roboto Regular" :font-size 18})))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
