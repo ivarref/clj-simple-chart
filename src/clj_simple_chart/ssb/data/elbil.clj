@@ -17,7 +17,7 @@
                (drop-columns [:Region :KjoringensArt :ContentsCodeCategory])
                (csv/number-or-throw-columns [:antall])
                (map #(update % :drivstoff (fn [d] (get drivstoff-translate d d))))
-               ;(map #(update % :dato (fn [d] (str d "-12"))))
+               (map #(update % :dato (fn [d] (str d "-12"))))
                (column-value->column :drivstoff)
                (contract-by-column :dato)
                (drop-columns [:parafin :gass])
