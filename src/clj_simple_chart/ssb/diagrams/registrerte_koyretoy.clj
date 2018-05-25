@@ -35,7 +35,7 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:margin-bottom 20 :text "Registrerte køyretøy etter drivstofftype" :font "Roboto Bold" :font-size 30}
+              [{:margin-bottom 20 :text "Registrerte personbilar etter drivstofftype" :font "Roboto Bold" :font-size 30}
                {:margin-bottom 3 :text "Antall køyretøy, '000" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 
@@ -56,7 +56,7 @@
 (def prop->color
   [[:bensin brown "Bensin"]
    [:diesel red "Diesel"]
-   [:annet orange "Annet"]
+   [:annet orange "Andre"]
    [:elektrisk green "Elektrisk"]])
 
 (defn diagram []
