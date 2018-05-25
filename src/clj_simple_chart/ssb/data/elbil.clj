@@ -11,7 +11,7 @@
 
 (def data (->> (ssb/fetch 7849 {"Region"                        "Hele landet"
                                 "KjoringensArt"                 "Egentransport"
-                                [:DrivstoffType :as :drivstoff] ["El." "Bensin" "Diesel" "Annet drivstoff"]
+                                [:DrivstoffType :as :drivstoff] "*"
                                 [:ContentsCode :as :antall]     "Personbiler"
                                 [:Tid :as :dato]                "*"})
                (drop-columns [:Region :KjoringensArt :ContentsCodeCategory])
@@ -20,12 +20,9 @@
                ;(map #(update % :dato (fn [d] (str d "-12"))))
                (column-value->column :drivstoff)
                (contract-by-column :dato)
+               (drop-columns [:parafin :gass])
                (div-by 1000)
-               ;(map #(assoc % :el-hybrid (+ (:elektrisk %) (:annet %))))
-               ;(drop-columns [:elektrisk :annet])
-               (add-sum-column)
-               ;(add-relative-share)))
-               (yoy-change)))
+               (add-sum-column)))
 
 (def fossil (->> (ssb/fetch 7849
                             {"Region" "Oslo"
