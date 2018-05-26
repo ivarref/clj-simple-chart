@@ -40,6 +40,8 @@
 
 ![](img/ssb-png/koyrelengde-etter-kategori.png)
 
+![](img/ssb-png/petroleumsprodukt-kjopegruppe.png)
+
 ## License
 
 Copyright © 2017 Ivar Refsdal
