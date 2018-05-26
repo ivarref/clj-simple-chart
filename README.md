@@ -38,6 +38,8 @@
 
 ![](img/ssb-png/registrerte-koyretoy-kategori.png)
 
+![](img/ssb-png/koyrelengde-etter-kategori.png)
+
 ## License
 
 Copyright © 2017 Ivar Refsdal
