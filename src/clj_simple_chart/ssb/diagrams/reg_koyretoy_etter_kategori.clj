@@ -53,21 +53,6 @@
                      :x      xx
                      :y      yy}))
 
-;{"EKOFISK"           blue
-; "STATFJORD"         red
-; "VALHALL"           orange
-; "GULLFAKS"          "#ffaa00"
-; "SNORRE"            "#9467bd"
-; "TROLL"             green
-; "OSEBERG"           cyan
-; "ÅSGARD"            hydro-blue
-; "HEIDRUN"           "#bcbd22"
-; "OTHERS_PRE_1990"   "#969696"
-; "OTHERS_POSTE_1990" "#a1d99b"
-; "OTHERS_POSTE_2000" "rgb(231, 186, 82)"
-; "JOHAN SVERDRUP"    dark-purple
-; "JOHAN CASTBERG"    pink}
-
 (def prop->color
   [[:personbiler brown "Personbilar"]
    [:varebiler red "Varebilar"]
