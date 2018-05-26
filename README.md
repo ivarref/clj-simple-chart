@@ -32,6 +32,12 @@
 
 ![extra-eu](img/eurostat-png/extra-eu.png)
 
+# Køyretøy
+
+![](img/ssb-png/registrerte-koyretoy.png)
+
+![](img/ssb-png/registrerte-koyretoy-kategori.png)
+
 ## License
 
 Copyright © 2017 Ivar Refsdal
