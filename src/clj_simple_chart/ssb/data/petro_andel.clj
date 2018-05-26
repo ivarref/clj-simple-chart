@@ -34,7 +34,7 @@
                                          :bygg-og-anlegg :bygg}))
                (flat->12-mms)
                (filter #(str/ends-with? (:dato %) "-12"))
-               (add-relative-share)))
+               (relative-share)))
                ;(keep-columns [:dato :bolig])
                ;(relative-to-all-time-high)))
                ;(yoy-change)))

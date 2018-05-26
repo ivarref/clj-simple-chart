@@ -182,7 +182,12 @@
         [(assoc item :h (h item))]
 
         (and (vector? h) (every? vector? h)) ; so h is like [[:property :fill]]
-        (mapv #(assoc item :h ((first %) item)
+        (mapv #(assoc item :h (let [property (first %)
+                                    v (property item)]
+                                (if (number? v) v
+                                    (do (println "Could not find property" property)
+                                        (println "available keys:" (vec (keys item)))
+                                        (throw (ex-info "Could not find property" {:property property})))))
                            :fill (second %)
                            :c (first %)) h)
 

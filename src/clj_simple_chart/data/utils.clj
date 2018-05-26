@@ -54,7 +54,7 @@
 (defn add-sum-column [rows]
   (map #(assoc % :sum (reduce + 0 (filter number? (vals %)))) rows))
 
-(defn add-relative-share [rows]
+(defn relative-share [rows]
   (for [row rows]
     (let [sum (reduce + 0 (filter number? (vals row)))]
       (reduce (fn [o [k v]]
@@ -69,6 +69,15 @@
     (reduce (fn [o [k v]]
               (if (number? v)
                 (assoc o k (Math/round (double (/ v number))))
+                (assoc o k v)))
+            {}
+            row)))
+
+(defn div-by-no-round [number rows]
+  (for [row rows]
+    (reduce (fn [o [k v]]
+              (if (number? v)
+                (assoc o k (double (/ v number)))
                 (assoc o k v)))
             {}
             row)))
