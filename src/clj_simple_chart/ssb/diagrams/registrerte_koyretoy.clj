@@ -35,7 +35,7 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:margin-bottom 20 :text "Registrerte personbilar etter drivstofftype" :font "Roboto Bold" :font-size 30}
+              [{:margin-bottom 20 :text "Registrerte køyretøy etter drivstofftype" :font "Roboto Bold" :font-size 30}
                {:margin-bottom 3 :text "Antall køyretøy, '000" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 
@@ -59,6 +59,17 @@
    [:annet orange "Andre"]
    [:elektrisk green "Elektrisk"]])
 
+(def legend
+  (opentype/stack {:fill         "whitesmoke"
+                   :fill-opacity 0.95
+                   :margin       8
+                   :y            (:plot-height c)
+                   :x            15
+                   :grow-upwards 15}
+                  {:text "Drivstofftype" :font "Roboto Bold" :font-size 18}
+                  (for [[_ col txt] (reverse prop->color)]
+                    {:rect {:fill col} :text txt :font "Roboto Regular" :font-size 18})))
+
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
@@ -67,15 +78,7 @@
      (axis/render-axis (:x c))
      (axis/render-axis (:y c))
      (bars c {:p :dato :h prop->color} data)
-     (opentype/stack {:fill         "whitesmoke"
-                      :fill-opacity 0.95
-                      :margin       8
-                      :y            (:plot-height c)
-                      :x            15
-                      :grow-upwards 15}
-                     (into [{:text "Drivstofftype" :font "Roboto Bold" :font-size 18}]
-                           (for [[_ col txt] (reverse prop->color)]
-                             {:rect {:fill col} :text txt :font "Roboto Regular" :font-size 18})))]
+     legend]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []

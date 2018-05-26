@@ -449,7 +449,7 @@
                              x            0
                              y            0
                              grow-upwards nil
-                             fill-opacity 1}} txts]
+                             fill-opacity 1}} & txts]
   ;(assert (number? width) ":width must be number")
   (cond margin
         (recur (assoc config :margin nil
@@ -457,7 +457,7 @@
                              :margin-right (or margin-right margin)
                              :margin-bottom (or margin-bottom margin)
                              :margin-top (or margin-top margin)) txts)
-        :else (let [elem (stack-inner config txts)
+        :else (let [elem (stack-inner config (vec (flatten txts)))
                     yy (+ y
                           (if (number? grow-upwards)
                             (* -1 (+ (:height (meta elem)) grow-upwards))

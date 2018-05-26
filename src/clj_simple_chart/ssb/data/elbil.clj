@@ -10,9 +10,9 @@
                           "Annet drivstoff" "Annet"})
 
 (def data (->> (ssb/fetch 7849 {"Region"                        "Hele landet"
-                                "KjoringensArt"                 "Egentransport"
+                                "KjoringensArt"                 "*"
                                 [:DrivstoffType :as :drivstoff] "*"
-                                [:ContentsCode :as :antall]     "Personbiler"
+                                [:ContentsCode :as :antall]     "*"
                                 [:Tid :as :dato]                "*"})
                (drop-columns [:Region :KjoringensArt :ContentsCodeCategory])
                (csv/number-or-throw-columns [:antall])

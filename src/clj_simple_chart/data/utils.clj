@@ -26,13 +26,30 @@
     (reduce merge {} (for [[k v] row]
                        {(keyword (str/replace (name k) " " "-")) v}))))
 
+(defn same-rows->single
+  [rows]
+  (apply merge-with (fn [a b]
+                      (cond (and (string? a)
+                                 (not= a b)) (throw (ex-info "About to loose data" {:a a :b b}))
+                            (and (string? a)
+                                 (= a b)) a
+                            (number? a) (+ a b)))
+
+                    rows))
+
 ; TODO: Detect error case: When numbers will get overwritten (probably not the intention).
 (defn contract-by-column [column rows]
   (->> rows
        (group-by column)
        (vals)
-       (map #(reduce merge {} %))
+       (map same-rows->single)
        (sort-by column)))
+
+(def sample-data
+  [{:dato "asdf" :b 100}
+   {:dato "asdf" :b 200}])
+
+(test/is (= [{:dato "asdf" :b 300}] (vec (contract-by-column :dato sample-data))))
 
 (defn add-sum-column [rows]
   (map #(assoc % :sum (reduce + 0 (filter number? (vals %)))) rows))
