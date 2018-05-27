@@ -66,9 +66,15 @@
                    :y            (:plot-height c)
                    :x            15
                    :grow-upwards 15}
-                  {:text "Drivstofftype" :font "Roboto Bold" :font-size 18}
-                  (for [[_ col txt] (reverse prop->color)]
-                    {:rect {:fill col} :text txt :font "Roboto Regular" :font-size 18})))
+                  {:text "Drivstofftype" :font "Roboto Bold" :font-size 18
+                   :right {:text "Antall, '000"}}
+                  (for [[prop col txt] (reverse prop->color)]
+                    {:rect {:fill col}
+                     :right {:text (str (get (last data) prop))}
+                     :text txt :font "Roboto Regular" :font-size 18})
+                  {:text "Totalt"
+                   :right {:text (str (:sum (last data)))}
+                   :font "Roboto Regular" :font-size 18}))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
