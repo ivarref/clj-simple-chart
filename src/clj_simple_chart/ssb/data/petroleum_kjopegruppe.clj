@@ -19,18 +19,3 @@
                (rename-keys-remove-whitespace)
                (flat->12-mms)
                (add-sum-column)))
-
-(def data2 (->> (ssb/fetch
-                  11174
-                  {[:ContentsCode :as :salg]               "Salg"
-                   "Region"                                "Hele landet"
-                   [:PetroleumProd :as :petroleumsprodukt] "*"
-                   [:Kjopegrupper :as :kjopegruppe]        "Alle kjøpegrupper"
-                   [:Tid :as :dato]                        "*"})
-                (drop-columns [:ContentsCodeCategory :Region :kjopegruppe])
-                (remove #(= "Petroleumsprodukter i alt" (:petroleumsprodukt %)))
-                (column-value->column :petroleumsprodukt)
-                (contract-by-column :dato)
-                (rename-keys-remove-whitespace)
-                (flat->12-mms)
-                (add-sum-column)))
