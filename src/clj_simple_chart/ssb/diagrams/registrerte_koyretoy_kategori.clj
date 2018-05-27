@@ -1,16 +1,29 @@
-(ns clj-simple-chart.ssb.diagrams.reg-koyretoy-etter-kategori
-  (:require [clj-simple-chart.ssb.data.elbil :as datasource]
-            [clojure.string :as str]
+(ns clj-simple-chart.ssb.diagrams.registrerte-koyretoy-kategori
+  (:require [clojure.string :as str]
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.rect :refer [bars]]
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.colors :refer :all]
-            [clojure.string :as string]
-            [clj-simple-chart.opentype :as opentype]))
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.ssb.data.ssb-api :as ssb]
+            [clj-simple-chart.data.utils :refer :all]
+            [clj-simple-chart.csv.csvmap :as csv]))
 
-(def data datasource/data2)
+(def data (->> {"Region"                        "Hele landet"
+                [:KjoringensArt :as :kjoretype] "*"
+                [:DrivstoffType :as :drivstoff] "*"
+                [:ContentsCode :as :antall]     "*"
+                [:Tid :as :dato]                "*"}
+               (ssb/fetch 7849)
+               (drop-columns [:Region :drivstoff :kjoretype])
+               (csv/number-or-throw-columns [:antall])
+               (column-value->column :ContentsCodeCategory)
+               (contract-by-column :dato)
+               (rename-keys-remove-whitespace)
+               (div-by 1000)
+               (add-sum-column)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -20,8 +33,7 @@
 
 (def xx {:type          :ordinal
          :orientation   :bottom
-         :tick-values   (filter #(str/ends-with? % "-12") (map :dato data))
-         :tick-format   (fn [x] (str/replace x "-12" ""))
+         :tick-values   (map :dato data)
          :domain        (map :dato data)
          :padding-inner 0.4
          :padding-outer 0.4})
@@ -37,7 +49,6 @@
               {:width available-width}
               [{:margin-bottom 20 :text "Registrerte køyretøy etter kategori" :font "Roboto Bold" :font-size 30}
                {:margin-bottom 3 :text "Antall køyretøy, '000" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
-
 
 (def footer (opentype/stack
               {:width available-width}
