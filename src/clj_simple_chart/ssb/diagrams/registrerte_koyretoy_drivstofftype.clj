@@ -1,6 +1,5 @@
-(ns clj-simple-chart.ssb.diagrams.registrerte-koyretoy
-  (:require [clj-simple-chart.ssb.data.elbil :as datasource]
-            [clojure.string :as str]
+(ns clj-simple-chart.ssb.diagrams.registrerte-koyretoy-drivstofftype
+  (:require [clojure.string :as str]
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.rect :refer [bars]]
             [clj-simple-chart.chart :as chart]
@@ -8,9 +7,28 @@
             [clj-simple-chart.core :as core]
             [clj-simple-chart.colors :refer :all]
             [clojure.string :as string]
-            [clj-simple-chart.opentype :as opentype]))
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.ssb.data.ssb-api :as ssb]
+            [clj-simple-chart.data.utils :refer :all]
+            [clj-simple-chart.csv.csvmap :as csv]))
 
-(def data datasource/data)
+(def drivstoff-translate {"El."             "Elektrisk"
+                          "Annet drivstoff" "Annet"})
+
+(def data (->> {"Region"                        "Hele landet"
+                "KjoringensArt"                 "*"
+                [:DrivstoffType :as :drivstoff] "*"
+                [:ContentsCode :as :antall]     "*"
+                [:Tid :as :dato]                "*"}
+               (ssb/fetch 7849)
+               (drop-columns [:Region :KjoringensArt :ContentsCodeCategory])
+               (csv/number-or-throw-columns [:antall])
+               (map #(update % :drivstoff (fn [d] (get drivstoff-translate d d))))
+               (column-value->column :drivstoff)
+               (contract-by-column :dato)
+               (drop-columns [:parafin :gass])
+               (div-by 1000)
+               (add-sum-column)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -20,8 +38,7 @@
 
 (def xx {:type          :ordinal
          :orientation   :bottom
-         :tick-values   (filter #(str/ends-with? % "-12") (map :dato data))
-         :tick-format   (fn [x] (str/replace x "-12" ""))
+         :tick-values   (map :dato data)
          :domain        (map :dato data)
          :padding-inner 0.4
          :padding-outer 0.4})
