@@ -1,16 +1,30 @@
 (ns clj-simple-chart.ssb.diagrams.koyrelengde-etter-kategori
-  (:require [clj-simple-chart.ssb.data.koyrelengde :as datasource]
-    [clojure.string :as str]
-    [clj-simple-chart.translate :refer [translate translate-y]]
-    [clj-simple-chart.rect :refer [bars]]
-    [clj-simple-chart.chart :as chart]
-    [clj-simple-chart.axis.core :as axis]
-    [clj-simple-chart.core :as core]
-    [clj-simple-chart.colors :refer :all]
-    [clojure.string :as string]
-    [clj-simple-chart.opentype :as opentype]))
+  (:require [clojure.string :as str]
+            [clj-simple-chart.translate :refer [translate translate-y]]
+            [clj-simple-chart.rect :refer [bars]]
+            [clj-simple-chart.chart :as chart]
+            [clj-simple-chart.axis.core :as axis]
+            [clj-simple-chart.core :as core]
+            [clj-simple-chart.colors :refer :all]
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.ssb.data.ssb-api :as ssb]
+            [clj-simple-chart.data.utils :refer :all]))
 
-(def data datasource/data)
+(def data (->> {[:ContentsCode :as :km] "*"
+                :Kjoretoytype           "*"
+                [:Tid :as :dato]        "*"}
+               (ssb/fetch 7301)
+               (drop-columns [:ContentsCodeCategory])
+               (column-value->column :Kjoretoytype)
+               (rename-keys-remove-whitespace)
+               (contract-by-column :dato)
+               (keep-columns [:dato
+                              :personbiler-i-alt
+                              :busser-i-alt
+                              :små-godsbiler-i-alt
+                              :store-lastebiler-i-alt])
+               (div-by-no-round 1000)
+               (add-sum-column)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -21,7 +35,6 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   (map :dato data)
-         :tick-format   (fn [x] (str/replace x "-12" ""))
          :domain        (map :dato data)
          :padding-inner 0.4
          :padding-outer 0.4})
@@ -66,12 +79,12 @@
                    :y            (:plot-height c)
                    :x            5
                    :grow-upwards 10}
-                  {:text "Køyretøytype" :font "Roboto Bold" :font-size 18
+                  {:text  "Køyretøytype" :font "Roboto Bold" :font-size 18
                    :right {:text "Mrd. km."}}
                   (for [[prop col txt] (reverse prop->color)]
-                    {:rect {:fill col}
+                    {:rect  {:fill col}
                      :right {:text (str/replace (format "%.1f" (get (last data) prop)) "." ",")}
-                     :text txt :font "Roboto Regular" :font-size 18})))
+                     :text  txt :font "Roboto Regular" :font-size 18})))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
