@@ -37,7 +37,6 @@
 
                     rows))
 
-; TODO: Detect error case: When numbers will get overwritten (probably not the intention).
 (defn contract-by-column [column rows]
   (->> rows
        (group-by column)
@@ -50,6 +49,10 @@
    {:dato "asdf" :b 200}])
 
 (test/is (= [{:dato "asdf" :b 300}] (vec (contract-by-column :dato sample-data))))
+
+(defn add-column-postfix
+  [column postfix rows]
+  (map #(update % column (fn [o] (str o postfix))) rows))
 
 (defn add-sum-column [rows]
   (map #(assoc % :sum (reduce + 0 (filter number? (vals %)))) rows))
