@@ -6,7 +6,6 @@
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.core :as core]
             [clj-simple-chart.colors :refer :all]
-            [clojure.string :as string]
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.ssb.data.ssb-api :as ssb]
             [clj-simple-chart.data.utils :refer :all]

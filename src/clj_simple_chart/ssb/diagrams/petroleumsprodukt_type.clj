@@ -1,4 +1,4 @@
-(ns clj-simple-chart.ssb.diagrams.petroleusmprodukt-type
+(ns clj-simple-chart.ssb.diagrams.petroleumsprodukt-type
   (:require [clojure.string :as str]
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.rect :refer [bars]]

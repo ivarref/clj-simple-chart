@@ -1,16 +1,40 @@
 (ns clj-simple-chart.ssb.diagrams.registrerte-personbilar-per-1000
-  (:require [clj-simple-chart.ssb.data.elbil :as datasource]
-    [clojure.string :as str]
-    [clj-simple-chart.translate :refer [translate translate-y]]
-    [clj-simple-chart.rect :refer [bars]]
-    [clj-simple-chart.chart :as chart]
-    [clj-simple-chart.axis.core :as axis]
-    [clj-simple-chart.core :as core]
-    [clj-simple-chart.colors :refer :all]
-    [clojure.string :as string]
-    [clj-simple-chart.opentype :as opentype]))
+  (:require [clojure.string :as str]
+            [clj-simple-chart.translate :refer [translate translate-y]]
+            [clj-simple-chart.ssb.data.folkemengde :refer [folkemengde]]
+            [clj-simple-chart.rect :refer [bars]]
+            [clj-simple-chart.chart :as chart]
+            [clj-simple-chart.axis.core :as axis]
+            [clj-simple-chart.core :as core]
+            [clj-simple-chart.colors :refer :all]
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.ssb.data.ssb-api :as ssb]
+            [clj-simple-chart.csv.csvmap :as csv]
+            [clj-simple-chart.data.utils :refer :all]))
 
-(def data datasource/personbilar-per-1000-innbyggjar)
+; https://www.ssb.no/statbank/table/07849/?rxid=2b8be3ee-7cb7-4de5-b767-427bfffe1d18
+; 07849: Registrerte kjøretøy, etter kjøringens art og drivstofftype (K) 2008 - 2016
+
+(def drivstoff-translate {"El."             "Elektrisk"
+                          "Annet drivstoff" "Annet"})
+
+(def data (->> {:Region                         "Hele landet"
+                :KjoringensArt                  "*"
+                [:DrivstoffType :as :drivstoff] "*"
+                [:ContentsCode :as :antall]     "Personbiler"
+                [:Tid :as :dato]                "*"}
+               (ssb/fetch 7849)
+               (drop-columns [:Region :KjoringensArt :ContentsCodeCategory])
+               (csv/number-or-throw-columns [:antall])
+               (map #(update % :drivstoff (fn [d] (get drivstoff-translate d d))))
+               (map #(assoc % :folkemengde (folkemengde (:dato %))))
+               (remove #(nil? (:folkemengde %)))
+               (map #(update % :antall (fn [d] (double (* 1000 (/ d (folkemengde (:dato %))))))))
+               (map #(dissoc % :folkemengde))
+               (column-value->column :drivstoff)
+               (contract-by-column :dato)
+               (drop-columns [:parafin :gass])
+               (add-sum-column)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -20,8 +44,7 @@
 
 (def xx {:type          :ordinal
          :orientation   :bottom
-         :tick-values   (filter #(str/ends-with? % "-12") (map :dato data))
-         :tick-format   (fn [x] (str/replace x "-12" ""))
+         :tick-values   (map :dato data)
          :domain        (map :dato data)
          :padding-inner 0.4
          :padding-outer 0.4})
@@ -67,15 +90,15 @@
                    :y            (:plot-height c)
                    :x            15
                    :grow-upwards 15}
-                  {:text "Drivstofftype" :font "Roboto Bold" :font-size 18
+                  {:text  "Drivstofftype" :font "Roboto Bold" :font-size 18
                    :right {:text "Antall, 2017"}}
                   (for [[prop col txt] (reverse prop->color)]
-                    {:rect {:fill col}
+                    {:rect  {:fill col}
                      :right {:text (str (Math/round (double (get (last data) prop))))}
-                     :text txt :font "Roboto Regular" :font-size 18})
-                  {:text "Totalt"
+                     :text  txt :font "Roboto Regular" :font-size 18})
+                  {:text  "Totalt"
                    :right {:text (str (Math/round (double (:sum (last data)))))}
-                   :font "Roboto Regular" :font-size 18}))
+                   :font  "Roboto Regular" :font-size 18}))
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
