@@ -2,6 +2,7 @@
   (:require [clj-simple-chart.ssb.data.ssb-api :as ssb]
             [clj-simple-chart.data.utils :refer :all]))
 
+; 05231
 ; https://www.ssb.no/statbank/table/05231?rxid=59da4113-216c-4c9e-b2b7-a4829792a4dd
 
 (def yyyy-mm->folkemengde (->> (ssb/fetch
