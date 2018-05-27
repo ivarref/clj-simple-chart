@@ -1,16 +1,31 @@
 (ns clj-simple-chart.ssb.diagrams.petroleumsprodukt-kjopegruppe
-  (:require [clj-simple-chart.ssb.data.petroleum-kjopegruppe :as datasource]
-    [clojure.string :as str]
-    [clj-simple-chart.translate :refer [translate translate-y]]
-    [clj-simple-chart.rect :refer [bars]]
-    [clj-simple-chart.chart :as chart]
-    [clj-simple-chart.axis.core :as axis]
-    [clj-simple-chart.core :as core]
-    [clj-simple-chart.colors :refer :all]
-    [clojure.string :as string]
-    [clj-simple-chart.opentype :as opentype]))
+  (:require [clojure.string :as str]
+            [clj-simple-chart.translate :refer [translate translate-y]]
+            [clj-simple-chart.rect :refer [bars]]
+            [clj-simple-chart.chart :as chart]
+            [clj-simple-chart.axis.core :as axis]
+            [clj-simple-chart.core :as core]
+            [clj-simple-chart.colors :refer :all]
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.ssb.data.ssb-api :as ssb]
+            [clj-simple-chart.data.utils :refer :all]))
 
-(def data datasource/data)
+; https://www.ssb.no/statbank/table/11174?rxid=49a52ff4-5d3c-4264-aa49-95134312070d
+; 11174
+
+(def data (->> {[:ContentsCode :as :salg]               "Salg"
+                "Region"                                "Hele landet"
+                [:PetroleumProd :as :petroleumsprodukt] "Petroleumsprodukter i alt"
+                [:Kjopegrupper :as :kjopegruppe]        "*"
+                [:Tid :as :dato]                        "*"}
+               (ssb/fetch 11174)
+               (drop-columns [:ContentsCodeCategory :Region :petroleumsprodukt])
+               (remove #(= "Alle kjøpegrupper" (:kjopegruppe %)))
+               (column-value->column :kjopegruppe)
+               (contract-by-column :dato)
+               (rename-keys-remove-whitespace)
+               (flat->12-mms)
+               (add-sum-column)))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -37,9 +52,8 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Sal av petroleumsprodukt etter kjøpegruppe" :font "Roboto Bold" :font-size 30}
-               {:margin-bottom 15 :text "Heile landet, 12 månadar glidande gjennomsnitt" :font "Roboto Regular" :font-size 18}
+               {:margin-bottom 15 :text "Heile landet, 12 månadar glidande sum" :font "Roboto Regular" :font-size 18}
                {:margin-bottom 3 :text "Millionar liter" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
-
 
 (def footer (opentype/stack
               {:width available-width}
@@ -74,10 +88,8 @@
                    :x            5
                    :grow-upwards 10}
                   {:text "Kjøpegruppe" :font "Roboto Bold" :font-size 18}
-                   ;:right {:text "Mrd. km."}}
-                  (for [[prop col txt] (reverse prop->color)]
+                  (for [[_ col txt] (reverse prop->color)]
                     {:rect {:fill col}
-                     ;:right {:text (str/replace (format "%.1f" (get (last data) prop)) "." ",")}
                      :text txt :font "Roboto Regular" :font-size 18})))
 
 (defn diagram []
