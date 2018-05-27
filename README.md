@@ -36,6 +36,8 @@
 
 ![](img/ssb-png/registrerte-koyretoy.png)
 
+![](img/ssb-png/registrerte-personbilar-per-1000.png)
+
 ![](img/ssb-png/registrerte-koyretoy-kategori.png)
 
 ![](img/ssb-png/koyrelengde-etter-kategori.png)
