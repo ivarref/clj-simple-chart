@@ -150,3 +150,13 @@
 (defn numbers->avg [numbers]
   (/ (reduce + 0 numbers)
      (count numbers)))
+
+(defn translate-column [column tx rows]
+  (map #(update % column (fn [o] (get tx o o))) rows))
+
+(defn number-or-throw-columns [columns data]
+  (mapv (fn [x]
+          (reduce (fn [o [k v]]
+                    (if (some #{k} columns)
+                      (assoc o k (if (number? v) v (throw (ex-info "column contained non-number" {:column k :value v}))))
+                      (assoc o k v))) {} x)) data))

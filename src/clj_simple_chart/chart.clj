@@ -1,6 +1,5 @@
 (ns clj-simple-chart.chart
-  (:require [clj-simple-chart.core :as core]
-            [clj-simple-chart.translate :refer [translate]]
+  (:require [clj-simple-chart.translate :refer [translate]]
             [clj-simple-chart.scale.core :as scale]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.axis.ticks :refer [ticks]]))
