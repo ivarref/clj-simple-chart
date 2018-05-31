@@ -74,6 +74,7 @@
                    "DE_EDLV" "Weeze"                               ; https://en.wikipedia.org/wiki/Weeze_Airport
 
                    "NO_ENHD" "Haugesund"
+                   "NO_ENMS" "Mosjøen"
 
                    "FI_EFHK" "Helsinki"
 

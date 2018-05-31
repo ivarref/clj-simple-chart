@@ -25,7 +25,7 @@
 
 (defn chunk->moving-sum [chunk]
   (into {} (map (fn [[k v]]
-                  (cond (number? v) [k (reduce + 0.0 (map k chunk))]
+                  (cond (number? v) [k (reduce + 0.0 (map #(or (k %) 0) chunk))]
                         (string? v) [k v]
                         (keyword? v) [k v]
                         :else (throw (ex-info "Unhandled value type" {:value v :chunk chunk}))))
