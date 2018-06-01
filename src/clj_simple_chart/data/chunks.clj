@@ -23,21 +23,31 @@
 (test/is (= '([:a :b] [:b :c] [:c :d] [:d :e]) (rolling-chunks [:a :b :c :d :e] 2)))
 (test/is (= '([:a :b :c] [:b :c :d] [:c :d :e]) (rolling-chunks [:a :b :c :d :e] 3)))
 
+(defn chunk->properties [chunk]
+  (reduce (partial merge-with #(or %2 %1))
+          {}
+          chunk))
+
+(test/is (= {} (chunk->properties [])))
+(test/is (= {:a 1} (chunk->properties [{:a 1}])))
+(test/is (= {:a 2} (chunk->properties [{:a 1} {:a 2}])))
+(test/is (= {:b 2 :a 2} (chunk->properties [{:b 2 :a 1} {:a 2}])))
+
 (defn chunk->moving-sum [chunk]
   (into {} (map (fn [[k v]]
-                  (cond (number? v) [k (reduce + 0.0 (map #(or (k %) 0) chunk))]
+                  (cond (number? v) [k (reduce + 0.0 (map #(get % k 0) chunk))]
                         (string? v) [k v]
                         (keyword? v) [k v]
                         :else (throw (ex-info "Unhandled value type" {:value v :chunk chunk}))))
-                (last chunk))))
+                (chunk->properties chunk))))
 
 (defn chunk->moving-average [chunk]
   (into {} (map (fn [[k v]]
-                  (cond (number? v) [k (double (/ (reduce + 0.0 (map k chunk)) (count chunk)))]
+                  (cond (number? v) [k (double (/ (reduce + 0.0 (map #(get % k 0) chunk)) (count chunk)))]
                         (string? v) [k v]
                         (keyword? v) [k v]
                         :else (throw (ex-info "Unhandled value type" {:value v :chunk chunk}))))
-                (last chunk))))
+                (chunk->properties chunk))))
 
 (test/is (= (chunk->moving-sum [{:dato "first" :v 100}
                                 {:dato "second" :v 33}
