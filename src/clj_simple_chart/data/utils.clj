@@ -20,7 +20,7 @@
   {:pre [(not (map? rows))]}
   (map (partial column-value->column-inner column) rows))
 
-(defn rename-keys-remove-whitespace
+(defn remove-whitespace-in-keys
   [rows]
   (for [row rows]
     (reduce merge {} (for [[k v] row]
@@ -56,6 +56,40 @@
 
 (defn add-sum-column [rows]
   (map #(assoc % :sum (reduce + 0 (filter number? (vals %)))) rows))
+
+(defn sum-but [column exclude-properties rows]
+  (map #(reduce (fn [o [k v]]
+                  (cond (not (number? v)) (assoc o k v)
+                        (some #{k} exclude-properties) (assoc o k v)
+                        :else (update o column (fn [old] (+ (or old 0) v)))))
+                {}
+                %)
+       rows))
+
+(test/is (= [{:a 1 :others 3 :dato "dato"}]
+            (sum-but :others [:a] [{:a 1 :x 1 :y 2 :dato "dato"}])))
+
+(defn top-n-keys-last [n rows]
+  (let [row (last rows)]
+    (->> row
+         (filter #(number? (second %)))
+         (sort-by second)
+         (take-last n)
+         (reverse)
+         (mapv first))))
+
+(defn other-keys [exclude-keys rows]
+  (->> rows
+       (mapcat identity)
+       (filter #(number? (second %)))
+       (map first)
+       (remove #(some #{%} exclude-keys))
+       (distinct)
+       (sort)
+       (vec)))
+
+(test/is (= [:b :c] (top-n-keys-last 2 [{:a 1 :b 999 :c 2 :dato "xyz"}])))
+(test/is (= [:c :d] (other-keys [:a :b] [{:a 1 :b 999 :c 1} {:a 1 :b 999 :d 1}])))
 
 (defn relative-share [rows]
   (for [row rows]

@@ -57,7 +57,7 @@
                 (map #(update % :dato (fn [d] (str d "-12"))))
                 (column-value->column :ContentsCodeCategory)
                 (contract-by-column :dato)
-                (rename-keys-remove-whitespace)
+                (remove-whitespace-in-keys)
                 (div-by 1000)
                 (add-sum-column)))
 

@@ -18,7 +18,7 @@
                (ssb/fetch 7301)
                (drop-columns [:ContentsCodeCategory])
                (column-value->column :Kjoretoytype)
-               (rename-keys-remove-whitespace)
+               (remove-whitespace-in-keys)
                (contract-by-column :dato)
                (keep-columns [:dato
                               :personbiler-i-alt

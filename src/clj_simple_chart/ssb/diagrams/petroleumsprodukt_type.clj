@@ -23,7 +23,7 @@
                (remove #(= "Petroleumsprodukter i alt" (:petroleumsprodukt %)))
                (column-value->column :petroleumsprodukt)
                (contract-by-column :dato)
-               (rename-keys-remove-whitespace)
+               (remove-whitespace-in-keys)
                (flat->12-mms)
                (add-sum-column)))
 

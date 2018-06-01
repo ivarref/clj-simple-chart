@@ -23,7 +23,7 @@
                (remove #(= "Alle kjøpegrupper" (:kjopegruppe %)))
                (column-value->column :kjopegruppe)
                (contract-by-column :dato)
-               (rename-keys-remove-whitespace)
+               (remove-whitespace-in-keys)
                (flat->12-mms)
                (add-sum-column)))
 

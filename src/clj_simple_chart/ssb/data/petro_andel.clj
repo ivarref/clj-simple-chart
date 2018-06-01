@@ -22,7 +22,7 @@
                (map #(dissoc % :Region))
                (csv/number-or-throw-columns [:salg])
                (column-value->column :kjopegruppe)
-               (rename-keys-remove-whitespace)
+               (remove-whitespace-in-keys)
                (contract-by-column :dato)
                (drop-columns [:alle-kjøpegrupper])
                (map #(set/rename-keys % {:fiske-og-fangst :fiske

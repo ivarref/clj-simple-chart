@@ -21,7 +21,7 @@
                (csv/number-or-throw-columns [:antall])
                (column-value->column :ContentsCodeCategory)
                (contract-by-column :dato)
-               (rename-keys-remove-whitespace)
+               (remove-whitespace-in-keys)
                (div-by 1000)
                (add-sum-column)))
 
