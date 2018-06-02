@@ -7,7 +7,8 @@
             [clj-simple-chart.ncs.production-cumulative-yearly-fields :as production]
             [clj-simple-chart.ncs.raw-production :as raw-production]
             [clojure.test :as test]
-            [clj-simple-chart.data.utils :as utils]))
+            [clj-simple-chart.data.utils :as utils]
+            [clojure.string :as str]))
 
 (def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/discovery&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=81.191.112.135&CultureCode=en")
 (defonce raw (-> url
@@ -67,7 +68,7 @@
                  (map #(update % :fldName (fn [x] (if (empty? x) nil x))))
                  (map #(update % :dscName (fn [x] (if (empty? x) nil x))))
                  (map #(assoc % :name (or (:fldName %) (:dscName %))))
-                 (map #(update % :name (fn [x] (get rename-field x x))))
+                 (map #(update % :name (fn [x] (get rename-field (str/upper-case x) (str/upper-case x)))))
                  (group-by :name)
                  (vals)
                  (map #(sort-by (fn [x] (:year x)) %))

@@ -37,6 +37,7 @@
 (def parsed (->> data
                  (map #(update % :prfPrdNGLNetMillSm3 parens-to-negative))
                  (map #(update % :prfPrdOilNetMillSm3 parens-to-negative))
+                 (map #(update % :prfPrdOeNetMillSm3 parens-to-negative))
                  (csv/read-number-or-throw-columns [:prfYear
                                                     :prfPrdOilNetMillSm3
                                                     :prfPrdGasNetBillSm3

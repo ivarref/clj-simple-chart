@@ -63,6 +63,6 @@
   "Returns nil if field-name is not found"
   {:pre [(some #{kind} [:fldRecoverableOE :fldRecoverableGas :fldRecoverableLiquids])]}
   (->> parsed
-       (filter #(= field-name (:fldName %)))
+       (filter #(= (str/upper-case field-name) (str/upper-case (:fldName %))))
        (first)
        (#(get % kind))))
