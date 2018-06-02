@@ -120,6 +120,37 @@
             {}
             row)))
 
+(defn multiply-by [number rows]
+  (for [row rows]
+    (reduce (fn [o [k v]]
+              (if (number? v)
+                (assoc o k (double (* v number)))
+                (assoc o k v)))
+            {}
+            row)))
+
+(defn update-column [column f rows]
+  (map #(update % column f) rows))
+
+(defn round [rows]
+  (if (number? rows)
+    (Math/round (double rows))
+    (for [row rows]
+      (reduce (fn [o [k v]]
+                (if (number? v)
+                  (assoc o k (Math/round (double v)))
+                  (assoc o k v)))
+              {}
+              row))))
+
+(defn kw->human-str [kw]
+  (let [s (str/replace (name kw) "-" " ")]
+    s))
+
+(defn capitalize [s]
+  (str (str/upper-case (first s))
+       (subs s 1)))
+
 (defn div-by-no-round [number rows]
   (for [row rows]
     (reduce (fn [o [k v]]

@@ -11,9 +11,6 @@
 
 (def scale scale-core/scale)
 
-(defn round [x]
-  (Math/round (double x)))
-
 (defn render [& args]
   (apply jfx/render args))
 
@@ -28,8 +25,8 @@
 
 (defn svg-attrs
   ([width height]
-   {:width  (round width)
-    :height (round height)
+   {:width  (Math/round (double width))
+    :height (Math/round (double height))
     :xmlns  "http://www.w3.org/2000/svg"})
   ([width height margin]
    {:width  (+ (:left margin) (:right margin) width)
