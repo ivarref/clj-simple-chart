@@ -101,6 +101,16 @@
               {}
               row))))
 
+(defn relative-share-no-round [rows]
+  (for [row rows]
+    (let [sum (reduce + 0 (filter number? (vals row)))]
+      (reduce (fn [o [k v]]
+                (if (number? v)
+                  (assoc o k (double (* 100 (/ v sum))))
+                  (assoc o k v)))
+              {}
+              row))))
+
 (defn div-by [number rows]
   (for [row rows]
     (reduce (fn [o [k v]]
@@ -194,3 +204,12 @@
                     (if (some #{k} columns)
                       (assoc o k (if (number? v) v (throw (ex-info "column contained non-number" {:column k :value v}))))
                       (assoc o k v))) {} x)) data))
+
+(defn negative-keys->zero [rows]
+  (for [row rows]
+    (reduce (fn [o [k v]]
+              (if (and (number? v) (neg? v))
+                (assoc o k 0)
+                (assoc o k v)))
+            {}
+            row)))
