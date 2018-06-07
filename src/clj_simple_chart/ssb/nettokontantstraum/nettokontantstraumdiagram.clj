@@ -40,7 +40,7 @@
 
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
-(def utbytte (keyword "Utbytte fra Statoil"))
+(def utbytte (keyword "Utbytte fra Equinor"))
 (def netto-sdoe (keyword "Netto kontantstrøm fra SDØE"))
 (def netto-sum (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet"))
 
@@ -146,7 +146,7 @@
                      :y2     yy2}))
 
 (def translate-info {netto-sdoe "Netto kontantstraum frå SDØE*"
-                     utbytte    "Utbytte frå Statoil"
+                     utbytte    "Utbytte frå Equinor (Statoil)"
                      skatter    "Skattar på utvinning av petroleum"})
 
 (def info
