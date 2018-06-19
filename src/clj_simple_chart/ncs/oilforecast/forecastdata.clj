@@ -53,8 +53,8 @@
             :prfPrdNGLNetMillSm3        [19.37 18.42 18.56 18.13 17.32]
             :prfPrdLiquidsNetMillMboed  [1.98 1.88 1.80 1.92 2.04]
             :prfPrdLiquidsNetMillSm3    [115.08 108.84 104.47 111.70 118.44]
-            :prfPrdGasNetBillSm3        [114.47 114.54 114.46 114.34 113.76]}
-           })
+            :prfPrdGasNetBillSm3        [114.47 114.54 114.46 114.34 113.76]}})
+
 
 (defn process-prediction-year [[yr values]]
   (->>

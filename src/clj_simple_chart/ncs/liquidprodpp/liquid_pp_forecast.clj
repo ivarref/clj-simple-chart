@@ -47,9 +47,9 @@
 
                                       "#8c564b"             ; brown
                                       "#ff7f0e"             ; orange
-                                      "#d62728"             ; red
+                                      "#d62728"])))             ; red
                                       ;"#9467bd"                      ; purple
-                                      ])))
+
 
 (def sub-domain buckets)
 
@@ -75,10 +75,10 @@
     (str (nth months (read-string (last parts)))
          " " (first parts))))
 
-(def feltmogning-ex-txt (str "Nedtappingsgrad: Prosent produsert av opprinneleg utvinnbart"
+(def feltmogning-ex-txt (str "Nedtappingsgrad: Prosent produsert av opprinneleg utvinnbart"))
                              ;(:prfYear (first data)) "–" (:prfYear (last data))
 
-                             ))
+
 
 (def header (opentype/stack
               {:width available-width}
