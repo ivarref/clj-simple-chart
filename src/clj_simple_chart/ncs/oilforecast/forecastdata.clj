@@ -57,8 +57,12 @@
 
            "2017"
            ; http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret-2017/Figurgrunnlag-til-publisering-Sokkelaret2017.xlsx
-           {:prfPrdOilNetMillSm3       [90.15 87.23 100.69 109.50 111.32]
-            :prfPrdLiquidsNetMillMboed [1.93 1.86 2.08 2.26 2.30]}})
+           {:prfPrdOilNetMillSm3        [90.15 87.23 100.69 109.50 111.32]
+            :prfPrdCondensateNetMillSm3 [1.78 1.69 1.50 1.50 1.40]
+            :prfPrdNGLNetMillSm3        [19.84 19.28 18.70 20.10 20.69]
+            :prfPrdLiquidsNetMillMboed  [1.93 1.86 2.08 2.26 2.30]
+            :prfPrdLiquidsNetMillSm3    [111.77 108.20 120.89 131.10 133.41]
+            :prfPrdGasNetBillSm3        [121.17 121.27 121.76 122.59 122.68]}})
 
 
 (defn process-prediction-year [[yr values]]
