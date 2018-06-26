@@ -55,7 +55,7 @@
 
 (def forecast (forecastdata/forecast-monthly-eoy forecastdata/current-forecast))
 
-(def x-domain (date-range (:date (first data)) "2022-06"))
+(def x-domain (date-range (:date (first data)) "2023-12"))
 
 (def x-ticks (filter #(or (= % "1971-12")
                           (.endsWith % "5-12")
@@ -83,7 +83,9 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text (str "Oljeproduksjon etter nedtappingsgrad")
-                :font "Roboto Bold" :font-size 30}
+                :font "Roboto Black" :font-size 30}
+               {:text (str "Og ODs prognose for 2018–2022")
+                :font "Roboto Bold" :font-size 24}
                {:text (str "Produksjon per " (months-str (:date last-data)) ": "
                            (string/replace (format "%.2f" (get last-data :sum)) "." ",")
                            " millionar fat/dag")
@@ -151,7 +153,7 @@
   [:g {:transform (translate (xfn dato) (yfn (get opts :sum)))}
    [:circle {:r 2.5}]
    [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]
-   (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "" (subs dato 0 4) "")})
+   (opentype/text {:dy "-.71em" :text-anchor "middle" :text (str "'" (subs dato 2 4) "")})
    (opentype/text {:dy          "-1.71em"
                    :font        "Roboto Bold"
                    :text-anchor "middle"
@@ -171,8 +173,9 @@
                    :dot       true
                    :dot-style {:fill "yellow" :stroke "black" :stroke-width 1 :r 4}
                    :h         :prfPrdLiquidsNetMillMboed} forecast)
-     [:g {:transform (translate (xfn "2019-12") (yfn 1.6))}
-      (opentype/text {:text "OD Prognose 12.01.2017" :font "Roboto Black" :font-size 14 :text-anchor "middle"})]
+     [:g {:transform (translate (xfn "2020-12") (yfn 1.6))}
+      (opentype/text {:text "OD Prognose" :font "Roboto Black" :font-size 14 :text-anchor "middle"})
+      (opentype/text {:dy 20 :text "Per 11.01.2018" :font "Roboto Regular" :font-size 14 :text-anchor "middle"})]
      [:g (map make-txt (filter #(some #{(:date %)}
                                       [;"1971-12"
                                        "1975-12"
@@ -185,8 +188,9 @@
                                        "2005-12"
                                        "2010-12"
                                        "2013-12"
-                                       "2015-12"
-                                       "2016-12"]) data))]
+                                       ;"2015-12"
+                                       "2016-12"
+                                       "2017-12"]) data))]
      [:g (map make-txt (->> forecast (mapv #(assoc % :sum (:prfPrdLiquidsNetMillMboed %)))))]
      (axis/render-axis (:x c))]
     (let [infotext (opentype/stack {:fill         "white"
