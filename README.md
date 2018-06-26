@@ -10,6 +10,8 @@
 
 ![Oljeproduksjon](img/ncs-png/liquids-pp-two.png)
 
+![Oljeproduksjon](img/ncs-png/liquids-pp-forecast.png)
+
 ![Gassproduksjon](img/ncs-png/gas-rp.png)
 
 ![Petroleumsproduksjon](img/ncs-png/petro-pp.png)
