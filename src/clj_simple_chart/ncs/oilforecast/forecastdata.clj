@@ -24,27 +24,45 @@
 
            "2010"
            ; Sokkelåret 2010 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkel%C3%A5ret-2010/Tabell.pdf
-           {:prfPrdOilNetMillSm3 [98.3 94.0 91.9 89.8 88.9]}
+           {:prfPrdOilNetMillSm3        [98.3 94.0 91.9 89.8 88.9]
+            :prfPrdCondensateNetMillSm3 [4.4 4.2 4.0 3.4 3.2]
+            :prfPrdNGLNetMillSm3        [16.8 16.9 16.2 16.9 16.8]
+            :prfPrdGasNetBillSm3        [109.1 111.0 111.6 111.6 112.2]}
 
            "2011"
            ; Sokkelåret 2011 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret2011/Produksjon-tabell.pdf
-           {:prfPrdOilNetMillSm3 [93.8 92.7 90.8 90.6 90.2]}
+           {:prfPrdOilNetMillSm3        [93.8 92.7 90.8 90.6 90.2]
+            :prfPrdCondensateNetMillSm3 [4.3 3.4 2.9 2.7 2.4]
+            :prfPrdNGLNetMillSm3        [17.5 17.6 18.3 18.7 18.1]
+            :prfPrdGasNetBillSm3        [106.7 109.5 111.8 112.0 112.1]}
 
            "2012"
            ; Sokkelåret 2012 http://www.npd.no/Nyheter/Nyheter/2013/Sokkelaret-2012---pressemeldinger/Petroleumsproduksjon/
-           {:prfPrdOilNetMillSm3 [85.5 88.3 90.7 90.1 91.0]}
+           {:prfPrdOilNetMillSm3        [85.5 88.3 90.7 90.1 91.0]
+            :prfPrdCondensateNetMillSm3 [3.7 3.2 2.9 2.6 2.8]
+            :prfPrdNGLNetMillSm3        [16.8 19.2 20.6 21.5 20.1]
+            :prfPrdGasNetBillSm3        [106.5 109.5 110.5 110.6 111.2]}
 
            "2013"
            ; Sokkelåret 2013 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret-2013/Datagrunnlag_til_nettpubl_alle.xlsx
-           {:prfPrdOilNetMillSm3 [85.50 86.50 86.70 86.98 85.94]}
+           {:prfPrdOilNetMillSm3        [85.50 86.50 86.70 86.98 85.94]
+            :prfPrdCondensateNetMillSm3 [3.17 2.85 2.62 2.91 3.53]
+            :prfPrdNGLNetMillSm3        [18.89 19.43 19.94 19.38 19.62]
+            :prfPrdGasNetBillSm3        [107.01 106.29 107.69 113.33 115.79]}
 
            "2014"
            ; Sokkelåret 2014 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaaret-2014/Datagrunnlag-til-publisering.xlsx
-           {:prfPrdOilNetMillSm3 [86.31 86.62 85.68 82.41 80.68]}
+           {:prfPrdOilNetMillSm3        [86.31 86.62 85.68 82.41 80.68]
+            :prfPrdCondensateNetMillSm3 [2.10 2.09 2.44 2.76 3.00]
+            :prfPrdNGLNetMillSm3        [19.55 19.55 19.08 19.04 18.29]
+            :prfPrdGasNetBillSm3        [107.59 107.08 109.96 112.91 112.89]}
 
            "2015"
            ; Sokkelåret 2015 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret-2015/Sokkelaaret-figur-grunnlag.xlsx
-           {:prfPrdOilNetMillSm3 [89.04 87.25 81.96 80.21 81.67]}
+           {:prfPrdOilNetMillSm3        [89.04 87.25 81.96 80.21 81.67]
+            :prfPrdCondensateNetMillSm3 [2.01 1.83 2.37 2.61 2.30]
+            :prfPrdNGLNetMillSm3        [19.43 18.79 18.44 17.92 17.09]
+            :prfPrdGasNetBillSm3        [106.57 107.25 109.71 110.96 111.05]}
 
            "2016"
            ; Sokkelåret 2016 http://www.npd.no/Global/Norsk/1-Aktuelt/Nyheter/Sokkelaret-2016/Figurgrunnlag-Sokkelaret-2016.xlsx
