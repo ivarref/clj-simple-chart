@@ -99,20 +99,30 @@
 
 (defn process-prediction-year [[yr values]]
   (->>
-    (for [[resource vals] values]
-      (for [[idx val] (map-indexed (fn [idx x] [idx x]) vals)]
-        {:predictionYear (inc (read-string yr))
-         :prfYear        (+ 1 idx (read-string yr))
-         :offsetYear     (inc idx)
-         resource        val}))
-    (flatten)
+    (for [[resource vals] values
+          [idx val] (map-indexed (fn [idx x] [idx x]) vals)]
+      {:predictionYear (inc (read-string yr))
+       :prfYear        (+ 1 idx (read-string yr))
+       :offsetYear     (inc idx)
+       resource        val})
     (group-by :prfYear)
     (vals)
-    (mapv #(reduce merge {} %))
+    (map #(reduce merge {} %))
     (flatten)
     (sort-by :prfYear)))
 
-(def pretty-data (flatten (mapv process-prediction-year data)))
+(defn add-liquids-mboed [e]
+  (-> e
+      (update :prfPrdLiquidsNetMillMboed (fn [o] (or o
+                                                     (/ (* 6.29 (+ (:prfPrdOilNetMillSm3 e)
+                                                                   (:prfPrdCondensateNetMillSm3 e)
+                                                                   (:prfPrdNGLNetMillSm3 e)))
+                                                        365))))))
+
+(def pretty-data (->> data
+                      (mapcat process-prediction-year)
+                      (map add-liquids-mboed)
+                      (vec)))
 
 (def plus-5 (->> pretty-data
                  (filter #(= 5 (:offsetYear %)))
