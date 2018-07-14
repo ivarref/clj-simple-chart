@@ -179,7 +179,7 @@
                        (sort-by :date)
                        (vec)))
 
-(test/is (= "2017-06" (:date (last data-monthly))))
+(test/is (= "2017-09" (:date (last data-monthly))))
 
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
                   {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data)))))))
