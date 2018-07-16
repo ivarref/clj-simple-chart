@@ -36,6 +36,12 @@
 
 # Køyretøy
 
+![](img/ssb-png/bensin-autodiesel.png)
+
+![](img/ssb-png/petroleumsprodukt.png)
+
+![](img/ssb-png/petroleumsprodukt-kjopegruppe.png)
+
 ![](img/ssb-png/registrerte-koyretoy.png)
 
 ![](img/ssb-png/registrerte-personbilar-per-1000.png)
@@ -44,9 +50,6 @@
 
 ![](img/ssb-png/koyrelengde-etter-kategori.png)
 
-![](img/ssb-png/petroleumsprodukt.png)
-
-![](img/ssb-png/petroleumsprodukt-kjopegruppe.png)
 
 ## License
 
