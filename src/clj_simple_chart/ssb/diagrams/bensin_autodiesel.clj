@@ -9,6 +9,7 @@
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.ssb.data.ssb-api :as ssb]
             [clj-simple-chart.data.utils :refer :all]
+            [clj-simple-chart.dateutils :as dateutils]
             [clj-simple-chart.point :as point]))
 
 ; Tabell 11174
@@ -71,7 +72,7 @@
               {:width available-width}
               [{:text "Sal av petroleumsprodukt etter type" :font "Roboto Bold" :font-size 30}
                {:margin-bottom 15
-                :text          (str "Heile landet, 12 månadar glidande sum. Per " (:dato lst) ": " (format "%.0f" (:sum lst)) " mill. liter.")
+                :text          (str "Heile landet, 12 månadar glidande sum. Per " (dateutils/months-str (:dato lst)) ": " (format "%.0f" (:sum lst)) " mill. liter.")
                 :font          "Roboto Regular" :font-size 18}
                {:margin-bottom 3 :text "Millionar liter" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
