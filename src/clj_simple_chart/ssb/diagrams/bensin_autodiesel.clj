@@ -70,7 +70,7 @@
 
 (def header (opentype/stack
               {:width available-width}
-              [{:text "Sal av petroleumsprodukt etter type" :font "Roboto Bold" :font-size 30}
+              [{:text "Sal av bensin og diesel" :font "Roboto Bold" :font-size 30}
                {:margin-bottom 15
                 :text          (str "Heile landet, 12 månadar glidande sum. Per " (dateutils/months-str (:dato lst)) ": " (format "%.0f" (:sum lst)) " mill. liter.")
                 :font          "Roboto Regular" :font-size 18}
