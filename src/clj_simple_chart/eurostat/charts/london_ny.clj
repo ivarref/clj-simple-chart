@@ -13,6 +13,9 @@
             [clj-simple-chart.dateutils :as dateutils]
             [clojure.test :as test]))
 
+; https://ec.europa.eu/eurostat/statistics-explained/index.php/Air_transport_statistics
+; Next planned update: November 2018
+
 (def marg 10)
 (def two-marg (* 2 marg))
 
