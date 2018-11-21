@@ -115,7 +115,7 @@
 
 (def max-year-kw (keyword (str max-year)))
 
-(test/is (= 2016 max-year))
+(test/is (= 2017 max-year))
 
 (defn add-item [a b]
   (reduce (fn [o [k v]]
@@ -179,7 +179,7 @@
                        (sort-by :date)
                        (vec)))
 
-(test/is (= "2017-09" (:date (last data-monthly))))
+(test/is (= "2018-06" (:date (last data-monthly))))
 
 (csvmap/write-csv "data/eurostat/avia-par-no-pas-carried.csv"
                   {:columns (vec (distinct (concat regular-columns (reverse (sort (keys (first data)))))))

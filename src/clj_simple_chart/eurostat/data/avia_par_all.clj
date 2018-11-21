@@ -104,7 +104,7 @@
 
 (def max-year-kw (keyword (str max-year)))
 
-(test/is (= 2016 max-year))
+(test/is (= 2017 max-year))
 
 
 (def regular-columns [:unit :tra_meas :airp_pr :from :to :codes])
