@@ -73,10 +73,10 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   (vec (distinct (flatten [(first x-domain)
-                                                 (range 1970 2017 5)])))
-                                                 ;(last x-domain)])))
+                                                 (range 1970 (last x-domain) 5)
+                                                 (last x-domain)])))
          :tick-format   (fn [x] (cond (= x 1967) "67"
-                                      (= x 2017) "17"
+                                      (= x 2018) "18"
                                       :else x))
          :domain        x-domain
          :sub-domain    number-columns
