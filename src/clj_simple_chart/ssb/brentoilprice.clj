@@ -73,12 +73,12 @@
         (.endsWith dato "-12") (str (subs dato 0 4) "K4")
         :else nil))
 
-(def brent-4qma-to-2017-nok
+(def brent-4qma-to-inflation-adjusted-nok
   (->> brent-12-mma
        (filter #(dato-to-kvartal (:dato %)))
        (reduce (fn [o v]
                  (assoc o (dato-to-kvartal (:dato v))
-                          (kpi/to-2017-nok-4qma (dato-to-kvartal (:dato v))
+                          (kpi/to-2018-nok-4qma (dato-to-kvartal (:dato v))
                                                 (* (get one-usd-date-to-nok (:dato v)) (:usd v)))))
                {})))
 

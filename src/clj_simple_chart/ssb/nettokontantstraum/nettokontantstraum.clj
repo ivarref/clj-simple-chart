@@ -54,14 +54,14 @@
                  (mapv process-grouped)
                  (sort-by :dato)))
 
-(defn entry-to-2017-nok [x]
+(defn inflation-adjust [x]
   (reduce (fn [o [k v]]
             (cond (= k :dato) (assoc o k v)
-                  :else (assoc o k (kpi/to-2017-nok (:dato x) v))))
+                  :else (assoc o k (kpi/to-2018-nok (:dato x) v))))
           {}
           x))
 
-(def inflation-adjusted (mapv entry-to-2017-nok parsed))
+(def inflation-adjusted (mapv inflation-adjust parsed))
 
 (def actual-columns (flatten [:dato (mapv keyword (distinct (filter string? (map prop columns))))]))
 
@@ -137,7 +137,7 @@
                {:data    (mapv produce-mrd four-quarters-moving-sum)
                 :columns actual-columns})
 
-(csv/write-csv "./data/11013/11013-mrd-4qms-2017-NOK.csv"
+(csv/write-csv "./data/11013/11013-mrd-4qms-2018-NOK.csv"
                {:data    (mapv produce-mrd four-quarters-moving-sum-adjusted)
                 :columns actual-columns})
 

@@ -24,7 +24,7 @@
            2016 -208.4                                      ; https://www.statsbudsjettet.no/Statsbudsjettet-2018/Satsinger/?pid=83808
            2017 -232.4})                                    ; https://www.statsbudsjettet.no/Statsbudsjettet-2018/Satsinger/?pid=83808
 
-(def underskudd-2017-nok
+(def underskudd-inflation-adjusted-nok
   (->> data
-       (map (fn [[k v]] [k (Math/abs (kpi/to-2017-nok (str k "K4") v))]))
+       (map (fn [[k v]] [k (Math/abs (kpi/to-2018-nok (str k "K4") v))]))
        (into {})))

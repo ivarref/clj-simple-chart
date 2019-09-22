@@ -27,7 +27,7 @@
 (def data (->> nettokontantstraum/four-quarters-moving-sum-adjusted-mrd
                (filter #(>= (:year %) 1996))
                (mapv #(assoc % :oilprice
-                               (get brentoilprice/brent-4qma-to-2017-nok (prev-quarter (prev-quarter (:dato %))) ::none)))))
+                               (get brentoilprice/brent-4qma-to-inflation-adjusted-nok (prev-quarter (prev-quarter (:dato %))) ::none)))))
 
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))

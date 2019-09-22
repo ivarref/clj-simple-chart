@@ -34,9 +34,9 @@
 (def data (->> nettokontantstraum/four-quarters-moving-sum-adjusted-mrd
                (filter #(>= (:year %) 1996))
                (drop-while #(not (str/ends-with? (:dato %) "K4")))
-               (map #(assoc % :underskudd (get underskudd/underskudd-2017-nok (:year %))))
+               (map #(assoc % :underskudd (get underskudd/underskudd-inflation-adjusted-nok (:year %))))
                (mapv #(assoc % :oilprice
-                               (get brentoilprice/brent-4qma-to-2017-nok (prev-quarter (prev-quarter (:dato %))) ::none)))))
+                               (get brentoilprice/brent-4qma-to-inflation-adjusted-nok (prev-quarter (prev-quarter (:dato %))) ::none)))))
 
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
@@ -79,20 +79,20 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 30}
-               {:text          (str "Milliardar 2017-kroner, 4 kvartal glidande sum. "
+               {:text          (str "Milliardar 2018-kroner, 4 kvartal glidande sum. "
                                     "Per " (:dato last-data) ": "
                                     (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
                                     " mrd. kr")
                 :font          "Roboto Bold" :font-size 16
                 :margin-top    2
                 :margin-bottom 10}
-               {:text "Oljepris, 2017-kroner/fat" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
+               {:text "Oljepris, 2018-kroner/fat" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
                {:text "4 kvartal glidande gjennomsnitt, 2 kvartal framskyvd" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                #_{:circle {:stroke "black" :stroke-width 2 :r 4 :fill "yellow" :x-offset -18}
                   :text   "Oljekorrigert underskot" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:text "Milliardar 2017-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
+               {:text "Milliardar 2018-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
