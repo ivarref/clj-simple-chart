@@ -90,13 +90,13 @@
                {:text "4 kvartal glidande gjennomsnitt, 2 kvartal framskyvd" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:circle {:stroke "black" :stroke-width 2 :r 4 :fill "yellow" :x-offset -18}
-                :text   "Oljekorrigert underskot" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
+               #_{:circle {:stroke "black" :stroke-width 2 :r 4 :fill "yellow" :x-offset -18}
+                  :text   "Oljekorrigert underskot" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                {:text "Milliardar 2017-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelder: SSB, Statsbudsjettet, Norges Bank, St. Louis Fed. *Statens Direkte Økonomiske Engasjement" :font "Roboto Regular" :font-size 14}
+              [{:margin-top 8 :text "Kjelder: SSB, Norges Bank, St. Louis Fed. *Statens Direkte Økonomiske Engasjement" :font "Roboto Regular" :font-size 14}
                ;{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
@@ -105,7 +105,7 @@
          :orientation   :bottom
          :tick-values   x-ticks
          :tick-format   (fn [x] (cond (= x "1996K4") (subs x 0 4)
-                                      (= x "2017K4") (subs x 0 4)
+                                      (= x "2018K4") (subs x 0 4)
                                       (.endsWith x "05K4") (subs x 0 4)
                                       (.endsWith x "00K4") (subs x 0 4)
                                       (.endsWith x "10K4") (subs x 0 4)
@@ -191,7 +191,8 @@
                     2014
                     2015
                     2016
-                    2017])
+                    2017
+                    2018])
 
 (def end-of-year-data (->> data
                            (filter #(and (some #{(:year %)} txt-for-years)
@@ -247,21 +248,21 @@
      (axis/render-axis (:y2 c))
      [:g (bars (mapv make-rect data))]
      [:g (add-oil-price-line)]
-     [:g (line/line c {:p    :dato
-                       :h :underskudd
-                       :dot true
-                       :dot-style {:fill "yellow"
-                                   :r 4
-                                   :stroke-width 2
-                                   :stroke "black"}
-                       :path {:stroke "black"
-                              :stroke-width 5}}
-                    (filter #(str/ends-with? (:dato %) "K4") data))]
-     [:g (line/line c {:p    :dato
-                       :h :underskudd
-                       :path {:stroke "yellow"
-                              :stroke-width 1.2}}
-                    (filter #(str/ends-with? (:dato %) "K4") data))]
+     #_[:g (line/line c {:p    :dato
+                         :h :underskudd
+                         :dot true
+                         :dot-style {:fill "yellow"
+                                     :r 4
+                                     :stroke-width 2
+                                     :stroke "black"}
+                         :path {:stroke "black"
+                                :stroke-width 5}}
+                      (filter #(str/ends-with? (:dato %) "K4") data))]
+     #_[:g (line/line c {:p    :dato
+                         :h :underskudd
+                         :path {:stroke "yellow"
+                                :stroke-width 1.2}}
+                      (filter #(str/ends-with? (:dato %) "K4") data))]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
      [:g {:transform (translate 30 (+ 2 (yfn 500)))} info]]

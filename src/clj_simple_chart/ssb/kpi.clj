@@ -101,6 +101,12 @@
 
 (def baseline-2017 (/ (reduce + 0 baseline-2017-items) (count baseline-2017-items)))
 
+(def baseline-2018-items (->> parsed
+                              (filter #(= "2018" (:year %)))
+                              (mapv (comp read-string :kpi))))
+
+(def baseline-2018 (/ (reduce + 0 baseline-2018-items) (count baseline-2018-items)))
+
 (def baseline (/ baseline-sum 12))
 
 (defn to-2016-nok [dato-with-quarter v]

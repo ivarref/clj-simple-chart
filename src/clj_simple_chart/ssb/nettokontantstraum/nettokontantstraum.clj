@@ -54,13 +54,6 @@
                  (mapv process-grouped)
                  (sort-by :dato)))
 
-(defn entry-to-2016-nok [x]
-  (reduce (fn [o [k v]]
-            (cond (= k :dato) (assoc o k v)
-                  :else (assoc o k (kpi/to-2016-nok (:dato x) v))))
-          {}
-          x))
-
 (defn entry-to-2017-nok [x]
   (reduce (fn [o [k v]]
             (cond (= k :dato) (assoc o k v)
