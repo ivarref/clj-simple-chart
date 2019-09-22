@@ -85,8 +85,8 @@
                       o
                       (assoc o k v))) {} x)) data))
 
-(defn csv-map-assert-columns [^String input expected-columns]
-  (let [csv-raw (csv/read-csv (debomify input))
+(defn csv-map-assert-columns [^String input expected-columns & options]
+  (let [csv-raw (apply (partial csv/read-csv (debomify input)) options)
         columns (mapv keyword (first csv-raw))
         data (filter #(= (count columns) (count %)) (rest csv-raw))
         missing-columns (->> expected-columns

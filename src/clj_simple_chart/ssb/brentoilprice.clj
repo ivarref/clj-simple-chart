@@ -2,7 +2,7 @@
   (:require [clj-http.client :as client]
             [clj-time.core :as time]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clj-simple-chart.ssb.valutakurser :as valutakurser]
+            [clj-simple-chart.ssb.valuta2 :as valutakurser]
             [clj-simple-chart.ssb.kpi :as kpi]
             [clojure.set :as set]
             [clojure.test :as test])
