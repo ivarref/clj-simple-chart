@@ -157,7 +157,8 @@
                                        "2010-12"
                                        ;"2013-12"
                                        "2015-12"
-                                       "2017-12"]) data))]
+                                       "2017-12"
+                                       "2018-12"]) data))]
      (axis/render-axis (:x c))]
     [:g {:transform (translate 0 (+ 0 (+ (:height (meta header)) (:margin-top c))))}
      (opentype/stack {:width available-width}
