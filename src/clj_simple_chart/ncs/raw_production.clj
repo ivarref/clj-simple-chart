@@ -86,12 +86,15 @@
       (swap! filled-gaps-for-fields (fn [o] (conj o field-name))))
     (concat production filled-gaps)))
 
+(def drop-fields #{"7220/11-1 (Alta)"})
+
 (def pre-group-data (->> raw-data
                          :data
                          (csv/read-string-columns numeric-columns)
                          (csv/number-or-throw-columns numeric-columns)
                          (map #(assoc % :date (str (format "%04d-%02d" (:prfYear %) (:prfMonth %)))))
-                         (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))))
+                         (map #(assoc % :date-int (+ (* 100 (:prfYear %)) (:prfMonth %))))
+                         (remove #(drop-fields (:prfInformationCarrier %)))))
 
 (def max-date (:date (last (sort-by :date-int pre-group-data))))
 

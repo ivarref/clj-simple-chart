@@ -55,9 +55,11 @@
 (def expand-field-map {"TAMBAR" ["TAMBAR" "TAMBAR ØST"]})
 
 (defn get-reserve [field-name kind]
-  {:pre [(some #{field-name} field-names-all)
-         (not (some #{field-name} banned-fields))
-         (some #{kind} [:fldRecoverableOE :fldRecoverableOil :fldRecoverableGas :fldRecoverableLiquids])]}
+  (when-not (some #{field-name} field-names-all)
+    (println field-name))
+  (assert (some #{field-name} field-names-all))
+  (assert (not (some #{field-name} banned-fields)))
+  (assert (some #{kind} [:fldRecoverableOE :fldRecoverableOil :fldRecoverableGas :fldRecoverableLiquids]))
   (cond (not (some #{field-name} field-names))
         (let [prop (get {:fldRecoverableOE      :prfPrdOeNetMillSm3
                          :fldRecoverableOil     :prfPrdOilNetMillSm3
