@@ -14,7 +14,10 @@
            (javafx.concurrent Worker$State)
            (javafx.event EventHandler)
            (javafx.scene.input KeyCode)
-           (javafx.beans.value ChangeListener)))
+           (javafx.beans.value ChangeListener)
+           (java.util Locale)))
+
+(defonce _init-locale (Locale/setDefault Locale/US))
 
 (defonce latch (CountDownLatch. 1))
 (defonce zoom (atom 1.0))
