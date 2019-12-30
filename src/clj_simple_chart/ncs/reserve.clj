@@ -5,7 +5,7 @@
             [clj-simple-chart.ncs.raw-production :as raw-production]
             [clojure.test :as test]))
 
-(def field-reserves-url "http://factpages.npd.no/ReportServer?/FactPages/TableView/field_reserves&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=80.213.237.130&CultureCode=en")
+(def field-reserves-url "https://factpages.npd.no/ReportServer_npdpublic?/FactPages/TableView/field_reserves&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=92.220.29.120&CultureCode=en")
 (defonce field-reserves-raw (-> field-reserves-url
                                 (client/get)
                                 (:body)
@@ -80,6 +80,6 @@
 (test/is (some #{"SINDRE"} field-names))
 (test/is (not (some #{"33/9-6 DELTA"} field-names)))
 
-(test/is (= 9.13 (get-reserve "JOHAN SVERDRUP" :fldRecoverableGas)))
-(test/is (= 299.67 (get-reserve "JOHAN SVERDRUP" :fldRecoverableOil)))
-(test/is (= 303.68 (get-reserve "JOHAN SVERDRUP" :fldRecoverableLiquids)))
+(test/is (= 10.24 (get-reserve "JOHAN SVERDRUP" :fldRecoverableGas)))
+(test/is (= 406.58 (get-reserve "JOHAN SVERDRUP" :fldRecoverableOil)))
+(test/is (= 411.08 (get-reserve "JOHAN SVERDRUP" :fldRecoverableLiquids)))
