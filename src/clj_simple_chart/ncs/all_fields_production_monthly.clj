@@ -5,7 +5,7 @@
             [clj-http.client :as client])
   (:import (java.time YearMonth)))
 
-(def url "http://factpages.npd.no/ReportServer?/FactPages/TableView/field_production_totalt_NCS_month__DisplayAllRows&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=77.13.13.136&CultureCode=en")
+(def url "https://factpages.npd.no/ReportServer_npdpublic?/FactPages/TableView/field_production_totalt_NCS_month__DisplayAllRows&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=92.220.29.120&CultureCode=en")
 
 (defonce raw-data (-> url
                       (client/get)
