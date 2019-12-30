@@ -42,7 +42,7 @@
 (defn prev-12-months-num-days [s]
   (apply + (mapv #(.lengthOfMonth %) (mapv year-month (prev-12-months s)))))
 
-(def field-monthly-production-url "http://factpages.npd.no/ReportServer?/FactPages/TableView/field_production_monthly&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=80.213.237.130&CultureCode=en")
+(def field-monthly-production-url "https://factpages.npd.no/ReportServer_npdpublic?/FactPages/TableView/field_production_monthly&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&rs:Format=CSV&Top100=false&IpAddress=92.220.29.120&CultureCode=en")
 (defonce raw-data (-> field-monthly-production-url
                       (client/get)
                       (:body)
