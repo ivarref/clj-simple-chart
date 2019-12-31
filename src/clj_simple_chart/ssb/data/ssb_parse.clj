@@ -1,7 +1,8 @@
 (ns clj-simple-chart.ssb.data.ssb-parse
   (:require [clojure.set :as set]
             [clj-simple-chart.ssb.data.ssb-core :as ssb]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.edn :as edn]))
 
 (defn- row-with-time->generic-row [table]
   (let [v (:valueTexts (ssb/variable table "ContentsCode"))
@@ -56,7 +57,7 @@
                                 (cond (some #{k} regular-cols) o
                                       (some #{k} explode-cols-cols)
                                       (let [new-item (-> (select-keys row regular-cols)
-                                                         (assoc (get explode-cols-map k) (read-string v))
+                                                         (assoc (get explode-cols-map k) (edn/read-string v))
                                                          (assoc :Tid (get tid-map k))
                                                          (assoc :ContentsCodeCategory (get category-map k)))]
                                         (conj o new-item))

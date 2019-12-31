@@ -1,16 +1,17 @@
 (ns clj-simple-chart.ncs.liquidprodpp.liquid-pp-diagram-two
   (:require [clj-simple-chart.core :as core]
-    [clj-simple-chart.opentype :as opentype]
-    [clj-simple-chart.axis.core :as axis]
-    [clj-simple-chart.chart :as chart]
-    [clj-simple-chart.ncs.liquidprodpp.dataclasstwo :as production]
-    [clj-simple-chart.translate :refer [translate translate-y]]
-    [clj-simple-chart.rect :as rect]
-    [clj-simple-chart.point :as point]
-    [clj-simple-chart.area :as clj-area]
-    [clj-simple-chart.area-center-text :as act]
-    [clojure.string :as string]
-    [clojure.string :as str]))
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.axis.core :as axis]
+            [clj-simple-chart.chart :as chart]
+            [clj-simple-chart.ncs.liquidprodpp.dataclasstwo :as production]
+            [clj-simple-chart.translate :refer [translate translate-y]]
+            [clj-simple-chart.rect :as rect]
+            [clj-simple-chart.point :as point]
+            [clj-simple-chart.area :as clj-area]
+            [clj-simple-chart.area-center-text :as act]
+            [clojure.string :as string]
+            [clojure.string :as str]
+            [clojure.edn :as edn]))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -67,7 +68,7 @@
 
 (defn months-str [v]
   (let [parts (string/split v #"-0?")]
-    (str (nth months (read-string (last parts)))
+    (str (nth months (edn/read-string (last parts)))
          " " (first parts))))
 
 (def feltmogning-ex-txt (str "Nedtappingsgrad: Prosent produsert av opprinneleg utvinnbart"))

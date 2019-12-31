@@ -3,7 +3,8 @@
             [clojure.core.async :as async]
             [clojure.string :as string]
             [clj-simple-chart.translate :refer [translate]]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.edn :as edn])
   (:import (org.mozilla.javascript Context NativeObject)
            (org.apache.commons.io FileUtils)
            (java.io File FileReader BufferedInputStream FileInputStream InputStreamReader)
@@ -131,7 +132,7 @@
   (cond
     (.startsWith em-str "-") (- (em-to-number font-size (subs em-str 1)))
     (.startsWith em-str ".") (recur font-size (str "0" em-str))
-    :else (* font-size (read-string (string/replace em-str "em" "")))))
+    :else (* font-size (edn/read-string (string/replace em-str "em" "")))))
 
 (defn- text-inner [{font-name    :font-name
                     font-size    :font-size

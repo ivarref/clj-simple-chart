@@ -3,7 +3,8 @@
             [clj-http.client :as client]
             [clojure.string :as string]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clj-simple-chart.csv.csvmap :as csvmap])
+            [clj-simple-chart.csv.csvmap :as csvmap]
+            [clojure.edn :as edn])
   (:import (java.time YearMonth Year)))
 
 ; Goal:
@@ -16,8 +17,8 @@
 (defn year-month [s]
   {:pre [(string? s)]}
   (let [parts (string/split s #"-0?")
-        year (read-string (first parts))
-        month (read-string (last parts))]
+        year (edn/read-string (first parts))
+        month (edn/read-string (last parts))]
     (YearMonth/of year month)))
 
 (defn date-range
@@ -34,8 +35,8 @@
   {:pre  [(string? s)]
    :post [(= 12 (count %))]}
   (let [parts (string/split s #"-0?")
-        year (read-string (first parts))
-        month (read-string (last parts))]
+        year (edn/read-string (first parts))
+        month (edn/read-string (last parts))]
     (date-range (.minusMonths (YearMonth/of year month) 11)
                 (YearMonth/of year month))))
 
@@ -167,16 +168,16 @@
 (defn sum-for-year-mboed-format [year kind]
   (format "%.3f" (sum-for-year-mboed year kind)))
 
-(test/is (= 94 (Math/round (read-string (sum-for-year-format 2016 :prfPrdOilNetMillSm3)))))
-(test/is (= 91 (Math/round (read-string (sum-for-year-format 2015 :prfPrdOilNetMillSm3)))))
-(test/is (= 88 (Math/round (read-string (sum-for-year-format 2014 :prfPrdOilNetMillSm3)))))
+(test/is (= 94 (Math/round (edn/read-string (sum-for-year-format 2016 :prfPrdOilNetMillSm3)))))
+(test/is (= 91 (Math/round (edn/read-string (sum-for-year-format 2015 :prfPrdOilNetMillSm3)))))
+(test/is (= 88 (Math/round (edn/read-string (sum-for-year-format 2014 :prfPrdOilNetMillSm3)))))
 
-(test/is (= 117 (Math/round (read-string (sum-for-year-format 2016 :prfPrdGasNetBillSm3)))))
+(test/is (= 117 (Math/round (edn/read-string (sum-for-year-format 2016 :prfPrdGasNetBillSm3)))))
 ;
-(test/is (= 117 (Math/round (read-string (sum-for-year-format 2015 :prfPrdGasNetBillSm3)))))
+(test/is (= 117 (Math/round (edn/read-string (sum-for-year-format 2015 :prfPrdGasNetBillSm3)))))
 ;(test/is (= "108.820" (sum-for-year-format 2014 :prfPrdGasNetBillSm3)))
 ;(test/is (= "108.746" (sum-for-year-format 2013 :prfPrdGasNetBillSm3)))
-(test/is (= 79 (Math/round (read-string (sum-for-year-format 2004 :prfPrdGasNetBillSm3)))))
+(test/is (= 79 (Math/round (edn/read-string (sum-for-year-format 2004 :prfPrdGasNetBillSm3)))))
 
 (def whole-2004 (->> data
                      (filter #(= 2004 (:prfYear %)))

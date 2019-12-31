@@ -2,7 +2,8 @@
   (:require [clj-http.client :as client]
             [clj-simple-chart.csv.csvmap :as csv]
             [clojure.test :as test]
-            [hickory.core :as hickory]))
+            [hickory.core :as hickory]
+            [clojure.edn :as edn]))
 
 (defonce exchange-rate-page (client/get "http://www.norges-bank.no/en/Statistics/exchange_rates/"))
 (test/is (= 200 (:status exchange-rate-page)))
@@ -44,7 +45,7 @@
         month-numeric (format "%02d" (get month-to-num month))
         yr (subs date 4 6)
         yr (if (.startsWith yr "0") (subs yr 1 2) yr)
-        yr-two-digit (read-string yr)
+        yr-two-digit (edn/read-string yr)
         yr (if (< yr-two-digit 60) (str "20" (format "%02d" yr-two-digit))
                                    (str "19" (format "%02d" yr-two-digit)))]
     (str yr "-" month-numeric)))
@@ -58,7 +59,7 @@
 
 (def one-usd-numeric (->> parsed
                           (mapv (fn [x] {:dato (:Date x)
-                                         :usd  (read-string (get x (keyword "1 USD")))}))
+                                         :usd  (edn/read-string (get x (keyword "1 USD")))}))
                           (sort-by :dato)))
 
 (def one-usd-numeric-12-mma

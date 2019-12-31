@@ -4,7 +4,8 @@
             [clj-http.client :as client]
             [clojure.pprint :refer [pprint]]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.edn :as edn]))
 
 (def url "http://data.ssb.no/api/v0/no/table/04751")
 (defonce metadata (client/get url))
@@ -69,8 +70,8 @@
             (if (some #{k} columns-non-value)
               o
               (conj o {:hushaldningstype hushaldningstype
-                       :år (string/join (take-last 4 (name k)))
-                       :value (read-string v)}))) [] row))
+                       :år               (string/join (take-last 4 (name k)))
+                       :value            (edn/read-string v)}))) [] row))
 
 (def parsed-data (->> data
                       (mapv make-row)

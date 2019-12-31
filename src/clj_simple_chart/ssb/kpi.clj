@@ -4,7 +4,8 @@
             [clj-http.client :as client]
             [clojure.pprint :refer [pprint]]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.edn :as edn]))
 
 (def url "http://data.ssb.no/api/v0/no/table/08981")
 (def qq [{:code "Maaned" :selection {:filter "all" :values ["*"]}}
@@ -73,7 +74,7 @@
                     (group-by :year-quarter)
                     (vals)
                     (mapv (fn [x] {:dato (:year-quarter (first x))
-                                   :kpi  (/ (reduce + 0 (mapv (comp read-string :kpi) x))
+                                   :kpi  (/ (reduce + 0 (mapv (comp edn/read-string :kpi) x))
                                             (count x))}))
                     (sort-by :dato)
                     (vec)))
@@ -92,7 +93,7 @@
 
 (def baseline-2018-items (->> parsed
                               (filter #(= "2018" (:year %)))
-                              (mapv (comp read-string :kpi))))
+                              (mapv (comp edn/read-string :kpi))))
 
 (def baseline-2018 (/ (reduce + 0 baseline-2018-items) (count baseline-2018-items)))
 

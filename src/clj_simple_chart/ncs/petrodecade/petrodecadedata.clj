@@ -7,7 +7,8 @@
             [clj-simple-chart.ncs.raw-production :as raw-production]
             [clj-simple-chart.ncs.discovery-year :as discovery-year]
             [clj-simple-chart.csv.csvmap :as csvmap]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.edn :as edn])
   (:import (java.time YearMonth)))
 
 (def data (->> raw-production/data
@@ -49,8 +50,8 @@
 
 (def by-date (->> (map process-date (vals (group-by :date with-bucket)))
                   (sort-by :date)
-                  (mapv #(assoc % :prfYear (read-string (first (str/split (:date %) #"-0?")))))
-                  (mapv #(assoc % :prfMonth (read-string (last (str/split (:date %) #"-0?")))))
+                  (mapv #(assoc % :prfYear (edn/read-string (first (str/split (:date %) #"-0?")))))
+                  (mapv #(assoc % :prfMonth (edn/read-string (last (str/split (:date %) #"-0?")))))
                   (mapv #(assoc % :eofYear (if (= 12 (:prfMonth %)) (:prfYear %)
                                                                     (dec (:prfYear %)))))))
 

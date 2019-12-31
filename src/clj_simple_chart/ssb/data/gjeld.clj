@@ -3,7 +3,8 @@
             [clj-simple-chart.data.utils :refer :all]
             [clj-simple-chart.ssb.data.lønnsvekst :as lonnsvekst]
             [clojure.set :as set]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.edn :as edn]))
 
 (def q {:Valuta                          "I alt"
         :Lantaker2                       "Husholdninger mv."
@@ -15,7 +16,7 @@
                (keep-columns [:tid :gjeldsvekst])
                (filter #(str/ends-with? (:tid %) "-12"))
                (map #(update % :tid (fn [x] (subs x 0 4))))
-               (map #(assoc % :lonnsvekst (get lonnsvekst/data (read-string (:tid %)))))
+               (map #(assoc % :lonnsvekst (get lonnsvekst/data (edn/read-string (:tid %)))))
                (remove-nils)))
 
 (def cumulative (reductions (fn [o v]

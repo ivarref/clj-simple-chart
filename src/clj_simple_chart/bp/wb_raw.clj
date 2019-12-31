@@ -2,12 +2,13 @@
   (:require [clj-http.client :as client]
             [clojure.test :as test]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.edn :as edn]))
 
 (def urls {"SP.POP.TOTL"    :population
            "NY.GDP.MKTP.CD" :gdp
-           "NE.IMP.GNFS.ZS" :imports-of-goods-and-services-percentage
-           })
+           "NE.IMP.GNFS.ZS" :imports-of-goods-and-services-percentage})
+
 
 (def translate-countries
   {"Russian Federation"                "Russia"
@@ -21,8 +22,8 @@
    "Viet Nam"                          "Vietnam"
    "Korea, Republic of"                "S. Korea"
    "Moldova, Republic of"              "Moldova"
-   "United Kingdom"                    "UK"
-   })
+   "United Kingdom"                    "UK"})
+
 
 (def bp-country-code-to-name
   {:BP_TNA     "North America"
@@ -76,12 +77,12 @@
                       (zero? (count (name k)))
                       (= "" v))
                 o
-                (let [year-value (read-string (name k))]
+                (let [year-value (edn/read-string (name k))]
                   (assert (integer? year-value) (str "Expected column/year to be integer, was >" year-value "<"))
                   (conj o {:country      country
                            :country_code (keyword (get cc3-to-cc2 country-code))
                            :year         year-value
-                           prop          (read-string v)})))) [] c)))
+                           prop          (edn/read-string v)})))) [] c)))
 
 (defn parse-url [indicator prop]
   (let [resp (cached-get (str "http://api.worldbank.org/countries/all/indicators/" indicator "?format=csv"))

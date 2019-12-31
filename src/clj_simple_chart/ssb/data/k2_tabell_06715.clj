@@ -4,7 +4,8 @@
             [clj-http.client :as client]
             [clojure.pprint :refer [pprint]]
             [clj-simple-chart.csv.csvmap :as csv]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.edn :as edn]))
 
 (def url "http://data.ssb.no/api/v0/no/table/06715")
 (defonce metadata (client/get url))
@@ -71,7 +72,7 @@
               (conj o {:valuta         valuta
                        :låntakersektor lånetakersektor
                        :time           (string/join (take-last 7 (name k)))
-                       :value          (read-string v)}))) [] row))
+                       :value          (edn/read-string v)}))) [] row))
 
 (def parsed-data (->> data
                       (mapv make-row)

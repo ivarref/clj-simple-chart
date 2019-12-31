@@ -13,7 +13,8 @@
             [clj-simple-chart.area :as clj-area]
             [clj-simple-chart.area-center-text :as act]
             [clojure.string :as string]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.edn :as edn]))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -60,7 +61,7 @@
 
 (defn months-str [v]
   (let [parts (string/split v #"-0?")]
-    (str (nth months (read-string (last parts)))
+    (str (nth months (edn/read-string (last parts)))
          " " (first parts))))
 
 (def feltmogning-ex-txt (str "Feltmogning: Prosent produsert av opprinneleg utvinnbart"))
@@ -141,7 +142,7 @@
     (if (or (some #{year} ["2000" "2005" "2010" "2013"      ;"2016"
                            "2017"
                            "2020"])
-            #_(>= (read-string year) 2017))
+            #_(>= (edn/read-string year) 2017))
       [:g {:transform (translate (xfn date) (yfn (get opts :sum)))}
        [:circle {:r 2.5}]
        [:line {:stroke "black" :stroke-width 1 :fill "black" :y2 -8}]

@@ -8,7 +8,8 @@
             [clj-simple-chart.csv.csvmap :as csv]
             [clj-simple-chart.ssb.kpi :as kpi]
             [clojure.string :as string]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.edn :as edn]))
 
 (def url "http://data.ssb.no/api/v0/no/table/11013")
 (def qq [{:code "ContentsCode" :selection {:filter "all" :values ["*"]}}
@@ -42,7 +43,7 @@
 (defn process-grouped [values]
   (reduce (fn [o v]
             (assoc o (:prop v)
-                     (read-string (:value v))))
+                     (edn/read-string (:value v))))
           {:dato (:dato (first values))}
           values))
 
@@ -73,7 +74,7 @@
             (cond (= k :prev-rows) o
                   (= k :dato) (-> o
                                   (assoc :dato v)
-                                  (assoc :year (read-string (subs v 0 4))))
+                                  (assoc :year (edn/read-string (subs v 0 4))))
                   :else (assoc o k (reduce + 0 (mapv k (:prev-rows x))))))
           {}
           x))
@@ -99,7 +100,7 @@
   (->> four-quarters-moving-sum
        (filter #(string/ends-with? (:dato %) "K4"))
        (mapv #(assoc % :year (subs (:dato %) 0 4)))
-       (filter #(>= (read-string (:year %)) 2000))
+       (filter #(>= (edn/read-string (:year %)) 2000))
        (mapv #(assoc % :netto-kontantstraum (/ (get % (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet")) 1000)))
        (csv/keep-columns [:year :netto-kontantstraum])
        (mapv #(assoc % :prognose (get forecast/year-to-forecast (:year %) 0.0)))

@@ -10,7 +10,8 @@
             [clj-simple-chart.area :as clj-area]
             [clj-simple-chart.area-center-text :as act]
             [clojure.string :as string]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.edn :as edn]))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -63,7 +64,7 @@
 
 (defn months-str [v]
   (let [parts (string/split v #"-0?")]
-    (str (nth months (read-string (last parts)))
+    (str (nth months (edn/read-string (last parts)))
          " " (first parts))))
 
 (def feltmogning-ex-txt (str "Nedtappingsgrad: Prosent produsert av opprinneleg utvinnbart"))

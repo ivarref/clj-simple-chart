@@ -7,13 +7,14 @@
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.translate :refer [translate translate-y]]
-            [clj-simple-chart.rect :refer [bars]]))
+            [clj-simple-chart.rect :refer [bars]]
+            [clojure.edn :as edn]))
 
 (def data (->> flat-data-liquids
                (map #(update % "YEAR" str))
                (negative-keys->zero)
                (relative-share-no-round)
-               (map #(update % "YEAR" read-string))
+               (map #(update % "YEAR" edn/read-string))
                (mapcat explode-row)
                (sort-by :year)))
 
