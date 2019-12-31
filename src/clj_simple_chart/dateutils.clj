@@ -1,5 +1,6 @@
 (ns clj-simple-chart.dateutils
-  (:require [clojure.string :as string])
+  (:require [clojure.string :as string]
+            [clojure.edn :as edn])
   (:import (java.time YearMonth)))
 
 (def months ["ignore"
@@ -8,14 +9,14 @@
 
 (defn months-str [v]
   (let [parts (string/split v #"-0?")]
-    (str (nth months (read-string (last parts)))
+    (str (nth months (edn/read-string (last parts)))
          " " (first parts))))
 
 (defn year-month [s]
    {:pre [(string? s)]}
    (let [parts (string/split s #"-0?")
-         year (read-string (first parts))
-         month (read-string (last parts))]
+         year (edn/read-string (first parts))
+         month (edn/read-string (last parts))]
      (YearMonth/of year month)))
 
 (defn date-range
@@ -32,8 +33,8 @@
   {:pre  [(string? s)]
    :post [(= 12 (count %))]}
   (let [parts (string/split s #"-0?")
-        year (read-string (first parts))
-        month (read-string (last parts))]
+        year (edn/read-string (first parts))
+        month (edn/read-string (last parts))]
     (date-range (.minusMonths (YearMonth/of year month) 11)
                 (YearMonth/of year month))))
 

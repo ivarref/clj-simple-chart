@@ -1,16 +1,17 @@
 (ns clj-simple-chart.ssb.petroskatt.diagram-en-usd-oil-price
   (:require [clj-simple-chart.ssb.petroskatt.petroskatt :as petroskatt]
-    [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
-    [clj-simple-chart.core :as core]
-    [clj-simple-chart.chart :as chart]
-    [clj-simple-chart.axis.core :as axis]
-    [clj-simple-chart.rect :as rect]
-    [clj-simple-chart.line :as line]
-    [clj-simple-chart.point :as point]
-    [clj-simple-chart.opentype :as opentype]
-    [clj-simple-chart.translate :refer [translate]]
-    [clojure.test :as test]
-    [clojure.string :as string])
+            [clj-simple-chart.ssb.brentoilprice :as brentoilprice]
+            [clj-simple-chart.core :as core]
+            [clj-simple-chart.chart :as chart]
+            [clj-simple-chart.axis.core :as axis]
+            [clj-simple-chart.rect :as rect]
+            [clj-simple-chart.line :as line]
+            [clj-simple-chart.point :as point]
+            [clj-simple-chart.opentype :as opentype]
+            [clj-simple-chart.translate :refer [translate]]
+            [clojure.test :as test]
+            [clojure.string :as string]
+            [clojure.edn :as edn])
   (:import (java.time YearMonth)))
 
 (def ordinaer (keyword "Ordinær skatt på utvinning av petroleum"))
@@ -21,21 +22,21 @@
 (defn six-months-ago [s]
   {:pre [(string? s)]}
   (let [parts (string/split s #"-0?")
-        year (read-string (first parts))
-        month (read-string (last parts))
+        year (edn/read-string (first parts))
+        month (edn/read-string (last parts))
         six-m-ago (.minusMonths (YearMonth/of year month) 6)]
     (format "%04d-%02d" (.getYear six-m-ago) (.getMonthValue six-m-ago))))
 
 (defn six-months-future [s]
   {:pre [(string? s)]}
   (let [parts (string/split s #"-0?")
-        year (read-string (first parts))
-        month (read-string (last parts))
+        year (edn/read-string (first parts))
+        month (edn/read-string (last parts))
         six-m-future (.plusMonths (YearMonth/of year month) 6)]
     (format "%04d-%02d" (.getYear six-m-future) (.getMonthValue six-m-future))))
 
 (def data (->> petroskatt/twelve-mms-mrd
-               (mapv #(assoc % :year (read-string (subs (:dato %) 0 4))))
+               (mapv #(assoc % :year (edn/read-string (subs (:dato %) 0 4))))
                (mapv #(assoc % :sum (+ (get % ordinaer) (get % saerskatt))))
                (mapv #(assoc % :oilprice (get oil-date-to-nok (six-months-ago (:dato %)) ::none)))))
 

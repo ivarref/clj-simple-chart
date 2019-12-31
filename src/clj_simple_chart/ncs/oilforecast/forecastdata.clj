@@ -1,4 +1,5 @@
-(ns clj-simple-chart.ncs.oilforecast.forecastdata)
+(ns clj-simple-chart.ncs.oilforecast.forecastdata
+  (:require [clojure.edn :as edn]))
 
 (def data
   {
@@ -101,8 +102,8 @@
   (->>
     (for [[resource vals] values
           [idx val] (map-indexed (fn [idx x] [idx x]) vals)]
-      {:predictionYear (inc (read-string yr))
-       :prfYear        (+ 1 idx (read-string yr))
+      {:predictionYear (inc (edn/read-string yr))
+       :prfYear        (+ 1 idx (edn/read-string yr))
        :offsetYear     (inc idx)
        resource        val})
     (group-by :prfYear)

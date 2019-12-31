@@ -5,7 +5,8 @@
             [clj-simple-chart.ssb.valuta2 :as valutakurser]
             [clj-simple-chart.ssb.kpi :as kpi]
             [clojure.set :as set]
-            [clojure.test :as test])
+            [clojure.test :as test]
+            [clojure.edn :as edn])
   (:import (org.eclipse.jetty.util UrlEncoded MultiMap)))
 
 (defn parse-query-string [query]
@@ -46,7 +47,7 @@
                                                :data    raw-data})
 
 (def brent-numeric (->> raw-data
-                        (mapv #(update % :usd read-string))
+                        (mapv #(update % :usd edn/read-string))
                         (filter #(number? (:usd %)))))
 
 (test/is (every? number? (map :usd brent-numeric)))

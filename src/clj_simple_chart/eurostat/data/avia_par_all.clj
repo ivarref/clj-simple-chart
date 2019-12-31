@@ -5,7 +5,8 @@
             [clojure.data.csv :as csv]
             [clojure.string :as str]
             [clj-simple-chart.eurostat.data.icao-airport-code :as airport-codes]
-            [clj-simple-chart.dateutils :as dateutils])
+            [clj-simple-chart.dateutils :as dateutils]
+            [clojure.edn :as edn])
   (:import (java.nio.charset StandardCharsets)
            (org.apache.commons.io IOUtils)
            (java.io ByteArrayOutputStream ByteArrayInputStream)
@@ -96,7 +97,7 @@
                          (distinct)
                          (filter #(re-matches #"^\d+$" %))
                          (sort)
-                         (map read-string)
+                         (map edn/read-string)
                          (reverse)
                          (vec)))
 
@@ -112,8 +113,8 @@
 (defn number-or-nil-for-num-column [k v]
   (if (some #{k} regular-columns)
     v
-    (try (if (number? (read-string v))
-           (read-string v)
+    (try (if (number? (edn/read-string v))
+           (edn/read-string v)
            nil)
          (catch Exception e nil))))
 
@@ -167,7 +168,7 @@
               (conj o
                     (merge (into {} (mapv (fn [k] [k (get row k)]) regular-columns))
                            {:date     (str/replace (name k) "M" "-")
-                            :date-int (read-string (str/replace (name k) "M" ""))
+                            :date-int (edn/read-string (str/replace (name k) "M" ""))
                             :value    v}))))
           []
           row))

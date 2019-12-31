@@ -8,7 +8,8 @@
             [clj-simple-chart.translate :refer [translate translate-y]]
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.edn :as edn]))
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -18,8 +19,8 @@
 
 (defn prev-quarter [s]
   (let [parts (string/split s #"K")
-        year (read-string (first parts))
-        quarter (read-string (last parts))]
+        year (edn/read-string (first parts))
+        quarter (edn/read-string (last parts))]
     (if (= quarter 1)
       (str (dec year) "K4")
       (str year "K" (dec quarter)))))

@@ -4,7 +4,8 @@
             [clj-simple-chart.csv.csvmap :as csvmap]
             [clj-simple-chart.dateutils :as dateutils]
             [clj-simple-chart.eurostat.data.icao-airport-code :as airport-codes]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.edn :as edn])
   (:import (org.apache.commons.compress.archivers ArchiveStreamFactory)
            (java.io ByteArrayInputStream ByteArrayOutputStream)
            (org.apache.commons.compress.compressors.gzip GzipCompressorInputStream)
@@ -50,8 +51,8 @@
 (defn number-or-nil-for-num-column [k v]
   (if (some #{k} regular-columns)
     v
-    (try (if (number? (read-string v))
-           (read-string v)
+    (try (if (number? (edn/read-string v))
+           (edn/read-string v)
            nil)
          (catch Exception e nil))))
 
@@ -111,7 +112,7 @@
                 (remove #(some #{%} regular-columns))
                 (last)
                 (name)
-                (read-string)))
+                (edn/read-string)))
 
 (def max-year-kw (keyword (str max-year)))
 

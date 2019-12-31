@@ -1,7 +1,8 @@
 (ns clj-simple-chart.csv.csvmap
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.edn :as edn]))
 
 (defn debomify
   [^String line]
@@ -46,7 +47,7 @@
     (mapv (fn [x]
             (reduce (fn [o [k v]]
                       (if (some #{k} columns)
-                        (assoc o k (read-string v))
+                        (assoc o k (edn/read-string v))
                         (assoc o k v))) {} x)) data)))
 
 (defn number-or-nil-columns [columns data]
@@ -68,7 +69,7 @@
   (mapv (fn [x]
           (reduce (fn [o [k v]]
                     (if (some #{k} columns)
-                      (assoc o k (if (number? (read-string v)) (read-string v) (throw (ex-info "column contained non-number" {:column k :value v}))))
+                      (assoc o k (if (number? (edn/read-string v)) (edn/read-string v) (throw (ex-info "column contained non-number" {:column k :value v}))))
                       (assoc o k v))) {} x)) data))
 
 (defn drop-columns [columns data]

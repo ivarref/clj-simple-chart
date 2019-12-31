@@ -1,13 +1,14 @@
 (ns clj-simple-chart.ncs.liquidprodpp.dataclasstwo
   (:require [clojure.test :as test]
-    [clj-http.client :as client]
-    [clojure.string :as string]
-    [clj-simple-chart.csv.csvmap :as csv]
-    [clj-simple-chart.ncs.reserve :as reserve]
-    [clj-simple-chart.ncs.raw-production :as raw-production]
-    [clj-simple-chart.csv.csvmap :as csvmap]
-    [clojure.string :as str]
-    [clj-simple-chart.ncs.raw-production :as production])
+            [clj-http.client :as client]
+            [clojure.string :as string]
+            [clj-simple-chart.csv.csvmap :as csv]
+            [clj-simple-chart.ncs.reserve :as reserve]
+            [clj-simple-chart.ncs.raw-production :as raw-production]
+            [clj-simple-chart.csv.csvmap :as csvmap]
+            [clojure.string :as str]
+            [clj-simple-chart.ncs.raw-production :as production]
+            [clojure.edn :as edn])
   (:import (java.time YearMonth)))
 
 (def data (->> raw-production/data
@@ -75,8 +76,8 @@
 
 (def by-date (->> (map process-date (vals (group-by :date with-cumulative)))
                   (sort-by :date)
-                  (mapv #(assoc % :prfYear (read-string (first (str/split (:date %) #"-0?")))))
-                  (mapv #(assoc % :prfMonth (read-string (last (str/split (:date %) #"-0?")))))
+                  (mapv #(assoc % :prfYear (edn/read-string (first (str/split (:date %) #"-0?")))))
+                  (mapv #(assoc % :prfMonth (edn/read-string (last (str/split (:date %) #"-0?")))))
                   (mapv #(assoc % :eofYear (if (= 12 (:prfMonth %)) (:prfYear %)
                                                                     (dec (:prfYear %)))))))
 
