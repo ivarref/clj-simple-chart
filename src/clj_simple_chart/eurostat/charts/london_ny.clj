@@ -14,7 +14,7 @@
             [clojure.test :as test]))
 
 ; https://ec.europa.eu/eurostat/statistics-explained/index.php/Air_transport_statistics
-; Next planned update: November 2018
+; Next planned update: December 2020
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -86,7 +86,7 @@
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
          ;:tick-format        (fn [x] (str/replace (format "%.1f" x) "." ","))
-         :domain             [0 270 #_(Math/ceil (* 1.1 (apply max (map :value data))))]})
+         :domain             [0 300 #_(Math/ceil (* 1.1 (apply max (map :value data))))]})
 
 
 (def available-height (- svg-height (+ (+ 3 marg)
