@@ -1,6 +1,7 @@
 (ns clj-simple-chart.eurostat.data.icao-airport-code
   (:require [clj-http.client :as client]
             [clj-simple-chart.csv.csvmap :as csvmap]
+            [clojure.set :as sets]
             [clojure.test :as test]))
 
 
@@ -9,18 +10,19 @@
 
 (defonce response (client/get url))
 (def csv (csvmap/csv-map (:body response)))
-(test/is (= [:ident
-             :type
-             :name
-             :coordinates
-             :elevation_ft
-             :continent
-             :iso_country
-             :iso_region
-             :municipality
-             :gps_code
-             :iata_code
-             :local_code] (:columns csv)))
+
+(csvmap/assert-columns [:ident
+                        :type
+                        :name
+                        :coordinates
+                        :elevation_ft
+                        :continent
+                        :iso_country
+                        :iso_region
+                        :municipality
+                        :gps_code
+                        :iata_code
+                        :local_code] csv)
 
 (def data (:data csv))
 
