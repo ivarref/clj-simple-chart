@@ -1,10 +1,6 @@
 (ns clj-simple-chart.eurostat.data.icao-airport-code
   (:require [clj-http.client :as client]
-            [clj-simple-chart.csv.csvmap :as csvmap]
-            [clojure.set :as sets]
-            [clojure.test :as test]))
-
-
+            [clj-simple-chart.csv.csvmap :as csvmap]))
 
 (def url "https://raw.githubusercontent.com/datasets/airport-codes/master/data/airport-codes.csv")
 
