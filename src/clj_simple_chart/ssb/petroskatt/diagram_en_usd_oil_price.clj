@@ -70,7 +70,7 @@
 (defn date-readable [d]
   (let [pieces (string/split d #"-0?")
         year (first pieces)
-        month (nth months (read-string (second pieces)))]
+        month (nth months (edn/read-string (second pieces)))]
     (str month " " year)))
 
 (def last-data (last data))
