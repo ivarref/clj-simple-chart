@@ -1,11 +1,24 @@
 (ns clj-simple-chart.rect
   (:require [clj-simple-chart.scale.core :refer [scale]]
-            [clj-simple-chart.point :refer [point]]))
+            [clj-simple-chart.point :refer [point]]
+            [clj-simple-chart.render :as r]))
+
+(defn stack-coll-inner [c]
+  (if (empty? c)
+    []
+    (vec (reductions
+           (fn [{h :h y :y :as init} new]
+             (update new :y #(+ h (or y 0.0) (or % 0.0))))
+           c))))
 
 (defn stack-coll [coll]
-  (reductions
-    (fn [{h :h y :y} new]
-      (update new :y #(+ h (or y 0.0) (or % 0.0)))) coll))
+  (let [chunks (group-by (comp neg? :h) coll)]
+    (vec (concat
+           (stack-coll-inner (get chunks false []))
+           (stack-coll-inner (get chunks true []))))))
+
+(comment
+  (vec (stack-coll [{:p :bottom :h 10 :y 0}])))
 
 (defn stack-horizontal [coll]
   (reductions
@@ -19,8 +32,8 @@
                   fill         :fill
                   stroke       :stroke
                   stroke-width :stroke-width
-                  :as          all
-                  :or          {py           (first (:domain yscale))
+                  :as          inp
+                  :or          {py           (max 0 (first (:domain yscale)))
                                 fill         "red"
                                 stroke       "none"
                                 stroke-width "1px"}}]
@@ -37,17 +50,36 @@
                 :stroke       stroke
                 :stroke-width stroke-width
                 :width        (:bandwidth xscale)}])
-      (let [top (first (:range yscale))
-            h (- top (point yscale height))
-            yy (- (point yscale py) h)]
-        [:rect {:x            (point xscale px)
-                :y            (double yy)
-                :height       (double h)
-                :fill         fill
-                :stroke       stroke
-                :stroke-width stroke-width
-                :style        "shape-rendering:crispEdges;"
-                :width        (:bandwidth xscale)}]))))
+      (do
+        (if (neg? height)
+          (do
+            [:g
+             ;[:circle {:fill "yellow" :cy (double (point yscale py)) :r 5 :cx (point xscale px)}]
+             ;[:circle {:fill "yellow" :stroke "black" :cy (double (point yscale height)) :r 15 :cx (point xscale px)}]
+             ;[:circle {:fill "orange" :stroke "black" :cy 349 :r 15 :cx (point xscale px)}]
+             [:rect {:x            (point xscale px)
+                     :y            (double (point yscale py))
+                     :height       (double (- (point yscale (+ py height))
+                                              (point yscale py)))
+                     :fill         fill
+                     :stroke       stroke
+                     :stroke-width stroke-width
+                     :style        "shape-rendering:crispEdges;"
+                     :width        (:bandwidth xscale)}]])
+          (let [top (point yscale 0)
+                h (- top (point yscale height))
+                yy (- (point yscale py) h)]
+            [:g
+             ;[:circle {:r 10 :cy h :fill "black"}]
+             ;[:circle {:r 10 :cy top :fill "yellow"}]
+             [:rect {:x            (point xscale px)
+                     :y            (double yy)
+                     :height       (double h)
+                     :fill         fill
+                     :stroke       stroke
+                     :stroke-width stroke-width
+                     :style        "shape-rendering:crispEdges;"
+                     :width        (:bandwidth xscale)}]]))))))
 
 
 (defn horizontal-rect
@@ -149,6 +181,14 @@
                    (map (partial update-fill-color yscale)
                         (stack-horizontal (sort-by-sub-domain yscale inp))))]))
 
+(defn scaled-rect-2 [x y]
+  (case [(:type x) (:type y)]
+    [:linear :ordinal]
+    (partial rect-or-stacked-horizontal x y)
+
+    [:ordinal :linear]
+    (fn [inp] (rect-or-stacked-vertical x y inp))))
+
 (defmulti scaled-rect (fn [x y] [(:type x) (:type y)]))
 
 (defmethod scaled-rect [:linear :ordinal]
@@ -161,7 +201,7 @@
 
 (defn- fill-fn [fill]
   (cond (string? fill)
-        (fn [x] fill)
+        (fn [_] fill)
 
         (fn? fill)
         fill
@@ -181,13 +221,13 @@
         (fn? h)
         [(assoc item :h (h item))]
 
-        (and (vector? h) (every? vector? h)) ; so h is like [[:property :fill]]
+        (and (vector? h) (every? vector? h))                ; so h is like [[:property :fill]]
         (mapv #(assoc item :h (let [property (first %)
                                     v (property item)]
                                 (if (number? v) v
-                                    (do (println "Could not find property" property)
-                                        (println "available keys:" (vec (keys item)))
-                                        (throw (ex-info "Could not find property" {:property property})))))
+                                                (do (println "Could not find property" property)
+                                                    (println "available keys:" (vec (keys item)))
+                                                    (throw (ex-info "Could not find property" {:property property})))))
                            :fill (second %)
                            :c (first %)) h)
 

@@ -1,6 +1,5 @@
 (ns clj-simple-chart.demo.automarginstwo
   (:require [clj-simple-chart.core :refer :all]
-            [clj-simple-chart.translate :refer :all]
             [clj-simple-chart.chart :as chart]))
 
 (defn diagram []
@@ -28,5 +27,4 @@
        (render-axis (:x c))
        (render-axis (:y c))]]]))
 
-(defn render-self []
-  (render "./img/dev/automarginstwo.svg" (diagram)))
+(def _render-self (render "./img/dev/automarginstwo.svg" (diagram)))

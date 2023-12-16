@@ -161,4 +161,4 @@
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (core/render "./img/eurostat-svg/extra-eu.svg" "./img/eurostat-png/extra-eu.png" (diagram)))
+  (core/render "./img/eurostat-svg/extra-eu.svg" #_"./img/eurostat-png/extra-eu.png" (diagram)))

@@ -4,8 +4,7 @@
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.point :as point]
             [clj-simple-chart.area :as clj-area]
-            [clj-simple-chart.area-center-text :as act]
-            [clj-simple-chart.translate :refer [translate]]))
+            [clj-simple-chart.area-center-text :as act]))
 
 (def marg 0)
 (def two-marg (* 2 marg))
@@ -46,14 +45,14 @@
 
    {:p "2002" :c "a" :h 10}
    {:p "2002" :c "b" :h 15}
-   {:p "2002" :c "c" :h 10}
-   ])
+   {:p "2002" :c "c" :h 10}])
+
 
 (def my-great-text
   [{:p "2002" :c "a" :h 10 :text {:text "A" :font "Roboto Black" :fill "white" :font-size 15}}
    {:p "2002" :c "b" :h 15 :text {:text "B" :font "Roboto Black" :fill "white" :font-size 15}}
-   {:p "2002" :c "c" :h 10 :text {:text "C" :font "Roboto Black" :fill "white" :font-size 15}}
-   ])
+   {:p "2002" :c "c" :h 10 :text {:text "C" :font "Roboto Black" :fill "white" :font-size 15}}])
+
 
 (defn diagram []
   [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}

@@ -3,8 +3,7 @@
             [clj-simple-chart.chart :as chart]
             [clj-simple-chart.axis.core :as axis]
             [clj-simple-chart.point :as point]
-            [clj-simple-chart.dots :as clj-dots]
-            [clj-simple-chart.translate :refer [translate]]))
+            [clj-simple-chart.dots :as clj-dots]))
 
 (def marg 0)
 (def two-marg (* 2 marg))
@@ -17,15 +16,15 @@
 
 (def xx {:type        :ordinal-linear
          :orientation :bottom
-         :domain      ["2000" "2001" "2002"]
-         :sub-domain  ["a" "b" "c"]
+         :domain      ["2000" "2001" "2002" "2003" "2004"]
+         :sub-domain  ["a" "b" "c" "d"]
          :fill        {"a" "red"
                        "b" "blue"
                        "c" "green"}})
 
 (def yy {:type        :linear
          :orientation :right
-         :domain      [0 50]})
+         :domain      [-50 50]})
 
 (def c (chart/chart {:width  available-width
                      :height available-height
@@ -45,7 +44,15 @@
 
    {:p "2002" :c "a" :h 10}
    {:p "2002" :c "b" :h 15}
-   {:p "2002" :c "c" :h 10}])
+   {:p "2002" :c "c" :h 10}
+
+   {:p "2003" :c "a" :h -10} ; red correctly on bottom
+   {:p "2003" :c "b" :h 10}
+   {:p "2003" :c "c" :h 10}
+
+   {:p "2004" :c "a" :h 25}
+   {:p "2004" :c "b" :h -10} ; green
+   {:p "2004" :c "c" :h 15}])
 
 (def xfn (partial point/center-point (:x c)))
 (def yfn (partial point/center-point (:y c)))
@@ -57,5 +64,4 @@
     (axis/render-axis (:y c))
     (clj-dots/dots c my-great-data)]])
 
-(defn render-self []
-  (render "./img/demo/meh.png" "./img/demo/meh.svg" (diagram)))
+(def _render-self (render "./img/demo/meh.svg" (diagram)))

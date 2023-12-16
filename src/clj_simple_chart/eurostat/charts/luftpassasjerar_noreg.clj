@@ -94,4 +94,4 @@
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
 (defn render-self []
-  (render "./img/eurostat-svg/luftpassasjerar.svg" "./img/eurostat-png/luftpassasjerar.png" (diagram)))
+  (render "./img/eurostat-svg/luftpassasjerar.svg" #_"./img/eurostat-png/luftpassasjerar.png" (diagram)))

@@ -1,6 +1,5 @@
 (ns clj-simple-chart.demo.betterautomargins
   (:require [clj-simple-chart.core :refer :all]
-            [clj-simple-chart.translate :refer [translate]]
             [clj-simple-chart.chart :as chart]))
 
 (defn diagram []
@@ -29,5 +28,4 @@
        (render-axis (:x c))
        (render-axis (:y c))]]]))
 
-(defn render-self []
-  (render "./img/dev/bettermargins.svg" (diagram)))
+(def _render-self (render "./img/dev/bettermargins.svg" (diagram)))

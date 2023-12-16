@@ -80,7 +80,8 @@
 (defn- load-fonts []
   (bootstrap-rhino-if-needed)
   (doall (map load-font (->> (file-seq (File. "./resources/fonts"))
-                             (filter #(.endsWith (.getName %) ".ttf"))))))
+                             (filter #(or (.endsWith (.getName %) ".otf")
+                                          (.endsWith (.getName %) ".ttf")))))))
 
 (defn- property-ids [obj]
   (vec (run-js-thread #(NativeObject/getPropertyIds obj))))
@@ -105,7 +106,8 @@
                         font)))) {} (vals @fonts)))
 
 (defonce font-name-to-font (make-font-names-map))
-
+(comment
+  (sort (keys font-name-to-font)))
 (def roboto-regular (get font-name-to-font "Roboto Regular"))
 
 (defn get-path-data [fontname text x y size]

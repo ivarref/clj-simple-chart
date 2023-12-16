@@ -16,5 +16,5 @@
    [:g {:transform (translate 0 (:height (meta header)))}
     [:line {:stroke "black" :x1 0 :x2 250}]]])
 
-(defn render-self []
-  (render "./img/vertical-stack-text.png" "./img/vertical-stack-text.svg" (diagram)))
+(def _render-self
+  (render #_"./img/vertical-stack-text.png" "./img/vertical-stack-text.svg" (diagram)))

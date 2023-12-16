@@ -1,4 +1,4 @@
-(ns clj-simple-chart.demotwo
+(ns clj-simple-chart.demo.demotwo
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.rect :as rect]))
 

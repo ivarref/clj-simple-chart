@@ -1,4 +1,4 @@
-(ns clj-simple-chart.demoopentype
+(ns clj-simple-chart.demo.demoopentype
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]))
 

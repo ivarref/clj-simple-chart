@@ -1,7 +1,7 @@
 (ns clj-simple-chart.demo.text-with-rect
   (:require [clj-simple-chart.core :refer :all]
             [clj-simple-chart.opentype :as opentype]
-            [clj-simple-chart.translate :refer [translate]]))
+            #_[clj-simple-chart.translate :refer [translate]]))
 
 (def svg-width 250)
 (def svg-height 250)
@@ -39,8 +39,5 @@
                      {:text "Ijk" :font "Roboto Bold" :font-size font-size :rect {:fill "cyan" :size rect-size}}
                      {:text "OMLLLLL" :font "Roboto Bold" :font-size font-size :rect {:fill "yellow" :size rect-size}}])]])
 
-
-
-
-(defn render-self []
-  (render "./img/demo/meh.png" "./img/demo/meh.svg" (diagram)))
+(def _render-self
+  (render #_"./img/demo/meh.png" "./img/demo/meh.svg" (diagram)))

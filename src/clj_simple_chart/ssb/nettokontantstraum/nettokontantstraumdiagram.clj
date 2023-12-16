@@ -14,9 +14,13 @@
             [clj-simple-chart.rect :as rect]
             [clj-simple-chart.point :as point]
             [clj-simple-chart.line :as line]
+            [clojure.set :as set]
+            [demo.refresh :as r]
             [clojure.string :as string]
             [clojure.string :as str]
             [clojure.edn :as edn]))
+
+(r/set-focus! *ns*)
 
 (def marg 10)
 (def two-marg (* 2 marg))
@@ -32,12 +36,43 @@
       (str (dec year) "K4")
       (str year "K" (dec quarter)))))
 
+(def tx-keys
+  {(keyword "Netto kontantstrøm fra SDØE") :sdoe
+   (keyword "Utbytte fra Equinor") :utbytte
+   (keyword "Statens netto kontantstrøm fra petroleumsvirksomhet") :netto
+   (keyword "Skatter på utvinning av petroleum") :skatt
+   (keyword "Avgifter på utvinning av petroleum") :avgift})
+
+(defn add-last? [items]
+  (map-indexed (fn [idx item]
+                 (if (= idx (dec (count items)))
+                   (assoc item :last? true)
+                   item))
+               items))
+
 (def data (->> nettokontantstraum/four-quarters-moving-sum-adjusted-mrd
-               (filter #(>= (:year %) 1996))
+               #_(add-last?)
                (drop-while #(not (str/ends-with? (:dato %) "K4")))
+               ;(filter #(str/starts-with? (:dato %) "2021"))
+               ;(take-last 3)
+               ;(take 2)
+               ;(filter #(= "2021K3" (:dato %)))
+               (take-last (* 20 4))
                (map #(assoc % :underskudd (get underskudd/underskudd-inflation-adjusted-nok (:year %))))
                (mapv #(assoc % :oilprice
                                (get brentoilprice/brent-4qma-to-inflation-adjusted-nok (prev-quarter (prev-quarter (:dato %))) ::none)))))
+
+(def data2
+  (->> data
+       (mapv (fn [x] (set/rename-keys x tx-keys)))
+       (mapv (fn [x] (dissoc x :oilprice :underskudd)))
+       (mapv (fn [x] (reduce-kv (fn [o k v]
+                                  (if (number? v)
+                                    (assoc o k (long v))
+                                    (assoc o k v)))
+                                {}
+                                x)))
+       (filterv #(= "2021K2" (:dato %)))))
 
 (def skatter (keyword "Skatter på utvinning av petroleum"))
 (def avgift (keyword "Avgifter på utvinning av petroleum"))
@@ -80,24 +115,24 @@
 (def header (opentype/stack
               {:width available-width}
               [{:text "Statens netto kontantstraum frå petroleumsverksemda" :font "Roboto Bold" :font-size 30}
-               {:text          (str "Milliardar 2018-kroner, 4 kvartal glidande sum. "
+               {:text          (str "Milliardar 2022-kroner, 4 kvartal glidande sum. "
                                     "Per " (:dato last-data) ": "
                                     (string/replace (format "%.1f" (get last-data netto-sum)) "." ",")
                                     " mrd. kr")
                 :font          "Roboto Bold" :font-size 16
                 :margin-top    2
                 :margin-bottom 10}
-               {:text "Oljepris, 2018-kroner/fat" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
+               {:text "Oljepris, 2022-kroner/fat" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
                {:text "4 kvartal glidande gjennomsnitt, 2 kvartal framskyvd" :fill oil-price-fill :font "Roboto Bold" :font-size 16}
 
                {:text "Netto kontantstraum" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
                #_{:circle {:stroke "black" :stroke-width 2 :r 4 :fill "yellow" :x-offset -18}
                   :text   "Oljekorrigert underskot" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}
-               {:text "Milliardar 2018-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
+               {:text "Milliardar 2022-kroner" :font "Roboto Bold" :font-size 16 :valign :bottom :align :right}]))
 
 (def footer (opentype/stack
               {:width available-width}
-              [{:margin-top 8 :text "Kjelder: SSB, Norges Bank, St. Louis Fed. *Statens Direkte Økonomiske Engasjement" :font "Roboto Regular" :font-size 14}
+              [{:margin-top 8 :text "Kjelder: SSB, Noregs Bank, St. Louis Fed. *Statens Direkte Økonomiske Engasjement" :font "Roboto Regular" :font-size 14}
                ;{:text "Kjelder: SSB, Norges Bank, St. Louis Fed" :font "Roboto Regular" :font-size 14}
                {:text "Diagram © Refsdal.Ivar@gmail.com" :font "Roboto Regular" :font-size 14 :valign :bottom :align :right}]))
 
@@ -105,12 +140,13 @@
 (def xx {:type          :ordinal
          :orientation   :bottom
          :tick-values   x-ticks
-         :tick-format   (fn [x] (cond (= x "1996K4") (subs x 0 4)
-                                      (= x "2018K4") (subs x 0 4)
+         :tick-format   (fn [x] (cond (= x "2003K4") (subs x 0 4)
+                                      ;(= x "2018K4") (subs x 0 4)
                                       (.endsWith x "05K4") (subs x 0 4)
                                       (.endsWith x "00K4") (subs x 0 4)
                                       (.endsWith x "10K4") (subs x 0 4)
                                       (.endsWith x "15K4") (subs x 0 4)
+                                      (.endsWith x "20K4") (subs x 0 4)
                                       :else (subs x 2 4)))
          :domain        x-domain
          :sub-domain    sub-domain
@@ -119,22 +155,26 @@
 
 ; Thanks to Rune Likvern for suggestion about tick values
 
+; hoyre akse, netto ks
+(def netto-ks-ticks (mapv #(* 100.0 %) (range 0 (inc 15))))
+
 (def yy {:type               :linear
          :orientation        :right
          ;:ticks              5
-         :tick-values        (mapv #(* 50.0 %) (range 12))
+         :tick-values        netto-ks-ticks
          :grid               true
          :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-         :domain             [0 550 #_(apply max (map netto-sum data))]})
+         :domain             [0 1500]})
 
-
+; venstre akse, oljepris
+(def yticks (mapv #(* 70 %) (range 0 (inc 15))))
 (def yy2 {:type               :linear
           :orientation        :left
           :color              oil-price-fill
           ;:ticks              5
-          :tick-values        (mapv #(* 70.0 %) (range 12))
+          :tick-values        yticks
           :axis-text-style-fn (fn [x] {:font "Roboto Bold"})
-          :domain             [0 770 #_(apply max (mapv :oilprice data))]})
+          :domain             [(first yticks) (last yticks)]})
 
 (def available-height (- svg-height (+ (+ 3 marg)
                                        (:height (meta header))
@@ -150,16 +190,16 @@
                      utbytte    "Utbytte frå Equinor (Statoil)"
                      skatter    "Skattar på utvinning av petroleum"})
 
-(def info
-  (opentype/stack
-    {:width (:plot-width c)}
-    (mapv (fn [x] {:text       (get translate-info x (name x))
-                   ;:rect {:fill (get fills x)}
-                   :margin-top (if (= x avgift) 2 0)
-                   :fill       (get fills x)
-                   :font       "Roboto Black"
-                   :font-size  15})
-          (reverse sub-domain))))
+#_(def info
+    (opentype/stack
+      {:width (:plot-width c)}
+      (mapv (fn [x] {:text       (get translate-info x (name x))
+                     ;:rect {:fill (get fills x)}
+                     :margin-top (if (= x avgift) 2 0)
+                     :fill       (get fills x)
+                     :font       "Roboto Black"
+                     :font-size  15})
+            (reverse sub-domain))))
 
 (def x (:x c))
 (def y (:y c))
@@ -178,22 +218,28 @@
           :h    (get opts k)})
        fills))
 
-(def txt-for-years [1997
-                    1998
-                    2000
-                    2002
-                    2004
+(def txt-for-years [
+                    ;1997
+                    ;1998
+                    ;2000
+                    ;2002
+                    ;2004
                     2005
-                    2006
+                    ;2006
                     2008
                     2010
-                    2012
-                    2013
-                    2014
+                    ;2012
+                    ;2013
+                    ;2014
                     2015
-                    2016
-                    2017
-                    2018])
+                    ;2016
+                    ;2017
+                    ;2018
+                    2020
+                    2021
+                    2022])
+
+
 
 (def end-of-year-data (->> data
                            (filter #(and (some #{(:year %)} txt-for-years)
@@ -237,7 +283,7 @@
      #_dots]))
 
 (defn diagram []
-  [:svg {:xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
+  [:svg {:id "chart" :xmlns "http://www.w3.org/2000/svg" :width svg-width :height svg-height}
    [:g {:transform (translate marg marg)}
     header
 
@@ -266,9 +312,24 @@
                       (filter #(str/ends-with? (:dato %) "K4") data))]
      [:g (map make-txt end-of-year-data)]
      (axis/render-axis (:x c))
-     [:g {:transform (translate 30 (+ 2 (yfn 500)))} info]]
-
+     (into [:g {:transform (translate (xfn "2015K4") 0)}]
+           (->> (reverse sub-domain)
+                (map-indexed vector)
+                (mapv (fn [[idx x]]
+                        [:g {:transform (translate 0 (yfn (nth (reverse netto-ks-ticks) (inc idx))))}
+                         (opentype/stack
+                               {:width (:plot-width c)}
+                               [{:text       (get translate-info x (name x))
+                                 ;:rect {:fill (get fills x)}
+                                 :margin-top 3 #_(if (= x avgift) 2 0)
+                                 :fill       (get fills x)
+                                 :font       "Roboto Black"
+                                 :font-size  16}])]))
+                (vec)))]
     [:g {:transform (translate-y (+ (:height (meta header)) available-height))} footer]]])
 
+(def _autorender
+  (core/render "./img/ssb-svg/nettokontantstraum.svg" (diagram)))
+
 (defn render-self []
-  (core/render "./img/ssb-svg/nettokontantstraum.svg" "./img/ssb-png/nettokontantstraum.png" (diagram)))
+  (core/render "./img/ssb-svg/nettokontantstraum.svg" #_"./img/ssb-png/nettokontantstraum.png" (diagram)))

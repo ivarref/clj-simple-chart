@@ -1,6 +1,5 @@
 (ns clj-simple-chart.demo.automargins
   (:require [clj-simple-chart.core :refer :all]
-            [clj-simple-chart.translate :refer :all]
             [clj-simple-chart.chart :as chart]))
 
 (def svg-width 180)
@@ -99,5 +98,4 @@
     [:rect {:width svg-width :height svg-height :fill "#ffaa00"}]
     (var4)]])
 
-(defn render-self []
-  (render "./img/dev/automargins.svg" (diagram)))
+(def _render-self (render "./img/dev/automargins.svg" (diagram)))

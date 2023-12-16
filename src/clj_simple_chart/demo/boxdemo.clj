@@ -12,10 +12,9 @@
    (opentype/stack {:width svg-width}
                    [{:text "Hello world"}
                     {:text "Hei Verden"}
-                    {:text "Swoosh" :margin-top 20}
+                    {:text "jaddao :-)" :margin-top 20}
 
                     {:text "Hello world" :valign :bottom :align :right}
                     {:text "Yolo!" :valign :bottom :align :right}])])
 
-(defn render-self []
-  (render "./img/boxdemo.svg" (diagram)))
+(def _autorender (render "./img/boxdemo.svg" (diagram)))

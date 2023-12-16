@@ -17,3 +17,4 @@ package.json
 img/dev/
 tmp.png
 tmp.svg
+.clj-kondo/.cache

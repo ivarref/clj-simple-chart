@@ -1,0 +1,85 @@
+<html>
+<head>
+    <title>pvo-backend performance</title>
+    <meta charset="utf-8"/>
+    <style>
+        svg.chart {
+            border: 1px solid black;
+        }
+        body {
+            margin-left: 20px;
+            margin-top: 20px;
+            background: white;
+        }
+        text {
+            font-size: 13px;
+        }
+        svg.logo {
+            height: 100px;
+            width: 100%;
+        }
+    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+</head>
+<body>
+<div id="body">
+</div>
+<div id="refreshed">
+    refreshed at will appear here
+</div>
+<div id="demo">
+    chart will appear here
+</div>
+<script src="https://unpkg.com/roughjs@3.1.0/dist/rough.js"></script>
+<script type="text/javascript">
+    const roughOptions = {
+        maxRandomnessOffset: 2,
+        roughness: 1.2,
+        bowing: 1,
+        stroke: "#000000",
+        strokeWidth: 1,
+        curveTightness: 0,
+        curveFitting: 0.95,
+        curveStepCount: 10,
+        fillStyle: "zigzag",
+        fillWeight: 1,
+        fill: "#a1a1a1",
+        hachureAngle: 45,
+        hachureGap: 5,
+        dashOffset: 0,
+        dashGap: 0,
+        zigzagOffset: 0,
+        seed: 0,
+    }
+
+    function makeitRough(opts) {
+        const id = 'chart';
+        const svg = document.getElementById(id);
+        console.log(svg)
+        document.getElementById("body").innerHTML = pathData;
+
+        // while (document.getElementById(id).hasChildNodes()) {
+        //     let svg2 = document.getElementById(id)
+        //     svg2.removeChild(svg2.childNodes[0])
+        // }
+
+        // const rc = rough.svg(svg);
+        // svg.appendChild(rc.path(wordPath.toPathData(), opts))
+    }
+
+    const localWs = new WebSocket("ws://localhost:8080/onchange");
+    localWs.onmessage = function (event) {
+        document.getElementById("demo").innerHTML = event.data;
+        document.getElementById("refreshed").innerHTML = "Refreshed at "+(new Date());
+        makeitRough(roughOptions);
+    }
+    localWs.onclose = function (event) {
+        document.getElementById("refreshed").innerHTML = "Disconnected at "+(new Date());
+    }
+
+
+
+    // document.getElementById("demo").innerHTML = "It will go here :-)";
+</script>
+</body>
+</html>

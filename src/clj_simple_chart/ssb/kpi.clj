@@ -92,7 +92,7 @@
                                  (mapv :kpi quarterly-4qma)))
 
 (def baseline-2018-items (->> parsed
-                              (filter #(= "2018" (:year %)))
+                              (filter #(= "2022" (:year %)))
                               (mapv (comp edn/read-string :kpi))))
 
 (def baseline-2018 (/ (reduce + 0 baseline-2018-items) (count baseline-2018-items)))
