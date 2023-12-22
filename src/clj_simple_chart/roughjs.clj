@@ -60,10 +60,12 @@
   (swap! cx (fn [old-cx] (set-lang-version (Context/enter))))
   (swap! scope (fn [old-scope] (.initStandardObjects @cx)))
   (load-jvm-npm @cx @scope)
-  (eval-str "var rough = require('./resources/rough.js');"))
-  ;(eval-str (slurp "resources/rough.js" #_"var rough1 = require('./resources/rough.js')")))
-  ;(eval-str "function parseFont(payload) { return opentype.parse(b64.decode(payload)); }")
-  ;(swap! parsefont (fn [old-parsefont] (.get @scope "parseFont"))))
+  ;(eval-str "var rough = require('./resources/roughes2015.js');"))
+  (eval-str (slurp "resources/roughes2015.js")))
+
+; how to transpile rough.js: https://stackoverflow.com/questions/34747693/how-do-i-get-babel-6-to-compile-to-es5-javascript
+; npm install babel-cli babel-preset-es2015
+; npx babel  ./rough.js --out-file ./roughes2015.js --presets babel-preset-es2015
 
 (defn- bootstrap-rhino-if-needed []
   (when-not @cx (run-js-thread bootstrap-rhino)))
