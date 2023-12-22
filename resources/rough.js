@@ -1,5 +1,7 @@
 var rough = function () {
+    "use strict";
     const t = "undefined" != typeof self;
+
     class e {
         constructor(t, e) {
             this.defaultOptions = {
