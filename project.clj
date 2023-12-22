@@ -11,7 +11,7 @@
                  [org.apache.commons/commons-compress "1.15"]
                  [digest "1.4.5"]
                  [base64-clj "0.1.1"]
-                 [org.mozilla/rhino "1.7.7.1"]
+                 [org.mozilla/rhino "1.7.14"]
                  [org.clojure/core.async "0.3.442"]
                  [clj-http "2.3.0"]
                  [camel-snake-kebab "0.4.0"]
