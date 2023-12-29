@@ -23,4 +23,3 @@ function janei() {
     svg.appendChild(rc.rectangle(0, 0, 1, 1));
     return xmlSerializer.serializeToString(svg);
 }
-
