@@ -49,23 +49,39 @@
   cx)
 
 (defn- load-jvm-npm [cx scope]
-  (let [reader (InputStreamReader. (BufferedInputStream. (FileInputStream. "./resources/jvm-npm.js")) StandardCharsets/UTF_8)]
-    (.evaluateReader cx scope reader "<cmd>" 1 nil)
-    (.close reader)))
+  (with-open [reader (InputStreamReader. (BufferedInputStream. (FileInputStream. "./resources/jvm-npm.js")) StandardCharsets/UTF_8)]
+    (.evaluateReader cx scope reader "<cmd>" 1 nil)))
 
 (defn- eval-str [x]
   (.evaluateString @cx @scope x "<cmd>" 1 nil))
+
+(defn- property-ids [obj]
+  (vec (run-js-thread #(NativeObject/getPropertyIds obj))))
 
 (defn- bootstrap-rhino []
   (swap! cx (fn [old-cx] (set-lang-version (Context/enter))))
   (swap! scope (fn [old-scope] (.initStandardObjects @cx)))
   (load-jvm-npm @cx @scope)
-  ;(eval-str "var rough = require('./resources/roughes2015.js');"))
-  (eval-str (slurp "resources/roughes2015.js")))
+  (eval-str (slurp "resources/roughes2015.js"))
+  (eval-str (slurp "resources/xmldom.js"))
+  (eval-str (slurp "resources/roughhelper.js")))
+;(prn (property-ids (eval-str "rough"))))
 
 ; how to transpile rough.js: https://stackoverflow.com/questions/34747693/how-do-i-get-babel-6-to-compile-to-es5-javascript
 ; npm install babel-cli babel-preset-es2015
 ; npx babel  ./rough.js --out-file ./roughes2015.js --presets babel-preset-es2015
+
+(defn print-props [x]
+  (let [v (run-js-thread
+            (fn []
+              (eval-str x)))]
+    (prn (property-ids v))))
+
+(comment
+  (let [v (run-js-thread
+            (fn []
+              (eval-str "rough")))]
+    (prn (property-ids v))))
 
 (defn- bootstrap-rhino-if-needed []
   (when-not @cx (run-js-thread bootstrap-rhino)))

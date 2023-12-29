@@ -13,7 +13,6 @@ pom.xml.asc
 .idea/
 node_modules
 yarn.lock
-package.json
 img/dev/
 tmp.png
 tmp.svg
