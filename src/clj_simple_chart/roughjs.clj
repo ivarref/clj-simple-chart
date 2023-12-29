@@ -58,24 +58,24 @@
 (defn- property-ids [obj]
   (vec (run-js-thread #(NativeObject/getPropertyIds obj))))
 
+(defn print-props [x]
+  (let [v (run-js-thread
+            (fn []
+              (eval-str x)))]
+    (prn (property-ids v))))
+
 (defn- bootstrap-rhino []
   (swap! cx (fn [old-cx] (set-lang-version (Context/enter))))
   (swap! scope (fn [old-scope] (.initStandardObjects @cx)))
   (load-jvm-npm @cx @scope)
   (eval-str (slurp "resources/roughes2015.js"))
   (eval-str (slurp "resources/xmldom.js"))
-  (eval-str (slurp "resources/roughhelper.js")))
-;(prn (property-ids (eval-str "rough"))))
+  (eval-str (slurp "resources/roughhelper.js"))
+  (prn (eval-str "janei()")))
 
 ; how to transpile rough.js: https://stackoverflow.com/questions/34747693/how-do-i-get-babel-6-to-compile-to-es5-javascript
 ; npm install babel-cli babel-preset-es2015
 ; npx babel  ./rough.js --out-file ./roughes2015.js --presets babel-preset-es2015
-
-(defn print-props [x]
-  (let [v (run-js-thread
-            (fn []
-              (eval-str x)))]
-    (prn (property-ids v))))
 
 (comment
   (let [v (run-js-thread
