@@ -1,5 +1,6 @@
 (ns clj-simple-chart.opentype
   (:require [base64-clj.core :as base64]
+            [clj-simple-chart.roughjs :as rough]
             [clojure.core.async :as async]
             [clojure.string :as string]
             [clj-simple-chart.translate :refer [translate]]
@@ -146,7 +147,8 @@
                     circle       :circle
                     path         :path
                     min-height   :min-height
-                    border-tight :border-tight}
+                    border-tight :border-tight
+                    rough        :rough}
                    text]
   (let [bb (get-bounding-box font-name text x y font-size)
         metadata {:font-size (double font-size)
@@ -154,9 +156,10 @@
                   :text      text
                   :width     (Math/abs (- (:x1 bb) (:x2 bb)))}
         metadata (merge metadata bb)
-        font-path [:path {:d      (get-path-data font-name text x y font-size)
-                          :fill   fill
-                          :stroke stroke}]
+        font-path (rough/path {:d      (get-path-data font-name text x y font-size)
+                               :fill   fill
+                               :rough  rough
+                               :stroke stroke})
         txt (with-meta {} metadata)
         border (when border-tight
                  [:g [:line {:x1     (:x1 (meta txt))
@@ -228,6 +231,7 @@
      rect               :rect
      circle             :circle
      path               :path
+     rough              :rough
      :as                config
      :or                {x                  0.0
                          y                  0.0
@@ -297,7 +301,8 @@
                             :path         path
                             :min-height   min-height
                             :stroke       stroke
-                            :border-tight border-tight}
+                            :border-tight border-tight
+                            :rough        rough}
                            text)))
   ([{txt :text
      :as config}]

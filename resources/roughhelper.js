@@ -33,3 +33,8 @@ function path(s, opts) {
     const svg = getSvg();
     return appendAndSerialize(svg, rough.svg(svg).path(s, JSON.parse(opts)));
 }
+
+function line(x1, y1, x2, y2, opts) {
+    const svg = getSvg();
+    return appendAndSerialize(svg, rough.svg(svg).line(x1, y1, x2, y2, JSON.parse(opts)));
+}

@@ -23,6 +23,7 @@
           :stack-opts    {:padding-inner 0.1}
           :rough         {:fillStyle "zigzag"
                           :stroke    "black"}
+          :rough-text    nil
           :padding-inner 0.2
           :padding-outer 0.1}))
 
@@ -34,7 +35,9 @@
           :ticks       5
           :width       width
           :height      height
-          :domain      [-100 100]}))
+          :domain      [-100 100]
+          :rough       {:fillStyle "zigzag"
+                        :stroke    "black"}}))
 
 (def rects
   [

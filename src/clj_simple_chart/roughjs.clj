@@ -119,7 +119,7 @@
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
 
-(defn path [d opts]
+(defn- path-inner [d opts]
   (run-js-thread
     (bound-fn []
       (when *dev-mode*
@@ -134,6 +134,37 @@
         (when *dev-mode*
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
+
+(defn- line-inner [x1 y1 x2 y2 opts]
+  (run-js-thread
+    (bound-fn []
+      (when *dev-mode*
+        (eval-str (slurp "resources/roughhelper.js")))
+      (let [^Function circle-js (.get @scope "line")
+            res-str (try
+                      (.call circle-js @context @scope @scope (object-array [x1 y1 x2 y2 (json/generate-string opts)]))
+                      (catch Throwable t
+                        (.printStackTrace t)
+                        (throw t)))
+            parsed (xh/parse res-str)]
+        (when *dev-mode*
+          (devserver/push-svg! res-str))
+        (nth parsed 2)))))
+
+(defn path [{:keys [d rough] :as opts}]
+  (if rough
+    (path-inner d (merge opts rough))
+    [:path opts]))
+
+(defn line [{:keys [x1 y1 x2 y2 rough opts]}]
+  (if rough
+    (do
+      (line-inner (or x1 0)
+                  (or y1 0)
+                  (or x2 0)
+                  (or y2 0)
+                  (merge opts rough)))
+    [:line opts]))
 
 #_(do
     (binding [*dev-mode* true]

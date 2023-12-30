@@ -1,5 +1,6 @@
 (ns clj-simple-chart.axis.core
   (:require [clj-simple-chart.point :refer [center-point]]
+            [clj-simple-chart.roughjs :as rough]
             [clj-simple-chart.translate :refer [translate]]
             [clj-simple-chart.axis.ticks :refer [ticks]]
             [clj-simple-chart.opentype :as opentype]))
@@ -55,8 +56,7 @@
 
 (def grid-stroke-opacity 0.25)
 
-(defn render-x-axis [scale sign dy margin-direction]
-  (println "janei...")
+(defn render-x-axis [{:keys [rough] :as scale} sign dy margin-direction]
   (let [color (get scale :color "#000")
         rng (:range scale)
         neg-sign (* -1 sign)
@@ -74,25 +74,31 @@
     ;(println "overflow-left is" overflow-left)
     (with-meta
       [:g
-       [:path {:stroke       color
-               :stroke-width "1"
-               :fill         "none"
-               :d            (str "M0.5," sign-char "6 V0.5 H" (int (apply max rng)) ".5 V" sign-char "6")}]
-       (map (fn [d] [:g {:transform (translate (center-point scale d) 0)}
-                     [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
-                     (when (:grid scale)
-                       [:line {:stroke         color
-                               :stroke-opacity (or (:grid-stroke-opacity scale) grid-stroke-opacity)
-                               :y2             (* neg-sign (:height scale))
-                               :x1             0.5 :x2 0.5}])
-                     (opentype/text
-                       (apply-axis-text-style-fn
-                         {:x           0.5
-                          :dy          dy
-                          :y           (* sign 9)
-                          :fill        color
-                          :text-anchor "middle"} scale d)
-                       (frmt scale d))]) (ticks scale))]
+       (rough/path {:stroke       color
+                    :stroke-width "1"
+                    :rough        rough
+                    :fill         "none"
+                    :d            (str "M0.5," sign-char "6 V0.5 H" (int (apply max rng)) ".5 V" sign-char "6")})
+       (map (fn [d]
+              [:g {:transform (translate (center-point scale d) 0)}
+               [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
+               (when (:grid scale)
+                 (rough/line {:rough          rough
+                              :stroke         color
+                              :stroke-opacity (or (:grid-stroke-opacity scale) grid-stroke-opacity)
+                              :y2             (* neg-sign (:height scale))
+                              :x1             0.5 :x2 0.5}))
+               (let [v (opentype/text
+                         (-> (apply-axis-text-style-fn
+                               {:x           0.5
+                                :dy          dy
+                                :y           (* sign 9)
+                                :fill        color
+                                :text-anchor "middle"} scale d)
+                             (assoc :rough (get scale :rough-text)))
+                         (frmt scale d))]
+                 v)])
+            (ticks scale))]
       {margin-direction (+ 9 max-height-font)
        :margin-left     overflow-left
        :margin-right    (+ 0.5 overflow-right)})))
