@@ -74,9 +74,6 @@
 ; npm install babel-cli babel-preset-es2015
 ; npx babel  ./rough.js --out-file ./roughes2015.js --presets babel-preset-es2015
 
-(defn rect
-  [x y w h opts])
-
 (defn- bootstrap-rhino-if-needed []
   (when-not @context (run-js-thread bootstrap-rhino)))
 
@@ -102,9 +99,33 @@
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
 
+(defn rectangle [x y w h opts]
+  (run-js-thread
+    (bound-fn []
+      (when *dev-mode*
+        (eval-str (slurp "resources/roughhelper.js")))
+      (let [^Function circle-js (.get @scope "rectangle")
+            res-str (try
+                      (.call circle-js @context @scope @scope (object-array [x y w h (json/generate-string opts)]))
+                      (catch Throwable t
+                        (.printStackTrace t)
+                        (throw t)))
+            parsed (xh/parse res-str)]
+        (when *dev-mode*
+          (println res-str)
+          (devserver/push-svg! res-str))
+        (nth parsed 2)))))
+
 (do
   (binding [*dev-mode* true]
+    (rectangle 10 15 180 180 {:fill "red"})
     ;(def cc (circle 80 120 50 {:fill "red"}))
     ;(prn (str/includes? (pr-str cc) "red"))
-    (prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
+    #_(prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
+
+#_(do
+    (binding [*dev-mode* true]
+      ;(def cc (circle 80 120 50 {:fill "red"}))
+      ;(prn (str/includes? (pr-str cc) "red"))
+      (prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
     ;(prn cc)))
