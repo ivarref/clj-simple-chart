@@ -21,6 +21,8 @@
           :fill          ["red" "green" "blue"]
           :stack         :veritcal
           :stack-opts    {:padding-inner 0.1}
+          :rough         {:fillStyle "zigzag"
+                          :stroke    "black"}
           :padding-inner 0.2
           :padding-outer 0.1}))
 
@@ -47,17 +49,6 @@
    {:p 1992 :c "cats" :h -25}
    {:p 1992 :c "dogs" :h -25}
    {:p 1992 :c "birds" :h 25}])
-
-#_(println (rect/stack-coll rects))
-
-;{:p 1991 :c "dogs" :h 25}
-;{:p 1991 :c "birds" :h 25}])
-
-;{:p 1992 :c "birds" :h 55}])
-
-;{:p 1993 :c "birds" :h -25}])
-;{:p 1993 :c "dogs" :h 25}
-;{:p 1993 :c "cats" :h 25}])
 
 (defn diagram []
   [:svg (svg-attrs width height margin)

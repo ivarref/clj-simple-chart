@@ -96,4 +96,4 @@
     (refresh-to-root! root-ns (symbol (str from-ns)))
     (do
       (log "Root-ns not set, please use set-focus!")
-      (refresh-to-root! (symbol (str from-ns)) (symbol (str from-ns))))))
+      nil #_(refresh-to-root! (symbol (str from-ns)) (symbol (str from-ns))))))

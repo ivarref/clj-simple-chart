@@ -28,3 +28,8 @@ function rectangle(x, y, w, h, opts) {
     const svg = getSvg();
     return appendAndSerialize(svg, rough.svg(svg).rectangle(x, y, w, h, JSON.parse(opts)));
 }
+
+function path(s, opts) {
+    const svg = getSvg();
+    return appendAndSerialize(svg, rough.svg(svg).path(s, JSON.parse(opts)));
+}

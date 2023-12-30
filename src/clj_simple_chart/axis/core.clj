@@ -56,6 +56,7 @@
 (def grid-stroke-opacity 0.25)
 
 (defn render-x-axis [scale sign dy margin-direction]
+  (println "janei...")
   (let [color (get scale :color "#000")
         rng (:range scale)
         neg-sign (* -1 sign)

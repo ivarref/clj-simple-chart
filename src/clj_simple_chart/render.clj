@@ -14,4 +14,4 @@
       (jfx/export-to-file "temp.svg" (f)))
     (catch Throwable t
       (binding [*out* *err*]
-        (println "Error during re-render:" (ex-message t))))))
+        (println "Error during re-render:" (.getMessage t))))))

@@ -1,7 +1,7 @@
 (ns clj-simple-chart.rect
   (:require [clj-simple-chart.scale.core :refer [scale]]
             [clj-simple-chart.point :refer [point]]
-            [clj-simple-chart.render :as r]))
+            [clj-simple-chart.roughjs :as rough]))
 
 (defn stack-coll-inner [c]
   (if (empty? c)
@@ -26,61 +26,63 @@
       (update new :x #(+ h (or x 0.0) (or % 0.0)))) coll))
 
 (defn vertical-rect
-  [xscale yscale {px           :p
-                  py           :y
-                  height       :h
-                  fill         :fill
-                  stroke       :stroke
-                  stroke-width :stroke-width
-                  :as          inp
-                  :or          {py           (max 0 (first (:domain yscale)))
-                                fill         "red"
-                                stroke       "none"
-                                stroke-width "1px"}}]
+  [{:keys [rough] :as xscale}
+   yscale
+   {px           :p
+    py           :y
+    height       :h
+    fill         :fill
+    stroke       :stroke
+    stroke-width :stroke-width
+    :as          inp
+    :or          {py           (max 0 (first (:domain yscale)))
+                  fill         "red"
+                  stroke       "none"
+                  stroke-width "1px"}}]
   (let [svg-natural-order (apply < (:range yscale))]
     (if svg-natural-order
       (let [bottom (first (:range yscale))
             h (- (point yscale height) bottom)
             yy (point yscale py)]
-        [:rect {:x            (point xscale px)
-                :y            (double yy)
-                :height       (double h)
-                :fill         fill
-                :style        "shape-rendering:crispEdges;"
-                :stroke       stroke
-                :stroke-width stroke-width
-                :width        (:bandwidth xscale)}])
+        (do
+          (rough/rect {:x            (point xscale px)
+                       :y            (double yy)
+                       :height       (double h)
+                       :fill         fill
+                       :rough        rough
+                       :style        "shape-rendering:crispEdges;"
+                       :stroke       stroke
+                       :stroke-width stroke-width
+                       :width        (:bandwidth xscale)})))
       (do
         (if (neg? height)
           (do
             [:g
-             ;[:circle {:fill "yellow" :cy (double (point yscale py)) :r 5 :cx (point xscale px)}]
-             ;[:circle {:fill "yellow" :stroke "black" :cy (double (point yscale height)) :r 15 :cx (point xscale px)}]
-             ;[:circle {:fill "orange" :stroke "black" :cy 349 :r 15 :cx (point xscale px)}]
-             [:rect {:x            (point xscale px)
-                     :y            (double (point yscale py))
-                     :height       (double (- (point yscale (+ py height))
-                                              (point yscale py)))
-                     :fill         fill
-                     :stroke       stroke
-                     :stroke-width stroke-width
-                     :style        "shape-rendering:crispEdges;"
-                     :width        (:bandwidth xscale)}]])
+             (rough/rect {:x            (point xscale px)
+                          :y            (double (point yscale py))
+                          :height       (double (- (point yscale (+ py height))
+                                                   (point yscale py)))
+                          :fill         fill
+                          :stroke       stroke
+                          :stroke-width stroke-width
+                          :style        "shape-rendering:crispEdges;"
+                          :rough        rough
+                          :width        (:bandwidth xscale)})])
           (let [top (point yscale 0)
                 h (- top (point yscale height))
                 yy (- (point yscale py) h)]
             [:g
              ;[:circle {:r 10 :cy h :fill "black"}]
              ;[:circle {:r 10 :cy top :fill "yellow"}]
-             [:rect {:x            (point xscale px)
-                     :y            (double yy)
-                     :height       (double h)
-                     :fill         fill
-                     :stroke       stroke
-                     :stroke-width stroke-width
-                     :style        "shape-rendering:crispEdges;"
-                     :width        (:bandwidth xscale)}]]))))))
-
+             (rough/rect {:x            (point xscale px)
+                          :y            (double yy)
+                          :height       (double h)
+                          :fill         fill
+                          :stroke       stroke
+                          :stroke-width stroke-width
+                          :rough        rough
+                          :style        "shape-rendering:crispEdges;"
+                          :width        (:bandwidth xscale)})]))))))
 
 (defn horizontal-rect
   [xscale yscale {py           :p

@@ -93,11 +93,15 @@
                         (.printStackTrace t)
                         (throw t)))
             parsed (xh/parse res-str)]
-        (println res-str)
-        (spit "janei.svg" res-str)
         (when *dev-mode*
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
+
+(defn circle2 [m]
+  (circle (get m :cx)
+          (get m :cy)
+          (get m :r)
+          m))
 
 (defn rectangle [x y w h opts]
   (run-js-thread
@@ -112,16 +116,59 @@
                         (throw t)))
             parsed (xh/parse res-str)]
         (when *dev-mode*
-          (println res-str)
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
 
-(do
-  (binding [*dev-mode* true]
-    (rectangle 10 15 180 180 {:fill "red"})
-    ;(def cc (circle 80 120 50 {:fill "red"}))
-    ;(prn (str/includes? (pr-str cc) "red"))
-    #_(prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
+(defn path [d opts]
+  (run-js-thread
+    (bound-fn []
+      (when *dev-mode*
+        (eval-str (slurp "resources/roughhelper.js")))
+      (let [^Function circle-js (.get @scope "path")
+            res-str (try
+                      (.call circle-js @context @scope @scope (object-array [d (json/generate-string opts)]))
+                      (catch Throwable t
+                        (.printStackTrace t)
+                        (throw t)))
+            parsed (xh/parse res-str)]
+        (when *dev-mode*
+          (devserver/push-svg! res-str))
+        (nth parsed 2)))))
+
+#_(do
+    (binding [*dev-mode* true]
+      ;(rectangle 10 15 180 180 {:fill "none"})
+      (println (path "M37,17v15H14V17z M50,0H0v50h50z" {:fill "blue"}))
+      ;(path "M80 80 A 45 45, 0, 0, 0, 125 125 L 125 80 Z" {:fill "green"})
+      ;(def cc (circle 80 120 50 {:fill "red"}))
+      ;(prn (str/includes? (pr-str cc) "red"))
+      #_(prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
+
+
+(comment
+  {:x            (point xscale px)
+   :y            (double (point yscale py))
+   :height       (double (- (point yscale (+ py height))
+                            (point yscale py)))
+   :fill         fill
+   :stroke       stroke
+   :stroke-width stroke-width
+   :style        "shape-rendering:crispEdges;"
+   :width        (:bandwidth xscale)})
+
+(defn rect [{:keys [x y rough height fill stroke stroke-width style width]
+             :as opts}]
+  (if rough
+    (rectangle x y width height (merge (select-keys opts [:fill :stroke :stroke-width :style]) rough))
+    [:rect opts]))
+
+#_(do
+    (binding [*dev-mode* true]
+      ;(rectangle 10 15 180 180 {:fill "none"})
+      (circle 50 50 50 {:fill "yellow"})
+      ;(def cc (circle 80 120 50 {:fill "red"}))
+      ;(prn (str/includes? (pr-str cc) "red"))
+      #_(prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
 
 #_(do
     (binding [*dev-mode* true]
