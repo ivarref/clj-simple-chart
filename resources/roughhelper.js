@@ -29,6 +29,6 @@ function circle(cx, cy, d, opts) {
     const document = new DOMImplementation().createDocument('http://www.w3.org/1999/xhtml', 'html', null);
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     const rc = rough.svg(svg);
-    svg.appendChild(rc.circle(cx, cy, d, opts));
+    svg.appendChild(rc.circle(cx, cy, d, JSON.parse(opts)));
     return xmlSerializer.serializeToString(svg);
 }

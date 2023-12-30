@@ -1,5 +1,6 @@
 (ns clj-simple-chart.roughjs
-  (:require [clojure.core.async :as async]
+  (:require [cheshire.core :as json]
+            [clojure.core.async :as async]
             [clojure.string :as str]
             [dk.cst.xml-hiccup :as xh])
   (:import (java.io BufferedInputStream FileInputStream InputStreamReader)
@@ -84,7 +85,7 @@
         (eval-str (slurp "resources/roughhelper.js")))
       (let [^Function circle-js (.get @scope "circle")
             res-str (try
-                      (.call circle-js @context @scope @scope (object-array [cx cy d opts]))
+                      (.call circle-js @context @scope @scope (object-array [cx cy d (json/generate-string opts)]))
                       (catch Throwable t
                         (.printStackTrace t)
                         (throw t)))
@@ -99,6 +100,7 @@
 
 (do
   (binding [*dev-mode* true]
-    (def cc (circle 80 120 50 {"fill" "red"}))
+    (def cc (circle 80 120 50 {:fill "red"}))
     (prn (str/includes? (pr-str cc) "red"))
+    (prn (str/includes? (pr-str (circle 80 120 150 {:stroke "green" :fill "blue"})) "blue"))
     (prn cc)))
