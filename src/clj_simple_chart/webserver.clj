@@ -37,7 +37,8 @@
            (let [s (http/start-server
                      (fn [ctx] (handler ctx))
                      {:socket-address (InetSocketAddress. "127.0.0.1" 8080)})]
-             (println "started webserver on http://localhost:8080")
+             (binding [*out* *err*]
+               (println "started webserver on http://localhost:8080"))
              s)))
 
 (defn push-svg! [svg]

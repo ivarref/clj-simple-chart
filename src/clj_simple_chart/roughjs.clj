@@ -2,7 +2,8 @@
   (:require [cheshire.core :as json]
             [clojure.core.async :as async]
             [clojure.string :as str]
-            [dk.cst.xml-hiccup :as xh])
+            [dk.cst.xml-hiccup :as xh]
+            [clj-simple-chart.webserver :as devserver])
   (:import (java.io BufferedInputStream FileInputStream InputStreamReader)
            (java.nio.charset StandardCharsets)
            (org.mozilla.javascript Context Function NativeObject RhinoException)))
@@ -76,6 +77,11 @@
 (defn rect
   [x y w h opts])
 
+(defn- bootstrap-rhino-if-needed []
+  (when-not @context (run-js-thread bootstrap-rhino)))
+
+(defonce _bootstrap (bootstrap-rhino-if-needed))
+
 (def ^:dynamic *dev-mode* false)
 
 (defn circle [cx cy d opts]
@@ -90,17 +96,15 @@
                         (.printStackTrace t)
                         (throw t)))
             parsed (xh/parse res-str)]
+        (println res-str)
         (spit "janei.svg" res-str)
+        (when *dev-mode*
+          (devserver/push-svg! res-str))
         (nth parsed 2)))))
-
-(defn- bootstrap-rhino-if-needed []
-  (when-not @context (run-js-thread bootstrap-rhino)))
-
-(defonce _bootstrap (bootstrap-rhino-if-needed))
 
 (do
   (binding [*dev-mode* true]
-    (def cc (circle 80 120 50 {:fill "red"}))
-    (prn (str/includes? (pr-str cc) "red"))
-    (prn (str/includes? (pr-str (circle 80 120 150 {:stroke "green" :fill "blue"})) "blue"))
-    (prn cc)))
+    ;(def cc (circle 80 120 50 {:fill "red"}))
+    ;(prn (str/includes? (pr-str cc) "red"))
+    (prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
+    ;(prn cc)))
