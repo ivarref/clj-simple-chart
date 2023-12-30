@@ -1,5 +1,6 @@
 (ns clj-simple-chart.roughjs
   (:require [clojure.core.async :as async]
+            [clojure.string :as str]
             [dk.cst.xml-hiccup :as xh])
   (:import (java.io BufferedInputStream FileInputStream InputStreamReader)
            (java.nio.charset StandardCharsets)
@@ -74,16 +75,21 @@
 (defn rect
   [x y w h opts])
 
+(def ^:dynamic *dev-mode* false)
+
 (defn circle [cx cy d opts]
   (run-js-thread
-    (fn []
-      (eval-str (slurp "resources/roughhelper.js"))
+    (bound-fn []
+      (when *dev-mode*
+        (eval-str (slurp "resources/roughhelper.js")))
       (let [^Function circle-js (.get @scope "circle")
-            res (try
-                  (.call circle-js @context @scope @scope (object-array [cx cy d]))
-                  (catch Throwable t
-                    (.printStackTrace t)))
-            parsed (xh/parse res)]
+            res-str (try
+                      (.call circle-js @context @scope @scope (object-array [cx cy d opts]))
+                      (catch Throwable t
+                        (.printStackTrace t)
+                        (throw t)))
+            parsed (xh/parse res-str)]
+        (spit "janei.svg" res-str)
         (nth parsed 2)))))
 
 (defn- bootstrap-rhino-if-needed []
@@ -92,5 +98,7 @@
 (defonce _bootstrap (bootstrap-rhino-if-needed))
 
 (do
-  (def cc (circle 80 120 50 {}))
-  (prn cc))
+  (binding [*dev-mode* true]
+    (def cc (circle 80 120 50 {"fill" "red"}))
+    (prn (str/includes? (pr-str cc) "red"))
+    (prn cc)))
