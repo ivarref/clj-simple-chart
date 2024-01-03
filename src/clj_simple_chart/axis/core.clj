@@ -81,7 +81,7 @@
                     :d            (str "M0.5," sign-char "6 V0.5 H" (int (apply max rng)) ".5 V" sign-char "6")})
        (map (fn [d]
               [:g {:transform (translate (center-point scale d) 0)}
-               [:line {:stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)}]
+               (rough/line {:rough rough :stroke color :x1 0.5 :x2 0.5 :y2 (* sign 6)})
                (when (:grid scale)
                  (rough/line {:rough          rough
                               :stroke         color
@@ -130,15 +130,16 @@
         width (+ 9 axis-label-max-width)]
     (with-meta
       [:g
-       [:path {:stroke       color
-               :stroke-width "1"
-               :fill         "none"
-               :d            (str "M" sign-char "6," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "6")}]
+       (rough/path {:rough        (get scale :rough)
+                    :stroke       color
+                    :stroke-width "1"
+                    :fill         "none"
+                    :d            (str "M" sign-char "6," (int (apply max rng)) ".5 H0.5 V" (int (apply min rng)) ".5 H" sign-char "6")})
        (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
-                     [:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
+                     (rough/line {:rough (get scale :rough) :stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5})
                      (when (:grid scale)
                        (rough/line {:rough          (get scale :rough)
-                                    :stroke         "green"
+                                    :stroke         color
                                     :stroke-opacity (or (:grid-stroke-opacity scale) grid-stroke-opacity)
                                     :x2             (* neg-sign (:width scale))
                                     :y1             0.5 :y2 0.5}))
