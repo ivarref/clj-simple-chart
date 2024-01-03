@@ -1,9 +1,10 @@
 (ns clj-simple-chart.roughjs
   (:require [cheshire.core :as json]
+            [clj-simple-chart.webserver :as devserver]
             [clojure.core.async :as async]
+            [clojure.spec.alpha :as s]
             [clojure.string :as str]
-            [dk.cst.xml-hiccup :as xh]
-            [clj-simple-chart.webserver :as devserver])
+            [dk.cst.xml-hiccup :as xh])
   (:import (java.io BufferedInputStream FileInputStream InputStreamReader)
            (java.nio.charset StandardCharsets)
            (org.mozilla.javascript Context Function NativeObject RhinoException)))
@@ -81,7 +82,21 @@
 
 (def ^:dynamic *dev-mode* false)
 
-(defn circle [cx cy d opts]
+; Begin API towards rough.js
+
+(s/def :roughjs/fillStyle #{"hachure" "solid" "zigzag" "cross-hatch"
+                            "dots" "dashed" "zigzag-line"})
+
+(s/def :roughjs/opts
+  (s/keys
+    :opt-un [:roughjs/fillStyle]))
+
+(defn- clean-opts [opts]
+  (dissoc opts :d :rough :simplification :fillStyle))
+
+(defn- circle-inner
+  [cx cy d opts]
+  {:pre [(s/valid? :roughjs/opts opts)]}
   (run-js-thread
     (bound-fn []
       (when *dev-mode*
@@ -97,13 +112,9 @@
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
 
-(defn circle2 [m]
-  (circle (get m :cx)
-          (get m :cy)
-          (get m :r)
-          m))
-
-(defn rectangle [x y w h opts]
+(defn- rectangle-inner
+  [x y w h opts]
+  {:pre [(s/valid? :roughjs/opts opts)]}
   (run-js-thread
     (bound-fn []
       (when *dev-mode*
@@ -119,20 +130,9 @@
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
 
-(defn clean-opts [opts]
-  (dissoc opts :d :rough :simplification :fillStyle))
-
-(defn validate-fillStyle! [opts]
-  (let [valid ["hachure" "solid" "zigzag" "cross-hatch"
-               "dots" "dashed" "zigzag-line"]]
-    (when-let [inp (get opts :fillStyle)]
-      (assert (contains? (into #{} valid) inp)
-              (str ":fillStyle must be one of:\n"
-                   (str/join " " valid)
-                   "\nfillStyle was: " (pr-str inp))))))
-
-(defn- path-inner [d opts]
-  (validate-fillStyle! opts)
+(defn- path-inner
+  [d opts]
+  {:pre [(s/valid? :roughjs/opts opts)]}
   (run-js-thread
     (bound-fn []
       (when *dev-mode*
@@ -153,15 +153,9 @@
           (devserver/push-svg! res-str))
         paths))))
 
-(comment
-  (def data [:svg {:height "900", :width "900", :xmlns "http://www.w3.org/2000/svg"} [:g {} [:path {:d "M0.6019157481000358 0.886256456629726 C137.56270079470403 1.32974029473357, 274.07894181435074 1.7805850074613176, 432.9665103858171 -0.1813074331441411 M0.02332459676044617 0.9614684102999136 C137.8759623432271 0.1471134365211179, 275.3237681158494 0.06715752635703026, 431.78168477466625 0.28382520312386694", :fill "none", :stroke "black", :stroke-width "1"}]]]))
-
-(comment
-  (->> data
-       (tree-seq seq? identity)
-       (mapv prn)))
-
-(defn- line-inner [x1 y1 x2 y2 opts]
+(defn- line-inner
+  [x1 y1 x2 y2 opts]
+  {:pre [(s/valid? :roughjs/opts opts)]}
   (run-js-thread
     (bound-fn []
       (when *dev-mode*
@@ -177,11 +171,17 @@
             path-attrs (-> parsed
                            (get-in [2 2 1])
                            (merge opts-clean))]
-        #_(prn (dissoc path-attrs :d))
         (when *dev-mode*
           (devserver/push-svg! res-str))
         [:path path-attrs]))))
 
+; Begin public API
+
+(defn circle [m]
+  (circle-inner (get m :cx)
+                (get m :cy)
+                (get m :r)
+                m))
 
 (defn path [{:keys [d rough] :as opts}]
   (if rough
@@ -190,13 +190,18 @@
 
 (defn line [{:keys [x1 y1 x2 y2 rough] :as opts}]
   (if rough
-    (do
-      (line-inner (or x1 0.0)
-                  (or y1 0.0)
-                  (or x2 0.0)
-                  (or y2 0.0)
-                  (merge opts rough)))
+    (line-inner (or x1 0.0)
+                (or y1 0.0)
+                (or x2 0.0)
+                (or y2 0.0)
+                (merge opts rough))
     [:line opts]))
+
+(defn rect [{:keys [x y rough height width]
+             :as   opts}]
+  (if rough
+    (rectangle-inner x y width height (merge (select-keys opts [:fill :stroke :stroke-width :style]) rough))
+    [:rect opts]))
 
 #_(do
     (require 'demo.refresh)
@@ -217,37 +222,19 @@
       ;(path "M80 80 A 45 45, 0, 0, 0, 125 125 L 125 80 Z" {:fill "green"})
       ;(def cc (circle 80 120 50 {:fill "red"}))
       ;(prn (str/includes? (pr-str cc) "red"))
-      #_(prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
-
-
-(comment
-  {:x            (point xscale px)
-   :y            (double (point yscale py))
-   :height       (double (- (point yscale (+ py height))
-                            (point yscale py)))
-   :fill         fill
-   :stroke       stroke
-   :stroke-width stroke-width
-   :style        "shape-rendering:crispEdges;"
-   :width        (:bandwidth xscale)})
-
-(defn rect [{:keys [x y rough height fill stroke stroke-width style width]
-             :as   opts}]
-  (if rough
-    (rectangle x y width height (merge (select-keys opts [:fill :stroke :stroke-width :style]) rough))
-    [:rect opts]))
+      #_(prn (str/includes? (pr-str (circle-inner 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
 
 #_(do
     (binding [*dev-mode* true]
       ;(rectangle 10 15 180 180 {:fill "none"})
-      (circle 50 50 50 {:fill "yellow"})
+      (circle-inner 50 50 50 {:fill "yellow"})
       ;(def cc (circle 80 120 50 {:fill "red"}))
       ;(prn (str/includes? (pr-str cc) "red"))
-      #_(prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
+      #_(prn (str/includes? (pr-str (circle-inner 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
 
 #_(do
     (binding [*dev-mode* true]
       ;(def cc (circle 80 120 50 {:fill "red"}))
       ;(prn (str/includes? (pr-str cc) "red"))
-      (prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
+      (prn (str/includes? (pr-str (circle-inner 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
 ;(prn cc)))
