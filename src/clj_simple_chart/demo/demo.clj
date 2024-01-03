@@ -23,10 +23,12 @@
           :stack-opts    {:padding-inner 0.1}
           :rough         {:fillStyle "zigzag"
                           :stroke    "black"}
-          :rough-text    nil #_{:fillStyle "zigzag"
-                                :stroke    "black"
-                                :fill      "none"
-                                :roughness 0.01}
+          :rough-text    {:fillStyle "solid"
+                          :stroke    "black"
+                          :stroke-opacity 0.5
+                          :fill      "none"
+                          :simplification 0.7}
+
           :padding-inner 0.2
           :padding-outer 0.1}))
 

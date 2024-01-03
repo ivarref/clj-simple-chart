@@ -119,6 +119,9 @@
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
 
+(defn clean-opts [opts]
+  (dissoc opts :d :rough :simplification :fillStyle))
+
 (defn- path-inner [d opts]
   (run-js-thread
     (bound-fn []
@@ -130,10 +133,15 @@
                       (catch Throwable t
                         (.printStackTrace t)
                         (throw t)))
-            parsed (xh/parse res-str)]
+            parsed (xh/parse res-str)
+            paths (->> (nth parsed 2)
+                       (drop 2)
+                       (mapv (fn [[_elem attrs]]
+                               [:path (merge attrs (clean-opts opts))]))
+                       (into [:g]))]
         (when *dev-mode*
           (devserver/push-svg! res-str))
-        (nth parsed 2)))))
+        paths))))
 
 (comment
   (def data [:svg {:height "900", :width "900", :xmlns "http://www.w3.org/2000/svg"} [:g {} [:path {:d "M0.6019157481000358 0.886256456629726 C137.56270079470403 1.32974029473357, 274.07894181435074 1.7805850074613176, 432.9665103858171 -0.1813074331441411 M0.02332459676044617 0.9614684102999136 C137.8759623432271 0.1471134365211179, 275.3237681158494 0.06715752635703026, 431.78168477466625 0.28382520312386694", :fill "none", :stroke "black", :stroke-width "1"}]]]))
@@ -186,8 +194,8 @@
     (binding [*dev-mode* true]
       (prn
         (str/includes?
-          (pr-str (line {:rough {:fillStyle "zigzag"}
-                         :stroke "green"
+          (pr-str (line {:rough          {:fillStyle "zigzag"}
+                         :stroke         "green"
                          :stroke-opacity 0.25, :x2 432, :y1 0.5, :y2 0.5}))
           "opacity"))))
 
@@ -214,7 +222,7 @@
    :width        (:bandwidth xscale)})
 
 (defn rect [{:keys [x y rough height fill stroke stroke-width style width]
-             :as opts}]
+             :as   opts}]
   (if rough
     (rectangle x y width height (merge (select-keys opts [:fill :stroke :stroke-width :style]) rough))
     [:rect opts]))
@@ -232,4 +240,4 @@
       ;(def cc (circle 80 120 50 {:fill "red"}))
       ;(prn (str/includes? (pr-str cc) "red"))
       (prn (str/includes? (pr-str (circle 80 120 150 {:stroke "black" :fill "blue"})) "blue"))))
-    ;(prn cc)))
+;(prn cc)))
