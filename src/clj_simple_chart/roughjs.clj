@@ -156,15 +156,19 @@
     (path-inner d (merge opts rough))
     [:path opts]))
 
-(defn line [{:keys [x1 y1 x2 y2 rough opts]}]
+(defn line [{:keys [x1 y1 x2 y2 rough] :as opts}]
   (if rough
     (do
-      (line-inner (or x1 0)
-                  (or y1 0)
-                  (or x2 0)
-                  (or y2 0)
+      (line-inner (or x1 0.0)
+                  (or y1 0.0)
+                  (or x2 0.0)
+                  (or y2 0.0)
                   (merge opts rough)))
     [:line opts]))
+
+#_(do
+    (binding [*dev-mode* true]
+      (line {:rough {:fillStyle "zigzag", :stroke "black"}, :stroke "green", :stroke-opacity 0.25, :x2 432, :y1 0.5, :y2 0.5})))
 
 #_(do
     (binding [*dev-mode* true]

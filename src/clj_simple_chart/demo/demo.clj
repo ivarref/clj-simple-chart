@@ -23,7 +23,10 @@
           :stack-opts    {:padding-inner 0.1}
           :rough         {:fillStyle "zigzag"
                           :stroke    "black"}
-          :rough-text    nil
+          :rough-text    nil #_{:fillStyle "zigzag"
+                                :stroke    "black"
+                                :fill      "none"
+                                :roughness 0.01}
           :padding-inner 0.2
           :padding-outer 0.1}))
 
@@ -36,8 +39,8 @@
           :width       width
           :height      height
           :domain      [-100 100]
-          :rough       {:fillStyle "zigzag"
-                        :stroke    "black"}}))
+          :rough       {:stroke    "black"
+                        :roughness 1.25}}))
 
 (def rects
   [

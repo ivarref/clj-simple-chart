@@ -137,10 +137,11 @@
        (map (fn [d] [:g {:transform (translate 0 (center-point scale d))}
                      [:line {:stroke color :x2 (* sign 6) :y1 0.5 :y2 0.5}]
                      (when (:grid scale)
-                       [:line {:stroke         color
-                               :stroke-opacity (or (:grid-stroke-opacity scale) grid-stroke-opacity)
-                               :x2             (* neg-sign (:width scale))
-                               :y1             0.5 :y2 0.5}])
+                       (rough/line {:rough          (get scale :rough)
+                                    :stroke         "green"
+                                    :stroke-opacity (or (:grid-stroke-opacity scale) grid-stroke-opacity)
+                                    :x2             (* neg-sign (:width scale))
+                                    :y1             0.5 :y2 0.5}))
                      (opentype/text
                        (apply-axis-text-style-fn
                          {:x           (* sign 9)
