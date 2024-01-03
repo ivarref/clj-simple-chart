@@ -91,9 +91,18 @@
 (defn set-focus! [root-ns]
   (reset! root-ns-atom (symbol (str root-ns))))
 
+(defonce ignore-counter (atom 0))
+
 (defn refresh-from-ns! [from-ns]
-  (if-let [root-ns @root-ns-atom]
-    (refresh-to-root! root-ns (symbol (str from-ns)))
+  (if (pos-int? @ignore-counter)
     (do
-      (log "Root-ns not set, please use set-focus!")
-      nil #_(refresh-to-root! (symbol (str from-ns)) (symbol (str from-ns))))))
+      (reset! ignore-counter 0)
+      (log "ignoring"))
+    (if-let [root-ns @root-ns-atom]
+      (refresh-to-root! root-ns (symbol (str from-ns)))
+      (do
+        (log "Root-ns not set, please use set-focus!")
+        nil #_(refresh-to-root! (symbol (str from-ns)) (symbol (str from-ns)))))))
+
+(defn ignore-one! []
+  (reset! ignore-counter 1))

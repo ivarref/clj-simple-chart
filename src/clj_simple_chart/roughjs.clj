@@ -135,6 +135,14 @@
           (devserver/push-svg! res-str))
         (nth parsed 2)))))
 
+(comment
+  (def data [:svg {:height "900", :width "900", :xmlns "http://www.w3.org/2000/svg"} [:g {} [:path {:d "M0.6019157481000358 0.886256456629726 C137.56270079470403 1.32974029473357, 274.07894181435074 1.7805850074613176, 432.9665103858171 -0.1813074331441411 M0.02332459676044617 0.9614684102999136 C137.8759623432271 0.1471134365211179, 275.3237681158494 0.06715752635703026, 431.78168477466625 0.28382520312386694", :fill "none", :stroke "black", :stroke-width "1"}]]]))
+
+(comment
+  (->> data
+       (tree-seq seq? identity)
+       (mapv prn)))
+
 (defn- line-inner [x1 y1 x2 y2 opts]
   (run-js-thread
     (bound-fn []
@@ -146,10 +154,16 @@
                       (catch Throwable t
                         (.printStackTrace t)
                         (throw t)))
-            parsed (xh/parse res-str)]
+            parsed (xh/parse res-str)
+            opts-clean (dissoc opts :rough :x1 :x2 :y1 :y2)
+            path-attrs (-> parsed
+                           (get-in [2 2 1])
+                           (merge opts-clean))]
+        #_(prn (dissoc path-attrs :d))
         (when *dev-mode*
           (devserver/push-svg! res-str))
-        (nth parsed 2)))))
+        [:path path-attrs]))))
+
 
 (defn path [{:keys [d rough] :as opts}]
   (if rough
@@ -167,8 +181,16 @@
     [:line opts]))
 
 #_(do
+    (require 'demo.refresh)
+    (demo.refresh/ignore-one!)
     (binding [*dev-mode* true]
-      (line {:rough {:fillStyle "zigzag", :stroke "black"}, :stroke "green", :stroke-opacity 0.25, :x2 432, :y1 0.5, :y2 0.5})))
+      (prn
+        (str/includes?
+          (pr-str (line {:rough {:fillStyle "zigzag"}
+                         :stroke "green"
+                         :stroke-opacity 0.25, :x2 432, :y1 0.5, :y2 0.5}))
+          "opacity"))))
+
 
 #_(do
     (binding [*dev-mode* true]
