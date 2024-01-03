@@ -143,12 +143,13 @@
                                     :x2             (* neg-sign (:width scale))
                                     :y1             0.5 :y2 0.5}))
                      (opentype/text
-                       (apply-axis-text-style-fn
-                         {:x           (* sign 9)
-                          :dy          ".32em"
-                          :fill        color
-                          :y           0.5
-                          :text-anchor text-anchor} scale d)
+                       (-> (apply-axis-text-style-fn
+                             {:x           (* sign 9)
+                              :dy          ".32em"
+                              :fill        color
+                              :y           0.5
+                              :text-anchor text-anchor} scale d)
+                           (assoc :rough (get scale :rough-text)))
                        (frmt scale d))]) (ticks scale))]
       {margin-direction width
        :margin-top      (- margin-top 0.5)

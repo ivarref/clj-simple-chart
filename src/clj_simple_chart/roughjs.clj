@@ -122,7 +122,17 @@
 (defn clean-opts [opts]
   (dissoc opts :d :rough :simplification :fillStyle))
 
+(defn validate-fillStyle! [opts]
+  (let [valid ["hachure" "solid" "zigzag" "cross-hatch"
+               "dots" "dashed" "zigzag-line"]]
+    (when-let [inp (get opts :fillStyle)]
+      (assert (contains? (into #{} valid) inp)
+              (str ":fillStyle must be one of:\n"
+                   (str/join " " valid)
+                   "\nfillStyle was: " (pr-str inp))))))
+
 (defn- path-inner [d opts]
+  (validate-fillStyle! opts)
   (run-js-thread
     (bound-fn []
       (when *dev-mode*

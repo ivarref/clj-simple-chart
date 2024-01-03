@@ -10,39 +10,51 @@
 
 (refresh/set-focus! *ns*)
 
-(defn x []
-  (scale {:type          :ordinal
-          :axis          :x
-          :orientation   :bottom
-          :width         width
-          :height        height
-          :domain        [1990 1991 1992 1993]
-          :sub-domain    ["cats" "dogs" "birds"]
-          :fill          ["red" "green" "blue"]
-          :stack         :veritcal
-          :stack-opts    {:padding-inner 0.1}
-          :rough         {:fillStyle "zigzag"
-                          :stroke    "black"}
-          :rough-text    {:fillStyle "solid"
-                          :stroke    "black"
-                          :stroke-opacity 0.5
-                          :fill      "none"
-                          :simplification 0.7}
+(def scale-text
+  {:fillStyle        "hachure"
+   :stroke           "black"
+   :stroke-opacity   1
+   :fill             "none"
+   :preserveVertices true
+   :simplification   0.7
+   :roughness        1})
 
-          :padding-inner 0.2
-          :padding-outer 0.1}))
+(def axis-text-style
+  (fn [_]
+    {:font-size 14
+     :font      "Roboto Thin"}))
 
-(defn y []
-  (scale {:type        :linear
-          :axis        :y
-          :grid        true
-          :orientation :left
-          :ticks       5
-          :width       width
-          :height      height
-          :domain      [-100 100]
-          :rough       {:stroke    "black"
-                        :roughness 1.25}}))
+(def x
+  (scale {:type               :ordinal
+          :axis               :x
+          :orientation        :bottom
+          :width              width
+          :height             height
+          :domain             [1990 1991 1992 1993]
+          :sub-domain         ["cats" "dogs" "birds"]
+          :fill               ["red" "green" "blue"]
+          :stack              :veritcal
+          :stack-opts         {:padding-inner 0.1}
+          :rough              {:fillStyle "zigzag"
+                               :stroke    "black"}
+          :axis-text-style-fn axis-text-style
+          :rough-text         scale-text
+          :padding-inner      0.2
+          :padding-outer      0.1}))
+
+(def y
+  (scale {:type               :linear
+          :axis               :y
+          :grid               true
+          :orientation        :left
+          :ticks              5
+          :width              width
+          :height             height
+          :domain             [-100 100]
+          :axis-text-style-fn axis-text-style
+          :rough-text         scale-text
+          :rough              {:stroke    "black"
+                               :roughness 1.25}}))
 
 (def rects
   [
@@ -61,11 +73,9 @@
 (defn diagram []
   [:svg (svg-attrs width height margin)
    [:g {:transform (translate (:left margin) (:top margin))}
-    (let [x (x)
-          y (y)]
-      [:g
-       (render-axis y)
-       (render-axis x)
-       (rect/rect-or-stacked-vertical x y rects)])]])
+    [:g
+     (render-axis y)
+     (render-axis x)
+     (rect/rect-or-stacked-vertical x y rects)]]])
 
 (def _render-self (r/render-fn (fn [] (diagram))))
