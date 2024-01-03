@@ -43,5 +43,8 @@
 
 (defn push-svg! [svg]
   (reset! prev-svg svg)
+  (when (empty? @websockets)
+    (binding [*out* *err*]
+      (println "no clients to push to!")))
   (doseq [sock @websockets]
     (s/put! sock svg)))
