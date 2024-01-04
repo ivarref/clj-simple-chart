@@ -71,10 +71,18 @@
   (if-not (get @fonts (.getName filename))
     (let [font-bytes (FileUtils/readFileToByteArray filename)
           font-b64 (String. (base64/encode-bytes font-bytes))]
-      (run-js-thread (fn []
-                       (swap! fonts (fn [old-fonts]
-                                      #_(println "loading font" (.getName filename))
-                                      (assoc old-fonts (.getName filename) (.call @parsefont @cx @scope @scope (object-array [font-b64])))))))
+      (run-js-thread
+        (fn []
+          (swap! fonts (fn [old-fonts]
+                         #_(println "loading font" (.getName filename))
+                         (assoc old-fonts (.getName filename)
+                                          (try
+                                            (.call @parsefont @cx @scope @scope (object-array [font-b64]))
+                                            (catch Throwable t
+                                              (binding [*out* *err*]
+                                                (println "Failed to load font" filename)
+                                                (println "Error:" (.getMessage t))))))))))
+
       :done)
     :already-loaded))
 
@@ -109,6 +117,7 @@
 (defonce font-name-to-font (make-font-names-map))
 (comment
   (sort (keys font-name-to-font)))
+
 (def roboto-regular (get font-name-to-font "Roboto Regular"))
 
 (defn get-path-data [fontname text x y size]
