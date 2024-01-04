@@ -1,15 +1,16 @@
 (ns clj-simple-chart.opentype
   (:require [base64-clj.core :as base64]
             [clj-simple-chart.roughjs :as rough]
-            [clojure.core.async :as async]
-            [clojure.string :as string]
             [clj-simple-chart.translate :refer [translate]]
-            [clojure.string :as str]
-            [clojure.edn :as edn])
-  (:import (org.mozilla.javascript Context NativeObject)
+            [clojure.core.async :as async]
+            [clojure.edn :as edn]
+            [clojure.set :as set]
+            [clojure.string :as string]
+            [clojure.string])
+  (:import (java.io BufferedInputStream File FileInputStream InputStreamReader)
+           (java.nio.charset StandardCharsets)
            (org.apache.commons.io FileUtils)
-           (java.io File FileReader BufferedInputStream FileInputStream InputStreamReader)
-           (java.nio.charset StandardCharsets)))
+           (org.mozilla.javascript Context NativeObject)))
 
 (defonce input (async/chan))
 (defonce exit (async/chan))
@@ -115,6 +116,18 @@
                         font)))) {} (vals @fonts)))
 
 (defonce font-name-to-font (make-font-names-map))
+
+(defn force-reload-fonts! []
+  (let [old-keys (keys font-name-to-font)]
+    (reset! fonts {})
+    (def font-name-to-font (make-font-names-map))
+    (let [new-keys (keys font-name-to-font)]
+      (set/difference (into #{} new-keys)
+                      (into #{} old-keys)))))
+
+(comment
+  (force-reload-fonts!))
+
 (comment
   (sort (keys font-name-to-font)))
 

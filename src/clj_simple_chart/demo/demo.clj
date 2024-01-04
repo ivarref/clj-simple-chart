@@ -11,13 +11,14 @@
 (refresh/set-focus! *ns*)
 
 (def scale-text
-  {:fillStyle        "hachure"
-   :stroke           "black"
-   :stroke-opacity   1
-   :fill             "none"
-   :preserveVertices true
-   :simplification   0.7
-   :roughness        1})
+  nil
+  #_{:fillStyle        "hachure"
+     :stroke           "black"
+     :stroke-opacity   1
+     :fill             "none"
+     :preserveVertices true
+     :simplification   0.99
+     :roughness        1})
 
 (def axis-text-style
   (fn [_]
