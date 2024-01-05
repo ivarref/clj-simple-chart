@@ -5,6 +5,7 @@
             [clojure.core.async :as async]
             [clojure.edn :as edn]
             [clojure.set :as set]
+            [clojure.string :as str]
             [clojure.string :as string]
             [clojure.string])
   (:import (java.io BufferedInputStream File FileInputStream InputStreamReader)
@@ -60,7 +61,7 @@
   (swap! cx (fn [old-cx] (set-lang-version (Context/enter))))
   (swap! scope (fn [old-scope] (.initStandardObjects @cx)))
   (load-jvm-npm @cx @scope)
-  (eval-str "var opentype = require('./resources/opentype.js')")
+  (eval-str "var opentype = require('./resources/opentype_es2015_v1.3.4.js')")
   (eval-str "var b64 = require('./resources/base64-arraybuffer.js')")
   (eval-str "function parseFont(payload) { return opentype.parse(b64.decode(payload)); }")
   (swap! parsefont (fn [old-parsefont] (.get @scope "parseFont"))))
@@ -90,8 +91,8 @@
 (defn- load-fonts []
   (bootstrap-rhino-if-needed)
   (doall (map load-font (->> (file-seq (File. "./resources/fonts"))
-                             (filter #(or (.endsWith (.getName %) ".otf")
-                                          (.endsWith (.getName %) ".ttf")))))))
+                             (filter #(or (.endsWith (str/lower-case (.getName %)) ".otf")
+                                          (.endsWith (str/lower-case (.getName %)) ".ttf")))))))
 
 (defn- property-ids [obj]
   (vec (run-js-thread #(NativeObject/getPropertyIds obj))))
