@@ -1,5 +1,6 @@
 let { DOMImplementation, XMLSerializer } = require('@xmldom/xmldom');
 // const rough = require('./resources/roughes2015.js');
+let getBounds = require('svg-path-bounds');
 
 function getSvg() {
     const document = new DOMImplementation().createDocument('http://www.w3.org/1999/xhtml', 'html', null);

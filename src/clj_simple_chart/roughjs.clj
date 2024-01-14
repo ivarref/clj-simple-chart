@@ -68,6 +68,7 @@
   (load-jvm-npm @context @scope)
   (eval-str (slurp "resources/roughlatestes2015.js"))       ; pulled 2023-12-29
   (eval-str (slurp "resources/xmldom.js"))
+  (eval-str (slurp "resources/svgpathbounds.js"))
   (eval-str (slurp "resources/roughhelper.js")))
 ;(eval-str "janei()"))
 
@@ -174,6 +175,28 @@
         (when *dev-mode*
           (devserver/push-svg! res-str))
         [:path path-attrs]))))
+
+(defn- get-bounds-inner
+  [path-string]
+  {:pre [(string? path-string)]}
+  (run-js-thread
+    (bound-fn []
+      (when *dev-mode*
+        (eval-str (slurp "resources/roughhelper.js")))
+      (let [^Function js-fn (.get @scope "getBounds")
+            res (try
+                  (into [] (.call js-fn @context @scope @scope (object-array [path-string])))
+                  (catch Throwable t
+                    (.printStackTrace t)
+                    (throw t)))
+            _ (pr-str res)]
+        {:x1 (nth res 0) ; same format as returned by opentype.js
+         :y1 (nth res 1)
+         :x2 (nth res 2)
+         :y2 (nth res 3)}))))
+
+(comment
+  (get-bounds-inner "M0 0L10 10 20 0Z"))
 
 ; Begin public API
 
