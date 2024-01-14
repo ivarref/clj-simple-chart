@@ -1,7 +1,9 @@
 (ns clj-simple-chart.demo.demo
   (:require [clj-simple-chart.core :refer :all]
+            [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.render :as r]
             [clj-simple-chart.rect :as rect]
+            [clojure.string :as str]
             [demo.refresh :as refresh]))
 
 (def margin {:top 75 :bottom 40 :left 40 :right 40})
@@ -11,19 +13,31 @@
 (refresh/set-focus! *ns*)
 
 (def scale-text
-  nil
-  #_{:fillStyle        "hachure"
-     :stroke           "black"
-     :stroke-opacity   1
-     :fill             "none"
-     :preserveVertices true
-     :simplification   0.99
-     :roughness        1})
+  nil #_{:fillStyle        "hachure"
+         :stroke           "black"
+         :stroke-opacity   1
+         ;:fill             "black"
+         ;:preserveVertices true
+         :simplification   0.8
+         :roughness        1})
 
 (def axis-text-style
   (fn [_]
     {:font-size 14
-     :font      "Roboto Thin"}))
+     ;:fill "green"
+     ;:stroke "black"
+     :font      "Handodle"}))
+
+;=> #{"LondrinaBlack-Regular" "LondrinaShadow-Regular" "LondrinaSketche-Regular" "LondrinaThin-Regular" "LondrinaOutline-Regular" "LondrinaBook-Regular" "LondrinaSolid-Regular"}
+
+(comment
+  (->> (keys clj-simple-chart.opentype/font-name-to-font)
+       (remove #(str/includes? % "Roboto"))
+       (sort)
+       (vec)))
+
+(comment
+  (clj-simple-chart.opentype/force-reload-fonts!))
 
 (def x
   (scale {:type               :ordinal
