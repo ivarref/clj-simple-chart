@@ -3,6 +3,7 @@
             [clj-simple-chart.opentype :as opentype]
             [clj-simple-chart.render :as r]
             [clj-simple-chart.rect :as rect]
+            [clj-simple-chart.roughjs :as rough]
             [clojure.string :as str]
             [demo.refresh :as refresh]))
 
@@ -13,20 +14,20 @@
 (refresh/set-focus! *ns*)
 
 (def scale-text
-  nil #_{:fillStyle        "hachure"
-         :stroke           "black"
-         :stroke-opacity   1
+  nil #_{:fillStyle      "hachure"
+         :stroke         "black"
+         :stroke-opacity 1
          ;:fill             "black"
          ;:preserveVertices true
-         :simplification   0.8
-         :roughness        1})
+         :simplification 0.8
+         :roughness      1})
 
 (def axis-text-style
   (fn [_]
     {:font-size 14
      ;:fill "green"
      ;:stroke "black"
-     :font      "Handodle"}))
+     :font      "Roboto Thin"}))
 
 ;=> #{"LondrinaBlack-Regular" "LondrinaShadow-Regular" "LondrinaSketche-Regular" "LondrinaThin-Regular" "LondrinaOutline-Regular" "LondrinaBook-Regular" "LondrinaSolid-Regular"}
 
@@ -85,12 +86,27 @@
    {:p 1992 :c "dogs" :h -25}
    {:p 1992 :c "birds" :h 25}])
 
+(def txt (opentype/text {:text "Abc"
+                         :font-size 180
+                         :alignment-baseline "hanging"
+                         :rough {:fillStyle "solid"}}))
+
 (defn diagram []
   [:svg (svg-attrs width height margin)
    [:g {:transform (translate (:left margin) (:top margin))}
     [:g
-     (render-axis y)
-     (render-axis x)
-     (rect/rect-or-stacked-vertical x y rects)]]])
+     txt
+     [:rect (->> txt
+                 (tree-seq coll? identity)
+                 (filter #(and (map? %) (contains? % :d)))
+                 (first)
+                 :d
+                 (rough/get-bounds-rect))]]]])
+     ;(render-axis y)
+     ;(render-axis x)
+     ;(rect/rect-or-stacked-vertical x y rects)]]])
+
+(comment)
+
 
 (def _render-self (r/render-fn (fn [] (diagram))))

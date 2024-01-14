@@ -176,7 +176,7 @@
           (devserver/push-svg! res-str))
         [:path path-attrs]))))
 
-(defn- get-bounds-inner
+(defn get-bounds
   [path-string]
   {:pre [(string? path-string)]}
   (run-js-thread
@@ -195,8 +195,19 @@
          :x2 (nth res 2)
          :y2 (nth res 3)}))))
 
+(defn get-bounds-rect
+  [path-string]
+  {:pre [(string? path-string)]}
+  (let [{:keys [x1 y1 x2 y2]} (get-bounds path-string)]
+    {:x x1
+     :y y1
+     :width (- x2 x1)
+     :height (- y2 y1)
+     :stroke "red"
+     :fill "none"}))
+
 (comment
-  (get-bounds-inner "M0 0L10 10 20 0Z"))
+  (get-bounds "M0 0L10 10 20 0Z"))
 
 ; Begin public API
 
