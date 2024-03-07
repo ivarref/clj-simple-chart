@@ -11,7 +11,14 @@
 (def width (- (/ 1024 2) (:left margin) (:right margin)))
 (def height (- (/ 512 2) (:top margin) (:bottom margin)))
 
-(refresh/set-focus! *ns*)
+(refresh/set-focus! *ns*) ;; her set ein det *ns*-et som skal vera i fokus.
+;; og som keybinding så gjer Ctrl-S denne demo.refresh/refresh-from-ns!
+;; slik det står i REPL-en.
+;; og dersom ein endrar i eit NS langt nede i hierarkiet/avhengigheitene,
+;; så vil den refreshe frå "djupet" og opp til toppen, som er definert
+;; som (refresh/set-focus! *ns*) ... Demo...
+;; la oss gå eit stykke ned i stacken...
+
 
 (def scale-text
   nil #_{:fillStyle      "hachure"
@@ -86,9 +93,10 @@
    {:p 1992 :c "dogs" :h -25}
    {:p 1992 :c "birds" :h 25}])
 
-(def txt (opentype/text {:text "Abc"
-                         :font-size 180
+(def txt (opentype/text {:text "Slik :-)"
+                         :font-size 200
                          :alignment-baseline "hanging"
+                         :font "Roboto Thin"
                          :rough {:fillStyle "solid"}}))
 
 (defn diagram []
@@ -108,5 +116,14 @@
 
 (comment)
 
+;; okey, la oss laste namespacet :-)
+;; oops, fyrst starte REPL
+;; oops2, ingen klientar å pushe til...
+;; det tyder at ein lyt opna nettsida
+;; og er er Abc ja :-)
+
+;; ved lagring av fila får ein auto-reload
+;; dette er jo intuitivt så lenge ein endrar i "rot-namespacet"
+;; men kva om ein gjer noko lengre nede i namespace-hierarkiet..?
 
 (def _render-self (r/render-fn (fn [] (diagram))))
